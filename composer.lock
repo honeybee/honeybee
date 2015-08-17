@@ -4,7 +4,11 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
+<<<<<<< HEAD
     "hash": "cc2bf7aed070bd8f94db90a5f004e592",
+=======
+    "hash": "668af3a9c32a8a548af8a22c498ce609",
+>>>>>>> fixed typo within composer author homepage attr.
     "packages": [
         {
             "name": "beberlei/assert",
