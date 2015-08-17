@@ -1,8 +1,8 @@
 {
     "name": "honeybee/honeybee",
     "type": "library",
-    "description": "Library for building distributed cqrs applications in php.",
-    "keywords": ["cms", "cmf" , "distributed", "scaffolding"],
+    "description": "Library for implementing CQRS driven, event-sourced and distributed architectures.",
+    "keywords": [ "ddd", "cqrs", "hexagonal", "event-sourcing", "messaging" ],
     "homepage": "https://github.com/berlinonline/honeybee",
     "license": "MIT",
     "authors": [
@@ -10,16 +10,10 @@
             "name": "Thorsten Schmitt-Rink"
         },
         {
-            "name": "Leon Weidauer"
-        },
-        {
             "name": "Steffen Gransow"
         },
         {
             "name": "Hasham Ahmad"
-        },
-        {
-            "name": "Tom Anheyer"
         }
     ],
 
