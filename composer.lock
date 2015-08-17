@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "675a3fb9b3532981bc0b04571d972aa1",
+    "hash": "7811547655d0e371305808662c6f752d",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -471,69 +471,6 @@
             "time": "2015-03-18 18:23:50"
         },
         {
-            "name": "honeybee/agavi",
-            "version": "1.1.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/honeybee/agavi.git",
-                "reference": "bf6af7bb2c7f6458f5f7272c6a287a7172e9bd71"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/honeybee/agavi/zipball/bf6af7bb2c7f6458f5f7272c6a287a7172e9bd71",
-                "reference": "bf6af7bb2c7f6458f5f7272c6a287a7172e9bd71",
-                "shasum": ""
-            },
-            "require": {
-                "ext-dom": "*",
-                "ext-pcre": "*",
-                "ext-reflection": "*",
-                "ext-spl": "*",
-                "lib-libxml": "*",
-                "phing/phing": "~2.6.1",
-                "php": ">=5.2.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "~3.5"
-            },
-            "suggest": {
-                "ext-iconv": "Enable iconv if you need to convert between other charset than iso-8859-1 and utf-8",
-                "ext-pdo": "PDO is required for database connectors that use PDO as base",
-                "ext-session": "If the session extension is disabled you'll have to build your own session storage system and hook it into agavi",
-                "ext-soap": "Enable the xmlrpc extension if you want to use Agavi's SOAP features",
-                "ext-tokenizer": "Enable the tokenizer extension allows Agavi to generate more efficient config-caches",
-                "ext-xmlrpc": "Enable the xmlrpc extension if you want to use XML-RPC features",
-                "ext-xsl": "Required only for transformation of pre 1.0 style configuration files",
-                "phpunit/phpunit": "Install phpunit if you want to run your tests"
-            },
-            "bin": [
-                "etc/composer/bin/agavi"
-            ],
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "src/agavi.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "LGPL-2.1+"
-            ],
-            "authors": [
-                {
-                    "name": "Agavi Contributors",
-                    "homepage": "https://github.com/agavi/agavi/graphs/contributors"
-                }
-            ],
-            "description": "Agavi is a full-featured MVC-style framework for PHP5 with a strong focus on structure, code reusability and flexibility.",
-            "homepage": "http://agavi.org",
-            "keywords": [
-                "framework",
-                "mvc"
-            ],
-            "time": "2015-07-30 10:02:35"
-        },
-        {
             "name": "honeybee/trellis",
             "version": "dev-master",
             "source": {
@@ -864,59 +801,6 @@
                 "jsonpath"
             ],
             "time": "2015-05-27 17:21:31"
-        },
-        {
-            "name": "phing/phing",
-            "version": "2.6.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/phingofficial/phing.git",
-                "reference": "3f7d71bf561bafea39087250f777b349438cc32e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/phingofficial/phing/zipball/3f7d71bf561bafea39087250f777b349438cc32e",
-                "reference": "3f7d71bf561bafea39087250f777b349438cc32e",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.2.0"
-            },
-            "bin": [
-                "bin/phing"
-            ],
-            "type": "library",
-            "autoload": {
-                "classmap": [
-                    "classes/phing/"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "include-path": [
-                "classes"
-            ],
-            "license": [
-                "LGPL3"
-            ],
-            "authors": [
-                {
-                    "name": "Michiel Rook",
-                    "email": "mrook@php.net",
-                    "role": "Lead"
-                },
-                {
-                    "name": "Phing Community",
-                    "homepage": "http://www.phing.info/trac/wiki/Development/Contributors"
-                }
-            ],
-            "description": "PHing Is Not GNU make; it's a PHP project build system or build tool based on Apache Ant.",
-            "homepage": "http://www.phing.info/",
-            "keywords": [
-                "build",
-                "task",
-                "tool"
-            ],
-            "time": "2013-08-26 21:13:03"
         },
         {
             "name": "pimple/pimple",

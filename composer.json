@@ -45,7 +45,6 @@
     "require": {
         "php": ">=5.5.0",
         "lib-libxml": "*",
-        "honeybee/agavi": "1.1.*",
         "honeybee/trellis": "master@dev",
         "shrink0r/workflux": "master@dev",
         "elasticsearch/elasticsearch": "1.3.*",
