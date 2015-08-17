@@ -1,6 +1,6 @@
 <?php
 
-namespace Honeybee\Tests\Projection\Resource\Fixtures\Book;
+namespace Honeybee\Tests\Projection\Fixtures\Book;
 
 use Trellis\Common\Options;
 use Trellis\Runtime\Attribute\AttributeInterface;

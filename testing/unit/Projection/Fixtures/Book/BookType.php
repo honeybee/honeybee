@@ -1,11 +1,11 @@
 <?php
 
-namespace Honeybee\Tests\Projection\Resource\Fixtures\Book;
+namespace Honeybee\Tests\Projection\Fixtures\Book;
 
 use Trellis\Common\Options;
 use Trellis\Runtime\Attribute\EmbeddedEntityList\EmbeddedEntityListAttribute;
 use Trellis\Runtime\Attribute\Text\TextAttribute as Text;
-use Honeybee\Tests\Projection\Resource\Fixtures\EntityType;
+use Honeybee\Tests\Projection\Fixtures\EntityType;
 use Workflux\StateMachine\StateMachineInterface;
 
 class BookType extends EntityType

@@ -1,19 +1,19 @@
 <?php
 
-namespace Honeybee\Tests\Projection\Resource\Fixtures\Publisher;
+namespace Honeybee\Tests\Projection\Fixtures\Book;
 
 use Honeybee\Projection\Resource\Resource;
 
-class Publisher extends Resource
+class Book extends Resource
 {
-    public function getName()
+    public function getTitle()
     {
-        return $this->getValue('name');
+        return $this->getValue('title');
     }
 
-    public function setName($name)
+    public function setTitle($title)
     {
-        return $this->setValue('name', $name);
+        return $this->setValue('title', $title);
     }
 
     public function getDescription()

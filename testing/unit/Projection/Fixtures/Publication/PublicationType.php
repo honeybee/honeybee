@@ -1,11 +1,11 @@
 <?php
 
-namespace Honeybee\Tests\Projection\Resource\Fixtures\Publication;
+namespace Honeybee\Tests\Projection\Fixtures\Publication;
 
 use Trellis\Common\Options;
 use Trellis\Runtime\Attribute\Integer\IntegerAttribute;
 use Trellis\Runtime\Attribute\Text\TextAttribute;
-use Honeybee\Tests\Projection\Resource\Fixtures\EntityType;
+use Honeybee\Tests\Projection\Fixtures\EntityType;
 
 class PublicationType extends EntityType
 {

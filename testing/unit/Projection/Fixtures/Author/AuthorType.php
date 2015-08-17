@@ -1,10 +1,10 @@
 <?php
 
-namespace Honeybee\Tests\Projection\Resource\Fixtures\Author;
+namespace Honeybee\Tests\Projection\Fixtures\Author;
 
 use Trellis\Common\Options;
 use Trellis\Runtime\Attribute\Text\TextAttribute as Text;
-use Honeybee\Tests\Projection\Resource\Fixtures\EntityType;
+use Honeybee\Tests\Projection\Fixtures\EntityType;
 use Workflux\StateMachine\StateMachineInterface;
 
 class AuthorType extends EntityType

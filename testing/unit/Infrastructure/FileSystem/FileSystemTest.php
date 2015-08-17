@@ -34,7 +34,7 @@ class FileSystemTest extends TestCase
 
     protected function getDefaultStateMachine()
     {
-        $workflows_file_path = dirname(dirname(__DIR__)) . '/Projection/Resource/Fixtures/workflows.xml';
+        $workflows_file_path = dirname(dirname(__DIR__)) . '/Projection/Fixtures/workflows.xml';
         $workflow_builder = new XmlStateMachineBuilder(
             [
                 'name' => 'author_workflow_default',

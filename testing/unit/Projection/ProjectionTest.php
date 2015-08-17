@@ -1,12 +1,12 @@
 <?php
 
-namespace Honeybee\Tests\Projection\Resource;
+namespace Honeybee\Tests\Projection;
 
-use Honeybee\Tests\Projection\Resource\Fixtures\Author\AuthorType;
+use Honeybee\Tests\Projection\Fixtures\Author\AuthorType;
 use Honeybee\Tests\TestCase;
 use Workflux\Builder\XmlStateMachineBuilder;
 
-class ResourceTest extends TestCase
+class ProjectionTest extends TestCase
 {
     protected $resource_type = AuthorType::CLASS;
 
@@ -27,7 +27,7 @@ class ResourceTest extends TestCase
         $this->assertEquals('Twain', $this->resource->getLastname());
         $this->assertNotEmpty($this->resource->getCreatedAt());
         $this->assertNotEmpty($this->resource->getModifiedAt());
-        $this->assertEquals('honeybee-cmf.resource_fixtures.author-0', $this->resource->getShortIdentifier());
+        $this->assertEquals('honeybee-cmf.projection_fixtures.author-0', $this->resource->getShortIdentifier());
         $this->assertNull($this->resource->getUuid());
         // UUID self-generated
         $this->assertNull($this->resource->getUuid());

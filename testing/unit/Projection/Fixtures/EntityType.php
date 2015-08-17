@@ -1,6 +1,6 @@
 <?php
 
-namespace Honeybee\Tests\Projection\Resource\Fixtures;
+namespace Honeybee\Tests\Projection\Fixtures;
 
 use Honeybee\Projection\ProjectionType;
 use Workflux\StateMachine\StateMachineInterface;
@@ -9,7 +9,7 @@ abstract class EntityType extends ProjectionType
 {
     const VENDOR = 'Honeybee-CMF';
 
-    const PACKAGE = 'ResourceFixtures';
+    const PACKAGE = 'ProjectionFixtures';
 
     protected $workflow_state_machine;
 

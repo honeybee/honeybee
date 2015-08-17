@@ -1,6 +1,6 @@
 <?php
 
-namespace Honeybee\Tests\Projection\Resource\Fixtures\Author;
+namespace Honeybee\Tests\Projection\Fixtures\Author;
 
 use Honeybee\Projection\Projection;
 
