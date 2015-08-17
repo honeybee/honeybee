@@ -3,19 +3,34 @@
     "type": "library",
     "description": "Library for implementing CQRS driven, event-sourced and distributed architectures.",
     "keywords": [ "ddd", "cqrs", "hexagonal", "event-sourcing", "messaging" ],
-    "homepage": "https://github.com/berlinonline/honeybee",
+    "homepage": "https://github.com/honeybee/honeybee",
     "license": "MIT",
     "authors": [
         {
-            "name": "Thorsten Schmitt-Rink"
+            "name": "Hasham Ahmad",
+            "email": "mr.hash@gmail.com",
+            "role": "Developer"
         },
         {
-            "name": "Steffen Gransow"
+            "name": "Steffen Gransow",
+            "email": "honeybee@mivesto.de",
+            "role": "Developer"
         },
         {
-            "name": "Hasham Ahmad"
+            "name": "Thorsten Schmitt-Rink",
+            "email": "schmittrink@gmail.com",
+            "role": "Developer"
+        },
+        {
+            "name": "Honeybee Contributors",
+            "homepage": "https://github.com/honeybee/honeybee/graphs/contributors"
         }
     ],
+
+    "support": {
+        "issues": "https://github.com/honeybee/honeybee/issues",
+        "irc": "irc://irc.freenode.org/honeybee"
+    },
 
     "autoload": {
         "psr-4": { "Honeybee\\" : "src" }
@@ -34,27 +49,19 @@
         "honeybee/trellis": "master@dev",
         "shrink0r/workflux": "master@dev",
         "elasticsearch/elasticsearch": "1.3.*",
-        "graste/environaut": "0.5.*",
         "guzzle/guzzle": "3.9.*",
         "league/flysystem": "1.0.*",
         "michelf/php-markdown": "1.5.*",
         "monolog/monolog": "1.16.*",
         "mtdowling/jmespath.php": "2.2.*",
-        "mthaml/mthaml": "1.7.*",
         "psr/log": "1.0.0",
         "ql/uri-template": "1.0.*",
         "rdlowrey/auryn": "1.0.*",
         "swiftmailer/swiftmailer": "5.4.*",
         "symfony/expression-language": "2.7.*",
         "symfony/filesystem": "2.7.*",
-        "symfony/process": "2.7.*",
-        "symfony/validator": "2.7.*",
         "twig/twig": "1.20.*",
-        "willdurand/negotiation": "1.4.*",
-        "zendframework/zend-permissions-acl": "2.5.*",
-        "cboden/Ratchet": "0.3.*",
-        "react/zmq": "0.3.*",
-        "videlalvaro/php-amqplib": "2.5.*"
+        "zendframework/zend-permissions-acl": "2.5.*"
     },
 
     "require-dev": {
@@ -72,6 +79,16 @@
         "ext-fileinfo": "to handle mimetype guessing locally",
         "league/flysystem-aws-s3-v3": "to handle files with amazon aws s3 storage",
         "league/flysystem-dropbox": "to handle files via dropbox api",
-        "league/flysystem-sftp": "to handle files via sftp"
+        "league/flysystem-sftp": "to handle files via sftp",
+        "cboden/Ratchet": "0.3.* to handle messages over websocket",
+        "react/zmq": "0.3.* to handle messages async with zeromq",
+        "videlalvaro/php-amqplib": "2.5.* as AMQP implementing message queue in async setups with e.g. rabbitmq"
+    },
+
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
     }
 }
+
