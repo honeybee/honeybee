@@ -9,7 +9,9 @@ install:
   - curl -s http://getcomposer.org/installer | php -d date.timezone="Europe/Berlin"
   - ./composer.phar install
 
-script: ./bin/composer.phar build
+script:
+  - ./vendor/bin/phpunit testing/unit
+  - ./vendor/bin/phpcs --extensions=php --standard=psr2 src testing/unit
 
 after_script: php vendor/bin/coveralls -v
 
