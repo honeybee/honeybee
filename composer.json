@@ -1,0 +1,83 @@
+{
+    "name": "honeybee/honeybee",
+    "type": "library",
+    "description": "Library for building distributed cqrs applications in php.",
+    "keywords": ["cms", "cmf" , "distributed", "scaffolding"],
+    "homepage": "https://github.com/berlinonline/honeybee",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Thorsten Schmitt-Rink"
+        },
+        {
+            "name": "Leon Weidauer"
+        },
+        {
+            "name": "Steffen Gransow"
+        },
+        {
+            "name": "Hasham Ahmad"
+        },
+        {
+            "name": "Tom Anheyer"
+        }
+    ],
+
+    "autoload": {
+        "psr-4": { "Honeybee\\" : "src" }
+    },
+
+    "autoload-dev": {
+        "psr-4": { "Honeybee\\Tests\\": "testing/unit" }
+    },
+
+    "prefer-stable": true,
+
+    "require": {
+        "php": ">=5.5.0",
+        "lib-libxml": "*",
+        "honeybee/agavi": "1.1.*",
+        "honeybee/trellis": "master@dev",
+        "shrink0r/workflux": "master@dev",
+        "elasticsearch/elasticsearch": "1.3.*",
+        "graste/environaut": "0.5.*",
+        "guzzle/guzzle": "3.9.*",
+        "league/flysystem": "1.0.*",
+        "michelf/php-markdown": "1.5.*",
+        "monolog/monolog": "1.16.*",
+        "mtdowling/jmespath.php": "2.2.*",
+        "mthaml/mthaml": "1.7.*",
+        "psr/log": "1.0.0",
+        "ql/uri-template": "1.0.*",
+        "rdlowrey/auryn": "1.0.*",
+        "swiftmailer/swiftmailer": "5.4.*",
+        "symfony/expression-language": "2.7.*",
+        "symfony/filesystem": "2.7.*",
+        "symfony/process": "2.7.*",
+        "symfony/validator": "2.7.*",
+        "twig/twig": "1.20.*",
+        "willdurand/negotiation": "1.4.*",
+        "zendframework/zend-permissions-acl": "2.5.*"
+    },
+
+    "require-dev": {
+        "phpunit/phpunit": "4.8.*",
+        "phpmd/phpmd": "2.2.*",
+        "sebastian/phpcpd": "2.0.*",
+        "squizlabs/php_codesniffer": "2.3.*",
+        "mockery/mockery": "0.9.*",
+        "satooshi/php-coveralls": "0.6.*",
+        "sami/sami": "3.0.*",
+        "fzaninotto/faker": "1.5.*",
+        "cboden/Ratchet": "0.3.*",
+        "react/zmq": "0.3.*",
+        "videlalvaro/php-amqplib": "2.5.*"
+    },
+
+    "suggest": {
+        "ext-fileinfo": "to handle mimetype guessing locally",
+        "league/flysystem-aws-s3-v3": "to handle files with amazon aws s3 storage",
+        "league/flysystem-dropbox": "to handle files via dropbox api",
+        "league/flysystem-sftp": "to handle files via sftp"
+    }
+}

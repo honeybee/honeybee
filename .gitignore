@@ -1,0 +1,13 @@
+/vendor
+/node_modules
+/data
+/.environaut.cache
+.sass-cache
+/tags
+/tags.vendor
+/build
+.environment
+.buildpath
+.project
+.settings
+composer.phar

@@ -1,0 +1,23 @@
+digraph author_workflow_default {
+node1 [label="inactive" fontcolor="#000000" color="#607d8b"]
+node2 [label="active" fontcolor="#000000" color="#607d8b"]
+node3 [label="edit_task" fontcolor="#000000" color="#607d8b" shape="parallelogram"]
+node4 [label="confirm_delete_task" fontcolor="#000000" color="#607d8b" shape="parallelogram"]
+node5 [label="deleted" fontcolor="#000000" color="#607d8b" style="bold"]
+0 [label="X" fontsize="13" margin="0" fontname="arial" width="0.15" color="#607d8b" shape="circle"]
+
+node1 -> node3 [label="edit" fontcolor="#7f8c8d" color="#607d8b"]
+node1 -> node2 [label="promote" fontcolor="#7f8c8d" color="#2ecc71"]
+node1 -> node5 [label="delete" fontcolor="#7f8c8d" color="#607d8b"]
+node2 -> node3 [label="edit" fontcolor="#7f8c8d" color="#607d8b"]
+node2 -> node1 [label="demote" fontcolor="#7f8c8d" color="#3498db"]
+node2 -> node4 [label="confirm_delete" fontcolor="#7f8c8d" color="#607d8b"]
+node2 -> node5 [label="delete" fontcolor="#7f8c8d" color="#607d8b"]
+node3 -> node2 [label="
+if current_state == "active"" fontcolor="#7f8c8d" color="#607d8b"]
+node3 -> node1 [label="
+if current_state == "inactive"" fontcolor="#7f8c8d" color="#607d8b"]
+node4 -> node2 [label="
+if current_state == "active"" fontcolor="#7f8c8d" color="#607d8b"]
+0 -> node1 [color="#607d8b"]
+}

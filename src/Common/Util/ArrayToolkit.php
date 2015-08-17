@@ -1,0 +1,173 @@
+<?php
+
+namespace Honeybee\Common\Util;
+
+use RecursiveArrayIterator;
+use RecursiveIteratorIterator;
+
+/**
+ * Class with various useful methods handling or merging arrays.
+ */
+class ArrayToolkit
+{
+    /**
+     * Merges the given second array over the first one similar to the PHP internal
+     * array_merge_recursive method, but does not change scalar values into arrays
+     * when duplicate keys occur.
+     *
+     * @param array $first first or default array
+     * @param array $second array to merge over the first array
+     *
+     * @return array merged result with scalar values still being scalar
+     */
+    public static function mergeScalarSafe(array &$first, array &$second)
+    {
+        $merged = $first;
+
+        foreach ($second as $key => &$value) {
+            if (is_array($value) && isset($merged[$key]) && is_array($merged[$key])) {
+                $merged[$key] = self::mergeScalarSafe($merged[$key], $value);
+            } else {
+                $merged[$key] = $value;
+            }
+        }
+
+        return $merged;
+    }
+
+    /**
+     * @return bool true if argument is an associative array. False otherwise.
+     */
+    public static function isAssoc(array $array)
+    {
+        if (!is_array($array) || empty($array)) {
+            return false;
+        }
+
+        foreach (array_keys($array) as $key => $value) {
+            if ($key !== $value) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Moves an item to the top of the array. Works for numeric and string keys.
+     *
+     * @param array $array array to modify inplace
+     * @param mixed $key key of array item to move
+     *
+     * @return void
+     */
+    public static function moveToTop(array &$array, $key)
+    {
+        $temp = [
+            $key => $array[$key]
+        ];
+        unset($array[$key]);
+        $array = $temp + $array;
+    }
+
+    /**
+     * Moves an item to the bottom of the array. Works for numeric and string keys.
+     *
+     * @param array $array array to modify inplace
+     * @param mixed $key key of array item to move
+     *
+     * @return void
+     */
+    public static function moveToBottom(array &$array, $key)
+    {
+        $value = $array[$key];
+        unset($array[$key]);
+        $array[$key] = $value;
+    }
+
+    /**
+     * Returns a flat associative array with the query parameters of the given URL.
+     * The array may be used to render hidden input elements on GET forms to not
+     * lose query params when submitting a GET form (POST forms are working fine).
+     *
+     * Example: http://some.tld?limit=2&foo[0]=1&foo[1]=2&foo[2]=3 will be:
+     *          [ "limit" => 2, "foo[0]" => 1, "foo[1] => 2, "foo[2]" => 3 ]
+     *
+     * @param string $url URL with query parameters
+     *
+     * @return array of form parameters (key => value)
+     */
+    public static function getUrlQueryInRequestFormat($url)
+    {
+        $query = parse_url($url, PHP_URL_QUERY);
+
+        $query_params = [];
+        parse_str($query, $query_params);
+
+        return static::flattenToRequestFormat($query_params);
+    }
+
+    public static function flattenToRequestFormat(array $query_params)
+    {
+        $iterator = new RecursiveIteratorIterator(
+            new RecursiveArrayIterator($query_params),
+            RecursiveIteratorIterator::SELF_FIRST
+        );
+
+        $keys = [];
+        $flat_array = [];
+
+        foreach($iterator as $key => $value) {
+            $keys[$iterator->getDepth()] = $key;
+            $name = $keys[0];
+
+            if ($iterator->getDepth() > 0) {
+                $name .= sprintf(
+                    '[%s]',
+                    implode('][', array_slice($keys, 1, $iterator->getDepth()))
+                );
+            }
+
+            if (!is_array($value)) {
+                $flat_array[$name] = $value;
+            }
+        }
+
+        return $flat_array;
+    }
+
+    public static function flattenToArrayPath(array $array_keys)
+    {
+        $parts = $array_keys;
+        if(count($parts) == 0) {
+            return '';
+        }
+
+        $name = $parts[0];
+        $parts = array_slice($parts, 1);
+
+        $path = '';
+        if(count($parts)) {
+            $path = sprintf('[%s]', implode('][', $parts));
+        }
+
+        return $name . $path;
+    }
+
+    public static function filterEmptyValues(array $array, callable $callback = null, $recursive = true)
+    {
+        $filtered = [];
+
+        foreach ($array as $prop => $value) {
+            if (is_array($value) && $recursive) {
+                $value = self::filterEmptyValues($value, $callback, $recursive);
+            }
+
+            if (true === (is_callable($callback) ? call_user_func($callback, $value) : !empty($value))) {
+                $filtered[$prop] = $value;
+            }
+        }
+
+        return $filtered;
+    }
+}
