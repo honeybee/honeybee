@@ -3,6 +3,7 @@
 namespace Honeybee\Ui\Renderer\Html\Trellis\Runtime\Attribute\Timestamp;
 
 use Honeybee\Ui\Renderer\Html\Trellis\Runtime\Attribute\HtmlAttributeRenderer;
+use Honeybee\Common\Util\StringToolkit;
 
 class HtmlTimestampAttributeRenderer extends HtmlAttributeRenderer
 {
@@ -10,6 +11,11 @@ class HtmlTimestampAttributeRenderer extends HtmlAttributeRenderer
 
     protected function getDefaultTemplateIdentifier()
     {
+        $view_scope = $this->getOption('view_scope', 'missing_view_scope.collection');
+        if (StringToolkit::endsWith($view_scope, 'collection')) {
+            return $this->output_format->getName() . '/attribute/datetime/as_itemlist_item_cell.twig';
+        }
+
         return $this->output_format->getName() . '/attribute/datetime/as_input.twig';
     }
 
