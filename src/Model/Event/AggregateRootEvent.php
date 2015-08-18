@@ -59,6 +59,17 @@ abstract class AggregateRootEvent
         }
     }
 
+    public function getAffectedAttributeNames()
+    {
+        $affected_attributes = array_keys($this->getData());
+        $embedded_entity_events = $this->getEmbeddedEntityEvents();
+        foreach ($embedded_entity_events as $embedded_entity_event) {
+            $affected_attributes[] = $embedded_entity_event->getParentAttributeName();
+        }
+
+        return $affected_attributes;
+    }
+
     public function getType()
     {
         $fqcn_parts = explode('\\', static::CLASS);

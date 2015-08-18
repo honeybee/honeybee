@@ -2,23 +2,27 @@
 
 namespace Honeybee\Projection;
 
-interface ProjectionInterface
+use Honeybee\EntityInterface;
+
+interface ProjectionInterface extends EntityInterface
 {
     public function getCreatedAt();
 
     public function getModifiedAt();
 
-    public function getShortIdentifier();
-
     public function getUuid();
-
-    public function getRevision();
 
     public function getLanguage();
 
-    public function getShortId();
+    public function getVersion();
+
+    public function getRevision();
 
     public function getWorkflowState();
 
     public function getWorkflowParameters();
+
+    public function getParentNodeId();
+
+    public function getMaterializedPath();
 }

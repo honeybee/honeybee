@@ -36,10 +36,6 @@ interface AggregateRootInterface
 
     public function getRevision();
 
-    public function getShortIdentifier();
-
-    public function getShortId();
-
     public function getWorkflowState();
 
     public function getWorkflowParameters();

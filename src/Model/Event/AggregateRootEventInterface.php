@@ -2,7 +2,9 @@
 
 namespace Honeybee\Model\Event;
 
-interface AggregateRootEventInterface
+use Honeybee\Infrastructure\Event\EventInterface;
+
+interface AggregateRootEventInterface extends EventInterface
 {
     public function getAggregateRootIdentifier();
 
@@ -10,5 +12,10 @@ interface AggregateRootEventInterface
 
     public function getData();
 
+    public function getEmbeddedEntityEvents();
+
+    public function getAffectedAttributeNames();
+
     public function getSeqNumber();
+
 }
