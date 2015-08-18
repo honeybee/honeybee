@@ -51,6 +51,16 @@ abstract class Projection extends Entity implements ProjectionInterface
     }
 
     /**
+     * Returns the projection's version.
+     *
+     * @return string
+     */
+    public function getVersion()
+    {
+        return $this->getValue('version');
+    }
+
+    /**
      * Returns an resource's short-id.
      *
      * @return string
