@@ -12,25 +12,84 @@ use Psr\Log\LoggerInterface;
 
 class MixedProjectionFinder extends ElasticSearchFinder
 {
-    protected $resource_type_map;
+    protected $projection_type_map;
 
     public function __construct(
         ConnectorInterface $connector,
         ConfigInterface $config,
         LoggerInterface $logger,
-        ProjectionTypeMap $resource_type_map
+        ProjectionTypeMap $projection_type_map
     ) {
         parent::__construct($connector, $config, $logger);
 
-        $this->resource_type_map = $resource_type_map;
+        $this->projection_type_map = $projection_type_map;
     }
 
+    /**
+     * Retrieves a document via GET for the configured index across ALL types.
+     *
+     * @return FinderResult result with one or no actual results
+     */
+    public function getByIdentifier($identifier)
+    {
+        $data = [
+            'index' => $this->getIndex(),
+            'type' => '_all',
+            'id' => $identifier
+        ];
+
+        $query = array_merge($data, $this->getParameters('get'));
+
+        if ($this->config->get('log_get_query', false) === true) {
+            $this->logger->debug('['.__METHOD__.'] get query = ' . json_encode($query, JSON_PRETTY_PRINT));
+        }
+
+        $raw_result = $this->connector->getConnection()->get($query);
+
+        $mapped_results = $this->mapResultData($raw_result);
+
+        return new FinderResult($mapped_results, count($mapped_results));
+    }
+
+    /**
+     * Retrieves documents via MGET for the configured index across ALL types.
+     *
+     * @return FinderResult result with zero or more actual results
+     */
+    public function getByIdentifiers(array $identifiers)
+    {
+        $data = [
+            'index' => $this->getIndex(),
+            'type' => '_all',
+            'body' => [
+                'ids' => $identifiers
+            ]
+        ];
+
+        $query = array_merge($data, $this->getParameters('mget'));
+
+        if ($this->config->get('log_mget_query', false) === true) {
+            $this->logger->debug('['.__METHOD__.'] mget query = ' . json_encode($query, JSON_PRETTY_PRINT));
+        }
+
+        $raw_result = $this->connector->getConnection()->mget($query);
+
+        $mapped_results = $this->mapResultData($raw_result);
+
+        return new FinderResult($mapped_results, count($mapped_results));
+    }
+
+    /**
+     * Retrieves documents via SEARCH for the configured index and type.
+     *
+     * @return FinderResult result with zero or more actual results
+     */
     public function find(array $query)
     {
         $query['index'] = $this->getIndex();
         $query['type'] = $this->getType();
 
-        if ($this->config->get('log_search_query', true) === true) {
+        if ($this->config->get('log_search_query', false) === true) {
             $this->logger->debug('['.__METHOD__.'] Search query = ' . json_encode($query, JSON_PRETTY_PRINT));
         }
 
@@ -80,12 +139,12 @@ class MixedProjectionFinder extends ElasticSearchFinder
         $fqcn = isset($source[self::OBJECT_TYPE]) ? $source[self::OBJECT_TYPE] : false;
         if (!$fqcn || !class_exists($fqcn, true)) {
             throw new RuntimeError(
-                'Invalid or corrupt type information within resource data. "_source[@type]" given is: ' . $fqcn
+                'Invalid or corrupt type information within document data. "_source[@type]" given is: ' . $fqcn
             );
         }
         unset($source[self::OBJECT_TYPE]);
 
-        $resource_type = $this->resource_type_map->getByEntityImplementor($fqcn);
+        $resource_type = $this->projection_type_map->getByEntityImplementor($fqcn);
 
         return $resource_type->createEntity($source);
     }
