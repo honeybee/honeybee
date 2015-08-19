@@ -7,4 +7,6 @@ interface CommandInterface
     public static function getType();
 
     public function getUuid();
+
+    public function getMetaData();
 }

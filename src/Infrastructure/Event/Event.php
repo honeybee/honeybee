@@ -4,7 +4,6 @@ namespace Honeybee\Infrastructure\Event;
 
 use Trellis\Common\Object;
 use DateTimeImmutable;
-use DateTime;
 
 abstract class Event extends Object implements EventInterface
 {
@@ -14,8 +13,11 @@ abstract class Event extends Object implements EventInterface
 
     protected $iso_date;
 
+    protected $meta_data;
+
     public function __construct(array $state = [])
     {
+        $this->meta_data = [];
         $this->iso_date = DateTimeImmutable::createFromFormat('U.u', sprintf('%.6F', microtime(true)))
             ->format(self::DATE_ISO8601_WITH_MICROS);
 
@@ -44,10 +46,16 @@ abstract class Event extends Object implements EventInterface
         return $this->iso_date;
     }
 
+    public function getMetaData()
+    {
+        return $this->meta_data;
+    }
+
     protected function guardRequiredState()
     {
         assert($this->iso_date !== null, 'iso_date is set');
         assert($this->uuid !== null, 'uuid is set:' . get_class($this));
+        assert(is_array($this->meta_data), 'meta-data is an array');
     }
 
     public function __toString()

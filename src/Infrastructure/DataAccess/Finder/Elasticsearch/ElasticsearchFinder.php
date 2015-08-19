@@ -5,6 +5,7 @@ namespace Honeybee\Infrastructure\DataAccess\Finder\Elasticsearch;
 use Honeybee\Infrastructure\DataAccess\Finder\Finder;
 use Honeybee\Infrastructure\DataAccess\Finder\FinderResult;
 use Honeybee\Infrastructure\Config\Settings;
+use Elasticsearch\Common\Exceptions\Missing404Exception;
 
 abstract class ElasticsearchFinder extends Finder
 {
@@ -24,9 +25,12 @@ abstract class ElasticsearchFinder extends Finder
             $this->logger->debug('['.__METHOD__.'] get query = ' . json_encode($query, JSON_PRETTY_PRINT));
         }
 
-        $raw_result = $this->connector->getConnection()->get($query);
-
-        $mapped_results = $this->mapResultData($raw_result);
+        try {
+            $raw_result = $this->connector->getConnection()->get($query);
+            $mapped_results = $this->mapResultData($raw_result);
+        } catch (Missing404Exception $error) {
+            $mapped_results = [];
+        }
 
         return new FinderResult($mapped_results, count($mapped_results));
     }

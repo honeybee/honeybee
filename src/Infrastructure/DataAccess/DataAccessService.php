@@ -9,6 +9,7 @@ use Honeybee\Infrastructure\DataAccess\Query\QueryServiceMap;
 use Honeybee\Infrastructure\DataAccess\Storage\StorageReaderMap;
 use Honeybee\Infrastructure\DataAccess\Storage\StorageWriterMap;
 use Honeybee\Infrastructure\DataAccess\UnitOfWork\UnitOfWorkMap;
+use Honeybee\Projection\ProjectionTypeInterface;
 
 class DataAccessService implements DataAccessServiceInterface
 {
@@ -49,6 +50,11 @@ class DataAccessService implements DataAccessServiceInterface
         return $this->storage_writer_map->getItem($writer_name);
     }
 
+    public function getProjectionWriterByType(ProjectionTypeInterface $projection_type, $projection_name = 'standard')
+    {
+        return $this->getDbalComponentByProjection($projection_type, $projection_name, 'writer');
+    }
+
     public function getStorageReaderMap()
     {
         return $this->storage_reader_map;
@@ -60,6 +66,11 @@ class DataAccessService implements DataAccessServiceInterface
             throw new RuntimeError(sprintf('Storage-reader %s has not been configured.', $reader_name));
         }
         return $this->storage_reader_map->getItem($reader_name);
+    }
+
+    public function getProjectionReaderByType(ProjectionTypeInterface $projection_type, $projection_name = 'standard')
+    {
+        return $this->getDbalComponentByProjection($projection_type, $projection_name, 'reader');
     }
 
     public function getFinderMap()
@@ -75,6 +86,11 @@ class DataAccessService implements DataAccessServiceInterface
         return $this->finder_map->getItem($finder_name);
     }
 
+    public function getProjectionFinderByType(ProjectionTypeInterface $projection_type, $projection_name = 'standard')
+    {
+        return $this->getDbalComponentByProjection($projection_type, $projection_name, 'reader');
+    }
+
     public function getQueryServiceMap()
     {
         return $this->query_service_map;
@@ -86,6 +102,15 @@ class DataAccessService implements DataAccessServiceInterface
             throw new RuntimeError(sprintf('QueryService "%s" has not been configured.', $query_service_name));
         }
         return $this->query_service_map->getItem($query_service_name);
+    }
+
+    public function getProjectionQueryServiceByType(ProjectionTypeInterface $projection_type)
+    {
+        $default_query_service_key = $projection_type->getPrefix() . '::query_service';
+        $query_service_option = $projection_type->getPrefix() . '.' . $component;
+        $query_service_key = $this->config->get($query_service_option, $default_query_service_key);
+
+        return $this->data_access_service->getQueryService($query_service_key);
     }
 
     public function getUnitOfWorkMap()
@@ -117,5 +142,44 @@ class DataAccessService implements DataAccessServiceInterface
     {
         $storage_writer = $this->getStorageWriter($writer_name);
         $storage_writer->delete($identifier, new Settings($settings));
+    }
+
+    protected function getDbalComponentByProjection(
+        ProjectionTypeInterface $projection_type,
+        $projection_name,
+        $component
+    ) {
+        $default_component_name = sprintf(
+            '%s::projection.%s::view_store::%s',
+            $projection_type->getPrefix(),
+            $projection_name,
+            $component
+        );
+        $custom_component_option = $projection_type->getPrefix() . '.' . $component;
+
+        switch ($component) {
+            case 'finder':
+                return $this->data_access_service->getFinder(
+                    $this->config->get($custom_component_option, $default_component_name)
+                );
+                break;
+            case 'reader':
+                return $this->data_access_service->getStorageReader(
+                    $this->config->get($custom_component_option, $default_component_name)
+                );
+                break;
+            case 'writer':
+                return $this->data_access_service->getStorageWriter(
+                    $this->config->get($custom_component_option, $default_component_name)
+                );
+                break;
+        }
+
+        throw new RuntimeError(
+            sprintf(
+                'Invalid dbal component given: %s. Supported components are: "finder", "reader" and "writer".',
+                $component
+            )
+        );
     }
 }

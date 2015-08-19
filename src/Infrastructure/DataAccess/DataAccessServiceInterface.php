@@ -2,23 +2,33 @@
 
 namespace Honeybee\Infrastructure\DataAccess;
 
+use Honeybee\Projection\ProjectionTypeInterface;
+
 interface DataAccessServiceInterface
 {
     public function getStorageWriterMap();
 
     public function getStorageWriter($writer_name);
 
+    public function getProjectionWriterByType(ProjectionTypeInterface $projection_type, $projection_name = 'standard');
+
     public function getStorageReaderMap();
 
     public function getStorageReader($reader_name);
+
+    public function getProjectionReaderByType(ProjectionTypeInterface $projection_type, $projection_name = 'standard');
 
     public function getFinderMap();
 
     public function getFinder($finder_name);
 
+    public function getProjectionFinderByType(ProjectionTypeInterface $projection_type, $projection_name = 'standard');
+
     public function getQueryServiceMap();
 
     public function getQueryService($query_service_name);
+
+    public function getProjectionQueryServiceByType(ProjectionTypeInterface $projection_type);
 
     public function getUnitOfWorkMap();
 

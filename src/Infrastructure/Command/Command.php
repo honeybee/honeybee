@@ -10,8 +10,11 @@ abstract class Command extends Object implements CommandInterface
 {
     protected $uuid;
 
+    protected $meta_data;
+
     public function __construct(array $state = array())
     {
+        $this->meta_data = [];
         $this->uuid = Uuid::uuid4()->toString();
 
         parent::__construct($state);
@@ -22,6 +25,11 @@ abstract class Command extends Object implements CommandInterface
     public function getUuid()
     {
         return $this->uuid;
+    }
+
+    public function getMetaData()
+    {
+        return $this->meta_data;
     }
 
     public function __toString()
@@ -54,5 +62,6 @@ abstract class Command extends Object implements CommandInterface
     protected function guardRequiredState()
     {
         assert($this->uuid !== null, 'uuid is set');
+        assert(is_array($this->meta_data), 'meta-data is an array');
     }
 }

@@ -495,6 +495,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
     {
         $event_class = $command->getEventClass();
         $default_event_state = [
+            'meta_data' => $command->getMetaData(),
             'uuid' => $command->getUuid(),
             'seq_number' => $this->getRevision() + 1,
             'aggregate_root_type' => $command->getAggregateRootType()
@@ -579,10 +580,19 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
     {
         $this->guardEventPreConditions($event);
         if (!$this->setValues($event->getData())) {
+            $errors = [];
+            foreach ($this->getValidationResults() as $validation_result) {
+                foreach ($validation_result->getViolatedRules() as $violated_rule) {
+                    foreach ($violated_rule->getIncidents() as $incident) {
+                        $errors[] = $violated_rule->getName() . '::' . $incident->getName();
+                    }
+                }
+            }
             throw new RuntimeError(
                 sprintf(
-                    'Failed to apply event. Aggregate-root is in an invalid state after adopting state of %s.',
-                    get_class($event)
+                    'Aggregate-root is in an invalid state after applying %s. Errors: %s',
+                    get_class($event),
+                    implode(', ', $errors)
                 )
             );
         }
