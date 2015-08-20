@@ -2,6 +2,7 @@
 
 namespace Honeybee\Infrastructure\Saga;
 
+use Honeybee\Common\Error\RuntimeError;
 use Workflux\StateMachine\StateMachine;
 
 class Saga implements SagaInterface
@@ -27,7 +28,7 @@ class Saga implements SagaInterface
         $execution_context = $saga_subject->getExecutionContext();
         $command = $execution_context->getParameter('command', false);
 
-        if (!$command && $state->isFinal()) {
+        if (!$command && !$state->isFinal()) {
             throw new RuntimeError('Unable to determine the next command within the saga.');
         }
 
