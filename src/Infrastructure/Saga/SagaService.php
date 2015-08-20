@@ -49,7 +49,6 @@ class SagaService implements SagaServiceInterface
         if (!$saga->hasStarted($saga_subject)) {
             $command = $saga->proceed($saga_subject);
             $this->persistSagaSubject($saga_subject);
-var_dump(__METHOD__ . ' --- ' . $command->getType());
             $this->command_bus->post($command);
         } else {
             $this->logger->debug(__METHOD__ . ' - Saga has allready started!');
@@ -64,8 +63,9 @@ var_dump(__METHOD__ . ' --- ' . $command->getType());
             if (!$saga->hasFinished($saga_subject)) {
                 $command = $saga->proceed($saga_subject, $event->getType());
                 $this->persistSagaSubject($saga_subject);
-var_dump(__METHOD__ . ' --- ' . $command->getType());
-                $this->command_bus->post($command);
+                if ($command) {
+                     $this->command_bus->post($command);
+                 }
             } else {
                 $this->logger->debug(__METHOD__ . ' - Saga has allready completed!');
             }
