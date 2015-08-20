@@ -23,7 +23,6 @@ class SagaEventHandler extends EventHandler
 
     public function handleEvent(EventInterface $event)
     {
-var_dump(__METHOD__ . ' >>> ' . $event->getType());
         $this->saga_service->continueSaga($event);
     }
 }
