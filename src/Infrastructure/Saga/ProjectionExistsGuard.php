@@ -30,7 +30,7 @@ class ProjectionExistsGuard extends ConfigurableGuard
 
         $query_service = $this->data_access_service->getQueryService($query_service_key);
 
-        return $query_service->findByIdentifier($identifier)->getTotalCount() === 1;
+        return $identifier ? $query_service->findByIdentifier($identifier)->getTotalCount() === 1 : false;
     }
 
     public function __toString()
