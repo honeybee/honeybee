@@ -22,7 +22,7 @@ class EventBus extends Object implements EventBusInterface
         $this->logger = $logger;
     }
 
-    public function executeHandlers($channel_name, EventInterface $event)
+    public function executeHandlers($channel_name, EventInterface $event, $subscription_index)
     {
         if (!$this->channel_map->hasKey($channel_name)) {
             throw new RuntimeError(
@@ -34,23 +34,20 @@ class EventBus extends Object implements EventBusInterface
             );
         }
 
-        foreach ($this->getSubscriptions($channel_name) as $subscription) {
-            if (!$subscription->isActivated()) {
-                continue;
-            }
-
-            $shall_execute = true;
+        $subscription = $this->getSubscriptions($channel_name)->getItem($subscription_index);
+        $is_active = false;
+        if ($subscription->isActivated()) {
             foreach ($subscription->getEventFilters() as $filter) {
-                if (!$filter->accept($event)) {
-                    $shall_execute = false;
+                if ($filter->accept($event)) {
+                    $is_active = true;
                     break;
                 }
             }
+        }
 
-            if ($shall_execute) {
-                foreach ($subscription->getEventHandlers() as $event_handler) {
-                    $event_handler->handleEvent($event);
-                }
+        if ($is_active) {
+            foreach ($subscription->getEventHandlers() as $event_handler) {
+                $event_handler->handleEvent($event);
             }
         }
     }
@@ -66,28 +63,25 @@ class EventBus extends Object implements EventBusInterface
                 )
             );
         }
-
-        foreach ($this->getSubscriptions($channel_name) as $subscription) {
-            if (!$subscription->isActivated()) {
-                continue;
-            }
-
-            $shall_distribute = false;
-            foreach ($subscription->getEventFilters() as $filter) {
-                if ($filter->accept($event)) {
-                    $shall_distribute = true;
-                    break;
+        $subscription_index = 0;
+        $this->getSubscriptions($channel_name)->filter(
+            function ($subscription) use ($channel_name, $event, &$subscription_index) {
+                $is_active = false;
+                if ($subscription->isActivated()) {
+                    foreach ($subscription->getEventFilters() as $filter) {
+                        if ($filter->accept($event)) {
+                            $is_active = true;
+                            break;
+                        }
+                    }
                 }
-            }
 
-            if ($shall_distribute) {
-                $this->logger->debug(
-                    'Sending over channel "{channel}" event "{event}".',
-                    [ 'channel' => $channel_name, 'event' => get_class($event) ]
-                );
-                $subscription->getEventTransport()->send($channel_name, $event);
+                if ($is_active) {
+                    $subscription->getEventTransport()->send($channel_name, $event, $subscription_index);
+                }
+                $subscription_index++;
             }
-        }
+        );
     }
 
     public function subscribe($channel_name, EventSubscriptionInterface $subscription)

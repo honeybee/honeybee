@@ -13,6 +13,8 @@ class ExecuteEventHandlersJob extends Job
 
     protected $channel;
 
+    protected $subscription_index;
+
     /**
      * @hiddenProperty
      */
@@ -31,7 +33,7 @@ class ExecuteEventHandlersJob extends Job
             throw new RuntimeError("Missing required channel parameter.");
         }
 
-        $this->event_bus->executeHandlers($this->channel, $this->event);
+        $this->event_bus->executeHandlers($this->channel, $this->event, $this->subscription_index);
     }
 
     protected function setEvent($event_state)

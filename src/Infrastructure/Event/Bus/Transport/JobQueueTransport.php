@@ -21,12 +21,13 @@ class JobQueueTransport extends EventTransport
         $this->job_service = $job_service;
     }
 
-    public function send($channel_name, EventInterface $event)
+    public function send($channel_name, EventInterface $event, $subscription_index)
     {
         $job_state = [
             ExecuteEventHandlersJob::OBJECT_TYPE => ExecuteEventHandlersJob::CLASS,
             'event' => $event,
-            'channel' => $channel_name
+            'channel' => $channel_name,
+            'subscription_index' => $subscription_index
         ];
 
         $this->job_service->dispatch(

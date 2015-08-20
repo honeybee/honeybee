@@ -25,14 +25,15 @@ class ZmqTransport extends EventTransport
         $this->channel = $channel;
     }
 
-    public function send($channel_name, EventInterface $event)
+    public function send($channel_name, EventInterface $event, $subscription_index)
     {
         $this->getSocket()->send(
             json_encode(
                 array(
                     'event' => $event->toArray(),
                     'channel' => $this->channel,
-                    'event_channel' => $channel_name
+                    'event_channel' => $channel_name,
+                    'subscription_index' => $subscription_index
                 )
             )
         );

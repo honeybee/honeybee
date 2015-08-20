@@ -16,8 +16,8 @@ class SynchronousTransport extends EventTransport
         $this->event_bus = $event_bus;
     }
 
-    public function send($channel_name, EventInterface $event)
+    public function send($channel_name, EventInterface $event, $subscription_index)
     {
-        $this->event_bus->executeHandlers($channel_name, $event);
+        $this->event_bus->executeHandlers($channel_name, $event, $subscription_index);
     }
 }

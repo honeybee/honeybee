@@ -7,7 +7,7 @@ use Honeybee\Infrastructure\Event\EventInterface;
 
 interface EventBusInterface
 {
-    public function executeHandlers($channel_name, EventInterface $event);
+    public function executeHandlers($channel_name, EventInterface $event, $subscription_index);
 
     public function distribute($channel_name, EventInterface $event);
 
