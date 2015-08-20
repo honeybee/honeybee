@@ -580,19 +580,19 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
     {
         $this->guardEventPreConditions($event);
         if (!$this->setValues($event->getData())) {
-            $errors = [];
             foreach ($this->getValidationResults() as $validation_result) {
                 foreach ($validation_result->getViolatedRules() as $violated_rule) {
                     foreach ($violated_rule->getIncidents() as $incident) {
-                        $errors[] = $violated_rule->getName() . '::' . $incident->getName();
+                        $errors[] = PHP_EOL . $validation_result->getSUbject()->getName() .
+                            ' - ' .$violated_rule->getName() . ' > ' . $incident->getName();
                     }
                 }
             }
             throw new RuntimeError(
                 sprintf(
-                    'Aggregate-root is in an invalid state after applying %s. Errors: %s',
+                    "Aggregate-root is in an invalid state after applying %s.\nErrors:%s",
                     get_class($event),
-                    implode(', ', $errors)
+                    implode(PHP_EOL, $errors)
                 )
             );
         }
