@@ -1,6 +1,6 @@
 <?php
 
-namespace Honeybee\Infrastructure\Saga;
+namespace Honeybee\Infrastructure\ProcessManager;
 
 use Honeybee\Common\Error\RuntimeError;
 use Rhumsaa\Uuid\Uuid as UuidGenerator;
@@ -8,7 +8,7 @@ use Trellis\Common\Object;
 use Workflux\ExecutionContext;
 use Workflux\StatefulSubjectInterface;
 
-class SagaSubject extends Object implements SagaSubjectInterface, StatefulSubjectInterface
+class ProcessState extends Object implements ProcessStateInterface, StatefulSubjectInterface
 {
     /**
      * @hiddenProperty
@@ -21,7 +21,7 @@ class SagaSubject extends Object implements SagaSubjectInterface, StatefulSubjec
 
     protected $state_name;
 
-    protected $saga_name;
+    protected $process_name;
 
     public function __construct(array $object_state)
     {
@@ -34,8 +34,8 @@ class SagaSubject extends Object implements SagaSubjectInterface, StatefulSubjec
         if (empty($this->payload)) {
             throw new RuntimeError('Missing required payload.');
         }
-        if (empty($this->saga_name)) {
-            throw new RuntimeError('Missing required saga_name.');
+        if (empty($this->process_name)) {
+            throw new RuntimeError('Missing required process_name.');
         }
     }
 
@@ -46,12 +46,16 @@ class SagaSubject extends Object implements SagaSubjectInterface, StatefulSubjec
 
     public function getPayload()
     {
-        return $this->payload;
+        $context = $this->getExecutionContext();
+        if ($context->hasParameter('payload')) {
+            return $context->getParameter('payload')->toArray();
+        }
+        return [];
     }
 
-    public function getSagaName()
+    public function getProcessName()
     {
-        return $this->saga_name;
+        return $this->process_name;
     }
 
     public function getStateName()
@@ -63,8 +67,9 @@ class SagaSubject extends Object implements SagaSubjectInterface, StatefulSubjec
     {
         if (!$this->execution_context) {
             $this->execution_context = new ExecutionContext(
-                $this->saga_name,
-                $this->state_name
+                $this->process_name,
+                $this->state_name,
+                [ 'payload' => $this->payload ]
             );
         }
 
@@ -75,6 +80,7 @@ class SagaSubject extends Object implements SagaSubjectInterface, StatefulSubjec
     {
         $array = parent::toArray();
         $array['state_name'] = $this->getStateName();
+        $array['payload'] = $this->getPayload();
 
         return $array;
     }

@@ -106,11 +106,9 @@ class DataAccessService implements DataAccessServiceInterface
 
     public function getProjectionQueryServiceByType(ProjectionTypeInterface $projection_type)
     {
-        $default_query_service_key = $projection_type->getPrefix() . '::query_service';
-        $query_service_option = $projection_type->getPrefix() . '.' . $component;
-        $query_service_key = $this->config->get($query_service_option, $default_query_service_key);
+        $query_service_key = $projection_type->getPrefix() . '::query_service';
 
-        return $this->data_access_service->getQueryService($query_service_key);
+        return $this->getQueryService($query_service_key);
     }
 
     public function getUnitOfWorkMap()

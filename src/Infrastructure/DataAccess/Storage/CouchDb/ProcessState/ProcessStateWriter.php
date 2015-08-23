@@ -1,29 +1,30 @@
 <?php
 
-namespace Honeybee\Infrastructure\DataAccess\Storage\CouchDb\SagaSubject;
+namespace Honeybee\Infrastructure\DataAccess\Storage\CouchDb\ProcessState;
 
+use Guzzle\Http\Exception\ClientErrorResponseException;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Config\SettingsInterface;
 use Honeybee\Infrastructure\DataAccess\Storage\CouchDb\CouchDbStorage;
 use Honeybee\Infrastructure\DataAccess\Storage\StorageWriterInterface;
-use Guzzle\Http\Exception\ClientErrorResponseException;
+use Honeybee\Infrastructure\ProcessManager\ProcessStateInterface;
 
-class SagaSubjectWriter extends CouchDbStorage implements StorageWriterInterface
+class ProcessStateWriter extends CouchDbStorage implements StorageWriterInterface
 {
-    public function write($saga_subject, SettingsInterface $settings = null)
+    public function write($process_state, SettingsInterface $settings = null)
     {
-        /*if (!$saga_subject instanceof SagaSubjectInterface) {
+        if (!$process_state instanceof ProcessStateInterface) {
             throw new RuntimeError(
                 sprintf(
                     'Invalid payload given to %s, expected type of %s',
                     __METHOD__,
-                    SagaSubjectInterface::CLASS
+                    ProcessStateInterface::CLASS
                 )
             );
-        }*/
+        }
 
-        $data = $saga_subject->toArray();
-        $identifier = $saga_subject->getUuid();
+        $data = $process_state->toArray();
+        $identifier = $process_state->getUuid();
 
         try {
             // @todo use head method to get current revision?
@@ -42,7 +43,7 @@ class SagaSubjectWriter extends CouchDbStorage implements StorageWriterInterface
         }
 
         if (!isset($response_data['ok']) || !isset($response_data['rev'])) {
-            throw new RuntimeError("Failed to write saga.");
+            throw new RuntimeError("Failed to write process_state.");
         }
     }
 
@@ -64,7 +65,7 @@ class SagaSubjectWriter extends CouchDbStorage implements StorageWriterInterface
         }
 
         if (!isset($response_data['ok'])) {
-            throw new RuntimeError('Failed to delete saga.');
+            throw new RuntimeError('Failed to delete process_state.');
         }
     }
 }

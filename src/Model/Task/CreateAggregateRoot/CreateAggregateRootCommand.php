@@ -17,6 +17,6 @@ abstract class CreateAggregateRootCommand extends AggregateRootTypeCommand
     {
         parent::guardRequiredState();
 
-        assert($this->values !== null, '"values" is set');
+        assert(is_array($this->values), '"values" is an array');
     }
 }

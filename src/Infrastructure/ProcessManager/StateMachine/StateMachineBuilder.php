@@ -1,6 +1,6 @@
 <?php
 
-namespace Honeybee\Infrastructure\Saga;
+namespace Honeybee\Infrastructure\ProcessManager\StateMachine;
 
 use Auryn\Injector as DiContainer;
 use Workflux\Builder\XmlStateMachineBuilder;

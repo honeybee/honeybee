@@ -1,16 +1,16 @@
 <?php
 
-namespace Honeybee\Infrastructure\Saga;
+namespace Honeybee\Infrastructure\ProcessManager;
 
 use Trellis\Common\ObjectInterface;
 
-interface SagaSubjectInterface extends ObjectInterface
+interface ProcessStateInterface extends ObjectInterface
 {
     public function getUuid();
 
     public function getPayload();
 
-    public function getSagaName();
+    public function getProcessName();
 
     public function getStateName();
 }

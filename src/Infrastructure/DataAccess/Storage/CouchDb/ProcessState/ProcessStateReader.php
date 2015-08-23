@@ -1,6 +1,6 @@
 <?php
 
-namespace Honeybee\Infrastructure\DataAccess\Storage\CouchDb\SagaSubject;
+namespace Honeybee\Infrastructure\DataAccess\Storage\CouchDb\ProcessState;
 
 use Guzzle\Http\Exception\BadResponseException;
 use Honeybee\Common\Error\RuntimeError;
@@ -8,8 +8,9 @@ use Honeybee\Infrastructure\Config\SettingsInterface;
 use Honeybee\Infrastructure\DataAccess\Storage\CouchDb\CouchDbStorage;
 use Honeybee\Infrastructure\DataAccess\Storage\StorageReaderInterface;
 use Honeybee\Infrastructure\DataAccess\Storage\StorageReaderIterator;
+use Honeybee\Infrastructure\ProcessManager\ProcessStateInterface;
 
-class SagaSubjectReader extends CouchDbStorage implements StorageReaderInterface
+class ProcessStateReader extends CouchDbStorage implements StorageReaderInterface
 {
     const READ_ALL_LIMIT = 10;
 
@@ -42,7 +43,7 @@ class SagaSubjectReader extends CouchDbStorage implements StorageReaderInterface
         )->send()->json();
 
         foreach ($result_data['rows'] as $row) {
-            $data[] = $this->createSagaSubject($row);
+            $data[] = $this->createProcessState($row);
         }
 
         if ($result_data['total_rows'] === $result_data['offset'] + 1) {
@@ -69,7 +70,7 @@ class SagaSubjectReader extends CouchDbStorage implements StorageReaderInterface
 
         $result_data['revision'] = $result_data['_rev'];
 
-        return $this->createSagaSubject($result_data);
+        return $this->createProcessState($result_data);
     }
 
     public function getIterator()
@@ -77,13 +78,24 @@ class SagaSubjectReader extends CouchDbStorage implements StorageReaderInterface
         return new StorageReaderIterator($this);
     }
 
-    protected function createSagaSubject(array $data)
+    protected function createProcessState(array $data)
     {
-        $saga_subject_class = $data['@type'];
-        if (!class_exists($saga_subject_class)) {
-            throw new RuntimeError('Unable to load saga class: ' . $saga_subject_class);
+        $process_state_class = $data['@type'];
+        if (!class_exists($process_state_class)) {
+            throw new RuntimeError('Unable to load process-state class: ' . $process_state_class);
         }
 
-        return new $saga_subject_class($data);
+        $process_state = new $process_state_class($data);
+        if (!$process_state instanceof ProcessStateInterface) {
+            throw new RuntimeError(
+                sprintf(
+                    'Given class "%s" does not implement required interface: %s',
+                    $process_state_class,
+                    ProcessStateInterface::CLASS
+                )
+            );
+        }
+
+        return $process_state;
     }
 }

@@ -1,29 +1,30 @@
 <?php
 
-namespace Honeybee\Infrastructure\Saga;
+namespace Honeybee\Infrastructure\ProcessManager;
 
 use Honeybee\Infrastructure\Config\ConfigInterface;
 use Honeybee\Infrastructure\Event\EventHandler;
 use Honeybee\Infrastructure\Event\EventInterface;
 use Psr\Log\LoggerInterface;
 
-class SagaEventHandler extends EventHandler
+class ProcessListener extends EventHandler
 {
-    protected $saga_service;
+    protected $process_manager;
 
     public function __construct(
         ConfigInterface $config,
         LoggerInterface $logger,
-        SagaServiceInterface $saga_service
+        ProcessManagerInterface $process_manager
     ) {
         parent::__construct($config, $logger);
 
-        $this->saga_service = $saga_service;
+        $this->process_manager = $process_manager;
     }
 
     public function handleEvent(EventInterface $event)
     {
-        $this->saga_service->continueSaga($event);
+var_dump($event->getType());
+        $this->process_manager->continueProcess($event);
     }
 }
 

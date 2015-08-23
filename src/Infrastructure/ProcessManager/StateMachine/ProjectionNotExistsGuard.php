@@ -1,14 +1,14 @@
 <?php
 
-namespace Honeybee\Infrastructure\Saga;
+namespace Honeybee\Infrastructure\ProcessManager\StateMachine;
 
 use Workflux\StatefulSubjectInterface;
 
 class ProjectionNotExistsGuard extends ProjectionExistsGuard
 {
-    public function accept(StatefulSubjectInterface $subject)
+    public function accept(StatefulSubjectInterface $process_state)
     {
-        return !parent::accept($subject);
+        return !parent::accept($process_state);
     }
 
     public function __toString()
