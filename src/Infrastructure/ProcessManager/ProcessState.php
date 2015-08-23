@@ -44,18 +44,16 @@ class ProcessState extends Object implements ProcessStateInterface, StatefulSubj
         return $this->uuid;
     }
 
-    public function getPayload()
-    {
-        $context = $this->getExecutionContext();
-        if ($context->hasParameter('payload')) {
-            return $context->getParameter('payload')->toArray();
-        }
-        return [];
-    }
-
     public function getProcessName()
     {
         return $this->process_name;
+    }
+
+    public function getPayload()
+    {
+        $execution_context = $this->getExecutionContext();
+
+        return $execution_context->getParameters()->toArray();
     }
 
     public function getStateName()
@@ -66,11 +64,7 @@ class ProcessState extends Object implements ProcessStateInterface, StatefulSubj
     public function getExecutionContext()
     {
         if (!$this->execution_context) {
-            $this->execution_context = new ExecutionContext(
-                $this->process_name,
-                $this->state_name,
-                [ 'payload' => $this->payload ]
-            );
+            $this->execution_context = new ExecutionContext($this->process_name, $this->state_name, $this->payload);
         }
 
         return $this->execution_context;
@@ -78,14 +72,15 @@ class ProcessState extends Object implements ProcessStateInterface, StatefulSubj
 
     public function toArray()
     {
-        $array = parent::toArray();
-        $array['state_name'] = $this->getStateName();
-        $array['payload'] = $this->getPayload();
+        $process_state_as_array = parent::toArray();
 
-        return $array;
+        $process_state_as_array['state_name'] = $this->getStateName();
+        $process_state_as_array['payload'] = $this->getPayload();
+
+        return $process_state_as_array;
     }
 
-    protected function setImportData(array $payload)
+    protected function setPayload(array $payload)
     {
         $this->payload = $payload;
     }

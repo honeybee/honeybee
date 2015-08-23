@@ -3,6 +3,7 @@
 namespace Honeybee\Infrastructure\ProcessManager;
 
 use Honeybee\Common\Error\RuntimeError;
+use Honeybee\Infrastructure\Command\CommandInterface;
 use Honeybee\Infrastructure\Event\EventInterface;
 use Workflux\StateMachine\StateMachine;
 
@@ -30,14 +31,20 @@ class Process implements ProcessInterface
         if ($event) {
             $execution_context->setParameter('incoming_event', $event);
             $state = $this->state_machine->execute($process_state, $event->getType());
+            $execution_context->removeParameter('incoming_event', $event);
         } else {
             $state = $this->state_machine->execute($process_state);
         }
-        $command = $execution_context->getParameter('command', false);
 
+        $command = $execution_context->getParameter('command', false);
+        if ($command && !$command instanceof CommandInterface) {
+            throw new RuntimeError('Given command does not implement required ' . CommandInterface::CLASS);
+        }
         if (!$command && !$state->isFinal()) {
             throw new RuntimeError('Unable to determine the next command within the process.');
         }
+
+        $execution_context->removeParameter('command');
 
         return $command;
     }

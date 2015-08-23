@@ -12,24 +12,20 @@ class CreateAggregateRootStateNode extends AggregateRootCommandStateNode
 {
     public function onExit(StatefulSubjectInterface $process_state)
     {
-        $this->requiresVariable('incoming_event', $process_state);
-
         parent::onExit($process_state);
 
-        if ($this->options->has('export_as_reference')) {
-            $execution_context = $process_state->getExecutionContext();
+        $this->requiresVariable('incoming_event', $process_state);
+        $execution_context = $process_state->getExecutionContext();
+        $export_as_reference = $this->options->get('export_as_reference', false);
+
+        if ($export_as_reference) {
             $event = $execution_context->getParameter('incoming_event');
-
-            $export_as_reference = $this->options->get('export_as_reference');
-            $export_to = $export_as_reference->get('export_to');
-
-            $payload = $process_state->getPayload();
-            $payload[$export_to] = [
+            $export_key = $export_as_reference->get('export_to');
+            $reference_data = [
                 '@type' => $export_as_reference->get('reference_embed_type'),
                 'referenced_identifier' => $event->getAggregateRootIdentifier()
             ];
-
-            $execution_context->setParameter('payload', $payload);
+            $execution_context->setParameter($export_key, $reference_data);
         }
     }
 

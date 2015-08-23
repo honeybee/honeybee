@@ -5,6 +5,7 @@ namespace Honeybee\Infrastructure\ProcessManager\StateMachine;
 use Honeybee\Infrastructure\ProcessManager\ProcessStateInterface;
 use Honeybee\Model\Aggregate\AggregateRootTypeMap;
 use Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\AddEmbeddedEntityCommand;
+use Honeybee\Model\Task\ModifyAggregateRoot\ModifyEmbeddedEntity\ModifyEmbeddedEntityCommand;
 use Honeybee\Model\Task\ModifyAggregateRoot\RemoveEmbeddedEntity\RemoveEmbeddedEntityCommand;
 use Workflux\StatefulSubjectInterface;
 
@@ -23,6 +24,8 @@ class ModifyAggregateRootStateNode extends AggregateRootCommandStateNode
 
     public function onEntry(StatefulSubjectInterface $process_state)
     {
+        parent::onEntry($process_state);
+
         $this->requiresVariable($this->options->get('projection_key'), $process_state);
     }
 
@@ -30,21 +33,27 @@ class ModifyAggregateRootStateNode extends AggregateRootCommandStateNode
     {
         parent::onExit($process_state);
 
+        $export_key = null;
+        $projection_key = $this->options->get('projection_key');
+        $execution_context = $process_state->getExecutionContext();
+
         if ($this->options->has('export_as_reference')) {
             $projection = $this->getProjection($process_state);
 
             $export_as_reference = $this->options->get('export_as_reference');
             $embed_type = $export_as_reference->get('reference_embed_type');
-            $export_to = $export_as_reference->get('export_to');
+            $export_key = $export_as_reference->get('export_to');
 
-            $payload = $process_state->getPayload();
-            $payload[$export_to] = [
+            $reference_data = [
                 '@type' => $embed_type,
                 'referenced_identifier' => $projection->getIdentifier()
             ];
 
-            $execution_context = $process_state->getExecutionContext();
-            $execution_context->setParameter('payload', $payload);
+            $execution_context->setParameter($export_key, $reference_data);
+        }
+
+        if ($projection_key !== $export_key) {
+            $execution_context->removeParameter($projection_key);
         }
     }
 
@@ -79,46 +88,42 @@ class ModifyAggregateRootStateNode extends AggregateRootCommandStateNode
 
         $reference_commands = [];
         foreach ((array)$this->options->get('link_relations', []) as $reference_attribute_name => $payload_key) {
-            if (isset($payload[$payload_key])) {
-                $relation_payload = $payload[$payload_key];
-                $referenced_identifier = $relation_payload['referenced_identifier'];
+            $relation_payload = isset($payload[$payload_key]) ? $payload[$payload_key] : null;
+            if (!$relation_payload) {
+                continue;
+            }
 
-                $embeds_to_remove = [];
-                $reference_exists = false;
-                foreach ($projection->getValue($reference_attribute_name) as $reference_embed) {
-                    $embeds_to_remove[$reference_attribute_name] = [];
-                    if ($reference_embed->getIdentifier() === $referenced_identifier) {
-                        $reference_exists = true;
-                        continue;
-                    } else {
-                        $embeds_to_remove[$reference_attribute_name] = $reference_embed;
-                    }
-                }
+            $referenced_identifier = $relation_payload['referenced_identifier'];
 
-                foreach ($embeds_to_remove as $attribute_name => $embeds_to_remove) {
-                    foreach ($embeds_to_remove as $embed_to_remove) {
-                        $reference_commands[] = new RemoveEmbeddedEntityCommand(
-                            [
-                                'embedded_entity_identifier' => $embed_to_remove->getIdentifier(),
-                                'embedded_entity_type' => $embed_to_remove->getType()->getPrefix(),
-                                'parent_attribute_name' => $attribute_name
-                            ]
-                        );
-                    }
-                }
-
-                if (!$reference_exists) {
-                    $embedded_entity_type = $relation_payload['@type'];
-                    unset($relation_payload['@type']);
-                    $reference_commands[] = new AddEmbeddedEntityCommand(
+            $embeds_to_remove = [];
+            $reference_exists = false;
+            foreach ($projection->getValue($reference_attribute_name) as $reference_embed) {
+                $embeds_to_remove[$reference_attribute_name] = [];
+                if ($reference_embed->getReferencedIdentifier() !== $referenced_identifier) {
+                    $reference_commands[] = new RemoveEmbeddedEntityCommand(
                         [
-                            'embedded_entity_type' => $embedded_entity_type,
-                            'parent_attribute_name' => $reference_attribute_name,
-                            'position' => 0,
-                            'values' => $relation_payload
+                            'embedded_entity_identifier' => $reference_embed->getIdentifier(),
+                            'embedded_entity_type' => $reference_embed->getType()->getPrefix(),
+                            'parent_attribute_name' => $reference_attribute_name
                         ]
                     );
+                } else {
+                    $reference_exists = true;
+                    continue;
                 }
+            }
+
+            if (!$reference_exists) {
+                $embedded_entity_type = $relation_payload['@type'];
+                unset($relation_payload['@type']);
+                $reference_commands[] = new AddEmbeddedEntityCommand(
+                    [
+                        'embedded_entity_type' => $embedded_entity_type,
+                        'parent_attribute_name' => $reference_attribute_name,
+                        'position' => 0,
+                        'values' => $relation_payload
+                    ]
+                );
             }
         }
 
@@ -127,8 +132,75 @@ class ModifyAggregateRootStateNode extends AggregateRootCommandStateNode
 
     protected function buildEmbedCommands(ProcessStateInterface $process_state)
     {
+        $aggregate_root_type = $this->getAggregateRootType();
+        $projection = $this->getProjection($process_state);
+        $embed_attributes = $aggregate_root_type->getAttributes()->filter(
+            function($attribute) {
+                return $attribute instanceof EmbeddedEntityListAttribute
+                    && !$attribute instanceof EntityReferenceListAttribute;
+            }
+        );
 
-        return [];
+        $payload = $this->getCommandPayload($process_state);
+        $embed_commands = [];
+        foreach ($embed_attributes as $embed_attribute_name => $embed_attribute) {
+            if (isset($payload[$embed_attribute_name])) {
+                $embedded_entity_list = $projection->getValue($embed_attribute_name);
+                foreach ($payload[$embed_attribute_name] as $pos => $embed_data) {
+                    $embed_type = $embed_data['@type'];
+                    unset($embed_data['@type']);
+
+                    $embedded_entity = $embedded_entity_list->getItem($pos);
+                    if (!$embedded_entity) {
+                        $embed_commands[] = new AddEmbeddedEntityCommand(
+                            [
+                                'embedded_entity_type' => $embed_type,
+                                'parent_attribute_name' => $embed_attribute_name,
+                                'values' => $embed_data,
+                                'position' => $pos
+                            ]
+                        );
+                        continue;
+                    }
+
+                    if ($embedded_entity->getType()->getPrefix() !== $embed_type) {
+                        $embed_commands[] = new RemoveEmbeddedEntityCommand(
+                            [
+                                'embedded_entity_type' => $embed_type,
+                                'parent_attribute_name' => $embed_attribute_name,
+                                'embedded_entity_identifier' => $embedded_entity->getIdentifier()
+                            ]
+                        );
+                        continue;
+                    }
+
+                    $modified_data = [];
+                    foreach ($embed_data as $key => $value) {
+                        $value_holder = $embedded_entity->getType()->getAttribute($key)->createValueHolder();
+                        $result = $value_holder->setValue($value, $embedded_entity);
+                        if ($result->getSeverity() >= IncidentInterface::NOTICE) {
+                            if (!$value_holder->sameValueAs($embedded_entity->getValue($key))) {
+                                $modified_data[$key] = $value_holder->toNative();
+                            }
+                        } else {
+                            error_log(__METHOD__ . " - Invalid embed-data given.");
+                        }
+                    }
+                    if (!empty($modified_data)) {
+                        $embed_commands[] = new ModifyEmbeddedEntityCommand(
+                            [
+                                'embedded_entity_type' => $embed_type,
+                                'parent_attribute_name' => $embed_attribute_name,
+                                'embedded_entity_identifier' => $embedded_entity->getIdentifier(),
+                                'values' => $modified_data
+                            ]
+                        );
+                    }
+                }
+            }
+        }
+
+        return $embed_commands;
     }
 
     protected function getProjection(ProcessStateInterface $process_state)
