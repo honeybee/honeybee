@@ -1062,12 +1062,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/shrink0r/workflux.git",
-                "reference": "061c3c37c91bb5adadd67ecca0d78384a9ac0564"
+                "reference": "104066fc3518753607fdc4e0b8ab2d976e878edb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/shrink0r/workflux/zipball/061c3c37c91bb5adadd67ecca0d78384a9ac0564",
-                "reference": "061c3c37c91bb5adadd67ecca0d78384a9ac0564",
+                "url": "https://api.github.com/repos/shrink0r/workflux/zipball/104066fc3518753607fdc4e0b8ab2d976e878edb",
+                "reference": "104066fc3518753607fdc4e0b8ab2d976e878edb",
                 "shasum": ""
             },
             "require": {
@@ -1108,7 +1108,7 @@
                 "workflow",
                 "workflux"
             ],
-            "time": "2015-03-08 21:51:09"
+            "time": "2015-08-20 16:10:21"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -2146,16 +2146,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "4.8.4",
+            "version": "4.8.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "55bf1d6092b0e13a1f26bd5eaffeef3d8ad85ea7"
+                "reference": "9b7417edaf28059ea63d86be941e6004dbfcc0cc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/55bf1d6092b0e13a1f26bd5eaffeef3d8ad85ea7",
-                "reference": "55bf1d6092b0e13a1f26bd5eaffeef3d8ad85ea7",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/9b7417edaf28059ea63d86be941e6004dbfcc0cc",
+                "reference": "9b7417edaf28059ea63d86be941e6004dbfcc0cc",
                 "shasum": ""
             },
             "require": {
@@ -2214,24 +2214,24 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2015-08-15 04:21:23"
+            "time": "2015-08-19 09:20:57"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
-            "version": "2.3.6",
+            "version": "2.3.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit-mock-objects.git",
-                "reference": "18dfbcb81d05e2296c0bcddd4db96cade75e6f42"
+                "reference": "5e2645ad49d196e020b85598d7c97e482725786a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/18dfbcb81d05e2296c0bcddd4db96cade75e6f42",
-                "reference": "18dfbcb81d05e2296c0bcddd4db96cade75e6f42",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/5e2645ad49d196e020b85598d7c97e482725786a",
+                "reference": "5e2645ad49d196e020b85598d7c97e482725786a",
                 "shasum": ""
             },
             "require": {
-                "doctrine/instantiator": "~1.0,>=1.0.2",
+                "doctrine/instantiator": "^1.0.2",
                 "php": ">=5.3.3",
                 "phpunit/php-text-template": "~1.2",
                 "sebastian/exporter": "~1.2"
@@ -2270,26 +2270,26 @@
                 "mock",
                 "xunit"
             ],
-            "time": "2015-07-10 06:54:24"
+            "time": "2015-08-19 09:14:08"
         },
         {
             "name": "sami/sami",
-            "version": "v3.0.7",
+            "version": "v3.0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfPHP/Sami.git",
-                "reference": "ea26c987e08088abbcf44c5722af2fed6aea2ecb"
+                "reference": "c7f82710279c9aaa673b1ad27148749e9bf7223c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfPHP/Sami/zipball/ea26c987e08088abbcf44c5722af2fed6aea2ecb",
-                "reference": "ea26c987e08088abbcf44c5722af2fed6aea2ecb",
+                "url": "https://api.github.com/repos/FriendsOfPHP/Sami/zipball/c7f82710279c9aaa673b1ad27148749e9bf7223c",
+                "reference": "c7f82710279c9aaa673b1ad27148749e9bf7223c",
                 "shasum": ""
             },
             "require": {
                 "michelf/php-markdown": "~1.3",
                 "nikic/php-parser": "~1.0",
-                "php": ">=5.3.3",
+                "php": ">=5.3.9",
                 "phpdocumentor/reflection-docblock": "~2.0",
                 "pimple/pimple": "~3.0",
                 "symfony/console": "~2.1",
@@ -2297,7 +2297,7 @@
                 "symfony/finder": "~2.1",
                 "symfony/process": "~2.1",
                 "symfony/yaml": "~2.1",
-                "twig/twig": "~1.13"
+                "twig/twig": "~1.20|~2.0"
             },
             "bin": [
                 "sami.php"
@@ -2328,7 +2328,7 @@
             "keywords": [
                 "phpdoc"
             ],
-            "time": "2015-07-11 08:42:01"
+            "time": "2015-08-13 07:35:12"
         },
         {
             "name": "satooshi/php-coveralls",
