@@ -23,8 +23,6 @@ class ProcessListener extends EventHandler
 
     public function handleEvent(EventInterface $event)
     {
-var_dump($event->getType());
         $this->process_manager->continueProcess($event);
     }
 }
-
