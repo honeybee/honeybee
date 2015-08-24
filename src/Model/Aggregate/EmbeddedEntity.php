@@ -60,9 +60,26 @@ abstract class EmbeddedEntity extends Entity
         if (!is_callable([$event, 'getData'])) {
             throw new RuntimeError('Event instance is not support due to lack of a getData method.');
         }
+
         $this->setValues($event->getData());
         if (!$this->isValid()) {
-            throw new RuntimeError('Corrupt event data given.');
+            foreach ($this->getValidationResults() as $validation_result) {
+                foreach ($validation_result->getViolatedRules() as $violated_rule) {
+                    foreach ($violated_rule->getIncidents() as $incident) {
+                        $errors[] = PHP_EOL . $validation_result->getSUbject()->getName() .
+                            ' - ' .$violated_rule->getName() . ' > ' . $incident->getName();
+                    }
+                }
+            }
+
+            error_log(
+                sprintf(
+                    "Corrupt event data given to %s through event %s.\nErrors:%s",
+                    $this->getType()->getPrefix(),
+                    $event->getType(),
+                    implode(PHP_EOL, $errors)
+                )
+            );
         }
 
         $embedded_entity_events = new EmbeddedEntityEventList();
