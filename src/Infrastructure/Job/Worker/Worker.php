@@ -47,8 +47,13 @@ class Worker implements WorkerInterface
         $channel->exchange_declare($exchange_name, 'direct', false, true, false);
         $channel->queue_declare($queue_name, false, true, false, false);
 
-        foreach ($this->config->get('bindings', array()) as $binding) {
-            $channel->queue_bind($queue_name, $exchange_name, $binding);
+        $bindings = $this->config->get('bindings', []);
+        if (empty($bindings)) {
+            $channel->queue_bind($queue_name, $exchange_name);
+        } else {
+            foreach ($bindings as $binding) {
+                $channel->queue_bind($queue_name, $exchange_name, $binding);
+            }
         }
 
         $message_callback = function ($message) {

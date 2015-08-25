@@ -12,5 +12,5 @@ interface JobInterface
 
     const STATE_FATAL = 4;
 
-    public function run(array $parameters = array());
+    public function run(array $parameters = []);
 }
