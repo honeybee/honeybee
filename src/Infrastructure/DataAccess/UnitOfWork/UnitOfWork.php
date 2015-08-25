@@ -121,7 +121,7 @@ class UnitOfWork implements UnitOfWorkInterface
     public function commit()
     {
         $committed_events_map = new AggregateRootEventListMap();
-        // first persist all pending changes ...
+        $comitted_ars = [];
         foreach ($this->tracked_aggregate_roots as $aggregate_root) {
             $event_stream = $this->tracked_aggregate_roots[$aggregate_root];
             $committed_events_list = new AggregateRootEventList();
@@ -132,6 +132,11 @@ class UnitOfWork implements UnitOfWorkInterface
             }
             $aggregate_root->markAsComitted();
             $committed_events_map->setItem($aggregate_root->getIdentifier(), $committed_events_list);
+            $comitted_ars[] = $aggregate_root;
+        }
+
+        foreach ($comitted_ars as $comitted_ar) {
+            $this->tracked_aggregate_roots->offsetUnset($aggregate_root);
         }
 
         return $committed_events_map;
