@@ -476,12 +476,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/honeybee/trellis.git",
-                "reference": "d9ea183ab5798f1aa0496fb35e9b628c405588e6"
+                "reference": "ae7c98bbd16511e89199685da8add370fae706eb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/honeybee/trellis/zipball/d9ea183ab5798f1aa0496fb35e9b628c405588e6",
-                "reference": "d9ea183ab5798f1aa0496fb35e9b628c405588e6",
+                "url": "https://api.github.com/repos/honeybee/trellis/zipball/ae7c98bbd16511e89199685da8add370fae706eb",
+                "reference": "ae7c98bbd16511e89199685da8add370fae706eb",
                 "shasum": ""
             },
             "require": {
@@ -537,7 +537,7 @@
                 "entity",
                 "validation"
             ],
-            "time": "2015-08-17 12:32:41"
+            "time": "2015-08-25 11:15:01"
         },
         {
             "name": "league/flysystem",
@@ -1062,12 +1062,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/shrink0r/workflux.git",
-                "reference": "104066fc3518753607fdc4e0b8ab2d976e878edb"
+                "reference": "cbafc4620200171f5d121a06ec355f21ff25d20d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/shrink0r/workflux/zipball/104066fc3518753607fdc4e0b8ab2d976e878edb",
-                "reference": "104066fc3518753607fdc4e0b8ab2d976e878edb",
+                "url": "https://api.github.com/repos/shrink0r/workflux/zipball/cbafc4620200171f5d121a06ec355f21ff25d20d",
+                "reference": "cbafc4620200171f5d121a06ec355f21ff25d20d",
                 "shasum": ""
             },
             "require": {
@@ -1108,7 +1108,7 @@
                 "workflow",
                 "workflux"
             ],
-            "time": "2015-08-20 16:10:21"
+            "time": "2015-08-25 11:15:17"
         },
         {
             "name": "swiftmailer/swiftmailer",
