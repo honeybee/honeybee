@@ -175,7 +175,7 @@ class ServiceLocator implements ServiceLocatorInterface
 
     public function getProcessManager()
     {
-        $this->getService('honeybee.infrastructure.process_manager');
+        return $this->getService('honeybee.infrastructure.process_manager');
     }
 
     public function getJobService()
