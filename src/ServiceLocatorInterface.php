@@ -23,6 +23,7 @@ interface ServiceLocatorInterface
 
     public function getCommandBus();
     public function getEventBus();
+    public function getProcessManager();
 
     public function getConnectorService();
     public function getDataAccessService();
