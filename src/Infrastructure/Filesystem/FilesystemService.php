@@ -5,7 +5,7 @@ namespace Honeybee\Infrastructure\Filesystem;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Common\Util\FileToolkit;
 use Honeybee\Common\Util\StringToolkit;
-use Honeybee\Model\Aggregate\AggregateRootTypeInterface;
+use Honeybee\EntityTypeInterface;
 use League\Flysystem\MountManager;
 use Rhumsaa\Uuid\Uuid as UuidGenerator;
 use Trellis\Runtime\Attribute\AttributeInterface;
@@ -26,7 +26,7 @@ class FilesystemService implements FilesystemServiceInterface
 
     /**
      * @param MountManager $mount_manager
-     * @param array $schemes map of scheme and connector name (e.g. "files" => "Files.Local")
+     * @param array $schemes map of scheme and connector name (e.g. "files" => "Assets.Local")
      */
     public function __construct(MountManager $mount_manager, array $schemes)
     {
@@ -192,13 +192,13 @@ class FilesystemService implements FilesystemServiceInterface
      * Defaults to the common scheme ('files') when no aggregate root type is given.
      *
      * @param string $relative_file_path identifier of the file to work with
-     * @param AggregateRootTypeInterface $art type to use for filesystem scheme generation
+     * @param EntityTypeInterface $entity_type type to use for filesystem scheme generation
      *
      * @return string URI for the given file, e.g. "files://relative/file/path"
      */
-    public function createUri($relative_file_path, AggregateRootTypeInterface $art = null)
+    public function createUri($relative_file_path, EntityTypeInterface $entity_type = null)
     {
-        return $this->getScheme($art) . self::SCHEME_SEPARATOR . $relative_file_path;
+        return $this->getScheme($entity_type) . self::SCHEME_SEPARATOR . $relative_file_path;
     }
 
     /**
@@ -206,13 +206,13 @@ class FilesystemService implements FilesystemServiceInterface
      * Defaults to the common scheme ("tempfiles") when no aggregate root type is given.
      *
      * @param string $relative_file_path identifier of the file to work with
-     * @param AggregateRootTypeInterface $art type to use for filesystem scheme generation
+     * @param EntityTypeInterface $entity_type type to use for filesystem scheme generation
      *
      * @return string URI for the given file, e.g. "tempfiles://relative/file/path"
      */
-    public function createTempUri($relative_file_path, AggregateRootTypeInterface $art = null)
+    public function createTempUri($relative_file_path, EntityTypeInterface $entity_type = null)
     {
-        return $this->getTempScheme($art) . self::SCHEME_SEPARATOR . $relative_file_path;
+        return $this->getTempScheme($entity_type) . self::SCHEME_SEPARATOR . $relative_file_path;
     }
 
     /**
@@ -220,13 +220,13 @@ class FilesystemService implements FilesystemServiceInterface
      * the given aggregate root type. Without given type the default prefix for the
      * common file/asset storage is returned ("files://").
      *
-     * @param AggregateRootTypeInterface $art aggregate root type instance
+     * @param EntityTypeInterface $entity_type aggregate root type instance
      *
      * @return string scheme with separator, e.g. 'files://' or 'userfiles://'
      */
-    public function getPrefix(AggregateRootTypeInterface $art = null)
+    public function getPrefix(EntityTypeInterface $entity_type = null)
     {
-        return $this->getScheme($art) . self::SCHEME_SEPARATOR;
+        return $this->getScheme($entity_type) . self::SCHEME_SEPARATOR;
     }
 
     /**
@@ -234,13 +234,13 @@ class FilesystemService implements FilesystemServiceInterface
      * for the given aggregate root type. When no type is given the default prefix
      * for the common temporary file/asset storage is returned ("tempfiles://").
      *
-     * @param AggregateRootTypeInterface $art aggregate root type instance
+     * @param EntityTypeInterface $entity_type aggregate root type instance
      *
      * @return string prefix, e.g. 'tempfiles://' or 'usertempfiles://'
      */
-    public function getTempPrefix(AggregateRootTypeInterface $art = null)
+    public function getTempPrefix(EntityTypeInterface $entity_type = null)
     {
-        return $this->getTempScheme($art) . self::SCHEME_SEPARATOR;
+        return $this->getTempScheme($entity_type) . self::SCHEME_SEPARATOR;
     }
 
     /**
@@ -248,17 +248,17 @@ class FilesystemService implements FilesystemServiceInterface
      * the given aggregate root type. When no type is given the default scheme name
      * for the common file/asset storage is returned ("files").
      *
-     * @param AggregateRootTypeInterface $art aggregate root type instance
+     * @param EntityTypeInterface $entity_type aggregate root type instance
      *
      * @return string scheme name, e.g. 'files' or 'userfiles'
      */
-    public function getScheme(AggregateRootTypeInterface $art = null)
+    public function getScheme(EntityTypeInterface $entity_type = null)
     {
-        if (null === $art) {
+        if (null === $entity_type) {
             return self::SCHEME_FILES;
         }
 
-        return str_replace(['.', '_'], '', $art->getPrefix() . '.') . self::SCHEME_FILES;
+        return $entity_type->getPrefix() . '.' . self::SCHEME_FILES;
     }
 
     /**
@@ -266,17 +266,17 @@ class FilesystemService implements FilesystemServiceInterface
      * the given aggregate root type. When no type is given the default scheme name
      * for the common temporary file/asset storage is returned ("tempfiles").
      *
-     * @param AggregateRootTypeInterface $art aggregate root type instance
+     * @param EntityTypeInterface $entity_type aggregate root type instance
      *
      * @return string scheme name, e.g. 'tempfiles' or 'usertempfiles'
      */
-    public function getTempScheme(AggregateRootTypeInterface $art = null)
+    public function getTempScheme(EntityTypeInterface $entity_type = null)
     {
-        if (null === $art) {
+        if (null === $entity_type) {
             return self::SCHEME_TEMPFILES;
         }
 
-        return str_replace(['.', '_'], '', $art->getPrefix() . '.') . self::SCHEME_TEMPFILES;
+        return $entity_type->getPrefix() . '.' . self::SCHEME_TEMPFILES;
     }
 
     /**
@@ -296,7 +296,7 @@ class FilesystemService implements FilesystemServiceInterface
 
         $root_type = $attribute->getRootType();
         $root_type_name = $root_type->getName();
-        if ($root_type instanceof AggregateRootTypeInterface) {
+        if ($root_type instanceof EntityTypeInterface) {
             $root_type_name = $root_type->getPrefix();
         }
 

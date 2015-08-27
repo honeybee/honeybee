@@ -3,7 +3,7 @@
 namespace Honeybee\Infrastructure\Filesystem;
 
 use Trellis\Runtime\Attribute\AttributeInterface;
-use Honeybee\Model\Aggregate\AggregateRootTypeInterface;
+use Honeybee\EntityTypeInterface;
 
 /**
  * Please note: a prefix is the scheme name plus scheme separator, e.g. 'userfiles://'.
@@ -139,66 +139,66 @@ interface FilesystemServiceInterface
      * Defaults to the common scheme ('files') when no aggregate root type is given.
      *
      * @param string $relative_file_path identifier of the file to work with
-     * @param AggregateRootTypeInterface $art type to use for filesystem scheme generation
+     * @param EntityTypeInterface $entity_type type to use for filesystem scheme generation
      *
      * @return string URI for the given file, e.g. "files://relative/file/path"
      */
-    public function createUri($relative_file_path, AggregateRootTypeInterface $art = null);
+    public function createUri($relative_file_path, EntityTypeInterface $entity_type = null);
 
     /**
      * Creates a URI to the temporary asset/file storage for the given aggregate root type.
      * Defaults to the common scheme ("tempfiles") when no aggregate root type is given.
      *
      * @param string $relative_file_path identifier of the file to work with
-     * @param AggregateRootTypeInterface $art type to use for filesystem scheme generation
+     * @param EntityTypeInterface $entity_type type to use for filesystem scheme generation
      *
      * @return string URI for the given file, e.g. "tempfiles://relative/file/path"
      */
-    public function createTempUri($relative_file_path, AggregateRootTypeInterface $art = null);
+    public function createTempUri($relative_file_path, EntityTypeInterface $entity_type = null);
 
     /**
      * Returns the prefix that is used for access of the main file/asset storage for
      * the given aggregate root type. Without given type the default prefix for the
      * common file/asset storage is returned ("files://").
      *
-     * @param AggregateRootTypeInterface $art aggregate root type instance
+     * @param EntityTypeInterface $entity_type aggregate root type instance
      *
      * @return string scheme with separator, e.g. 'files://' or 'userfiles://'
      */
-    public function getPrefix(AggregateRootTypeInterface $art = null);
+    public function getPrefix(EntityTypeInterface $entity_type = null);
 
     /**
      * Returns the prefix that is used for access of the temporary file/asset storage
      * for the given aggregate root type. When no type is given the default prefix
      * for the common temporary file/asset storage is returned ("tempfiles://").
      *
-     * @param AggregateRootTypeInterface $art aggregate root type instance
+     * @param EntityTypeInterface $entity_type aggregate root type instance
      *
      * @return string prefix, e.g. 'tempfiles://' or 'usertempfiles://'
      */
-    public function getTempPrefix(AggregateRootTypeInterface $art = null);
+    public function getTempPrefix(EntityTypeInterface $entity_type = null);
 
     /**
      * Returns the scheme that is used for access of the main file/asset storage for
      * the given aggregate root type. When no type is given the default scheme name
      * for the common file/asset storage is returned ("files").
      *
-     * @param AggregateRootTypeInterface $art aggregate root type instance
+     * @param EntityTypeInterface $entity_type aggregate root type instance
      *
      * @return string scheme name, e.g. 'files' or 'userfiles'
      */
-    public function getScheme(AggregateRootTypeInterface $art = null);
+    public function getScheme(EntityTypeInterface $entity_type = null);
 
     /**
      * Returns the scheme that is used for access of the temporary file/asset storage for
      * the given aggregate root type. When no type is given the default scheme name
      * for the common temporary file/asset storage is returned ("tempfiles").
      *
-     * @param AggregateRootTypeInterface $art aggregate root type instance
+     * @param EntityTypeInterface $entity_type aggregate root type instance
      *
      * @return string scheme name, e.g. 'tempfiles' or 'usertempfiles'
      */
-    public function getTempScheme(AggregateRootTypeInterface $art = null);
+    public function getTempScheme(EntityTypeInterface $entity_type = null);
 
     /**
      * Generates a unique file identifier that may be used as a relative file path.
