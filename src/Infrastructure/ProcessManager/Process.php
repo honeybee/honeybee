@@ -53,8 +53,8 @@ class Process implements ProcessInterface
         }
 
         if ($execution_context->hasParameter('commands')) {
-            $commands_list = $execution_context->getParameter('commands');
-            if (!$commands_list instanceof CommandList) {
+            $command_list = $execution_context->getParameter('commands');
+            if (!$command_list instanceof CommandList) {
                 throw new RuntimeError(
                     sprintf(
                         'Unexpected return type for execution-context var "commands". Type of "%s" expected.',
