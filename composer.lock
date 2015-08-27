@@ -4,24 +4,28 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "dcc7b2c30915f8d55599d33b5332cf04",
+    "hash": "b92146371f4b13537c6ca09f59e47407",
     "packages": [
         {
             "name": "beberlei/assert",
-            "version": "v2.3",
+            "version": "v2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/beberlei/assert.git",
-                "reference": "160eba4d1fbe692e42b3cf8a20b92ab23e3a8759"
+                "reference": "7281b1fd8118b31cb9162c2fb5a4cc6f01d62ed6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/beberlei/assert/zipball/160eba4d1fbe692e42b3cf8a20b92ab23e3a8759",
-                "reference": "160eba4d1fbe692e42b3cf8a20b92ab23e3a8759",
+                "url": "https://api.github.com/repos/beberlei/assert/zipball/7281b1fd8118b31cb9162c2fb5a4cc6f01d62ed6",
+                "reference": "7281b1fd8118b31cb9162c2fb5a4cc6f01d62ed6",
                 "shasum": ""
             },
             "require": {
-                "ext-mbstring": "*"
+                "ext-mbstring": "*",
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "@stable"
             },
             "type": "library",
             "extra": {
@@ -53,7 +57,7 @@
                 "assertion",
                 "validation"
             ],
-            "time": "2014-12-18 19:12:40"
+            "time": "2015-08-21 16:50:17"
         },
         {
             "name": "doctrine/lexer",
@@ -476,16 +480,16 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/honeybee/trellis.git",
-                "reference": "ae7c98bbd16511e89199685da8add370fae706eb"
+                "reference": "0f61b59d7dfb9e309371a7fb74a0a4d22653786e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/honeybee/trellis/zipball/ae7c98bbd16511e89199685da8add370fae706eb",
-                "reference": "ae7c98bbd16511e89199685da8add370fae706eb",
+                "url": "https://api.github.com/repos/honeybee/trellis/zipball/0f61b59d7dfb9e309371a7fb74a0a4d22653786e",
+                "reference": "0f61b59d7dfb9e309371a7fb74a0a4d22653786e",
                 "shasum": ""
             },
             "require": {
-                "beberlei/assert": "2.3",
+                "beberlei/assert": "2.4",
                 "egulias/email-validator": "1.2.*",
                 "fzaninotto/faker": "1.5.*",
                 "mtdowling/jmespath.php": "2.2.*",
@@ -493,7 +497,7 @@
                 "ramsey/uuid": "2.8.*",
                 "symfony/console": "2.7.*",
                 "symfony/filesystem": "2.7.*",
-                "twig/twig": "1.20.*"
+                "twig/twig": "1.21.*"
             },
             "require-dev": {
                 "mockery/mockery": "0.9.*",
@@ -537,7 +541,7 @@
                 "entity",
                 "validation"
             ],
-            "time": "2015-08-25 11:15:01"
+            "time": "2015-08-27 10:28:38"
         },
         {
             "name": "league/flysystem",
@@ -997,16 +1001,16 @@
         },
         {
             "name": "rdlowrey/auryn",
-            "version": "v1.0.2",
+            "version": "1.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rdlowrey/auryn.git",
-                "reference": "70744560af9fea36f5c7f930b8cadc4586ff1944"
+                "reference": "f57eaf665a601dbe061c8b1426d84f58c003e6a8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rdlowrey/auryn/zipball/70744560af9fea36f5c7f930b8cadc4586ff1944",
-                "reference": "70744560af9fea36f5c7f930b8cadc4586ff1944",
+                "url": "https://api.github.com/repos/rdlowrey/auryn/zipball/f57eaf665a601dbe061c8b1426d84f58c003e6a8",
+                "reference": "f57eaf665a601dbe061c8b1426d84f58c003e6a8",
                 "shasum": ""
             },
             "require": {
@@ -1054,7 +1058,7 @@
                 "dic",
                 "ioc"
             ],
-            "time": "2015-08-12 02:24:20"
+            "time": "2015-08-26 16:31:48"
         },
         {
             "name": "shrink0r/workflux",
@@ -1378,25 +1382,29 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.20.0",
+            "version": "v1.21.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "1ea4e5f81c6d005fe84d0b38e1c4f1955eb86844"
+                "reference": "ca8d3aa90b6a01c82e07909fe815d6b443e75a23"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/1ea4e5f81c6d005fe84d0b38e1c4f1955eb86844",
-                "reference": "1ea4e5f81c6d005fe84d0b38e1c4f1955eb86844",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/ca8d3aa90b6a01c82e07909fe815d6b443e75a23",
+                "reference": "ca8d3aa90b6a01c82e07909fe815d6b443e75a23",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.2.7"
             },
+            "require-dev": {
+                "symfony/debug": "~2.7",
+                "symfony/phpunit-bridge": "~2.7"
+            },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.20-dev"
+                    "dev-master": "1.21-dev"
                 }
             },
             "autoload": {
@@ -1431,7 +1439,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2015-08-12 15:56:39"
+            "time": "2015-08-26 08:58:31"
         },
         {
             "name": "zendframework/zend-permissions-acl",

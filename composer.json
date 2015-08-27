@@ -54,11 +54,11 @@
         "mtdowling/jmespath.php": "2.2.*",
         "psr/log": "1.0.0",
         "ql/uri-template": "1.0.*",
-        "rdlowrey/auryn": "1.0.*",
+        "rdlowrey/auryn": "1.1.*",
         "swiftmailer/swiftmailer": "5.4.*",
         "symfony/expression-language": "2.7.*",
         "symfony/filesystem": "2.7.*",
-        "twig/twig": "1.20.*",
+        "twig/twig": "1.21.*",
         "zendframework/zend-permissions-acl": "2.5.*"
     },
 
