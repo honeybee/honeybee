@@ -584,7 +584,8 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
                 foreach ($validation_result->getViolatedRules() as $violated_rule) {
                     foreach ($violated_rule->getIncidents() as $incident) {
                         $errors[] = PHP_EOL . $validation_result->getSUbject()->getName() .
-                            ' - ' .$violated_rule->getName() . ' > ' . $incident->getName();
+                            ' - ' . $violated_rule->getName() .
+                            ' > ' . $incident->getName() . ': ' . print_r($incident->getParameters(), true);
                     }
                 }
             }
