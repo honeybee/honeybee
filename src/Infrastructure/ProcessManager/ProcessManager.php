@@ -45,11 +45,11 @@ class ProcessManager implements ProcessManagerInterface
         }
     }
 
-    public function beginProcess(ProcessStateInterface $process_state)
+    public function beginProcess(ProcessStateInterface $process_state, EventInterface $event = null)
     {
         $process = $this->process_map->getByName($process_state->getProcessName());
         if (!$process->hasStarted($process_state)) {
-            $this->runProcess($process_state);
+            $this->runProcess($process_state, $event);
         } else {
             throw new RuntimeError('Process has allready started and may not not be started again.');
         }
