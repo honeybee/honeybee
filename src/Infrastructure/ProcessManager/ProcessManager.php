@@ -2,14 +2,15 @@
 
 namespace Honeybee\Infrastructure\ProcessManager;
 
+use DateTime;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Command\Bus\CommandBusInterface;
+use Honeybee\Infrastructure\Command\CommandList;
 use Honeybee\Infrastructure\Config\ConfigInterface;
 use Honeybee\Infrastructure\DataAccess\DataAccessServiceInterface;
 use Honeybee\Infrastructure\Event\EventInterface;
 use Psr\Log\LoggerInterface;
 use Shrink0r\Monatic\Maybe;
-use DateTime;
 
 class ProcessManager implements ProcessManagerInterface
 {
@@ -68,10 +69,12 @@ class ProcessManager implements ProcessManagerInterface
     {
         $process = $this->process_map->getByName($process_state->getProcessName());
         if (!$process->hasFinished($process_state)) {
-            $command = $process->proceed($process_state, $event);
+            $commands = $process->proceed($process_state, $event);
             $this->persistProcessState($process_state);
-            if ($command) {
-                 $this->command_bus->post($command);
+            if ($commands instanceof CommandList && !$commands->isEmpty()) {
+                foreach ($commands as $command) {
+                    $this->command_bus->post($command);
+                }
             }
         } else {
             throw new RuntimeError('The given process has allready completed and may not be run again.');

@@ -4,6 +4,7 @@ namespace Honeybee\Infrastructure\ProcessManager;
 
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Command\CommandInterface;
+use Honeybee\Infrastructure\Command\CommandList;
 use Honeybee\Infrastructure\Event\EventInterface;
 use Workflux\StateMachine\StateMachine;
 
@@ -36,17 +37,36 @@ class Process implements ProcessInterface
             $state = $this->state_machine->execute($process_state);
         }
 
-        $command = $execution_context->getParameter('command', false);
-        if ($command && !$command instanceof CommandInterface) {
-            throw new RuntimeError('Given command does not implement required ' . CommandInterface::CLASS);
-        }
-        if (!$command && !$state->isFinal()) {
-            throw new RuntimeError('Unable to determine the next command within the process.');
+        $commands = new CommandList();
+        if ($execution_context->hasParameter('command')) {
+            $command = $execution_context->getParameter('command');
+            if ($command instanceof CommandInterface) {
+                throw new RuntimeError(
+                    sprintf(
+                        'Unexpected return type for execution-context var "command". Type of "%s" expected.',
+                        CommandInterface::CLASS
+                    )
+                );
+            }
+            $commands->push($command);
+            $execution_context->removeParameter('command');
         }
 
-        $execution_context->removeParameter('command');
+        if ($execution_context->hasParameter('commands')) {
+            $commands_list = $execution_context->getParameter('commands');
+            if ($commands_list instanceof CommandList) {
+                throw new RuntimeError(
+                    sprintf(
+                        'Unexpected return type for execution-context var "commands". Type of "%s" expected.',
+                        CommandList::CLASS
+                    )
+                );
+            }
+            $commands->append($command_list);
+            $execution_context->removeParameter('commands');
+        }
 
-        return $command;
+        return $command_list;
     }
 
     public function hasFinished(ProcessStateInterface $process_state)
