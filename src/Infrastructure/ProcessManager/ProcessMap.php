@@ -4,6 +4,7 @@ namespace Honeybee\Infrastructure\ProcessManager;
 
 use Trellis\Common\Collection\TypedMap;
 use Trellis\Common\Collection\UniqueCollectionInterface;
+use Honeybee\Common\Error\RuntimeError;
 
 class ProcessMap extends TypedMap implements UniqueCollectionInterface
 {
