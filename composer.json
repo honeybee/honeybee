@@ -80,12 +80,6 @@
         "cboden/Ratchet": "0.3.* to handle messages over websocket",
         "react/zmq": "0.3.* to handle messages async with zeromq",
         "videlalvaro/php-amqplib": "2.5.* as AMQP implementing message queue in async setups with e.g. rabbitmq"
-    },
-
-    "extra": {
-        "branch-alias": {
-            "master@dev": "1.0-dev"
-        }
     }
 }
 
