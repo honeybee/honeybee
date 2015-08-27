@@ -7,20 +7,17 @@ use Guzzle\Http\Client;
 
 class GuzzleConnector extends Connector
 {
-    const DEFAULT_TRANSPORT = 'http';
-
-    const DEFAULT_HOST = 'localhost';
-
-    const DEFAULT_PORT = 5984;
-
     public function connect()
     {
-        $base_uri = sprintf(
-            '%s://%s:%s',
-            $this->config->get('transport', self::DEFAULT_TRANSPORT),
-            $this->config->get('host', self::DEFAULT_HOST),
-            $this->config->get('port', self::DEFAULT_HOST)
-        );
+        $base_uri = null;
+        if ($this->config->has('transport') && $this->config->has('host') && $this->config->has('port')) {
+           $base_uri = sprintf(
+                '%s://%s:%s',
+                $this->config->get('transport'),
+                $this->config->get('host'),
+                $this->config->get('port')
+            );
+        }
 
         $request_options = [];
         if ($this->config->has('auth')) {
