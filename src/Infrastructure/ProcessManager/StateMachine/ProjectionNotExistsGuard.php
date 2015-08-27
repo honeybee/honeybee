@@ -10,9 +10,4 @@ class ProjectionNotExistsGuard extends ProjectionExistsGuard
     {
         return !parent::accept($process_state);
     }
-
-    public function __toString()
-    {
-        return static::CLASS;
-    }
 }
