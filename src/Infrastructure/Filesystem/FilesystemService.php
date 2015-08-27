@@ -26,7 +26,7 @@ class FilesystemService implements FilesystemServiceInterface
 
     /**
      * @param MountManager $mount_manager
-     * @param array $schemes map of scheme and connector name (e.g. "files" => "Assets.Local")
+     * @param array $schemes map of scheme and connector name (e.g. "files" => "Files.Local")
      */
     public function __construct(MountManager $mount_manager, array $schemes)
     {
