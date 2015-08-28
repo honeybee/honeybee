@@ -18,4 +18,5 @@ interface ActivityInterface
     public function getSending();
     public function getSettings();
     public function getUrl();
+    public function getScopeKey();
 }

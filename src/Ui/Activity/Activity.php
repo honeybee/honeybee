@@ -18,6 +18,7 @@ class Activity extends Configurable implements ActivityInterface
     protected $sending = [];
     protected $settings = [];
     protected $url;
+    protected $scope = '';
 
     public function getName()
     {
@@ -67,6 +68,11 @@ class Activity extends Configurable implements ActivityInterface
     public function getUrl()
     {
         return $this->url;
+    }
+
+    public function getScopeKey()
+    {
+        return $this->scope;
     }
 
     protected function setSettings(SettingsInterface $settings)

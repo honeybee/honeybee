@@ -71,8 +71,16 @@ abstract class ActivityRenderer extends Renderer
         $params = parent::getTemplateParameters();
 
         $activity = $this->getPayload('subject');
-
         $params['activity'] = $activity->toArray();
+
+        $activity_name = $activity->getName();
+        if (empty($params['activity']['label'])) {
+            $params['activity']['label'] = sprintf('%s.label', $activity_name);
+        }
+        if (empty($params['activity']['description'])) {
+            $params['activity']['description'] = sprintf('%s.description', $activity_name);
+        }
+
         $params['link'] = $this->getLinkFor($activity);
 
         if ($activity->getVerb() === 'write' && $this->hasPayload('resource')) {
@@ -103,10 +111,18 @@ abstract class ActivityRenderer extends Renderer
 
     protected function getDefaultTranslationDomain()
     {
-        return sprintf(
-            '%s.%s',
-            parent::getDefaultTranslationDomain(),
-            self::STATIC_TRANSLATION_PATH
-        );
+        $scope_key = $this->getPayload('subject')->getScopeKey() ;
+
+        if (empty($scope_key)) {
+            $translation_domain = sprintf(
+                '%s.%s',
+                parent::getDefaultTranslationDomain(),
+                self::STATIC_TRANSLATION_PATH
+            );
+        } else {
+            $translation_domain = $scope_key;
+        }
+
+        return $translation_domain;
     }
 }

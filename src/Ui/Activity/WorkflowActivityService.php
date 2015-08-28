@@ -65,9 +65,9 @@ class WorkflowActivityService extends Object
         return new Activity(
             [
                 'name' => $action_name,
-                'label' => sprintf('%s.%s.label', $aggregate_root_type->getPrefix(), $action_name),
+                'label' => sprintf('%s.label', $action_name),
                 'type' => Activity::TYPE_WORKFLOW,
-                'description' => sprintf('%s.%s.description', $aggregate_root_type->getPrefix(), $action_name),
+                'description' => sprintf('%s.description', $action_name),
                 'verb' => 'read',
                 'rels' => [ $action_name ],
                 'settings' => new Settings([ 'form_id' => 'randomId-' . rand() ]),
@@ -95,9 +95,9 @@ class WorkflowActivityService extends Object
         return new Activity(
             [
                 'name' => $workflow_event,
-                'label' => sprintf('%s.%s.label', $aggregate_root_type->getPrefix(), $workflow_event),
+                'label' => sprintf('%s.label', $workflow_event),
                 'type' => Activity::TYPE_WORKFLOW,
-                'description' => sprintf('%s.%s.description', $aggregate_root_type->getPrefix(), $workflow_event),
+                'description' => sprintf('%s.description', $workflow_event),
                 'verb' => $request_method,
                 'rels' => [ $workflow_event ],
                 'settings' => new Settings([ 'form_id' => 'randomId-' . rand() ]),
