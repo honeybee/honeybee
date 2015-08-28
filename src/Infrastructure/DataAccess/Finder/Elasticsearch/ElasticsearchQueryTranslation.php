@@ -215,16 +215,16 @@ class ElasticsearchQueryTranslation implements QueryTranslationInterface
         return array_merge(
             (array)$this->config->get('dynamic_mappings', []),
             [
-                "identifier",
-                "referenced_identifier",
-                "uuid",
-                "language",
-                "version",
-                "revision",
-                "short_id",
-                "created_at",
-                "modified_at",
-                "workflow_state"
+                'identifier' => 'string',
+                'referenced_identifier' => 'string',
+                'uuid' => 'string',
+                'language' => 'string',
+                'version' => 'long',
+                'revision' => 'long',
+                'short_id' => 'long',
+                'created_at' => 'date',
+                'modified_at' => 'date',
+                'workflow_state' => 'string'
             ]
         );
     }
