@@ -67,7 +67,8 @@ abstract class EmbeddedEntity extends Entity
                 foreach ($validation_result->getViolatedRules() as $violated_rule) {
                     foreach ($violated_rule->getIncidents() as $incident) {
                         $errors[] = PHP_EOL . $validation_result->getSUbject()->getName() .
-                            ' - ' .$violated_rule->getName() . ' > ' . $incident->getName();
+                            ' - ' .$violated_rule->getName() .
+                            ' > ' . $incident->getName() . ', params: ' . var_export($incident->getParameters(), true);
                     }
                 }
             }
