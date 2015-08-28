@@ -403,6 +403,21 @@ class FilesystemService implements FilesystemServiceInterface
     }
 
     /**
+     * Returns the default mime type known for the given extension.
+     *
+     * @see Honeybee\Common\Util\FileToolkit::guessExtensionByMimeType
+     *
+     * @param string $extension
+     * @param string $fallback_mime_type mime_type to return when no match was found
+     *
+     * @return string mime-type for given extension or the provided fallback
+     */
+    public function guessMimeTypeByExtension($extension, $fallback_mime_type = '')
+    {
+        return FileToolkit::guessMimeTypeByExtension($extension, $fallback_mime_type);
+    }
+
+    /**
      * Returns a file extension guessed for the given local file.
      *
      * @see Honeybee\Common\Util\FileToolkit::guessExtension

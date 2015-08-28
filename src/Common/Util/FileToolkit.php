@@ -50,6 +50,13 @@ class FileToolkit
         return $fallback_extension;
     }
 
+    public static function guessMimeTypeByExtension($extension, $fallback_mime_type = '')
+    {
+        $mime_type = array_search($extension, static::$mimetype_default_extensions);
+
+        return $mime_type ?: $fallback_mime_type;
+    }
+
     public static function slugify($filename)
     {
         $name = '';
