@@ -65,16 +65,16 @@ abstract class Fixture extends Object implements FixtureInterface
         $this->command_bus->post($command);
     }
 
-    protected function importFixtureFile($filename)
+    protected function importFixtureFromFile($filename)
     {
         if (!is_readable($filename)) {
-            throw new RuntimeError(sprintf('Fixture file is not readable at "%s"', $filename));
+            throw new RuntimeError(sprintf('Fixture data is not readable at "%s"', $filename));
         }
 
         $json = file_get_contents($filename);
         $data = json_decode($json, true);
         if (empty($data) || !is_array($data)) {
-            throw new RuntimeError(sprintf('Fixture file data is invalid at "%s"', $filename));
+            throw new RuntimeError(sprintf('Fixture data is invalid at "%s"', $filename));
         }
 
         foreach ($data as $type_name => $fixtures) {
@@ -84,7 +84,7 @@ abstract class Fixture extends Object implements FixtureInterface
         }
     }
 
-    protected function copyFixtureFilesToTempLocation($folder)
+    protected function copyFilesToTempLocation($folder)
     {
         if (empty($folder) || !is_readable($folder)) {
             return;
