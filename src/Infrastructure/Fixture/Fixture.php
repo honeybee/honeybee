@@ -84,7 +84,7 @@ abstract class Fixture extends Object implements FixtureInterface
         }
     }
 
-    protected function copyFixtureAssetsToTempLocation($folder)
+    protected function copyFixtureFilesToTempLocation($folder)
     {
         if (empty($folder) || !is_readable($folder)) {
             return;
@@ -98,13 +98,13 @@ abstract class Fixture extends Object implements FixtureInterface
             $this->filesystem_service->getTempScheme()
         );
 
-        // copy all fixture assets into the application's temp file storage
+        // copy all fixture files into the application's temp file storage
         foreach ($files as $file) {
             $source_file_stream = fopen($file->getRealpath(), 'rb');
             if (false === $source_file_stream) {
                 throw new RuntimeError(
                     sprintf(
-                        'Could not open read stream to fixture asset file: %s',
+                        'Could not open read stream to fixture file: %s',
                         $file->getRealpath()
                     )
                 );
@@ -118,7 +118,7 @@ abstract class Fixture extends Object implements FixtureInterface
             if (!$success) {
                 throw new RuntimeError(
                     sprintf(
-                        'Writing fixture asset file "%s" to temp storage "%s" failed.',
+                        'Writing fixture file "%s" to temp storage "%s" failed.',
                         $file->getRealpath(),
                         $target_tempfile_uri
                     )
