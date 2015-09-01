@@ -4,6 +4,7 @@ namespace Honeybee\Ui\Renderer;
 
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Ui\Navigation\NavigationInterface;
+use Honeybee\Infrastructure\Config\ArrayConfig;
 use Honeybee\Infrastructure\Config\Settings;
 use Honeybee\Common\Util\StringToolkit;
 
@@ -41,10 +42,17 @@ abstract class NavigationRenderer extends Renderer
 
     protected function prepareNavigationData(NavigationInterface $navigation)
     {
+        $view_scope = $this->getOption('view_scope');
+
         $navigation_data = [
             'name' => $navigation->getName(),
             'groups' => []
         ];
+
+        $activity_renderer_config = [];
+        if ($this->getOption('propagate_view_scope', false)) {
+            $activity_renderer_config['view_scope'] = $view_scope;
+        }
 
         foreach ($navigation->getNavigationGroups() as $navigation_group) {
             $group_data = [
@@ -55,11 +63,22 @@ abstract class NavigationRenderer extends Renderer
             foreach ($navigation_group->getNavigationItems() as $navigation_item) {
                 $activity = $navigation_item->getActivity();
 
+                $activity_renderer_settings = $this->view_config_service->getRendererConfig(
+                    $view_scope,
+                    $this->output_format,
+                    $activity->getName(),
+                    []
+                )->toArray();
+
+                $renderer_config = new ArrayConfig(
+                    array_replace_recursive($activity_renderer_config, $activity_renderer_settings)
+                );
+
                 $group_data['items'][] = [
                     'rendered_activity' => $this->renderer_service->renderSubject(
                         $activity,
                         $this->output_format,
-                        $this->config
+                        $renderer_config
                     )
                 ];
             }
@@ -72,9 +91,6 @@ abstract class NavigationRenderer extends Renderer
 
     protected function getDefaultTranslationDomain()
     {
-        // @todo Include also the navigation name (cause it is possible
-        // to have multiple navigations) into the translation domain
-
         return sprintf(
             '%s.%s',
             parent::getDefaultTranslationDomain(),

@@ -13,7 +13,7 @@ use QL\UriTemplate\UriTemplate;
 
 abstract class ActivityRenderer extends Renderer
 {
-    const STATIC_TRANSLATION_PATH = "activities";
+    const STATIC_TRANSLATION_PATH = "activity";
 
     protected function validate()
     {
@@ -109,19 +109,38 @@ abstract class ActivityRenderer extends Renderer
         return $this->genUrl($activity, $parameters, $options);
     }
 
+    /**
+     * Default translation domain for activities follows this fallback sequence:
+     *  - 'view_scope' option
+     *  - activity scope
+     *  - application translation domain
+     *
+     * To override with a custom value pass to the renderer the 'translation_domain' option
+     */
     protected function getDefaultTranslationDomain()
     {
-        $scope_key = $this->getPayload('subject')->getScopeKey() ;
+        $view_scope = $this->getOption('view_scope');
+        $activity_scope = $this->getPayload('subject')->getScopeKey();
 
-        if (empty($scope_key)) {
-            $translation_domain = sprintf(
-                '%s.%s',
-                parent::getDefaultTranslationDomain(),
-                self::STATIC_TRANSLATION_PATH
-            );
+        if (empty($view_scope)) {
+            if (empty($activity_scope)) {
+                $translation_domain_prefix = parent::getDefaultTranslationDomain();
+            } else {
+                // convention on scope value: the first 3 parts = vendor.package.resource_type
+                $activity_scope_parts = explode('.', $activity_scope);
+                $translation_domain_prefix = implode('.', array_slice($activity_scope_parts, 0, 3));
+            }
         } else {
-            $translation_domain = $scope_key;
+            // convention on view_scope value: the first 3 parts = vendor.package.resource_type
+            $view_scope_parts = explode('.', $view_scope);
+            $translation_domain_prefix = implode('.', array_slice($view_scope_parts, 0, 3));
         }
+
+        $translation_domain = sprintf(
+            '%s.%s',
+            $translation_domain_prefix,
+            self::STATIC_TRANSLATION_PATH
+        );
 
         return $translation_domain;
     }
