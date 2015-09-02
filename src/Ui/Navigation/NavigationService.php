@@ -68,7 +68,9 @@ class NavigationService extends Object implements NavigationServiceInterface
                 }
             }
 
-            $navigation_group = new NavigationGroup($group_name, $navigation_item_list);
+            $group_settings = $navigation_group_config->get('settings')->toArray();
+
+            $navigation_group = new NavigationGroup($group_name, $navigation_item_list, $group_settings);
             $navigation_group_map->setItem($group_name, $navigation_group);
         }
 

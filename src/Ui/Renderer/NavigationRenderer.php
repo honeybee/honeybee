@@ -49,16 +49,18 @@ abstract class NavigationRenderer extends Renderer
             'groups' => []
         ];
 
-        $activity_renderer_config = [];
-        if ($this->getOption('propagate_view_scope', false)) {
-            $activity_renderer_config['view_scope'] = $view_scope;
-        }
-
         foreach ($navigation->getNavigationGroups() as $navigation_group) {
             $group_data = [
                 'name' => $navigation_group->getName(),
-                'items' => []
+                'items' => [],
+                'settings' => $navigation_group->getSettings()
             ];
+
+            $activity_renderer_config = [];
+
+            if (array_key_exists('translation_domain', $group_data['settings'])) {
+                $activity_renderer_config['translation_domain'] = $group_data['settings']['translation_domain'];
+            }
 
             foreach ($navigation_group->getNavigationItems() as $navigation_item) {
                 $activity = $navigation_item->getActivity();
