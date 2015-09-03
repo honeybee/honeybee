@@ -80,6 +80,10 @@ abstract class ElasticsearchFinder extends Finder
     {
         $fallback_index = $this->connector->getConfig()->get('index');
 
+        if (is_array($fallback_index)) {
+            $fallback_index = array_values($fallback_index);
+        }
+
         return $this->config->get('index', $fallback_index);
     }
 

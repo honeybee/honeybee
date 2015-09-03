@@ -32,8 +32,21 @@ class MixedProjectionFinder extends ElasticSearchFinder
      */
     public function getByIdentifier($identifier)
     {
+        $index = $this->getIndex();
+
+        if ((is_array($index) && count($index) > 1) ||
+            (is_string($index) && strpos($index, ',') !== false)
+        ) {
+            throw new RuntimeError(
+                sprintf(
+                    'Elasticsearch single index APIs such as the Document APIs do not support multiple indices: %s',
+                    var_export($index, true)
+                )
+            );
+        }
+
         $data = [
-            'index' => $this->getIndex(),
+            'index' => $index,
             'type' => '_all',
             'id' => $identifier
         ];
@@ -41,7 +54,13 @@ class MixedProjectionFinder extends ElasticSearchFinder
         $query = array_merge($data, $this->getParameters('get'));
 
         if ($this->config->get('log_get_query', false) === true) {
-            $this->logger->debug('['.__METHOD__.'] get query = ' . json_encode($query, JSON_PRETTY_PRINT));
+            $this->logger->debug(
+                sprintf(
+                    '[%s] get query = %s',
+                    __METHOD__,
+                    json_encode($query, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
+                )
+            );
         }
 
         $raw_result = $this->connector->getConnection()->get($query);
@@ -58,8 +77,21 @@ class MixedProjectionFinder extends ElasticSearchFinder
      */
     public function getByIdentifiers(array $identifiers)
     {
+        $index = $this->getIndex();
+
+        if ((is_array($index) && count($index) > 1) ||
+            (is_string($index) && strpos($index, ',') !== false)
+        ) {
+            throw new RuntimeError(
+                sprintf(
+                    'Elasticsearch single index APIs such as the Document APIs do not support multiple indices: %s',
+                    var_export($index, true)
+                )
+            );
+        }
+
         $data = [
-            'index' => $this->getIndex(),
+            'index' => $index,
             'type' => '_all',
             'body' => [
                 'ids' => $identifiers
@@ -69,7 +101,13 @@ class MixedProjectionFinder extends ElasticSearchFinder
         $query = array_merge($data, $this->getParameters('mget'));
 
         if ($this->config->get('log_mget_query', false) === true) {
-            $this->logger->debug('['.__METHOD__.'] mget query = ' . json_encode($query, JSON_PRETTY_PRINT));
+            $this->logger->debug(
+                sprintf(
+                    '[%s] mget query = %s',
+                    __METHOD__,
+                    json_encode($query, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
+                )
+            );
         }
 
         $raw_result = $this->connector->getConnection()->mget($query);
@@ -90,7 +128,13 @@ class MixedProjectionFinder extends ElasticSearchFinder
         $query['type'] = $this->getType();
 
         if ($this->config->get('log_search_query', false) === true) {
-            $this->logger->debug('['.__METHOD__.'] Search query = ' . json_encode($query, JSON_PRETTY_PRINT));
+            $this->logger->debug(
+                sprintf(
+                    '[%s] Search query = %s',
+                    __METHOD__,
+                    json_encode($query, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
+                )
+            );
         }
 
         $raw_result = $this->connector->getConnection()->search($query);
@@ -105,7 +149,13 @@ class MixedProjectionFinder extends ElasticSearchFinder
     protected function mapResultData(array $result_data)
     {
         if ($this->config->get('log_result_data', false) === true) {
-            $this->logger->debug('['.__METHOD__.'] Raw result = ' . json_encode($result_data, JSON_PRETTY_PRINT));
+            $this->logger->debug(
+                sprintf(
+                    '[%s] Raw result = %s',
+                    __METHOD__,
+                    json_encode($result_data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)
+                )
+            );
         }
 
         $results = [];
@@ -123,6 +173,14 @@ class MixedProjectionFinder extends ElasticSearchFinder
             // Handling for multi-get documents
             $docs = $result_data['docs'];
             foreach ($docs as $doc) {
+                if (isset($doc['error'])) {
+                    throw new RuntimeError(
+                        sprintf(
+                            'Error while handling mget result document: %s',
+                            var_export($doc['error'], true)
+                        )
+                    );
+                }
                 if (true === $doc['found']) {
                     $results[] = $this->createResult($doc);
                 }
