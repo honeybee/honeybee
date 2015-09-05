@@ -26,7 +26,7 @@ abstract class AggregateRootCommandStateNode extends State
 
         $this->aggregate_root_type_map = $aggregate_root_type_map;
 
-        $this->needs('aggregate_root_type')->needs('command')->needs('payload_path');
+        $this->needs('aggregate_root_type')->needs('command');
     }
 
     public function onEntry(StatefulSubjectInterface $process_state)
@@ -54,6 +54,8 @@ abstract class AggregateRootCommandStateNode extends State
 
     protected function getCommandPayload(ProcessStateInterface $process_state)
     {
+        $this->needs('payload_path');
+
         $command_class = $this->getCommandImplementor();
         $payload = $process_state->getPayload();
         $payload_path = $this->options->get('payload_path');
