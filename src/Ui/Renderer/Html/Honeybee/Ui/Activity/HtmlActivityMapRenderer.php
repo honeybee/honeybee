@@ -67,10 +67,16 @@ class HtmlActivityMapRenderer extends ActivityMapRenderer
             $default_activity_name = $activity_map->getKeys()[0];
         }
 
+        $default_activity = $activity_map->getItem($default_activity_name);
+        $default_activity_label = $default_activity->getLabel();
+        if (empty($default_activity_label)) {
+            $default_activity_label = sprintf('%s.label', $default_activity->getName());
+        }
+
         $dropdown_label = $this->_(
             $this->getOption(
                 'dropdown_label',
-                $activity_map->getItem($default_activity_name)->getLabel()
+                $default_activity_label
             )
         );
 
