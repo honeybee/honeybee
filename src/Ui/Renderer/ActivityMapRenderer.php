@@ -9,7 +9,7 @@ use Honeybee\Ui\Activity\ActivityMap;
 
 class ActivityMapRenderer extends Renderer
 {
-    const STATIC_TRANSLATION_PATH = "activities";
+    const STATIC_TRANSLATION_PATH = "activity";
 
     protected function validate()
     {
@@ -43,12 +43,31 @@ class ActivityMapRenderer extends Renderer
         return $this->getTemplateRenderer()->render($this->getTemplateIdentifier(), $this->getTemplateParameters());
     }
 
+    /**
+     * Default translation domain for activity maps follows this fallback sequence:
+     *  - 'view_scope' option
+     *  - application translation domain
+     *
+     * To override with a custom value pass to the renderer the 'translation_domain' option
+     */
     protected function getDefaultTranslationDomain()
     {
-        return sprintf(
+        $view_scope = $this->getOption('view_scope');
+
+        if (empty($view_scope)) {
+            $translation_domain_prefix = parent::getDefaultTranslationDomain();
+        } else {
+            // convention on view_scope value: the first 3 parts = vendor.package.resource_type
+            $view_scope_parts = explode('.', $view_scope);
+            $translation_domain_prefix = implode('.', array_slice($view_scope_parts, 0, 3));
+        }
+
+        $translation_domain = sprintf(
             '%s.%s',
-            parent::getDefaultTranslationDomain(),
+            $translation_domain_prefix,
             self::STATIC_TRANSLATION_PATH
         );
+
+        return $translation_domain;
     }
 }
