@@ -20,10 +20,7 @@ use Psr\Log\LoggerInterface;
 
 abstract class AggregateRootCommandHandler extends CommandHandler
 {
-    /**
-     * The channel on the EventBusInterface, that all AggregateRoot events are distributed over.
-     */
-    const EVENT_BUS_CHANNEL = 'honeybee.events.domain';
+    const EVENT_BUS_CHANNEL_PREFIX = 'honeybee.events.';
 
     protected $aggregate_root_type;
 
@@ -136,8 +133,8 @@ abstract class AggregateRootCommandHandler extends CommandHandler
         return $this->data_access_service->getUnitOfWork($uow_key);
     }
 
-    protected function getEventChannelName()
+    protected function getEventChannelName($type = 'domain')
     {
-        return self::EVENT_BUS_CHANNEL;
+        return self::EVENT_BUS_CHANNEL_PREFIX . $type;
     }
 }

@@ -88,7 +88,7 @@ class DataAccessService implements DataAccessServiceInterface
 
     public function getProjectionFinderByType(ProjectionTypeInterface $projection_type, $projection_name = 'standard')
     {
-        return $this->getDbalComponentByProjection($projection_type, $projection_name, 'reader');
+        return $this->getDbalComponentByProjection($projection_type, $projection_name, 'finder');
     }
 
     public function getQueryServiceMap()
@@ -147,29 +147,22 @@ class DataAccessService implements DataAccessServiceInterface
         $projection_name,
         $component
     ) {
-        $default_component_name = sprintf(
+        $component_key = sprintf(
             '%s::projection.%s::view_store::%s',
             $projection_type->getPrefix(),
             $projection_name,
             $component
         );
-        $custom_component_option = $projection_type->getPrefix() . '.' . $component;
 
         switch ($component) {
             case 'finder':
-                return $this->data_access_service->getFinder(
-                    $this->config->get($custom_component_option, $default_component_name)
-                );
+                return $this->getFinder($component_key);
                 break;
             case 'reader':
-                return $this->data_access_service->getStorageReader(
-                    $this->config->get($custom_component_option, $default_component_name)
-                );
+                return $this->getStorageReader($component_key);
                 break;
             case 'writer':
-                return $this->data_access_service->getStorageWriter(
-                    $this->config->get($custom_component_option, $default_component_name)
-                );
+                return $this->getStorageWriter($component_key);
                 break;
         }
 

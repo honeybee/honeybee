@@ -2,6 +2,7 @@
 
 namespace Honeybee\Infrastructure\ProcessManager\StateMachine;
 
+use Honeybee\Infrastructure\Event\NoOpSignal;
 use Honeybee\Infrastructure\ProcessManager\ProcessStateInterface;
 use Honeybee\Model\Aggregate\AggregateRootTypeMap;
 use Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\AddEmbeddedEntityCommand;
@@ -11,47 +12,35 @@ use Workflux\StatefulSubjectInterface;
 
 class ModifyAggregateRootStateNode extends AggregateRootCommandStateNode
 {
-    public function __construct(
-        $name,
-        $type = self::TYPE_ACTIVE,
-        array $options = [],
-        AggregateRootTypeMap $aggregate_root_type_map
-    ) {
-        parent::__construct($name, $type, $options, $aggregate_root_type_map);
-
-        $this->needs('projection_key');
-    }
-
-    public function onEntry(StatefulSubjectInterface $process_state)
-    {
-        parent::onEntry($process_state);
-
-        $this->requiresVariable($this->options->get('projection_key'), $process_state);
-    }
-
     public function onExit(StatefulSubjectInterface $process_state)
     {
         parent::onExit($process_state);
 
         $export_key = null;
-        $projection_key = $this->options->get('projection_key');
         $execution_context = $process_state->getExecutionContext();
-
+        $incoming_event = $execution_context->getParameter('incoming_event');
+        if ($incoming_event instanceof NoOpSignal) {
+            $command_data = $incoming_event->getCommandData();
+            $aggregate_root_identifier = $command_data['aggregate_root_identifier'];
+        } else {
+            $aggregate_root_identifier = $incoming_event->getAggregateRootIdentifier();
+        }
         if ($this->options->has('export_as_reference')) {
-            $projection = $this->getProjection($process_state);
-
             $export_as_reference = $this->options->get('export_as_reference');
             $embed_type = $export_as_reference->get('reference_embed_type');
             $export_key = $export_as_reference->get('export_to');
 
             $reference_data = [
-                '@type' => $embed_type,
-                'referenced_identifier' => $projection->getIdentifier()
+                [
+                    '@type' => $embed_type,
+                    'referenced_identifier' => $aggregate_root_identifier
+                ]
             ];
 
             $execution_context->setParameter($export_key, $reference_data);
         }
 
+        $projection_key = $this->options->get('projection_key');
         if ($projection_key !== $export_key) {
             $execution_context->removeParameter($projection_key);
         }
@@ -59,6 +48,8 @@ class ModifyAggregateRootStateNode extends AggregateRootCommandStateNode
 
     protected function createCommand(ProcessStateInterface $process_state)
     {
+        $this->needs('projection_key');
+
         $command_class = $this->getCommandImplementor($process_state);
         $aggregate_root_type = $this->getAggregateRootType();
         $projection = $this->getProjection($process_state);
@@ -73,22 +64,27 @@ class ModifyAggregateRootStateNode extends AggregateRootCommandStateNode
                     'process_name' => $process_state->getProcessName(),
                     'process_uuid' => $process_state->getUuid()
                 ],
-                'embedded_entity_commands' => array_merge(
-                    $this->buildReferenceCommands($process_state),
-                    $this->buildEmbedCommands($process_state)
-                )
+                'embedded_entity_commands' => $this->buildEmbedCommandList($process_state)
             ]
         );
     }
 
-    protected function buildReferenceCommands(ProcessStateInterface $process_state)
+    protected function buildEmbedCommandList(ProcessStateInterface $process_state)
     {
-        $payload = $process_state->getPayload();
-        $projection = $this->getProjection($process_state);
+        $command_payload = $this->getCommandPayload($process_state);
 
+        return array_merge(
+            $this->buildReferenceCommands($process_state, $process_state->getPayload()),
+            $this->buildEmbedCommands($process_state, $command_payload)
+        );
+    }
+
+    protected function buildReferenceCommands(ProcessStateInterface $process_state, array $payload)
+    {
+        $projection = $this->getProjection($process_state);
         $reference_commands = [];
         foreach ((array)$this->options->get('link_relations', []) as $reference_attribute_name => $payload_key) {
-            $relation_payload = isset($payload[$payload_key]) ? $payload[$payload_key] : null;
+            $relation_payload = isset($payload[$payload_key]) ? $payload[$payload_key][0] : null;
             if (!$relation_payload) {
                 continue;
             }
@@ -130,7 +126,7 @@ class ModifyAggregateRootStateNode extends AggregateRootCommandStateNode
         return $reference_commands;
     }
 
-    protected function buildEmbedCommands(ProcessStateInterface $process_state)
+    protected function buildEmbedCommands(ProcessStateInterface $process_state, array $payload)
     {
         $aggregate_root_type = $this->getAggregateRootType();
         $projection = $this->getProjection($process_state);
@@ -141,7 +137,6 @@ class ModifyAggregateRootStateNode extends AggregateRootCommandStateNode
             }
         );
 
-        $payload = $this->getCommandPayload($process_state);
         $embed_commands = [];
         foreach ($embed_attributes as $embed_attribute_name => $embed_attribute) {
             if (isset($payload[$embed_attribute_name])) {

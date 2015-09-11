@@ -13,13 +13,13 @@ use Honeybee\Infrastructure\DataAccess\Storage\StorageReaderIterator;
 
 class EventStreamReader extends CouchDbStorage implements StorageReaderInterface
 {
-    const STARTKEY_FILTER = '["%s",1]';
+    const STARTKEY_FILTER = '["%s", {}]';
 
-    const ENDKEY_FILTER = '["%s",{}]';
+    const ENDKEY_FILTER = '["%s", 1]';
 
-    protected $next_key = null;
+    protected $next_identifier = null;
 
-    protected $keys_list;
+    protected $identifier_list;
 
     public function read($identifier, SettingsInterface $settings = null)
     {
@@ -29,6 +29,7 @@ class EventStreamReader extends CouchDbStorage implements StorageReaderInterface
                 'endkey' => sprintf(self::ENDKEY_FILTER, $identifier),
                 'include_docs' => 'true',
                 'reduce' => 'false',
+                'descending' => 'true',
                 'limit' => 100 // @todo use snapshot size config setting as soon as available
             ];
             if (!$this->config->has('design_doc')) {
@@ -51,22 +52,22 @@ class EventStreamReader extends CouchDbStorage implements StorageReaderInterface
             }
         }
 
-        return $result_data['total_rows'] > 0 ? $this->createEventStream($identifier, $result_data['rows']) : null;
+        return $result_data['total_rows'] > 0 ? $this->createEventStream($identifier, array_reverse($result_data['rows'])) : null;
     }
 
     public function readAll(SettingsInterface $settings)
     {
         if ($settings->get('first', true)) {
-            $this->keys_list = $this->fetchEventStreamKeys();
+            $this->identifier_list = $this->fetchEventStreamIdentifiers();
         }
-        $this->next_key = key($this->keys_list);
-        next($this->keys_list);
+        $this->next_identifier = key($this->identifier_list);
+        next($this->identifier_list);
 
-        if (!$this->next_key) {
+        if (!$this->next_identifier) {
             return [];
         }
 
-        return [ $this->read($this->next_key, $settings) ];
+        return [ $this->read($this->next_identifier, $settings) ];
     }
 
     public function getIterator()
@@ -91,7 +92,7 @@ class EventStreamReader extends CouchDbStorage implements StorageReaderInterface
         return new EventStream($data);
     }
 
-    protected function fetchEventStreamKeys()
+    protected function fetchEventStreamIdentifiers()
     {
         $event_stream_keys = [];
         $view_name = sprintf('/_design/default_views/_view/%s', $this->config->get('view_name'));
@@ -110,7 +111,6 @@ class EventStreamReader extends CouchDbStorage implements StorageReaderInterface
         )->send()->json();
 
         foreach ($result_data['rows'] as $row) {
-
             $event_stream_keys[$row['key'][0]] = $row['value'];
         }
 

@@ -22,8 +22,10 @@ class CreateAggregateRootStateNode extends AggregateRootCommandStateNode
             $event = $execution_context->getParameter('incoming_event');
             $export_key = $export_as_reference->get('export_to');
             $reference_data = [
-                '@type' => $export_as_reference->get('reference_embed_type'),
-                'referenced_identifier' => $event->getAggregateRootIdentifier()
+                [
+                    '@type' => $export_as_reference->get('reference_embed_type'),
+                    'referenced_identifier' => $event->getAggregateRootIdentifier()
+                ]
             ];
             $execution_context->setParameter($export_key, $reference_data);
         }
@@ -38,25 +40,31 @@ class CreateAggregateRootStateNode extends AggregateRootCommandStateNode
             [
                 'aggregate_root_type' => get_class($aggregate_root_type),
                 'values' => $this->getCommandPayload($process_state),
+                'embedded_entity_commands' => $this->buildEmbedCommandList($process_state),
                 'meta_data' => [
                     'process_name' => $process_state->getProcessName(),
                     'process_uuid' => $process_state->getUuid()
-                ],
-                'embedded_entity_commands' => array_merge(
-                    $this->buildReferenceCommands($process_state),
-                    $this->buildEmbedCommands($process_state)
-                )
+                ]
             ]
         );
     }
 
-    protected function buildReferenceCommands(ProcessStateInterface $process_state)
+    protected function buildEmbedCommandList(ProcessStateInterface $process_state)
     {
-        $payload = $process_state->getPayload();
+        $command_payload = $this->getCommandPayload($process_state);
+
+        return array_merge(
+            $this->buildReferenceCommands($process_state, $process_state->getPayload()),
+            $this->buildEmbedCommands($process_state, $command_payload)
+        );
+    }
+
+    protected function buildReferenceCommands(ProcessStateInterface $process_state, array $payload)
+    {
         $reference_commands = [];
         foreach ((array)$this->options->get('link_relations', []) as $reference_attribute_name => $payload_key) {
             if (isset($payload[$payload_key])) {
-                $add_relation_command_payload = $payload[$payload_key];
+                $add_relation_command_payload = $payload[$payload_key][0];
                 $reference_embed_type = $add_relation_command_payload['@type'];
                 unset($add_relation_command_payload['@type']);
 
@@ -74,7 +82,7 @@ class CreateAggregateRootStateNode extends AggregateRootCommandStateNode
         return $reference_commands;
     }
 
-    protected function buildEmbedCommands(ProcessStateInterface $process_state)
+    protected function buildEmbedCommands(ProcessStateInterface $process_state, array $payload)
     {
         $aggregate_root_type = $this->getAggregateRootType();
         $embed_attributes = $aggregate_root_type->getAttributes()->filter(
@@ -83,7 +91,6 @@ class CreateAggregateRootStateNode extends AggregateRootCommandStateNode
                     && !$attribute instanceof EntityReferenceListAttribute;
             }
         );
-        $payload = $this->getCommandPayload($process_state);
         $embed_commands = [];
         foreach ($embed_attributes as $embed_attribute_name => $embed_attribute) {
             if (isset($payload[$embed_attribute_name])) {

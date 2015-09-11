@@ -223,7 +223,6 @@ class ProjectionUpdater extends EventHandler
         $embedded_projection_type = $this->getEmbeddedEntityTypeFor($projection, $event);
         $embedded_projection = $embedded_projection_type->createEntity($event->getData(), $projection);
         $projection_list = $projection->getValue($embedded_projection_attr->getName());
-
         if ($embedded_projection_type instanceof ReferencedEntityTypeInterface) {
             $embedded_projection = $this->mirrorForeignValues($embedded_projection);
         }
@@ -327,17 +326,14 @@ class ProjectionUpdater extends EventHandler
             $mirrored_value = $referenced_projection->getValue($mirrored_attribute_name);
             $mirrored_values[$mirrored_attribute_name] = $mirrored_value;
         }
-
         return $projection->getType()->createEntity(
             array_merge($projection->toNative(), $mirrored_values),
             $projection->getParent()
         );
     }
 
-    protected function mirrorLocalValues(
-        ProjectionInterface $projection,
-        AggregateRootEventInterface $event
-    ) {
+    protected function mirrorLocalValues(ProjectionInterface $projection, AggregateRootEventInterface $event)
+    {
         $affected_attributes = array_keys($event->getData());
         foreach ($event->getEmbeddedEntityEvents() as $embedded_event) {
             $affected_attributes[] = $embedded_event->getParentAttributeName();
