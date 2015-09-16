@@ -58,6 +58,14 @@ class ActivityService extends Object implements ActivityServiceInterface
         return $this->getContainer($scope)->getActivityByName($name);
     }
 
+    public function hasContainer($scope)
+    {
+        $this->ensureIsInitialize();
+        $scope_key = $this->resolveScopeKey($scope);
+
+        return $this->getContainers()->hasKey($scope_key->getScopeKey());
+    }
+
     public function getContainer($scope)
     {
         $this->ensureIsInitialize();
