@@ -7,9 +7,9 @@ use Trellis\Runtime\Attribute\GeoPoint\GeoPointAttribute;
 
 class HtmlGeoPointAttributeRenderer extends HtmlAttributeRenderer
 {
-    const DEFAULT_VALUE_STEP = 0.001;
+    const DEFAULT_VALUE_STEP = 'any';
 
-    protected $removed_parameters = [ 'pattern' ];
+    protected $removed_parameters = [ 'pattern', 'placeholder' ];
 
     protected function getDefaultTemplateIdentifier()
     {
@@ -29,6 +29,9 @@ class HtmlGeoPointAttributeRenderer extends HtmlAttributeRenderer
 
         // verify the parameters are valid with floats
         foreach ([ 'value_step' ] as $key) {
+            if ($key === 'value_step' && $params[$key] === 'any') {
+                continue;
+            }
             if (is_numeric($params[$key])) {
                 $params[$key] = floatval($params[$key]);
             } else {

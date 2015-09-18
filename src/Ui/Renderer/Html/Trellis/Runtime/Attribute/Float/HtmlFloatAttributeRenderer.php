@@ -32,6 +32,9 @@ class HtmlFloatAttributeRenderer extends HtmlAttributeRenderer
 
         // verify the parameters are valid with floats
         foreach ([ 'min_value', 'max_value', 'value_step' ] as $key) {
+            if ($key === 'value_step' && $params[$key] === 'any') {
+                continue;
+            }
             if (is_numeric($params[$key])) {
                 $params[$key] = floatval($params[$key]);
             } else {
