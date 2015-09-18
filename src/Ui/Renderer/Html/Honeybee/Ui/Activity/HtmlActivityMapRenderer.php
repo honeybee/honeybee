@@ -152,6 +152,11 @@ class HtmlActivityMapRenderer extends ActivityMapRenderer
         $params['more_html_attributes'] = $this->getOption('more_html_attributes');
         $params['more_activities'] = $this->getOption('more_activities', $rendered_activities);
 
+        $params['toggle_disabled'] = $this->getOption('toggle_disabled', false);
+        if (!count($params['more_activities'])) {
+            $params['toggle_disabled'] = true;
+        }
+
         return $params;
     }
 }
