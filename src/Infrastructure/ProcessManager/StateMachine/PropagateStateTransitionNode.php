@@ -11,8 +11,6 @@ use Workflux\StatefulSubjectInterface;
 
 class PropagateStateTransitionNode extends State
 {
-    protected $command_map;
-
     protected $transition_map;
 
     protected $aggregate_root_type_map;
@@ -24,7 +22,6 @@ class PropagateStateTransitionNode extends State
         AggregateRootTypeMap $aggregate_root_type_map
     ) {
         parent::__construct($name, $type, $options);
-        $this->command_map = $this->options->get('command_map');
         $this->transition_map = $this->options->get('transition_map');
         $this->aggregate_root_type_map = $aggregate_root_type_map;
     }
@@ -52,7 +49,7 @@ class PropagateStateTransitionNode extends State
             // @todo handling for transition based on type as well as state
             $transitions = $this->transition_map->get($type_prefix);
             if (isset($transitions[$origin_state])) {
-                $command_class = $this->command_map->get($type_prefix);
+                $command_class = $transitions['command'];
                 $aggregate_root_type = $this->aggregate_root_type_map->getItem($type_prefix);
                 $commands[] = new $command_class(
                     [
