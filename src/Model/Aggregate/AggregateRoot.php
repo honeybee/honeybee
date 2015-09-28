@@ -223,9 +223,10 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
                     throw new RuntimeError(
                         sprintf(
                             'The first event given within a history to reconstitue from must be by the type of "%s".' .
-                            ' Instead "%s" was given.',
+                            ' Instead "%s" was given for AR %s.',
                             AggregateRootCreatedEvent::CLASS,
-                            get_class($past_event)
+                            get_class($past_event),
+                            $past_event->getAggregateRootIdentifier()
                         )
                     );
                 }
