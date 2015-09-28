@@ -1069,12 +1069,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/shrink0r/workflux.git",
-                "reference": "5d4e163bd4097198e468904fa20fa18d58ae25d4"
+                "reference": "56cb4ed524981f084ac7b547b1914d5ab379ae2d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/shrink0r/workflux/zipball/5d4e163bd4097198e468904fa20fa18d58ae25d4",
-                "reference": "5d4e163bd4097198e468904fa20fa18d58ae25d4",
+                "url": "https://api.github.com/repos/shrink0r/workflux/zipball/56cb4ed524981f084ac7b547b1914d5ab379ae2d",
+                "reference": "56cb4ed524981f084ac7b547b1914d5ab379ae2d",
                 "shasum": ""
             },
             "require": {
@@ -1115,7 +1115,7 @@
                 "workflow",
                 "workflux"
             ],
-            "time": "2015-09-28 09:38:57"
+            "time": "2015-09-28 09:48:53"
         },
         {
             "name": "swiftmailer/swiftmailer",
