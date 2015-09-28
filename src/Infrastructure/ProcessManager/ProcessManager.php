@@ -45,6 +45,13 @@ class ProcessManager implements ProcessManagerInterface
         }
     }
 
+    public function hasCompleted(ProcessStateInterface $process_state)
+    {
+        $process = $this->process_map->getByName($process_state->getProcessName());
+
+        return $process->hasFinished($process_state);
+    }
+
     public function beginProcess(ProcessStateInterface $process_state, EventInterface $event = null)
     {
         $process = $this->process_map->getByName($process_state->getProcessName());
@@ -53,6 +60,8 @@ class ProcessManager implements ProcessManagerInterface
         } else {
             throw new RuntimeError('Process has allready started and may not not be started again.');
         }
+
+        return $process_state;
     }
 
     public function continueProcess(EventInterface $event)
@@ -63,6 +72,8 @@ class ProcessManager implements ProcessManagerInterface
         } else {
             throw new RuntimeError('Unable to find process for given event: ' . $event->getType());
         }
+
+        return $process_state;
     }
 
     protected function runProcess(ProcessStateInterface $process_state, EventInterface $event = null)
