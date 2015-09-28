@@ -75,7 +75,10 @@ class ProjectionExistsGuard extends ConfigurableGuard
         $jmes_path_runtime = new AstRuntime();
         $identifier = $jmes_path_runtime($identifier_path, $process_state->getPayload());
         if (!$identifier) {
-            throw new RuntimeError('Unable to resolve required "identifier" from payload-path:' . $identifier_path);
+            throw new RuntimeError(
+                'Unable to resolve required "identifier" from payload-path:' .
+                $identifier_path . ' within ' . $process_state->getExecutionContext()->getStateMachineName()
+            );
         }
 
         return $identifier;
