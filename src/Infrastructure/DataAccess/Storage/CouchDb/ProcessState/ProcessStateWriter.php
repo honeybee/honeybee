@@ -28,22 +28,25 @@ class ProcessStateWriter extends CouchDbStorage implements StorageWriterInterfac
 
         try {
             // @todo use head method to get current revision?
-            $cur_data = $this->buildRequestFor($identifier, self::METHOD_GET)
-                ->send()->json();
+            $cur_data = $this->buildRequestFor($identifier, self::METHOD_GET)->send()->json();
             $data['revision'] = $cur_data['_rev'];
         } catch (ClientErrorResponseException $error) {
-            error_log(__METHOD__ . ' - ' . $error->getMessage());
+            if ($error->getRequest()->getResponse()->getStatusCode() !== 404) {
+                throw $error;
+            }
         }
 
         try {
-            $response_data = $this->buildRequestFor($identifier, self::METHOD_PUT, $data)
-                ->send()->json();
+            $err_reason = '';
+            $response_data = $this->buildRequestFor($identifier, self::METHOD_PUT, $data)->send()->json();
         } catch (ClientErrorResponseException $error) {
-            error_log(__METHOD__ . ' - ' . $error->getMessage());
+            if ($error->getRequest()->getResponse()->getStatusCode() !== 404) {
+                $err_reason = $error->getMessage();
+            };
         }
 
         if (!isset($response_data['ok']) || !isset($response_data['rev'])) {
-            throw new RuntimeError("Failed to write process_state.");
+            throw new RuntimeError("Failed to write process_state. Reason: " . $err_reason);
         }
     }
 
@@ -51,8 +54,7 @@ class ProcessStateWriter extends CouchDbStorage implements StorageWriterInterfac
     {
         try {
             // @todo use head method to get current revision?
-            $cur_data = $this->buildRequestFor($identifier, self::METHOD_GET)
-                ->send()->json();
+            $cur_data = $this->buildRequestFor($identifier, self::METHOD_GET)->send()->json();
         } catch (ClientErrorResponseException $error) {
             error_log(__METHOD__ . ' - ' . $error->getMessage());
         }
