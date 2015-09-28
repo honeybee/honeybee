@@ -53,26 +53,25 @@ class ModifyAggregateRootStateNode extends AggregateRootCommandStateNode
         $command_class = $this->getCommandImplementor($process_state);
         $aggregate_root_type = $this->getAggregateRootType();
         $projection = $this->getProjection($process_state);
+        $command_payload = $this->getCommandPayload($process_state);
 
         return new $command_class(
             [
                 'aggregate_root_type' => get_class($aggregate_root_type),
                 'aggregate_root_identifier' => $projection->getIdentifier(),
                 'known_revision' => $projection->getRevision(),
-                'values' => $this->getCommandPayload($process_state),
+                'values' => $command_payload,
                 'meta_data' => [
                     'process_name' => $process_state->getProcessName(),
                     'process_uuid' => $process_state->getUuid()
                 ],
-                'embedded_entity_commands' => $this->buildEmbedCommandList($process_state)
+                'embedded_entity_commands' => $this->buildEmbedCommandList($process_state, $command_payload)
             ]
         );
     }
 
-    protected function buildEmbedCommandList(ProcessStateInterface $process_state)
+    protected function buildEmbedCommandList(ProcessStateInterface $process_state, $command_payload = [])
     {
-        $command_payload = $this->getCommandPayload($process_state);
-
         return array_merge(
             $this->buildReferenceCommands($process_state, $process_state->getPayload()),
             $this->buildEmbedCommands($process_state, $command_payload)

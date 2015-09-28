@@ -35,12 +35,13 @@ class CreateAggregateRootStateNode extends AggregateRootCommandStateNode
     {
         $command_class = $this->getCommandImplementor($process_state);
         $aggregate_root_type = $this->getAggregateRootType();
+        $command_payload = $this->getCommandPayload($process_state);
 
         return new $command_class(
             [
                 'aggregate_root_type' => get_class($aggregate_root_type),
-                'values' => $this->getCommandPayload($process_state),
-                'embedded_entity_commands' => $this->buildEmbedCommandList($process_state),
+                'values' => $command_payload,
+                'embedded_entity_commands' => $this->buildEmbedCommandList($process_state, $command_payload),
                 'meta_data' => [
                     'process_name' => $process_state->getProcessName(),
                     'process_uuid' => $process_state->getUuid()
@@ -49,10 +50,8 @@ class CreateAggregateRootStateNode extends AggregateRootCommandStateNode
         );
     }
 
-    protected function buildEmbedCommandList(ProcessStateInterface $process_state)
+    protected function buildEmbedCommandList(ProcessStateInterface $process_state, $command_payload = [])
     {
-        $command_payload = $this->getCommandPayload($process_state);
-
         return array_merge(
             $this->buildReferenceCommands($process_state, $process_state->getPayload()),
             $this->buildEmbedCommands($process_state, $command_payload)
