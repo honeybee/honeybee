@@ -8,6 +8,7 @@ use Honeybee\Infrastructure\Event\EventHandler;
 use Honeybee\Infrastructure\Event\EventInterface;
 use Honeybee\Infrastructure\ProcessManager\ProcessCompletedEvent;
 use Psr\Log\LoggerInterface;
+use Shrink0r\Monatic\Maybe;
 
 class ProcessListener extends EventHandler
 {
@@ -27,12 +28,18 @@ class ProcessListener extends EventHandler
 
     public function handleEvent(EventInterface $event)
     {
-        $process_state = $this->process_manager->continueProcess($event);
-        if ($this->process_manager->hasCompleted($process_state)) {
-            $this->event_bus->distribute(
-                'honeybee.events.infrastructure',
-                new ProcessCompletedEvent($process_state)
-            );
+        $meta_data = Maybe::unit($event->getMetaData());
+        $process_uuid = $meta_data->process_uuid->get();
+        $process_name = $meta_data->process_name->get();
+
+        if ($process_uuid && $process_name) {
+            $process_state = $this->process_manager->continueProcess($event);
+            if ($this->process_manager->hasCompleted($process_state)) {
+                $this->event_bus->distribute(
+                    'honeybee.events.infrastructure',
+                    new ProcessCompletedEvent($process_state)
+                );
+            }
         }
     }
 }
