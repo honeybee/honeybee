@@ -288,9 +288,13 @@ class FilesystemService implements FilesystemServiceInterface
      *
      * @return string unique relative file path
      */
-    public static function generatePath(AttributeInterface $attribute, $additional_prefix = '', $extension = '')
-    {
-        $uuid = UuidGenerator::uuid4();
+    public static function generatePath(
+        AttributeInterface $attribute,
+        $additional_prefix = '',
+        $extension = '',
+        $uuid = null
+    ) {
+        $uuid = $uuid ? UuidGenerator::fromString($uuid) : UuidGenerator::uuid4();
         $uuid_string = $uuid->toString();
         $uuid_parts = $uuid->getClockSeqLow(); // 8 bit int => 256 folders
 
