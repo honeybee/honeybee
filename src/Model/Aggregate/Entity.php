@@ -49,8 +49,12 @@ abstract class Entity extends BaseEntity
             if ($embedded_entity_list->getKey($embedded_entity) !== $embedded_entity_event->getPosition()) {
                 $embedded_entity_list->moveTo($embedded_entity_event->getPosition(), $embedded_entity);
             }
-        } else {
-            throw new RuntimeError('Invalid aggregate-event type given.');
+        }
+
+        if (!$embedded_entity) {
+            throw new RuntimeError(
+                'Unable to resolve embedded-entity for event: ' . json_encode($embedded_entity_event->toArray())
+            );
         }
 
         return $embedded_entity->applyEvent($embedded_entity_event, $auto_commit);
