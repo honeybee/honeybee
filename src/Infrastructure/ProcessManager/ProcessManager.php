@@ -90,6 +90,9 @@ class ProcessManager implements ProcessManagerInterface
         } else {
             throw new RuntimeError('The given process has allready completed and may not be run again.');
         }
+        if ($this->hasCompleted(($process_state))) {
+            $this->purgeProcessState($process_state);
+        }
     }
 
     protected function loadProcessStateBy(EventInterface $event)
@@ -121,5 +124,12 @@ class ProcessManager implements ProcessManagerInterface
         $process_state_writer = $this->config->get('storage_writer');
 
         return $this->data_access_service->writeTo($process_state_writer, $process_state);
+    }
+
+    protected function purgeProcessState(ProcessStateInterface $process_state)
+    {
+        $process_state_writer = $this->config->get('storage_writer');
+
+        return $this->data_access_service->deleteFrom($process_state_writer, $process_state->getUuid());
     }
 }
