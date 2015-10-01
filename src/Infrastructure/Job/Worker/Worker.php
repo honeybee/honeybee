@@ -40,14 +40,13 @@ class Worker implements WorkerInterface
 
         $exchange_name = $this->config->get('exchange');
         $queue_name = $this->config->get('queue');
-
         $channel = $this->connector->getConnection()->channel();
 
         $channel->basic_qos(null, 1, null);
         $channel->exchange_declare($exchange_name, 'direct', false, true, false);
         $channel->queue_declare($queue_name, false, true, false, false);
 
-        $bindings = $this->config->get('bindings', []);
+        $bindings = (array)$this->config->get('bindings', []);
         if (empty($bindings)) {
             $channel->queue_bind($queue_name, $exchange_name);
         } else {
@@ -62,6 +61,7 @@ class Worker implements WorkerInterface
         $channel->basic_consume($queue_name, false, true, false, false, false, $message_callback);
 
         while ($this->running && count($channel->callbacks)) {
+echo "Waiting for next message ..." . PHP_EOL;
             $channel->wait();
         }
         $this->running = false;
@@ -82,6 +82,7 @@ class Worker implements WorkerInterface
 
     protected function onMessageReceived($job_message)
     {
+echo "Message received! Processing ..." . PHP_EOL;
         $delivery_info = $job_message->delivery_info;
         $channel = $delivery_info['channel'];
         $delivery_tag = $delivery_info['delivery_tag'];
@@ -91,6 +92,7 @@ class Worker implements WorkerInterface
         } catch (Exception $runtime_error) {
             $execution_state = JobInterface::STATE_FATAL;
             // @todo log error
+echo "Error: " . $runtime_error->getMessage() . PHP_EOL;
         }
 
         switch ($execution_state) {
