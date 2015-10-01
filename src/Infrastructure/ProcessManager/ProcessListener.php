@@ -9,6 +9,7 @@ use Honeybee\Infrastructure\Event\EventInterface;
 use Honeybee\Infrastructure\ProcessManager\ProcessCompletedEvent;
 use Psr\Log\LoggerInterface;
 use Shrink0r\Monatic\Maybe;
+use Rhumsaa\Uuid\Uuid;
 
 class ProcessListener extends EventHandler
 {
@@ -37,7 +38,12 @@ class ProcessListener extends EventHandler
             if ($this->process_manager->hasCompleted($process_state)) {
                 $this->event_bus->distribute(
                     'honeybee.events.infrastructure',
-                    new ProcessCompletedEvent($process_state)
+                    new ProcessCompletedEvent(
+                        [
+                            'uuid' => Uuid::uuid4()->toString(),
+                            'process_state' => $process_state
+                        ]
+                    )
                 );
             }
         }
