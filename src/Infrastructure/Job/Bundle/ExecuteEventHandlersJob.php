@@ -39,7 +39,6 @@ class ExecuteEventHandlersJob extends Job
     protected function setEvent($event_state)
     {
         if (is_array($event_state)) {
-
             if (!isset($event_state[self::OBJECT_TYPE])) {
                 throw new RuntimeError("Unable to create event without type information.");
             }
@@ -51,7 +50,6 @@ class ExecuteEventHandlersJob extends Job
 
             $this->event = new $event_implementor($event_state);
         } elseif ($event_state instanceof EventInterface) {
-
             $this->event = $event_state;
         } else {
             throw new RuntimeError(

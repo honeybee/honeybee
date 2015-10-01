@@ -30,13 +30,13 @@ class JobQueueTransport extends CommandTransport
         $this->job_service->dispatch(
             new ExecuteCommandJob(
                 $this->command_bus,
-                array('command' => $command)
+                [ 'command' => $command ]
             ),
             new Settings(
-                array(
+                [
                     'route_key' => $command->getType(),
                     'exchange' => $this->exchange
-                )
+                ]
             )
         );
     }
