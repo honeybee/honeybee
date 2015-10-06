@@ -33,8 +33,8 @@ class AwsS3Connector extends Connector
         ]);
 
         //$result = $this->client->listBuckets();var_dump($result->toArray());die; // poor man's debugging
-
-        $this->adapter = new AwsS3Adapter($this->client, $this->config->get('bucket'));
+        $adapter_options = (array)$this->config->get('adapter_options', []);
+        $this->adapter = new AwsS3Adapter($this->client, $this->config->get('bucket'), null, $adapter_options);
 
         $this->filesystem = new Filesystem($this->adapter);
 
