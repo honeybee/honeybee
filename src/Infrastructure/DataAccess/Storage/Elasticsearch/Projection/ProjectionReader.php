@@ -74,8 +74,8 @@ class ProjectionReader extends ElasticsearchStorage implements StorageReaderInte
                     'id' => $identifier
                 ]
             );
-
         } catch (Missing404Exception $missing_error) {
+var_dump("MISS: " . $this->getIndex() . ', type: ' . $this->getType() . ', id: ' . $identifier . ', msg: ' . $missing_error->getMessage());
             return null;
         }
 
