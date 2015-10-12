@@ -11,6 +11,45 @@ use RecursiveIteratorIterator;
 class ArrayToolkit
 {
     /**
+     * Tells if a given array is associative or not.
+     *
+     * @return bool
+     */
+    public static function isAssoc($array)
+    {
+        if (!is_array($array) || empty($array)) {
+            return false;
+        }
+
+        return array_keys($array) !== range(0, count($array) - 1);
+    }
+
+    /**
+     * Converts a given multi-dimensional assoc array into a one-dimensional assoc array.
+     * Nested keys are represented as an array path e.g. [ 'foo' => [ 'bar' => 42 ] ] becomes [ 'foo.bar' => 42 ]
+     *
+     * @param array $array
+     * @param string $parent_prefix
+     *
+     * @return array
+     */
+    public static function flatten(array $array, $parent_prefix = '')
+    {
+        $flattened = [];
+
+        foreach ($array as $key => $value) {
+            $key = $parent_prefix . $key;
+            if (is_array($value) && self::isAssoc($value)) {
+                $flattened = array_merge(self::flatten($value, $key . '.'), $flattened);
+            } else {
+                $flattened[$key] = $value;
+            }
+        }
+
+        return $flattened;
+    }
+
+    /**
      * Merges the given second array over the first one similar to the PHP internal
      * array_merge_recursive method, but does not change scalar values into arrays
      * when duplicate keys occur.
@@ -33,24 +72,6 @@ class ArrayToolkit
         }
 
         return $merged;
-    }
-
-    /**
-     * @return bool true if argument is an associative array. False otherwise.
-     */
-    public static function isAssoc(array $array)
-    {
-        if (!is_array($array) || empty($array)) {
-            return false;
-        }
-
-        foreach (array_keys($array) as $key => $value) {
-            if ($key !== $value) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     /**
