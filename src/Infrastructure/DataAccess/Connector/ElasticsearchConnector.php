@@ -2,7 +2,7 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Connector;
 
-use Elasticsearch\Client;
+use Elasticsearch\ClientBuilder;
 
 class ElasticsearchConnector extends Connector
 {
@@ -21,6 +21,8 @@ class ElasticsearchConnector extends Connector
             $this->config->get('port', self::DEFAULT_PORT)
         );
 
-        return new Client(array('hosts' => array($connection_dsn)));
+        $hosts = [ $connection_dsn ];
+
+        return ClientBuilder::create()->setHosts($hosts)->build();
     }
 }
