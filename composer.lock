@@ -1100,12 +1100,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/shrink0r/workflux.git",
-                "reference": "56cb4ed524981f084ac7b547b1914d5ab379ae2d"
+                "reference": "404a155e55f08583e9cc005eade5940c37e3ea70"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/shrink0r/workflux/zipball/56cb4ed524981f084ac7b547b1914d5ab379ae2d",
-                "reference": "56cb4ed524981f084ac7b547b1914d5ab379ae2d",
+                "url": "https://api.github.com/repos/shrink0r/workflux/zipball/404a155e55f08583e9cc005eade5940c37e3ea70",
+                "reference": "404a155e55f08583e9cc005eade5940c37e3ea70",
                 "shasum": ""
             },
             "require": {
@@ -1116,10 +1116,10 @@
             },
             "require-dev": {
                 "phine/sami-github": "^1.0.4",
-                "phpunit/phpunit": "~4.5.0",
-                "sami/sami": "^2.0.0",
+                "phpunit/phpunit": "5.0.*",
+                "sami/sami": "^3.0.0",
                 "satooshi/php-coveralls": "0.6.*",
-                "squizlabs/php_codesniffer": "2.2.*"
+                "squizlabs/php_codesniffer": "2.3.*"
             },
             "type": "library",
             "autoload": {
@@ -1146,7 +1146,7 @@
                 "workflow",
                 "workflux"
             ],
-            "time": "2015-09-28 09:48:53"
+            "time": "2015-10-12 20:21:59"
         },
         {
             "name": "swiftmailer/swiftmailer",
