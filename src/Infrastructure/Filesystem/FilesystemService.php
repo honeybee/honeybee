@@ -7,7 +7,7 @@ use Honeybee\Common\Util\FileToolkit;
 use Honeybee\Common\Util\StringToolkit;
 use Honeybee\EntityTypeInterface;
 use League\Flysystem\MountManager;
-use Rhumsaa\Uuid\Uuid as UuidGenerator;
+use Ramsey\Uuid\Uuid as UuidGenerator;
 use Trellis\Runtime\Attribute\AttributeInterface;
 
 /**

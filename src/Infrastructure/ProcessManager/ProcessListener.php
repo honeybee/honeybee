@@ -9,7 +9,7 @@ use Honeybee\Infrastructure\Event\EventInterface;
 use Honeybee\Infrastructure\ProcessManager\ProcessCompletedEvent;
 use Psr\Log\LoggerInterface;
 use Shrink0r\Monatic\Maybe;
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 
 class ProcessListener extends EventHandler
 {

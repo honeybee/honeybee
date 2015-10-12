@@ -4,7 +4,7 @@ namespace Honeybee\Infrastructure\Command;
 
 use Trellis\Common\Object;
 use Honeybee\Common\Util\StringToolkit;
-use Rhumsaa\Uuid\Uuid;
+use Ramsey\Uuid\Uuid;
 
 abstract class Command extends Object implements CommandInterface
 {

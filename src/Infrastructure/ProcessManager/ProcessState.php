@@ -3,7 +3,7 @@
 namespace Honeybee\Infrastructure\ProcessManager;
 
 use Honeybee\Common\Error\RuntimeError;
-use Rhumsaa\Uuid\Uuid as UuidGenerator;
+use Ramsey\Uuid\Uuid as UuidGenerator;
 use Trellis\Common\Object;
 use Workflux\ExecutionContext;
 use Workflux\StatefulSubjectInterface;
