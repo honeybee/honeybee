@@ -7,7 +7,7 @@ use Workflux\StateMachine\StateMachine;
 
 interface ProcessInterface
 {
-    public function getName($name);
+    public function getName();
 
     public function proceed(ProcessStateInterface $process_state, EventInterface $event = null);
 

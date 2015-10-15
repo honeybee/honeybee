@@ -27,6 +27,6 @@ class ProcessCompletedEvent extends Event
 
     public function getType()
     {
-        return 'honeybee.infrastructure.process_completed';
+        return $this->getProcessState()->getProcessname() . '.process_completed';
     }
 }

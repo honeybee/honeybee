@@ -105,7 +105,7 @@ class ProcessManager implements ProcessManagerInterface
 
         if ($process_uuid && $process_name) {
             $process_state = $this->data_access_service->readFrom($process_state_reader, $process_uuid);
-            if ($process_state->getProcessName() !== $process_name) {
+            if (!$process_state || $process_state->getProcessName() !== $process_name) {
                 throw new RuntimeError(
                     sprintf(
                         'Given process name "%s" coming from event meta-data does not match the loaded one : "%s"',

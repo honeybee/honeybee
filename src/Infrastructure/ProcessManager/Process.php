@@ -20,7 +20,7 @@ class Process implements ProcessInterface
         $this->state_machine = $state_machine;
     }
 
-    public function getName($name)
+    public function getName()
     {
         return $this->name;
     }
