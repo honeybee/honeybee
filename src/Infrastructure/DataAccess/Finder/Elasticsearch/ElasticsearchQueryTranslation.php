@@ -171,7 +171,7 @@ class ElasticsearchQueryTranslation implements QueryTranslationInterface
             $attribute_value = substr($attribute_value, 1);
         }
 
-        $terms = explode(',', $attribute_value);
+
         $attribute_path = $criteria->getAttributePath();
 
         $multi_field_mapped_attributes = (array)$this->config->get('multi_fields', []);
@@ -179,12 +179,15 @@ class ElasticsearchQueryTranslation implements QueryTranslationInterface
             $attribute_path = $attribute_path . '.filter';
         }
 
+        $attr_filter = [ 'term' => [ $attribute_path => $attribute_value ] ];
+        /*
+        $terms = explode(',', $attribute_value);
         if (count($terms) > 1) {
             $attr_filter = [ 'terms' => [ $attribute_path => $terms] ];
         } else {
             $attr_filter = [ 'term' => [ $attribute_path => $terms[0]] ];
         }
-
+        */
         return $attr_filter;
     }
 
