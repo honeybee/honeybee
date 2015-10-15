@@ -12,12 +12,19 @@ class JobQueueTransport extends CommandTransport
 {
     protected $exchange;
 
+    protected $queue_name;
+
     protected $job_service;
 
     protected $command_bus;
 
-    public function __construct($name, $exchange, JobServiceInterface $job_service, CommandBusInterface $command_bus)
-    {
+    public function __construct(
+        $name,
+        $exchange,
+        JobServiceInterface $job_service,
+        CommandBusInterface $command_bus,
+        $queue_name = null
+    ) {
         parent::__construct($name);
 
         $this->exchange = $exchange;
@@ -34,7 +41,7 @@ class JobQueueTransport extends CommandTransport
             ),
             new Settings(
                 [
-                    'route_key' => $command->getType(),
+                    'route_key' => $this->queue_name ?: $command->getType(),
                     'exchange' => $this->exchange
                 ]
             )

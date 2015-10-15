@@ -11,13 +11,16 @@ class JobQueueTransport extends EventTransport
 {
     protected $exchange;
 
+    protected $queue_name;
+
     protected $job_service;
 
-    public function __construct($name, $exchange, JobServiceInterface $job_service)
+    public function __construct($name, $exchange, JobServiceInterface $job_service, $queue_name = null)
     {
         parent::__construct($name);
 
         $this->exchange = $exchange;
+        $this->queue_name = $queue_name;
         $this->job_service = $job_service;
     }
 
@@ -34,7 +37,7 @@ class JobQueueTransport extends EventTransport
             $this->job_service->createJob($job_state),
             new Settings(
                 array(
-                    'route_key' => $event->getType(),
+                    'route_key' => $this->queue_name ?: $event->getType(),
                     'exchange' => $this->exchange
                 )
             )
