@@ -34,7 +34,7 @@ return [
                         ]
                     ]
                 ],
-                'sort' => [[ 'created_at' => [ 'order' => 'asc'] ]]
+                'sort' => [[ 'created_at' => [ 'order' => 'asc', 'unmapped_type' => 'date' ] ]]
             ],
             'size' => 100,
             'from' => 0
@@ -73,7 +73,7 @@ return [
                         ]
                     ]
                 ],
-                'sort' => [[ 'created_at' => [ 'order' => 'asc' ]]]
+                'sort' => [[ 'created_at' => [ 'order' => 'asc', 'unmapped_type' => 'date' ]]]
             ],
             'size' => 100,
             'from' => 0
@@ -113,7 +113,7 @@ return [
                         ]
                     ]
                 ],
-                'sort' => [[ 'created_at' => [ 'order' => 'asc' ]]]
+                'sort' => [[ 'created_at' => [ 'order' => 'asc', 'unmapped_type' => 'date' ]]]
             ],
             'size' => 100,
             'from' => 0
@@ -137,7 +137,7 @@ return [
                 'query' => [
                     'match' => [ '_all' => [ 'query' => 'foobar', 'type' => 'phrase_prefix' ] ]
                 ],
-                'sort' => [[ 'created_at' => [ 'order' => 'asc' ]]]
+                'sort' => [[ 'created_at' => [ 'order' => 'asc', 'unmapped_type' => 'date' ]]]
             ],
             'size' => 100,
             'from' => 0
@@ -198,7 +198,7 @@ return [
                         ]
                     ]
                 ],
-                'sort' => [[ 'created_at' => [ 'order' => 'asc' ]]]
+                'sort' => [[ 'created_at' => [ 'order' => 'asc', 'unmapped_type' => 'date' ]]]
             ],
             'size' => 100,
             'from' => 0
