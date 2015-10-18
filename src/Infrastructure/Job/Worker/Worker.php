@@ -61,7 +61,6 @@ class Worker implements WorkerInterface
         $channel->basic_consume($queue_name, false, true, false, false, false, $message_callback);
 
         while ($this->running && count($channel->callbacks)) {
-echo "Waiting for next message ..." . PHP_EOL;
             $channel->wait();
         }
         $this->running = false;
@@ -82,7 +81,6 @@ echo "Waiting for next message ..." . PHP_EOL;
 
     protected function onMessageReceived($job_message)
     {
-echo "Message received! Processing ..." . PHP_EOL;
         $delivery_info = $job_message->delivery_info;
         $channel = $delivery_info['channel'];
         $delivery_tag = $delivery_info['delivery_tag'];
@@ -91,8 +89,8 @@ echo "Message received! Processing ..." . PHP_EOL;
             $execution_state = $this->job_service->createJob(JsonToolkit::parse($job_message->body))->run();
         } catch (Exception $runtime_error) {
             $execution_state = JobInterface::STATE_FATAL;
-            // @todo log error
-echo "Error: " . $runtime_error->getMessage() . PHP_EOL;
+            // @todo appropiate error-logging
+            error_log(__METHOD__ . ' - ' . $runtime_error->getMessage());
         }
 
         switch ($execution_state) {
