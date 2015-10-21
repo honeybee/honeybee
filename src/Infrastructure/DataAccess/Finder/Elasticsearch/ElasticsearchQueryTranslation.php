@@ -10,6 +10,7 @@ use Honeybee\Infrastructure\DataAccess\Query\CriteriaInterface;
 use Honeybee\Infrastructure\DataAccess\Query\CriteriaList;
 use Honeybee\Infrastructure\DataAccess\Query\QueryInterface;
 use Honeybee\Infrastructure\DataAccess\Query\QueryTranslationInterface;
+use Honeybee\Infrastructure\DataAccess\Query\RangeCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\SearchCriteria;
 
 class ElasticsearchQueryTranslation implements QueryTranslationInterface
@@ -116,7 +117,16 @@ class ElasticsearchQueryTranslation implements QueryTranslationInterface
                 }
             } else if ($criteria instanceof AttributeCriteria) {
                 $elasticsearch_filters[] = $this->buildFilterFor($criteria);
-            } else {
+            } else if ($criteria instanceof RangeCriteria) {
+                $elasticsearch_filters[] = [
+                    'range' => [
+                        $attribute_path => [
+                            'gte' => $criteria->getLower(),
+                            'lte' => $criteria->getUpper()
+                        ]
+                    ]
+                ];
+            }else {
                 throw new RuntimeError(
                     sprintf('Invalid criteria type %s given to %s', get_class($criteria), staic::CLASS)
                 );
