@@ -1,19 +1,19 @@
 language: php
 php:
-- 5.5
-- 5.6
-- nightly
+  - 5.5
+  - 5.6
+  - nightly
 install:
-- curl -s http://getcomposer.org/installer | php -d date.timezone="Europe/Berlin"
-- ./composer.phar install
+  - curl -s http://getcomposer.org/installer | php -d date.timezone="Europe/Berlin"
+  - ./composer.phar install
 script:
-- ./vendor/bin/phpunit testing/unit
-- ./vendor/bin/phpcs --extensions=php --standard=psr2 src testing/unit
+  - ./vendor/bin/phpunit testing/unit
+  - ./vendor/bin/phpcs --extensions=php --standard=psr2 src testing/unit
 after_script: php vendor/bin/coveralls -v
 notifications:
   irc:
     channels:
-    - chat.freenode.net#honeeybee
+      - chat.freenode.net#honeeybee
     on_success: always
     on_failure: always
     use_notice: false
