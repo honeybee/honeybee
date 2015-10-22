@@ -2,6 +2,7 @@
 
 namespace Honeybee\Model\Task\CreateAggregateRoot;
 
+use Assert\Assertion;
 use Honeybee\Model\Command\AggregateRootTypeCommand;
 
 abstract class CreateAggregateRootCommand extends AggregateRootTypeCommand
@@ -17,6 +18,6 @@ abstract class CreateAggregateRootCommand extends AggregateRootTypeCommand
     {
         parent::guardRequiredState();
 
-        assert(is_array($this->values), '"values" is an array');
+        Assertion::isArray($this->values);
     }
 }

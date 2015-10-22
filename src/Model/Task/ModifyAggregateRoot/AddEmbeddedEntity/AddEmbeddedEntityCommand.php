@@ -2,6 +2,7 @@
 
 namespace Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity;
 
+use Assert\Assertion;
 use Honeybee\Model\Command\EmbeddedEntityTypeCommand;
 use Honeybee\Model\Event\EmbeddedEntityEventInterface;
 
@@ -45,7 +46,7 @@ class AddEmbeddedEntityCommand extends EmbeddedEntityTypeCommand
     {
         parent::guardRequiredState();
 
-        assert($this->values !== null, '"values" is set');
-        assert(is_int($this->position) && $this->position >= 0, 'position is correctly set');
+        Assertion::isArray($this->values);
+        Assertion::greaterOrEqualThan($this->position, 0);
     }
 }

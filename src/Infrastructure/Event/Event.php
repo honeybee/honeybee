@@ -2,8 +2,9 @@
 
 namespace Honeybee\Infrastructure\Event;
 
-use Trellis\Common\Object;
+use Assert\Assertion;
 use DateTimeImmutable;
+use Trellis\Common\Object;
 
 abstract class Event extends Object implements EventInterface
 {
@@ -53,9 +54,14 @@ abstract class Event extends Object implements EventInterface
 
     protected function guardRequiredState()
     {
-        assert($this->iso_date !== null, 'iso_date is set');
-        assert($this->uuid !== null, 'uuid is set:' . get_class($this));
-        assert(is_array($this->meta_data), 'meta-data is an array');
+        // @todo as soon as the Assertion::date is released, use the below comment, instead of the Assertion::true
+        // Assertion::date($this->iso_date, self::DATE_ISO8601_WITH_MICROS, static::CLASS . ' - Iso-Date is invalid.');
+        $iso_date = DateTimeImmutable::createFromFormat(self::DATE_ISO8601_WITH_MICROS, $this->iso_date);
+        $valid_date = (false !== $iso_date) && ($this->iso_date === $iso_date->format(self::DATE_ISO8601_WITH_MICROS));
+        Assertion::true($valid_date, 'given "iso_date": ' . print_r($valid_date, true));
+
+        Assertion::uuid($this->uuid);
+        Assertion::isArray($this->meta_data);
     }
 
     public function __toString()

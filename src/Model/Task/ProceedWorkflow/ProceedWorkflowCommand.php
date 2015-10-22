@@ -2,6 +2,7 @@
 
 namespace Honeybee\Model\Task\ProceedWorkflow;
 
+use Assert\Assertion;
 use Honeybee\Model\Command\AggregateRootCommand;
 use Honeybee\Model\Task\ProceedWorkflow\WorkflowProceededEvent;
 use Honeybee\Model\Event\AggregateRootEventInterface;
@@ -37,7 +38,7 @@ abstract class ProceedWorkflowCommand extends AggregateRootCommand
     {
         parent::guardRequiredState();
 
-        assert($this->event_name !== null, '"event_name" is set');
-        assert($this->current_state_name !== null, '"current_state_name" is set');
+        Assertion::string($this->event_name);
+        Assertion::string($this->current_state_name);
     }
 }

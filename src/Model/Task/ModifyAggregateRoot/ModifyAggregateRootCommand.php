@@ -2,6 +2,7 @@
 
 namespace Honeybee\Model\Task\ModifyAggregateRoot;
 
+use Assert\Assertion;
 use Honeybee\Model\Command\AggregateRootCommand;
 use Honeybee\Model\Event\AggregateRootEventInterface;
 use Honeybee\Model\Task\ProceedWorkflow\WorkflowProceededEvent;
@@ -53,6 +54,6 @@ abstract class ModifyAggregateRootCommand extends AggregateRootCommand
     {
         parent::guardRequiredState();
 
-        assert($this->values !== null, '"values" is set');
+        Assertion::isArray($this->values);
     }
 }

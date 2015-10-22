@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "3b4b05fea4acb6ec75674eb15cadeebf",
-    "content-hash": "52bbfb8117944da34c2c904e47684f5d",
+    "hash": "31400a36ae41a8a85771c2590b89334d",
+    "content-hash": "b711ec0a2e2a43e7528a73252fe853dc",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -940,16 +940,16 @@
         },
         {
             "name": "ramsey/uuid",
-            "version": "3.0.0",
+            "version": "3.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ramsey/uuid.git",
-                "reference": "0c0ac34e867219bb9936cc5b823f8a5af840d7eb"
+                "reference": "3c84b9e2965a5fa666dec8617a3a66a8179c6ca8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ramsey/uuid/zipball/0c0ac34e867219bb9936cc5b823f8a5af840d7eb",
-                "reference": "0c0ac34e867219bb9936cc5b823f8a5af840d7eb",
+                "url": "https://api.github.com/repos/ramsey/uuid/zipball/3c84b9e2965a5fa666dec8617a3a66a8179c6ca8",
+                "reference": "3c84b9e2965a5fa666dec8617a3a66a8179c6ca8",
                 "shasum": ""
             },
             "require": {
@@ -968,17 +968,13 @@
                 "squizlabs/php_codesniffer": "^2.3"
             },
             "suggest": {
-                "ircmaxell/random-lib": "Provides RandomLib to use with the RandomLibAdapter",
-                "moontoast/math": "Support for converting UUID to 128-bit integer (in string form).",
+                "ext-uuid": "Provides the PECL UUID extension for use with the PeclUuidTimeGenerator and PeclUuidRandomGenerator",
+                "ircmaxell/random-lib": "Provides RandomLib for use with the RandomLibAdapter",
+                "moontoast/math": "Provides support for converting UUID to 128-bit integer (in string form).",
                 "ramsey/uuid-console": "A console application for generating UUIDs with ramsey/uuid",
-                "ramsey/uuid-doctrine": "Allow the use of a UUID as Doctrine field type."
+                "ramsey/uuid-doctrine": "Allows the use of Ramsey\\Uuid\\Uuid as Doctrine field type."
             },
             "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "3.0.x-dev"
-                }
-            },
             "autoload": {
                 "psr-4": {
                     "Ramsey\\Uuid\\": "src/"
@@ -1010,7 +1006,7 @@
                 "identifier",
                 "uuid"
             ],
-            "time": "2015-09-28 16:27:51"
+            "time": "2015-10-21 16:27:25"
         },
         {
             "name": "rdlowrey/auryn",
@@ -1759,16 +1755,16 @@
         },
         {
             "name": "pdepend/pdepend",
-            "version": "2.2.1",
+            "version": "2.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/pdepend/pdepend.git",
-                "reference": "a77b6bede0afdd232155eb6f1de0b2826bcf2803"
+                "reference": "d3ae0d084d526cdc6c3f1b858fb7148de77b41c5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/pdepend/pdepend/zipball/a77b6bede0afdd232155eb6f1de0b2826bcf2803",
-                "reference": "a77b6bede0afdd232155eb6f1de0b2826bcf2803",
+                "url": "https://api.github.com/repos/pdepend/pdepend/zipball/d3ae0d084d526cdc6c3f1b858fb7148de77b41c5",
+                "reference": "d3ae0d084d526cdc6c3f1b858fb7148de77b41c5",
                 "shasum": ""
             },
             "require": {
@@ -1778,7 +1774,7 @@
                 "symfony/filesystem": "^2.3.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^4.0.0",
+                "phpunit/phpunit": "^4.0.0,<4.8",
                 "squizlabs/php_codesniffer": "^2.0.0"
             },
             "bin": [
@@ -1795,7 +1791,7 @@
                 "BSD-3-Clause"
             ],
             "description": "Official version of pdepend to be handled with Composer",
-            "time": "2015-09-24 14:17:05"
+            "time": "2015-10-16 08:49:58"
         },
         {
             "name": "phpdocumentor/reflection-docblock",
@@ -2213,16 +2209,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "5.0.6",
+            "version": "5.0.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "d2656ec378c88e036b3fc14fb4262ee1a25498c9"
+                "reference": "8beaaffcde39e3202917f81341e7cdfc44b275d8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/d2656ec378c88e036b3fc14fb4262ee1a25498c9",
-                "reference": "d2656ec378c88e036b3fc14fb4262ee1a25498c9",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/8beaaffcde39e3202917f81341e7cdfc44b275d8",
+                "reference": "8beaaffcde39e3202917f81341e7cdfc44b275d8",
                 "shasum": ""
             },
             "require": {
@@ -2283,20 +2279,20 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2015-10-14 13:51:20"
+            "time": "2015-10-22 09:08:03"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
-            "version": "3.0.1",
+            "version": "3.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit-mock-objects.git",
-                "reference": "43d27a86f24c7eacf886edadcdb4503451485cc7"
+                "reference": "382c729a52b7ef682e94c73fd6868f5ee8116ba7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/43d27a86f24c7eacf886edadcdb4503451485cc7",
-                "reference": "43d27a86f24c7eacf886edadcdb4503451485cc7",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/382c729a52b7ef682e94c73fd6868f5ee8116ba7",
+                "reference": "382c729a52b7ef682e94c73fd6868f5ee8116ba7",
                 "shasum": ""
             },
             "require": {
@@ -2339,7 +2335,7 @@
                 "mock",
                 "xunit"
             ],
-            "time": "2015-10-14 13:04:29"
+            "time": "2015-10-18 07:55:54"
         },
         {
             "name": "sami/sami",

@@ -2,6 +2,7 @@
 
 namespace Honeybee\Model\Task\ModifyAggregateRoot;
 
+use Assert\Assertion;
 use Honeybee\Model\Event\AggregateRootEvent;
 
 abstract class AggregateRootModifiedEvent extends AggregateRootEvent
@@ -17,6 +18,6 @@ abstract class AggregateRootModifiedEvent extends AggregateRootEvent
     {
         parent::guardRequiredState();
 
-        assert(is_array($this->data), 'data is an array');
+        Assertion::isArray($this->data);
     }
 }

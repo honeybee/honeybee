@@ -59,18 +59,6 @@ abstract class ReferencedEntityType extends EntityType implements ReferencedEnti
                     $this,
                     [],
                     $this->getParentAttribute()
-                ),
-                'modified_at' => new TimestampAttribute(
-                    'modified_at',
-                    $this,
-                    [ 'default_value' => 'now', 'mirrored' => true ],
-                    $this->getParentAttribute()
-                ),
-                'workflow_state' => new TextAttribute(
-                    'workflow_state',
-                    $this,
-                    [ 'mirrored' => true ],
-                    $this->getParentAttribute()
                 )
             ]
         );

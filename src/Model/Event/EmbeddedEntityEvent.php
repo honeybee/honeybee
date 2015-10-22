@@ -2,6 +2,7 @@
 
 namespace Honeybee\Model\Event;
 
+use Assert\Assertion;
 use Trellis\Common\Object;
 
 abstract class EmbeddedEntityEvent
@@ -69,8 +70,10 @@ abstract class EmbeddedEntityEvent
     {
         parent::guardRequiredState();
 
-        assert($this->embedded_entity_type !== null, 'embedded-entity-type is set');
-        assert($this->embedded_entity_identifier !== null, 'embedded-entity-identifier is set');
-        assert(is_array($this->data), 'data is an array');
+        Assertion::string($this->parent_attribute_name);
+        Assertion::string($this->embedded_entity_type);
+        Assertion::uuid($this->embedded_entity_identifier);
+        Assertion::isArray($this->embedded_entity_events);
+        Assertion::isArray($this->data);
     }
 }

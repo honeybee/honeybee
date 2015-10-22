@@ -2,6 +2,8 @@
 
 namespace Honeybee\Model\Command;
 
+use Assert\Assertion;
+
 abstract class EmbeddedEntityCommand extends EmbeddedEntityTypeCommand implements EmbeddedEntityCommandInterface
 {
     protected $embedded_entity_identifier;
@@ -15,6 +17,6 @@ abstract class EmbeddedEntityCommand extends EmbeddedEntityTypeCommand implement
     {
         parent::guardRequiredState();
 
-        assert($this->embedded_entity_identifier !== null, '"embedded_entity_identifier" is set');
+        Assertion::uuid($this->embedded_entity_identifier);
     }
 }

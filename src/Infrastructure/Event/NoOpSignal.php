@@ -2,6 +2,7 @@
 
 namespace Honeybee\Infrastructure\Event;
 
+use Assert\Assertion;
 use Trellis\Common\Object;
 
 class NoOpSignal extends Event
@@ -30,6 +31,6 @@ class NoOpSignal extends Event
 
     protected function guardRequiredState()
     {
-        assert(is_array($this->command_data), 'command_data is an array');
+        Assertion::isArray($this->command_data);
     }
 }

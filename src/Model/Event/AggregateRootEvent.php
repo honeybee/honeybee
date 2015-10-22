@@ -2,6 +2,7 @@
 
 namespace Honeybee\Model\Event;
 
+use Assert\Assertion;
 use Honeybee\Common\Util\StringToolkit;
 use Honeybee\Infrastructure\Event\Event;
 
@@ -96,8 +97,12 @@ abstract class AggregateRootEvent
     {
         parent::guardRequiredState();
 
-        assert($this->getAggregateRootType() !== null, 'aggregate-root-type is set');
-        assert($this->getAggregateRootIdentifier() !== null, 'aggregate-root-identifier is set');
-        assert($this->getSeqNumber() !== null, 'sequence-number is set');
+        Assertion::classExists($this->aggregate_root_type);
+        Assertion::integer($this->seq_number);
+        Assertion::isInstanceOf($this->embedded_entity_events, EmbeddedEntityEventList::CLASS);
+        Assertion::regex(
+            $this->aggregate_root_identifier,
+            '/[\w\.\-_]{1,128}\-\w{8}\-\w{4}\-\w{4}\-\w{4}\-\w{12}\-\w{2}_\w{2}\-\d+/'
+        );
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Honeybee\Projection;
 
+use Assert\Assertion;
 use Honeybee\Common\Util\StringToolkit;
 use Honeybee\Infrastructure\Event\Event;
 use Honeybee\Model\Event\AggregateRootEventInterface;
@@ -39,17 +40,12 @@ class ProjectionUpdatedEvent extends Event
         $this->source_event_data = $source_event_data;
     }
 
-    protected function setProjectionData(array $projection_data)
-    {
-        $this->projection_data = $projection_data;
-    }
-
     protected function guardRequiredState()
     {
         parent::guardRequiredState();
 
-        assert($this->getSourceEventData() !== null, 'source_event_data is set');
-        assert($this->getProjectionType() !== null, 'projection_type is set');
-        assert($this->getProjectionData() !== null, 'projection_data is set');
+        Assertion::string($this->projection_type);
+        Assertion::isArray($this->source_event_data);
+        Assertion::isArray($this->projection_data);
     }
 }

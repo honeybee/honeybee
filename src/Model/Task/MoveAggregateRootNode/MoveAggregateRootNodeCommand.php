@@ -2,6 +2,7 @@
 
 namespace Honeybee\Model\Task\MoveAggregateRootNode;
 
+use Assert\Assertion;
 use Honeybee\Model\Command\AggregateRootCommand;
 use Honeybee\Model\Event\AggregateRootEventInterface;
 
@@ -39,6 +40,10 @@ abstract class MoveAggregateRootNodeCommand extends AggregateRootCommand
     {
         parent::guardRequiredState();
 
-        assert($this->parent_node_id !== null, '"parent_node_id" is set');
+        Assertion::keyExists($this->data, 'parent_node_id');
+        Assertion::regex(
+            $this->data['parent_node_id'],
+            '/[\w\.\-_]{1,128}\-\w{8}\-\w{4}\-\w{4}\-\w{4}\-\w{12}\-\w{2}_\w{2}\-\d+/'
+        );
     }
 }

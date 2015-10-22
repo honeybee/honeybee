@@ -2,6 +2,7 @@
 
 namespace Honeybee\Model\Command;
 
+use Assert\Assertion;
 use Honeybee\Infrastructure\Command\Command;
 
 abstract class AggregateRootTypeCommand extends Command implements AggregateRootTypeCommandInterface
@@ -31,7 +32,7 @@ abstract class AggregateRootTypeCommand extends Command implements AggregateRoot
     {
         parent::guardRequiredState();
 
-        assert($this->getAggregateRootType() !== null, '"aggregate_root_type" is set');
-        assert(is_array($this->getEmbeddedEntityCommands()), 'aggregate-commands type is correct');
+        Assertion::classExists($this->aggregate_root_type);
+        Assertion::isArray($this->embedded_entity_commands);
     }
 }

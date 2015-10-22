@@ -2,6 +2,7 @@
 
 namespace Honeybee\Model\Task\ProceedWorkflow;
 
+use Assert\Assertion;
 use Honeybee\Model\Task\ModifyAggregateRoot\AggregateRootModifiedEvent;
 
 abstract class WorkflowProceededEvent extends AggregateRootModifiedEvent
@@ -20,6 +21,7 @@ abstract class WorkflowProceededEvent extends AggregateRootModifiedEvent
     {
         parent::guardRequiredState();
 
-        assert(isset($this->data['workflow_state']), 'workflow-state is set');
+        Assertion::keyExists($this->data, 'workflow_state');
+        Assertion::string($this->data['workflow_state']);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Honeybee\Model\Task\ModifyAggregateRoot\ModifyEmbeddedEntity;
 
+use Assert\Assertion;
 use Honeybee\Model\Event\EmbeddedEntityEvent;
 
 class EmbeddedEntityModifiedEvent extends EmbeddedEntityEvent
@@ -22,6 +23,6 @@ class EmbeddedEntityModifiedEvent extends EmbeddedEntityEvent
     {
         parent::guardRequiredState();
 
-        assert(is_int($this->position) && $this->position >= 0, 'position is correctly set');
+        Assertion::greaterOrEqualThan($this->position, 0);
     }
 }

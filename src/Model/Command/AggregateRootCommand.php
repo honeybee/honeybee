@@ -2,6 +2,7 @@
 
 namespace Honeybee\Model\Command;
 
+use Assert\Assertion;
 use Honeybee\Model\Task\ModifyAggregateRoot\AggregateRootModifiedEvent;
 use Honeybee\Model\Event\AggregateRootEventInterface;
 
@@ -25,7 +26,10 @@ abstract class AggregateRootCommand extends AggregateRootTypeCommand implements 
     {
         parent::guardRequiredState();
 
-        assert($this->getAggregateRootIdentifier() !== null, '"aggregate_root_identifier" is set');
-        assert($this->getKnownRevision() !== null, '"known_revision" is set');
+        Assertion::integer($this->known_revision);
+        Assertion::regex(
+            $this->aggregate_root_identifier,
+            '/[\w\.\-_]{1,128}\-\w{8}\-\w{4}\-\w{4}\-\w{4}\-\w{12}\-\w{2}_\w{2}\-\d+/'
+        );
     }
 }

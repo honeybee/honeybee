@@ -2,6 +2,7 @@
 
 namespace Honeybee\Model\Command;
 
+use Assert\Assertion;
 use Honeybee\Infrastructure\Command\Command;
 
 abstract class EmbeddedEntityTypeCommand extends Command implements EmbeddedEntityTypeCommandInterface
@@ -45,7 +46,7 @@ abstract class EmbeddedEntityTypeCommand extends Command implements EmbeddedEnti
     {
         parent::guardRequiredState();
 
-        assert($this->embedded_entity_type !== null, '"embedded_entity_type" is set');
-        assert(is_array($this->embedded_entity_commands), '"embedded_entity_commands" should be an array');
+        Assertion::string($this->embedded_entity_type);
+        Assertion::isArray($this->embedded_entity_commands);
     }
 }

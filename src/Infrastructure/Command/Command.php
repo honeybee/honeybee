@@ -2,9 +2,10 @@
 
 namespace Honeybee\Infrastructure\Command;
 
-use Trellis\Common\Object;
+use Assert\Assertion;
 use Honeybee\Common\Util\StringToolkit;
 use Ramsey\Uuid\Uuid;
+use Trellis\Common\Object;
 
 abstract class Command extends Object implements CommandInterface
 {
@@ -61,7 +62,7 @@ abstract class Command extends Object implements CommandInterface
 
     protected function guardRequiredState()
     {
-        assert($this->uuid !== null, 'uuid is set');
-        assert(is_array($this->meta_data), 'meta-data is an array');
+        Assertion::uuid($this->uuid);
+        Assertion::isArray($this->meta_data);
     }
 }
