@@ -1,25 +1,22 @@
 language: php
-
 php:
-  - 5.5
-  - 5.6
-  - nightly
-
+- 5.5
+- 5.6
+- nightly
 install:
-  - curl -s http://getcomposer.org/installer | php -d date.timezone="Europe/Berlin"
-  - ./composer.phar install
-
+- curl -s http://getcomposer.org/installer | php -d date.timezone="Europe/Berlin"
+- ./composer.phar install
 script:
-  - ./vendor/bin/phpunit testing/unit
-  - ./vendor/bin/phpcs --extensions=php --standard=psr2 src testing/unit
-
+- ./vendor/bin/phpunit testing/unit
+- ./vendor/bin/phpcs --extensions=php --standard=psr2 src testing/unit
 after_script: php vendor/bin/coveralls -v
-
 notifications:
   irc:
     channels:
-      - "chat.freenode.net#honeeybee"
+    - chat.freenode.net#honeeybee
     on_success: always
     on_failure: always
     use_notice: false
     skip_join: false
+  slack:
+    secure: P17ApYJATobVmrNrCMG16hFn3dKiTKa/wma+NLjKP+XZo2DdL6uABKDW2BAantGP+bFEyd2F1kXj87zQ50jmCaZhGXefhsNrTOsLllNw5D0aDhCYgt8l9802eF8DSjeGsvV4qbtfwrSRrQriRIWxFE55uPYlUJZehT7bMet9nluC25bJQ2piTR+UFjGrcRW0APy/DWM+naZ49OEvCV7D0N93rtU4EFfrnIDOeweJnHG1Rmv9e5cqUI4dVjzlFdpf5Rht3xhSyY85WqMlmQTEL5+EZd2el1JVbnwHyw5P6tpT8JQU5uSktH/LyecEddlkUF+JtuQ32owMnZuEc6xpXMdrzmxxD9KPqzHoR4BST/XJExqaOqEM0J3r8K2A7fzLTGJXEYr1jYJ/XZr0jmAmJuEosLhOGmuIjC1Ip1aD7qGNL+b05H4RlGiMsaWmhVLmYwvQms+R3s7ZrR0ovPp1HqY922nAPAtrWrMoKUtRpdTvc/BiMoGK3gwJ4PkYKC13nesL5MhcnlLO9Yb+3FgOoPjHtlklHMtgq69KiScvzo2rzQx65+ZFrvgt8Yl/nRD+2NyXTfislYtI+GIzEWhNmrbAg/oryCCBF5WKoYyjlsU8DHie7d0afdatAprexmfScZ9FYJt7aNVN2f1I5k0Gzj9LTTxAlYPhz1N362LC6Uc=
