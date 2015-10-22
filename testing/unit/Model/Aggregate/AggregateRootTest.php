@@ -19,6 +19,7 @@ use Honeybee\Tests\Model\Task\ProceedAuthorWorkflow\AuthorWorkflowProceededEvent
 use Honeybee\Tests\TestCase;
 use Workflux\Builder\XmlStateMachineBuilder;
 use Workflux\Error\Error as WorkfluxError;
+use Assert\InvalidArgumentException;
 
 class AggregateRootTest extends TestCase
 {
@@ -123,7 +124,7 @@ class AggregateRootTest extends TestCase
      */
     public function testModifyWrongAggregateRootIdentifier()
     {
-        $aggregate_root = $this->getCreatedAggregateRoot();
+        $this->setExpectedException(InvalidArgumentException::CLASS);
 
         $modify_command = new ModifyAuthorCommand(
             [
@@ -132,10 +133,6 @@ class AggregateRootTest extends TestCase
                 'values' => [ 'lastname' => 'Wahlberg' ]
             ]
         );
-
-        $this->setExpectedException(RuntimeError::CLASS);
-
-        $aggregate_root->modify($modify_command);
     }
 
     /**
@@ -147,7 +144,7 @@ class AggregateRootTest extends TestCase
         $aggregate_root = $this->constructAggregateRoot();
         $modify_command = new ModifyAuthorCommand(
             [
-                'aggregate_root_identifier' => 'invalid aggregate root identifier',
+                'aggregate_root_identifier' => self::AGGREGATE_ROOT_IDENTIFIER,
                 'known_revision' => 1,
                 'values' => [ 'lastname' => 'Wahlberg' ]
             ]
@@ -231,7 +228,7 @@ class AggregateRootTest extends TestCase
         $events_history->push(
             new AuthorModifiedEvent([
                 'aggregate_root_identifier' => self::AGGREGATE_ROOT_IDENTIFIER,
-                'uuid' => 'event-9d3cefd9-f5f1-4a3f-ad2b-231a6d50eba7',
+                'uuid' => '9d3cefd9-f5f1-4a3f-ad2b-231a6d50eba7',
                 'seq_number' => 100,
                 'data' => [ 'lastname' => 'nice-try-wont-work' ]
             ])
@@ -277,7 +274,7 @@ class AggregateRootTest extends TestCase
                 new AuthorModifiedEvent(
                     [
                         'aggregate_root_identifier' => self::AGGREGATE_ROOT_IDENTIFIER,
-                        'uuid' => 'event-9d3cefd9-f5f1-4a3f-ad2b-8d146d50eba7',
+                        'uuid' => '9d3cefd9-f5f1-4a3f-ad2b-8d146d50eba7',
                         'seq_number' => 1,
                         'data' => [
                             'lastname' => 'Wahlberg'
@@ -543,7 +540,7 @@ class AggregateRootTest extends TestCase
         $history_fixture->push(
             new AuthorCreatedEvent([
                 'aggregate_root_identifier' => self::AGGREGATE_ROOT_IDENTIFIER,
-                'uuid' => 'event-26cfb993-5946-4bd3-befe-8fb92648fd27',
+                'uuid' => '26cfb993-5946-4bd3-befe-8fb92648fd27',
                 'seq_number' => 1,
                 'data' => [
                     'firstname' => 'Mark',
@@ -562,7 +559,7 @@ class AggregateRootTest extends TestCase
         $history_fixture->push(
             new AuthorModifiedEvent([
                 'aggregate_root_identifier' => self::AGGREGATE_ROOT_IDENTIFIER,
-                'uuid' => 'event-9d3cefd9-f5f1-4a3f-ad2b-8d146d50eba7',
+                'uuid' => '9d3cefd9-f5f1-4a3f-ad2b-8d146d50eba7',
                 'seq_number' => 2,
                 'data' => [
                     'lastname' => 'Wahlberg'
@@ -572,7 +569,7 @@ class AggregateRootTest extends TestCase
         $history_fixture->push(
             new AuthorModifiedEvent([
                 'aggregate_root_identifier' => self::AGGREGATE_ROOT_IDENTIFIER,
-                'uuid' => 'event-39e3d80a-d700-4c1f-8bc7-0c3141b94af7',
+                'uuid' => '39e3d80a-d700-4c1f-8bc7-0c3141b94af7',
                 'seq_number' => 3,
                 'data' => [
                     'firstname' => 'Donnie'
@@ -582,7 +579,7 @@ class AggregateRootTest extends TestCase
         $history_fixture->push(
             new AuthorModifiedEvent([
                 'aggregate_root_identifier' => self::AGGREGATE_ROOT_IDENTIFIER,
-                'uuid' => 'event-6d3f60a0-3662-47ad-a7f0-1eaf33bb46b0',
+                'uuid' => '6d3f60a0-3662-47ad-a7f0-1eaf33bb46b0',
                 'seq_number' => 4,
                 'data' => [
                     'lastname' => 'Darko'
@@ -597,7 +594,7 @@ class AggregateRootTest extends TestCase
     {
         $first_event = new AuthorCreatedEvent([
             'aggregate_root_identifier' => self::AGGREGATE_ROOT_IDENTIFIER,
-            'uuid' => 'event-968bbade-5182-411f-9d02-39376035a068',
+            'uuid' => '968bbade-5182-411f-9d02-39376035a068',
             'seq_number' => 1,
             'data' => [
                 'firstname' => 'Stanley',
@@ -613,7 +610,7 @@ class AggregateRootTest extends TestCase
 
         $second_event = new AuthorWorkflowProceededEvent([
             'aggregate_root_identifier' => self::AGGREGATE_ROOT_IDENTIFIER,
-            'uuid' => 'event-81b07c06-33f6-4c2e-8675-ad9b493d8142',
+            'uuid' => '81b07c06-33f6-4c2e-8675-ad9b493d8142',
             'seq_number' => 2,
             'data' => [
                 'workflow_state' => 'active'
@@ -630,7 +627,7 @@ class AggregateRootTest extends TestCase
                 new AuthorCreatedEvent(
                     [
                         'aggregate_root_identifier' => self::AGGREGATE_ROOT_IDENTIFIER,
-                        'uuid' => 'event-26cfb993-5946-4bd3-befe-8fb92648fd27',
+                        'uuid' => '26cfb993-5946-4bd3-befe-8fb92648fd27',
                         'seq_number' => 1,
                         'data' => [
                             'firstname' => 'Mark',
