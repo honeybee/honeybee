@@ -20,7 +20,7 @@ class AggregateRootCommandBuilder extends CommandBuilder
         $this->command_state['aggregate_root_type'] = get_class($aggregate_root_type);
     }
 
-    public function validateValues(array $values)
+    protected function validateValues(array $values)
     {
         $errors = [];
         $sanitized_values = [];
