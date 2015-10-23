@@ -34,7 +34,7 @@ class CommandBuilder implements CommandBuilderInterface
         $result = $this->sanitizeCommandState($this->command_class, $this->command_state);
 
         if ($result instanceof Success) {
-            return new Success(
+            return Success::unit(
                 new $this->command_class($result->get())
             );
         }
@@ -64,23 +64,22 @@ class CommandBuilder implements CommandBuilderInterface
         $sanitized_state = [];
 
         foreach ($this->getCommandProperties($command_class) as $prop_name => $prop_info) {
-            if ($prop_info['required']) {
-                Assertion::keyExists($command_state, $prop_name);
-            }
-            if (isset($command_state[$prop_name])) {
+            if (array_key_exists($prop_name, $command_state)) {
                 $prop_val = $command_state[$prop_name];
                 $result = $this->adoptPropertyValue($prop_name, $prop_val);
                 if ($result instanceof Success) {
                     $sanitized_state[$prop_name] = $result->get();
                 } elseif ($result instanceof Error) {
-                    $errors[] = array_merge($errors, $result->get());
+                    $errors[$prop_name] = $result->get();
                 } else {
                     throw new RuntimeError('Invalid result type given. Either Success or Error expected.');
                 }
+            } elseif ($prop_info['required']) {
+                $errors[$prop_name] = [ 'required' ];
             }
         }
 
-        return empty($errors) ? new Success($sanitized_state) : new Error($errors);
+        return empty($errors) ? Success::unit($sanitized_state) : Error::unit($errors);
     }
 
     /**
@@ -119,6 +118,6 @@ class CommandBuilder implements CommandBuilderInterface
             return call_user_func($validation_callable, $prop_value);
         }
 
-        return new Success($prop_value);
+        return Success::unit($prop_value);
     }
 }

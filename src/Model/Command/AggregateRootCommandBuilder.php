@@ -39,7 +39,7 @@ class AggregateRootCommandBuilder extends CommandBuilder
                 if ($result instanceof Success) {
                     $sanitized_values[$attribute_name] = $result->get();
                 } else {
-                    $errors[$attribute_name] = $result->get();
+                    $errors[] = $result->get();
                 }
             }
         }
@@ -64,7 +64,7 @@ class AggregateRootCommandBuilder extends CommandBuilder
                 foreach ($rule->getIncidents() as $name => $incident) {
                     $error_key = $attribute->getPath() . '.' . $name;
                     $incident_params = $incident->getParameters();
-                    $errors[] = [ $error_key, $incident_params ];
+                    $errors[] = [ $attribute->getName(), $error_key, $incident_params ];
                 }
             }
         }

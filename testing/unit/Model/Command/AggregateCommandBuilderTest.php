@@ -8,8 +8,9 @@ use Honeybee\Tests\Model\Aggregate\Fixtures\Author\AuthorType;
 use Honeybee\Tests\Model\Task\CreateAuthor\CreateAuthorCommand;
 use Honeybee\Tests\Model\Task\ModifyAuthor\ModifyAuthorCommand;
 use Honeybee\Tests\TestCase;
-use Shrink0r\Monatic\Success;
 use Shrink0r\Monatic\Result;
+use Shrink0r\Monatic\Success;
+use Shrink0r\Monatic\Error;
 use Workflux\Builder\XmlStateMachineBuilder;
 
 class AggregateCommandBuilderTest extends TestCase
@@ -35,9 +36,10 @@ class AggregateCommandBuilderTest extends TestCase
         $author_type = new AuthorType($this->getDefaultStateMachine());
         $builder = new AggregateRootCommandBuilder($author_type, CreateAuthorCommand::CLASS);
 
-        $this->setExpectedException(InvalidArgumentException::CLASS);
+        $build_result = $builder->build();
 
-        $builder->build();
+        $this->assertInstanceOf(Result::CLASS, $build_result);
+        $this->assertInstanceOf(Error::CLASS, $build_result);
     }
 
     public function testBuildModifyCommand()
@@ -61,13 +63,13 @@ class AggregateCommandBuilderTest extends TestCase
         $author_type = new AuthorType($this->getDefaultStateMachine());
         $builder = new AggregateRootCommandBuilder($author_type, ModifyAuthorCommand::CLASS);
 
-        $modify_command = $builder
+        $builder = $builder
             ->withAggregateRootIdentifier(self::AGGREGATE_ROOT_IDENTIFIER)
             ->withValues([ 'firstname' => 'Amitav', 'lastname' => 'Gosh' ]);
 
-        $this->setExpectedException(InvalidArgumentException::CLASS);
-
-        $builder->build();
+        $build_result = $builder->build();
+        $this->assertInstanceOf(Result::CLASS, $build_result);
+        $this->assertInstanceOf(Error::CLASS, $build_result);
     }
 
     protected function getDefaultStateMachine()
