@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "31400a36ae41a8a85771c2590b89334d",
-    "content-hash": "b711ec0a2e2a43e7528a73252fe853dc",
+    "hash": "c825df7cc3c3f1a1db8101a3bce4162c",
+    "content-hash": "8a8bce1cfa4939aa8dce90537d26c14c",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -1070,6 +1070,48 @@
             "time": "2015-08-26 16:31:48"
         },
         {
+            "name": "shrink0r/monatic",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/shrink0r/monatic.git",
+                "reference": "c07f71fc6e29c4a4f244988447bfedbf8e60899c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/shrink0r/monatic/zipball/c07f71fc6e29c4a4f244988447bfedbf8e60899c",
+                "reference": "c07f71fc6e29c4a4f244988447bfedbf8e60899c",
+                "shasum": ""
+            },
+            "require": {
+                "symfony/property-access": "~2.7"
+            },
+            "require-dev": {
+                "phine/sami-github": "~1.0",
+                "phpunit/phpunit": "~4.8",
+                "sami/sami": "~3.0",
+                "satooshi/php-coveralls": "~0.6",
+                "squizlabs/php_codesniffer": "~2.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Shrink0r\\Monatic\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Thorsten Schmitt-Rink",
+                    "email": "schmittrink@gmail.com"
+                }
+            ],
+            "time": "2015-08-31 09:37:00"
+        },
+        {
             "name": "shrink0r/workflux",
             "version": "dev-master",
             "source": {
@@ -1388,6 +1430,66 @@
             "description": "Symfony Filesystem Component",
             "homepage": "https://symfony.com",
             "time": "2015-09-09 17:42:36"
+        },
+        {
+            "name": "symfony/property-access",
+            "version": "v2.7.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/property-access.git",
+                "reference": "f8ea7aa472f0e3f8cdf43287caa72a70ff5c088c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/property-access/zipball/f8ea7aa472f0e3f8cdf43287caa72a70ff5c088c",
+                "reference": "f8ea7aa472f0e3f8cdf43287caa72a70ff5c088c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.9"
+            },
+            "require-dev": {
+                "symfony/phpunit-bridge": "~2.7"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.7-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\PropertyAccess\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony PropertyAccess Component",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "access",
+                "array",
+                "extraction",
+                "index",
+                "injection",
+                "object",
+                "property",
+                "property path",
+                "reflection"
+            ],
+            "time": "2015-08-24 07:13:45"
         },
         {
             "name": "twig/twig",
@@ -3391,7 +3493,8 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "honeybee/trellis": 20,
-        "shrink0r/workflux": 20
+        "shrink0r/workflux": 20,
+        "shrink0r/monatic": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,

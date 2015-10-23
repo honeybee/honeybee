@@ -9,8 +9,14 @@ use Trellis\Common\Object;
 
 abstract class Command extends Object implements CommandInterface
 {
+    /**
+     * @CommandBuilder::OPTIONAL
+     */
     protected $uuid;
 
+    /**
+     * @CommandBuilder::OPTIONAL
+     */
     protected $meta_data;
 
     public function __construct(array $state = array())

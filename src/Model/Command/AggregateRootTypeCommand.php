@@ -9,6 +9,9 @@ abstract class AggregateRootTypeCommand extends Command implements AggregateRoot
 {
     protected $aggregate_root_type;
 
+    /**
+     * @CommandBuilder::OPTIONAL
+     */
     protected $embedded_entity_commands;
 
     public function __construct(array $state = array())

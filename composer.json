@@ -48,6 +48,7 @@
         "beberlei/assert": "2.4.*",
         "honeybee/trellis": "master@dev",
         "shrink0r/workflux": "master@dev",
+        "shrink0r/monatic": "master@dev",
         "elasticsearch/elasticsearch": "1.4.*",
         "guzzle/guzzle": "3.9.*",
         "league/flysystem": "1.0.*",

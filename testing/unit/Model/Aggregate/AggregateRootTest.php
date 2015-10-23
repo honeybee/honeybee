@@ -2,6 +2,7 @@
 
 namespace Honeybee\Tests\Model\Aggregate;
 
+use Assert\InvalidArgumentException;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Model\Aggregate\AggregateRootTypeInterface;
 use Honeybee\Model\Event\AggregateRootEventList;
@@ -14,12 +15,11 @@ use Honeybee\Tests\Model\Task\CreateAuthor\AuthorCreatedEvent;
 use Honeybee\Tests\Model\Task\CreateAuthor\CreateAuthorCommand;
 use Honeybee\Tests\Model\Task\ModifyAuthor\AuthorModifiedEvent;
 use Honeybee\Tests\Model\Task\ModifyAuthor\ModifyAuthorCommand;
-use Honeybee\Tests\Model\Task\ProceedAuthorWorkflow\ProceedAuthorWorkflowCommand;
 use Honeybee\Tests\Model\Task\ProceedAuthorWorkflow\AuthorWorkflowProceededEvent;
+use Honeybee\Tests\Model\Task\ProceedAuthorWorkflow\ProceedAuthorWorkflowCommand;
 use Honeybee\Tests\TestCase;
 use Workflux\Builder\XmlStateMachineBuilder;
 use Workflux\Error\Error as WorkfluxError;
-use Assert\InvalidArgumentException;
 
 class AggregateRootTest extends TestCase
 {

@@ -7,6 +7,10 @@ use Honeybee\Model\Command\AggregateRootTypeCommand;
 
 abstract class CreateAggregateRootCommand extends AggregateRootTypeCommand
 {
+    /**
+     * @required
+     * @hiddenProperty
+     */
     protected $values;
 
     public function getValues()
