@@ -75,7 +75,7 @@ class CommandBuilder implements CommandBuilderInterface
                     throw new RuntimeError('Invalid result type given. Either Success or Error expected.');
                 }
             } elseif ($prop_info['required']) {
-                $errors[$prop_name] = [ 'required' ];
+                $errors[$prop_name] = [ $prop_name, 'required' ];
             }
         }
 

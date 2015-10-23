@@ -44,7 +44,7 @@ class AggregateRootCommandBuilder extends CommandBuilder
             }
         }
 
-        return empty($errors) ? new Success($sanitized_values) : new Error($errors);
+        return empty($errors) ? Success::unit($sanitized_values) : Error::unit($errors);
     }
 
     /**
@@ -69,6 +69,6 @@ class AggregateRootCommandBuilder extends CommandBuilder
             }
         }
 
-        return empty($errors) ? new Success($value_holder->toNative()) : new Error($errors);
+        return empty($errors) ? Success::unit($value_holder->toNative()) : Error::unit($errors);
     }
 }
