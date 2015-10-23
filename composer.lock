@@ -481,12 +481,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/honeybee/trellis.git",
-                "reference": "f2067debf4610d258c091ef0cd2fa552bcd7d9bf"
+                "reference": "ce23eec71f38849b93bff4f276f649e9791d3b42"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/honeybee/trellis/zipball/f2067debf4610d258c091ef0cd2fa552bcd7d9bf",
-                "reference": "f2067debf4610d258c091ef0cd2fa552bcd7d9bf",
+                "url": "https://api.github.com/repos/honeybee/trellis/zipball/ce23eec71f38849b93bff4f276f649e9791d3b42",
+                "reference": "ce23eec71f38849b93bff4f276f649e9791d3b42",
                 "shasum": ""
             },
             "require": {
@@ -542,7 +542,7 @@
                 "entity",
                 "validation"
             ],
-            "time": "2015-10-23 13:56:57"
+            "time": "2015-10-23 14:30:29"
         },
         {
             "name": "league/flysystem",
