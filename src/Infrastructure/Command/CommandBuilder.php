@@ -50,7 +50,7 @@ class CommandBuilder implements CommandBuilderInterface
     protected function sanitizeCommandState($command_class, array $command_state)
     {
         $errors = [];
-        $validated_state = [];
+        $sanitized_state = [];
 
         foreach ($this->getCommandProperties($command_class) as $prop_name => $prop_info) {
             if ($prop_info['required']) {
@@ -60,7 +60,7 @@ class CommandBuilder implements CommandBuilderInterface
                 $prop_val = $command_state[$prop_name];
                 $result = $this->adoptPropertyValue($prop_name, $prop_val);
                 if ($result instanceof Success) {
-                    $validated_state[$prop_name] = $result->get();
+                    $sanitized_state[$prop_name] = $result->get();
                 } elseif ($result instanceof Error) {
                     $errors[] = array_merge($errors, $result->get());
                 } else {
@@ -69,7 +69,7 @@ class CommandBuilder implements CommandBuilderInterface
             }
         }
 
-        return empty($errors) ? new Success($validated_state) : new Error($errors);
+        return empty($errors) ? new Success($sanitized_state) : new Error($errors);
     }
 
     protected function getCommandProperties($command_class)
