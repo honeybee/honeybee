@@ -481,12 +481,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/honeybee/trellis.git",
-                "reference": "eb5d52510cde9e9833796c9f1a283597dc8f46bf"
+                "reference": "f2067debf4610d258c091ef0cd2fa552bcd7d9bf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/honeybee/trellis/zipball/eb5d52510cde9e9833796c9f1a283597dc8f46bf",
-                "reference": "eb5d52510cde9e9833796c9f1a283597dc8f46bf",
+                "url": "https://api.github.com/repos/honeybee/trellis/zipball/f2067debf4610d258c091ef0cd2fa552bcd7d9bf",
+                "reference": "f2067debf4610d258c091ef0cd2fa552bcd7d9bf",
                 "shasum": ""
             },
             "require": {
@@ -494,7 +494,7 @@
                 "egulias/email-validator": "1.2.*",
                 "fzaninotto/faker": "1.5.*",
                 "mtdowling/jmespath.php": "2.2.*",
-                "php": ">=5.5.0",
+                "php": ">=5.6.0",
                 "ramsey/uuid": "3.0.*",
                 "symfony/console": "2.7.*",
                 "symfony/filesystem": "2.7.*",
@@ -542,7 +542,7 @@
                 "entity",
                 "validation"
             ],
-            "time": "2015-10-12 20:49:28"
+            "time": "2015-10-23 13:56:57"
         },
         {
             "name": "league/flysystem",
@@ -1075,20 +1075,21 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/shrink0r/monatic.git",
-                "reference": "b466ebd5cbd0c8b35eed1b5d0c73e0116d104b93"
+                "reference": "d32ce4114a195f80bc3ac91c496facad4f3e2ee5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/shrink0r/monatic/zipball/b466ebd5cbd0c8b35eed1b5d0c73e0116d104b93",
-                "reference": "b466ebd5cbd0c8b35eed1b5d0c73e0116d104b93",
+                "url": "https://api.github.com/repos/shrink0r/monatic/zipball/d32ce4114a195f80bc3ac91c496facad4f3e2ee5",
+                "reference": "d32ce4114a195f80bc3ac91c496facad4f3e2ee5",
                 "shasum": ""
             },
             "require": {
+                "php": ">=5.6.0",
                 "symfony/property-access": "~2.7"
             },
             "require-dev": {
                 "phine/sami-github": "~1.0",
-                "phpunit/phpunit": "~4.8",
+                "phpunit/phpunit": "~5.0",
                 "sami/sami": "~3.0",
                 "satooshi/php-coveralls": "~0.6",
                 "squizlabs/php_codesniffer": "~2.3"
@@ -1109,7 +1110,7 @@
                     "email": "schmittrink@gmail.com"
                 }
             ],
-            "time": "2015-10-23 10:41:07"
+            "time": "2015-10-23 13:21:45"
         },
         {
             "name": "shrink0r/workflux",
@@ -1117,12 +1118,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/shrink0r/workflux.git",
-                "reference": "f0be9d4bdaa577340b0cffe952d88001895713c2"
+                "reference": "313f3f1afef7761621303c12139df81ff5860e84"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/shrink0r/workflux/zipball/f0be9d4bdaa577340b0cffe952d88001895713c2",
-                "reference": "f0be9d4bdaa577340b0cffe952d88001895713c2",
+                "url": "https://api.github.com/repos/shrink0r/workflux/zipball/313f3f1afef7761621303c12139df81ff5860e84",
+                "reference": "313f3f1afef7761621303c12139df81ff5860e84",
                 "shasum": ""
             },
             "require": {
@@ -1163,7 +1164,7 @@
                 "workflow",
                 "workflux"
             ],
-            "time": "2015-10-12 21:06:07"
+            "time": "2015-10-23 12:55:49"
         },
         {
             "name": "swiftmailer/swiftmailer",
