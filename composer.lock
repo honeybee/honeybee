@@ -1075,12 +1075,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/shrink0r/monatic.git",
-                "reference": "c07f71fc6e29c4a4f244988447bfedbf8e60899c"
+                "reference": "b466ebd5cbd0c8b35eed1b5d0c73e0116d104b93"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/shrink0r/monatic/zipball/c07f71fc6e29c4a4f244988447bfedbf8e60899c",
-                "reference": "c07f71fc6e29c4a4f244988447bfedbf8e60899c",
+                "url": "https://api.github.com/repos/shrink0r/monatic/zipball/b466ebd5cbd0c8b35eed1b5d0c73e0116d104b93",
+                "reference": "b466ebd5cbd0c8b35eed1b5d0c73e0116d104b93",
                 "shasum": ""
             },
             "require": {
@@ -1109,7 +1109,7 @@
                     "email": "schmittrink@gmail.com"
                 }
             ],
-            "time": "2015-08-31 09:37:00"
+            "time": "2015-10-23 10:41:07"
         },
         {
             "name": "shrink0r/workflux",
@@ -2311,16 +2311,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "5.0.7",
+            "version": "5.0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "8beaaffcde39e3202917f81341e7cdfc44b275d8"
+                "reference": "97fb2503cf8caca9d768fde3cca2ab147b9e7030"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/8beaaffcde39e3202917f81341e7cdfc44b275d8",
-                "reference": "8beaaffcde39e3202917f81341e7cdfc44b275d8",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/97fb2503cf8caca9d768fde3cca2ab147b9e7030",
+                "reference": "97fb2503cf8caca9d768fde3cca2ab147b9e7030",
                 "shasum": ""
             },
             "require": {
@@ -2381,7 +2381,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2015-10-22 09:08:03"
+            "time": "2015-10-23 06:50:01"
         },
         {
             "name": "phpunit/phpunit-mock-objects",

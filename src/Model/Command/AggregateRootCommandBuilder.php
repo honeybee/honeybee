@@ -24,6 +24,9 @@ class AggregateRootCommandBuilder extends CommandBuilder
         $this->embedded_builders = [];
     }
 
+    /**
+     * @return Result
+     */
     protected function validateValues(array $values)
     {
         $errors = [];
@@ -44,6 +47,9 @@ class AggregateRootCommandBuilder extends CommandBuilder
         return empty($errors) ? new Success($sanitized_values) : new Error($errors);
     }
 
+    /**
+     * @return Result
+     */
     protected function sanitizeAttributeValue(AttributeInterface $attribute, $value)
     {
         $errors = [];

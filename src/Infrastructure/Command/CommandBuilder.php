@@ -26,17 +26,25 @@ class CommandBuilder implements CommandBuilderInterface
         $this->command_state = [];
     }
 
+    /**
+     * @return Result
+     */
     public function build()
     {
         $result = $this->sanitizeCommandState($this->command_class, $this->command_state);
 
         if ($result instanceof Success) {
-            return new $this->command_class($result->get());
+            return new Success(
+                new $this->command_class($result->get())
+            );
         }
 
-        throw new RuntimeError('Unable to build command, due to invalid command state.');
+        return $result;
     }
 
+    /**
+     * @return CommandBuilderInterface
+     */
     public function __call($method, array $args)
     {
         if (1 === preg_match('/^with(\w+)/', $method, $matches) && count($args) === 1) {
@@ -47,6 +55,9 @@ class CommandBuilder implements CommandBuilderInterface
         return $this;
     }
 
+    /**
+     * @return Result
+     */
     protected function sanitizeCommandState($command_class, array $command_state)
     {
         $errors = [];
@@ -72,6 +83,9 @@ class CommandBuilder implements CommandBuilderInterface
         return empty($errors) ? new Success($sanitized_state) : new Error($errors);
     }
 
+    /**
+     * @return array
+     */
     protected function getCommandProperties($command_class)
     {
         $command_reflection = new ReflectionClass($command_class);
@@ -94,6 +108,9 @@ class CommandBuilder implements CommandBuilderInterface
         return $properties;
     }
 
+    /**
+     * @return Result
+     */
     protected function adoptPropertyValue($prop_name, $prop_value)
     {
         $validation_method = 'validate' . StringToolkit::asStudlyCaps($prop_name);

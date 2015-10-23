@@ -8,6 +8,8 @@ use Honeybee\Tests\Model\Aggregate\Fixtures\Author\AuthorType;
 use Honeybee\Tests\Model\Task\CreateAuthor\CreateAuthorCommand;
 use Honeybee\Tests\Model\Task\ModifyAuthor\ModifyAuthorCommand;
 use Honeybee\Tests\TestCase;
+use Shrink0r\Monatic\Success;
+use Shrink0r\Monatic\Result;
 use Workflux\Builder\XmlStateMachineBuilder;
 
 class AggregateCommandBuilderTest extends TestCase
@@ -19,11 +21,13 @@ class AggregateCommandBuilderTest extends TestCase
         $author_type = new AuthorType($this->getDefaultStateMachine());
         $builder = new AggregateRootCommandBuilder($author_type, CreateAuthorCommand::CLASS);
 
-        $create_command = $builder
+        $build_result = $builder
             ->withValues([ 'firstname' => 'Amitav', 'lastname' => 'Gosh' ])
             ->build();
 
-        $this->assertInstanceOf(CreateAuthorCommand::CLASS, $create_command);
+        $this->assertInstanceOf(Result::CLASS, $build_result);
+        $this->assertInstanceOf(Success::CLASS, $build_result);
+        $this->assertInstanceOf(CreateAuthorCommand::CLASS, $build_result->get());
     }
 
     public function testCreateCommandWithMissingValues()
@@ -41,13 +45,15 @@ class AggregateCommandBuilderTest extends TestCase
         $author_type = new AuthorType($this->getDefaultStateMachine());
         $builder = new AggregateRootCommandBuilder($author_type, ModifyAuthorCommand::CLASS);
 
-        $modify_command = $builder
+        $build_result = $builder
             ->withAggregateRootIdentifier(self::AGGREGATE_ROOT_IDENTIFIER)
             ->withKnownRevision(4)
             ->withValues([ 'firstname' => 'Amitav', 'lastname' => 'Gosh' ])
             ->build();
 
-        $this->assertInstanceOf(ModifyAuthorCommand::CLASS, $modify_command);
+        $this->assertInstanceOf(Result::CLASS, $build_result);
+        $this->assertInstanceOf(Success::CLASS, $build_result);
+        $this->assertInstanceOf(ModifyAuthorCommand::CLASS, $build_result->get());
     }
 
     public function testModifyCommandWithMissingRevision()
