@@ -2,21 +2,22 @@
 
 namespace Honeybee\Model\Command;
 
-use Trellis\Runtime\Attribute\HandlesFileInterface;
-use Trellis\Runtime\Attribute\HandlesFileListInterface;
+use Exception;
 use Honeybee\Common\Error\RuntimeError;
-use Honeybee\Model\Aggregate\AggregateRootInterface;
-use Honeybee\Model\Aggregate\AggregateRootTypeInterface;
-use Honeybee\Model\Event\AggregateRootEventList;
-use Honeybee\Infrastructure\Event\Bus\EventBusInterface;
-use Honeybee\Model\Event\HasEmbeddedEntityEventsInterface;
-use Honeybee\Model\Task\CreateAggregateRoot\CreateAggregateRootCommand;
 use Honeybee\EntityTypeInterface;
 use Honeybee\Infrastructure\Command\CommandHandler;
 use Honeybee\Infrastructure\Command\CommandInterface;
 use Honeybee\Infrastructure\DataAccess\DataAccessServiceInterface;
+use Honeybee\Infrastructure\Event\Bus\EventBusInterface;
 use Honeybee\Infrastructure\Filesystem\FilesystemServiceInterface;
+use Honeybee\Model\Aggregate\AggregateRootInterface;
+use Honeybee\Model\Aggregate\AggregateRootTypeInterface;
+use Honeybee\Model\Event\AggregateRootEventList;
+use Honeybee\Model\Event\HasEmbeddedEntityEventsInterface;
+use Honeybee\Model\Task\CreateAggregateRoot\CreateAggregateRootCommand;
 use Psr\Log\LoggerInterface;
+use Trellis\Runtime\Attribute\HandlesFileInterface;
+use Trellis\Runtime\Attribute\HandlesFileListInterface;
 
 abstract class AggregateRootCommandHandler extends CommandHandler
 {
@@ -114,15 +115,22 @@ abstract class AggregateRootCommandHandler extends CommandHandler
         $from_uri = $this->filesystem_service->createTempUri($location, $art); // from temporary storage
         $to_uri = $this->filesystem_service->createUri($location, $art); // to final storage
         $success = false;
-        if (!$this->filesystem_service->has($to_uri)) {
-            $success = $this->filesystem_service->copy($from_uri, $to_uri);
-        }
-        if (!$success) {
+        try {
+            if (!$this->filesystem_service->has($to_uri)) {
+                $success = $this->filesystem_service->copy($from_uri, $to_uri);
+            }
+        } catch (Exception $copy_error) {
             $this->logger->error(
-                '[{method}] File could not be copied from {from_uri} to {to_uri}.',
-                [ 'method' => __METHOD__, 'from_uri' => $from_uri, 'to_uri' => $to_uri ]
+                '[{method}] File could not be copied from {from_uri} to {to_uri}. Error: {error}',
+                [
+                    'method' => __METHOD__,
+                    'from_uri' => $from_uri,
+                    'to_uri' => $to_uri,
+                    'error' => $copy_error->getMessage()
+                ]
             );
         }
+
         return $success;
     }
 
