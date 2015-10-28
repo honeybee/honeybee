@@ -312,13 +312,12 @@ class ProjectionUpdater extends EventHandler
         if ($referenced_identifier === $projection->getRoot()->getIdentifier()) {
             $referenced_projection = $projection->getRoot(); // self reference, no need to load
         } else {
-            $search_result = $this->getFinder($referenced_type)->getByIdentifier($referenced_identifier);
-            if (!$search_result->hasResults()) {
-                // zombie reference, shouldn't happen.
+            $referenced_projection = $this->loadReferencedProjection($referenced_type, $referenced_identifier);
+            if (!$referenced_projection) {
+                // zombie reference, "eventually" shouldn't happen.
                 $this->logger->debug('Unable to resolve referenced projection: ' . $referenced_identifier);
                 return $projection;
             }
-            $referenced_projection = $search_result->getFirstResult();
         }
 
         $mirrored_values = [];
@@ -330,6 +329,15 @@ class ProjectionUpdater extends EventHandler
             array_merge($projection->toNative(), $mirrored_values),
             $projection->getParent()
         );
+    }
+
+    protected function loadReferencedProjection(EntityTypeInterface $entity_type, $identifier)
+    {
+        $search_result = $this->getFinder($referenced_type)->getByIdentifier($referenced_identifier);
+        if (!$search_result->hasResults()) {
+            return null;
+        }
+        $referenced_projection = $search_result->getFirstResult();
     }
 
     protected function mirrorLocalValues(ProjectionInterface $projection, AggregateRootEventInterface $event)
