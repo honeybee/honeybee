@@ -10,6 +10,7 @@ use Honeybee\Infrastructure\Job\JobInterface;
 use Honeybee\ServiceLocatorInterface;
 use Honeybee\Infrastructure\DataAccess\Connector\RabbitMqConnector;
 use Honeybee\Infrastructure\Job\JobServiceInterface;
+use Exception;
 
 class Worker implements WorkerInterface
 {
