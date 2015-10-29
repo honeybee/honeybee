@@ -331,13 +331,13 @@ class ProjectionUpdater extends EventHandler
         );
     }
 
-    protected function loadReferencedProjection(EntityTypeInterface $entity_type, $identifier)
+    protected function loadReferencedProjection(EntityTypeInterface $referenced_type, $identifier)
     {
-        $search_result = $this->getFinder($referenced_type)->getByIdentifier($referenced_identifier);
+        $search_result = $this->getFinder($referenced_type)->getByIdentifier($identifier);
         if (!$search_result->hasResults()) {
             return null;
         }
-        $referenced_projection = $search_result->getFirstResult();
+        return $search_result->getFirstResult();
     }
 
     protected function mirrorLocalValues(ProjectionInterface $projection, AggregateRootEventInterface $event)
