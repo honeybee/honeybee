@@ -10,10 +10,10 @@ use Honeybee\Infrastructure\DataAccess\Query\Query;
 use Honeybee\Infrastructure\ProcessManager\ProcessStateInterface;
 use Honeybee\Projection\ProjectionTypeMap;
 use JmesPath\AstRuntime;
-use Workflux\Guard\ConfigurableGuard;
+use Workflux\Guard\VariableGuard;
 use Workflux\StatefulSubjectInterface;
 
-class ProjectionExistsGuard extends ConfigurableGuard
+class ProjectionExistsGuard extends VariableGuard
 {
     protected $data_access_service;
 
@@ -34,17 +34,24 @@ class ProjectionExistsGuard extends ConfigurableGuard
 
     public function accept(StatefulSubjectInterface $process_state)
     {
-        $result = $this->findProjection($process_state);
-        if ($result->getTotalCount() > 0) {
-            $projection = $result->getFirstResult();
-            if ($result->getTotalCount() > 1) {
-                // @todo log multiple matches for same oen-id, shouldn't happen.
-            }
+        if ($this->hasOption('expression') && !parent::accept($process_state)) {
+            return false;
+        }
+
+        $projection = $this->findProjection($this->getPayloadIdentifier($process_state));
+        if ($projection) {
+            $execution_context = $process_state->getExecutionContext();
             if ($export_key = $this->options->get('export_to', false)) {
-                $execution_context = $process_state->getExecutionContext();
                 $execution_context->setParameter($export_key, $projection);
             }
-
+            if ($this->options->has('export_as_reference')) {
+                $export_config = $this->options->get('export_as_reference');
+                $embed_type = $export_config->get('reference_embed_type');
+                $execution_context->setParameter(
+                    $export_config->get('export_to'),
+                    [ [ '@type' => $embed_type, 'referenced_identifier' => $projection->getIdentifier() ] ]
+                );
+            }
             return true;
         }
 
@@ -56,9 +63,8 @@ class ProjectionExistsGuard extends ConfigurableGuard
         return static::CLASS;
     }
 
-    protected function findProjection(ProcessStateInterface $process_state)
+    protected function findProjection($identifier)
     {
-        $identifier = $this->getPayloadIdentifier($process_state);
         $query_service = $this->data_access_service->getProjectionQueryServiceByType($this->getProjectionType());
         if ($query_attribute_path = $this->options->get('query_attribute_path', false)) {
             $result = $query_service->find($this->buildQuery($query_attribute_path, $identifier));
@@ -66,7 +72,15 @@ class ProjectionExistsGuard extends ConfigurableGuard
             $result = $query_service->findByIdentifier($identifier);
         }
 
-        return $result;
+        $projection = null;
+        if ($result->getTotalCount() > 0) {
+            $projection = $result->getFirstResult();
+            if ($result->getTotalCount() > 1) {
+                // @todo log multiple matches for same oen-id, shouldn't happen.
+            }
+        }
+
+        return $projection;
     }
 
     protected function getPayloadIdentifier(ProcessStateInterface $process_state)
