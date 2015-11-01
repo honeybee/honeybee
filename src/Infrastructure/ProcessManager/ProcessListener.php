@@ -46,6 +46,10 @@ class ProcessListener extends EventHandler
                     )
                 );
             }
+
+            return $process_state;
         }
+	
+        return null;
     }
 }
