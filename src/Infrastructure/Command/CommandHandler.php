@@ -62,7 +62,6 @@ abstract class CommandHandler extends Object implements CommandHandlerInterface
      */
     public function execute(CommandInterface $command)
     {
-        $this->logger->debug('Executing command "{command}".', [ 'command' => get_class($command) ]);
         // @todo allow providing settings within the commands.xml and use them here
         $max_retries = 3;
         $retry_timeout = 100000;

@@ -65,10 +65,6 @@ class ProjectionUpdater extends EventHandler
         $projection = $this->invokeEventHandler($event, 'on');
 
         if (!$projection) {
-            $this->logger->debug(
-                '[{method}] Handling {event}.',
-                [ 'method' => __METHOD__, 'event' => get_class($event) ]
-            );
             switch (true) {
                 case $event instanceof AggregateRootCreatedEvent:
                     $projection = $this->onAggregateRootCreated($event);

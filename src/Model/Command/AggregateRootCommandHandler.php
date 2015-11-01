@@ -84,18 +84,10 @@ abstract class AggregateRootCommandHandler extends CommandHandler
             $art = $attribute->getRootType();
             if ($attribute instanceof HandlesFileListInterface) {
                 $property_name = $attribute->getFileLocationPropertyName();
-                $this->logger->debug(
-                    '[{method}] Copying files to "{art}" storage for command "{command}" (attribute "{attr}").',
-                    [ 'method' => __METHOD__, 'command' => $command, 'art' => $art->getPrefix(), 'attr' => $attr_name ]
-                );
                 foreach ($attr_data as $file) {
                     $this->copyTempFileToFinalLocation($file[$property_name], $art);
                 }
             } elseif ($attribute instanceof HandlesFileInterface) {
-                $this->logger->debug(
-                    '[{method}] Copying files to "{art}" storage for command "{command}" (attribute "{attr}").',
-                    [ 'method' => __METHOD__, 'command' => $command, 'art' => $art->getPrefix(), 'attr' => $attr_name ]
-                );
                 $this->copyTempFileToFinalLocation($attr_data[$attribute->getFileLocationPropertyName()], $art);
             }
         }
