@@ -49,10 +49,10 @@ class QueryService implements QueryServiceInterface
     public function walkResources(QueryInterface $query, Closure $callback)
     {
         $query_result = $this->find($query);
-        $results = $query_result->getResults();
+        $resources = $query_result->getResults();
 
-        while (count($results) > 0) {
-            foreach ($result['resources'] as $resource) {
+        while (count($resources) > 0) {
+            foreach ($resources as $resource) {
                 $callback($resource);
             }
             $query = $query->createCopyWith([ 'offset' => $query->getOffset() + $query->getLimit() ]);
