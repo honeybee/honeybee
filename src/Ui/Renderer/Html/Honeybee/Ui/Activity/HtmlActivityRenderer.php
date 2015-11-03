@@ -11,15 +11,9 @@ class HtmlActivityRenderer extends ActivityRenderer
         $activity = $this->getPayload('subject');
 
         $default_css = [
-            'button',
-            'button-' . strtolower($activity->getName())
+            'activity',
+            'activity-' . strtolower($activity->getName())
         ];
-        if ($this->getOption('plain_activity')) {
-            $default_css = [
-                'activity',
-                'activity-' . strtolower($activity->getName())
-            ];
-        }
 
         $params = [];
         $params['css'] = $this->getOption('css', $default_css);
@@ -27,8 +21,8 @@ class HtmlActivityRenderer extends ActivityRenderer
         $params['form_parameters'] = $this->getOption('form_parameters', $activity->getUrl()->getParameters());
         $params['form_method'] = $this->getOption('form_method', ($activity->getVerb() === 'read') ? 'GET' : 'POST');
         $params['form_css'] = $this->getOption('form_css');
+        $params['emphasized'] = (bool)$this->getOption('emphasized', false);
 
         return array_replace_recursive(parent::getTemplateParameters(), $params);
     }
 }
-
