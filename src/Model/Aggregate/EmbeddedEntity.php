@@ -26,18 +26,29 @@ abstract class EmbeddedEntity extends Entity
         if (is_callable([$this, $callback_func])) {
             $source_event = $this->$callback_func($event);
             $this->markClean();
-            return $source_event;
+        } elseif ($event instanceof EmbeddedEntityAddedEvent) {
+            $source_event = $this->onEmbeddedEntityAdded($event);
+        } elseif ($event instanceof EmbeddedEntityModifiedEvent) {
+            $source_event = $this->onEmbeddedEntityModified($event);
+        } elseif ($event instanceof EmbeddedEntityRemovedEvent) {
+            $source_event = $this->onEmbeddedEntityRemoved($event);
         } else {
             throw new RuntimeError(
                 sprintf(
                     'Unsupported domain event-type given. Supported default event-types are: %s.',
                     implode(
                         ', ',
-                        [ EmbeddedEntityAddedEvent::CLASS, EmbeddedEntityModifiedEvent::CLASS, EmbeddedEntityRemovedEvent::CLASS ]
+                        [
+                            EmbeddedEntityAddedEvent::CLASS,
+                            EmbeddedEntityModifiedEvent::CLASS,
+                            EmbeddedEntityRemovedEvent::CLASS
+                        ]
                     )
                 )
             );
         }
+
+        return $source_event;
     }
 
     protected function onEmbeddedEntityAdded(EmbeddedEntityAddedEvent $event)
