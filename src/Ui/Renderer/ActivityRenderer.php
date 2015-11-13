@@ -106,7 +106,7 @@ abstract class ActivityRenderer extends Renderer
             // nothing special
         }
 
-        return $this->genUrl($activity, $parameters, $options);
+        return $this->url_generator->generateUrl($activity, $parameters, $options);
     }
 
     /**

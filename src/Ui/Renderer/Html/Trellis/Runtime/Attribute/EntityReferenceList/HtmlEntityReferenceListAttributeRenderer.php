@@ -60,13 +60,13 @@ class HtmlEntityReferenceListAttributeRenderer extends HtmlEmbeddedEntityListAtt
 
             $referenced_type = $this->resource_type_map->getByClassName($embedded_type->getReferencedTypeClass());
             if ($resource->hasValue('identifier')) {
-                $render_embed_uri_tpl = $this->genUrl(
+                $render_embed_uri_tpl = $this->url_generator->generateUrl(
                     'module.resource.embed',
                     [ 'resource' => $resource, 'embed_path' => '{EMBED_PATH}' ],
                     [ 'relative' => true ]
                 );
             } else {
-                $render_embed_uri_tpl = $this->genUrl(
+                $render_embed_uri_tpl = $this->url_generator->generateUrl(
                     'module.embed',
                     [ 'module' => $resource_type, 'embed_path' => '{EMBED_PATH}' ],
                     [ 'relative' => true ]
@@ -80,7 +80,7 @@ class HtmlEntityReferenceListAttributeRenderer extends HtmlEmbeddedEntityListAtt
                     sprintf('search for a %s by %s', $referenced_type->getName(), $suggest_fieldname)
                 ),
                 'render_uri_tpl' => $render_embed_uri_tpl,
-                'suggest_url' => $this->genUrl(
+                'suggest_url' => $this->url_generator->generateUrl(
                     'module.suggestions',
                     [
                         'module' => $referenced_type,

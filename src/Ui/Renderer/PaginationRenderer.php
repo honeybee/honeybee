@@ -35,7 +35,7 @@ abstract class PaginationRenderer extends Renderer
 
         $params = array_merge($params, $pagination->toArray());
 
-        $current_page_url = $this->genUrl(null);
+        $current_page_url = $this->url_generator->generateUrl(null);
         $current_url_parameters = ArrayToolkit::getUrlQueryInRequestFormat($current_page_url);
         unset($current_url_parameters['offset']); // offset is not needed when page is used (see validator)
 
@@ -44,21 +44,21 @@ abstract class PaginationRenderer extends Renderer
         // we add all query parameters of the current URL as hidden GET form inputs to not lose any state on submit
         $params['url_parameters'] = $url_parameters;
 
-        $params['current_page_url'] = $this->genUrl(null, $url_parameters);
+        $params['current_page_url'] = $this->url_generator->generateUrl(null, $url_parameters);
 
-        $params['first_page_url'] = $this->genUrl(null, array_merge($url_parameters, [ 'offset' => 0 ]));
+        $params['first_page_url'] = $this->url_generator->generateUrl(null, array_merge($url_parameters, [ 'offset' => 0 ]));
 
-        $params['last_page_url'] = $this->genUrl(
+        $params['last_page_url'] = $this->url_generator->generateUrl(
             null,
             array_merge($url_parameters, [ 'offset' => $pagination->getLastPageOffset() ])
         );
 
-        $params['next_page_url'] = $this->genUrl(
+        $params['next_page_url'] = $this->url_generator->generateUrl(
             null,
             array_merge($url_parameters, [ 'offset' => $pagination->getNextPageOffset() ])
         );
 
-        $params['prev_page_url'] = $this->genUrl(
+        $params['prev_page_url'] = $this->url_generator->generateUrl(
             null,
             array_merge($url_parameters, [ 'offset' => $pagination->getPrevPageOffset() ])
         );

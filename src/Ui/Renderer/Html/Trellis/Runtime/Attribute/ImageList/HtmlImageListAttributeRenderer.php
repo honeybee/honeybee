@@ -27,7 +27,7 @@ class HtmlImageListAttributeRenderer extends HtmlAttributeRenderer
         $images = [];
         $root_doc = $resource->getRoot() ?: $resource;
         foreach ($params['attribute_value'] as $image) {
-            $original_image_url = $this->genUrl(
+            $original_image_url = $this->url_generator->generateUrl(
                 'module.files.download',
                 [ 'resource' => $root_doc, 'file' => $image->getLocation() ]
             );
@@ -41,8 +41,8 @@ class HtmlImageListAttributeRenderer extends HtmlAttributeRenderer
 
             if ($this->getOption('use_converjon', false)) {
                 $url_params = [ 'file' => $image->getLocation() ];
-                $additional_file_info['thumb_url'] = $this->genUrl($thumbnail_activity, $url_params);
-                $additional_file_info['preview_url'] = $this->genUrl($preview_activity, $url_params);
+                $additional_file_info['thumb_url'] = $this->url_generator->generateUrl($thumbnail_activity, $url_params);
+                $additional_file_info['preview_url'] = $this->url_generator->generateUrl($preview_activity, $url_params);
             }
 
             $images[] = array_merge($image->toNative(), $additional_file_info);
@@ -55,7 +55,7 @@ class HtmlImageListAttributeRenderer extends HtmlAttributeRenderer
         $params['resource_type_name'] = $root_doc->getType()->getName();
         $params['resource_identifier'] = $root_doc->getIdentifier();
         $params['upload_input_name'] = $upload_input_name;
-        $params['upload_url'] = $this->genUrl('module.files.upload', [ 'resource' => $root_doc ]);
+        $params['upload_url'] = $this->url_generator->generateUrl('module.files.upload', [ 'resource' => $root_doc ]);
 
         return $params;
     }

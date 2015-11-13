@@ -25,7 +25,7 @@ class ConsoleActivityRenderer extends ActivityRenderer
             $parameters['module'] = $this->getPayload('module');
         }
 
-        return $this->genUrl($route_name, $parameters);
+        return $this->url_generator->generateUrl($route_name, $parameters);
     }
 }
 
