@@ -99,7 +99,7 @@ class WorkflowActivityService extends Object
                 'type' => Activity::TYPE_WORKFLOW,
                 'description' => sprintf('%s.description', $workflow_event),
                 'verb' => $request_method,
-                'rels' => [ $workflow_event ],
+                'rels' => [ $workflow_event,  sprintf('%s_resource', $workflow_event) ],
                 'settings' => new Settings([ 'form_id' => 'randomId-' . rand() ]),
                 'url' => new Url(
                     [
