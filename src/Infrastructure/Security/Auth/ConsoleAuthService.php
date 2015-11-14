@@ -29,7 +29,7 @@ class ConsoleAuthService implements AuthServiceInterface
      * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      * @codingStandardsIgnoreStart
      */
-    public function authenticate($username, $password, $options = array()) // @codingStandardsIgnoreEnd
+    public function authenticate($username, $password, $options = []) // @codingStandardsIgnoreEnd
     {
         $system_username = get_current_user();
         $role_map = $this->config->get('role_map');
@@ -38,15 +38,15 @@ class ConsoleAuthService implements AuthServiceInterface
             return new AuthResponse(
                 AuthResponse::STATE_AUTHORIZED,
                 "authenticaton success",
-                array('acl_role' => $role_map[$system_username])
+                [ 'acl_role' => $role_map[$system_username] ]
             );
         }
 
         return new AuthResponse(
             AuthResponse::STATE_UNAUTHORIZED,
             "authentication failed",
-            array(),
-            array('Unable to map system user to honeybee role.')
+            [],
+            [ 'Unable to map system user to honeybee role.' ]
         );
     }
 }
