@@ -29,6 +29,11 @@ class ConnectorService implements ConnectorServiceInterface
         return $this->connector_map->getItem($name);
     }
 
+    public function getConnectorMap()
+    {
+        return $this->connector_map;
+    }
+
     /**
      * @param string $name name of connector to return the connection from
      *
