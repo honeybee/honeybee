@@ -20,8 +20,14 @@ class HtmlImageListAttributeRenderer extends HtmlAttributeRenderer
         $thumbnail_activity = null;
         $preview_activity = null;
         if ($this->getOption('use_converjon', false)) {
-            $thumbnail_activity = $this->activity_service->getActivity('converjon', 'thumbnail');
-            $preview_activity = $this->activity_service->getActivity('converjon', 'preview');
+            $thumbnail_activity = $this->activity_service->getActivity(
+                $this->getOption('thumbnail_activity_scope', 'converjon'),
+                $this->getOption('thumbnail_activity_name', 'thumbnail')
+            );
+            $preview_activity = $this->activity_service->getActivity(
+                $this->getOption('preview_activity_scope', 'converjon'),
+                $this->getOption('preview_activity_name', 'preview')
+            );
         }
 
         $images = [];
