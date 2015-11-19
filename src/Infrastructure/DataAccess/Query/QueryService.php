@@ -57,7 +57,7 @@ class QueryService implements QueryServiceInterface
             }
             $query = $query->createCopyWith([ 'offset' => $query->getOffset() + $query->getLimit() ]);
             $query_result = $this->find($query);
-            $results = $query_result->getResults();
+            $resources = $query_result->getResults();
         }
     }
 
