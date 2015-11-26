@@ -44,6 +44,7 @@ abstract class Connector implements ConnectorInterface
     {
         if (!$this->isConnected()) {
             $this->connection = $this->connect();
+            $this->is_connected = true;
         }
 
         return $this->connection;
