@@ -132,9 +132,12 @@ class HtmlActivityMapRenderer extends ActivityMapRenderer
         $params['toggle_css'] = $this->getOption('css');
         $params['toggle_html_attributes'] = $this->getOption('toggle_html_attributes');
 
+        $params['default_activity_rels'] = [];
+        // when it's a list or splitbutton => rendered default activity is being used as "label"
         $default_label = $dropdown_label;
         if (!$this->getOption('as_dropdown', false)) {
             $default_label = $rendered_activities[$default_activity_name];
+            $params['default_activity_rels'] = $default_activity->getRels();
         }
         $params['default_content'] = $this->getOption('default_content', $default_label);
         $params['default_css'] = $this->getOption('default_css');
