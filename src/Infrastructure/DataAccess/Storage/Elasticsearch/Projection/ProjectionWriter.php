@@ -17,6 +17,9 @@ class ProjectionWriter extends ElasticsearchStorageWriter
             );
         }
 
+$time = microtime(true);
         $this->writeData($resource->getIdentifier(), $resource->toArray(), $settings);
+$now = microtime(true);
+error_log('Elasticsearch ProjectionWriter::write w/ toArray ' . $resource->getIdentifier() . ': ' . round(($now - $time) * 1000, 1) . 'ms');
     }
 }

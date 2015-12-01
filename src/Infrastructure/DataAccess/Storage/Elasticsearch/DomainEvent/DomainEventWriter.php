@@ -21,6 +21,9 @@ class DomainEventWriter extends ElasticsearchStorageWriter
             );
         }
 
+$time = microtime(true);
         $this->writeData($domain_event->getUuid(), $domain_event->toArray(), $settings);
+$now = microtime(true);
+error_log('Elasticsearch DomainEventWriter::write w/ toArray ' . $domain_event->getUuid() . ': ' . round(($now - $time) * 1000, 1) . 'ms');
     }
 }

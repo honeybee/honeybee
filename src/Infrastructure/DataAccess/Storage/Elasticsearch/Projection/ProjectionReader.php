@@ -49,8 +49,11 @@ class ProjectionReader extends ElasticsearchStorage implements StorageReaderInte
             $query_params['from'] = $this->offset;
         }
 
+$time = microtime(true);
         $raw_result = $this->connector->getConnection()->search($query_params);
+$now = microtime(true);
         $result_hits = $raw_result['hits'];
+error_log('Elasticsearch ProjectionReader::readAll SEARCH: ' . $result_hits['total'] . ' hits took ' . round(($now - $time) * 1000, 1) . 'ms');
         foreach ($result_hits['hits'] as $data_row) {
             $data[] = $this->resource_type->createEntity($data_row['_source']);
         }
@@ -67,6 +70,7 @@ class ProjectionReader extends ElasticsearchStorage implements StorageReaderInte
     public function read($identifier, SettingsInterface $settings = null)
     {
         try {
+$time = microtime(true);
             $result = $this->connector->getConnection()->get(
                 [
                     'index' => $this->getIndex(),
@@ -74,12 +78,18 @@ class ProjectionReader extends ElasticsearchStorage implements StorageReaderInte
                     'id' => $identifier
                 ]
             );
+$now = microtime(true);
+error_log('Elasticsearch ProjectionReader::read GET ' . $identifier . ': ' . round(($now - $time) * 1000, 1) . 'ms');
         } catch (Missing404Exception $missing_error) {
 var_dump("MISS: " . $this->getIndex() . ', type: ' . $this->getType() . ', id: ' . $identifier . ', msg: ' . $missing_error->getMessage());
             return null;
         }
 
-        return $this->resource_type->createEntity($result['_source']);
+$time = microtime(true);
+        $entity = $this->resource_type->createEntity($result['_source']);
+$now = microtime(true);
+error_log('Elasticsearch ProjectionReader::read createEntity ' . $identifier . ': ' . round(($now - $time) * 1000, 1) . 'ms');
+        return $entity;
     }
 
     public function getIterator()

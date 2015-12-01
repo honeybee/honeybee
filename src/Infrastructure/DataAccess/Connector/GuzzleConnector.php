@@ -4,6 +4,8 @@ namespace Honeybee\Infrastructure\DataAccess\Connector;
 
 use Honeybee\Common\Error\RuntimeError;
 use Guzzle\Http\Client;
+use Guzzle\Common\Event;
+use Guzzle\Plugin\Log\LogPlugin;
 
 class GuzzleConnector extends Connector
 {
@@ -33,8 +35,8 @@ class GuzzleConnector extends Connector
         if ($this->config->has('default_headers')) {
             $request_options['headers'] = (array)$this->config->get('default_headers');
         }
-	
-	if ($this->config->has('default_options')) {
+
+        if ($this->config->has('default_options')) {
             $request_options = array_merge($request_options, (array)$this->config->get('default_options', []));
         }
         $client_options = [];
@@ -42,6 +44,16 @@ class GuzzleConnector extends Connector
             $client_options['request.options'] = $request_options;
         }
 
-        return new Client($base_uri, $client_options);
+$time = microtime(true);
+        $client = new Client($base_uri, $client_options);
+$log_plugin = LogPlugin::getDebugPlugin(false);
+$client->addSubscriber($log_plugin);
+$client->getEventDispatcher()->addListener('client.create_request', function (Event $e) {
+    error_log('Client object: ' . spl_object_hash($e['client']));
+    error_log("Request object: {$e['request']}");
+});
+$now = microtime(true);
+error_log('GuzzleConnector new client creation: ' . $base_uri . ' ' . round(($now - $time) * 1000, 1) . 'ms');
+        return $client;
     }
 }

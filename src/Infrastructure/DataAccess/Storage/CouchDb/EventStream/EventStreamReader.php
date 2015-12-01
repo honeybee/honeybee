@@ -43,7 +43,11 @@ class EventStreamReader extends CouchDbStorage implements StorageReaderInterface
                 $this->config->get('design_doc'),
                 $this->config->get('view_name', 'event_stream')
             );
+
+$time = microtime(true);
             $result_data = $this->buildRequestFor($view_path, self::METHOD_GET, [], $view_params)->send()->json();
+$now = microtime(true);
+error_log('CouchDB GET ' . $view_path . ': ' . round(($now - $time) * 1000, 1) . 'ms');
         } catch (BadResponseException $error) {
             if ($error->getResponse()->getStatusCode() === 404) {
                 return null;
@@ -77,6 +81,7 @@ class EventStreamReader extends CouchDbStorage implements StorageReaderInterface
 
     protected function createEventStream($identifier, array $event_stream_data)
     {
+$time = microtime(true);
         $events = new AggregateRootEventList();
         foreach ($event_stream_data as $event_data) {
             $event_data = $event_data['doc'];
@@ -89,7 +94,11 @@ class EventStreamReader extends CouchDbStorage implements StorageReaderInterface
         $data['identifier'] = $identifier;
         $data['events'] = $events;
 
-        return new EventStream($data);
+        $event_stream = new EventStream($data);
+
+$now = microtime(true);
+error_log('EventStream building for ' . $identifier . ': ' . round(($now - $time) * 1000, 1) . 'ms');
+        return $event_stream;
     }
 
     protected function fetchEventStreamIdentifiers()

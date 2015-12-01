@@ -17,7 +17,10 @@ class DomainEventReader extends CouchDbStorage implements StorageReaderInterface
     {
         try {
             $path = sprintf('/%s', $identifier);
+$time = microtime(true);
             $result_data = $this->buildRequestFor($path, self::METHOD_GET)->send()->json();
+$now = microtime(true);
+error_log('CouchDB DomainEventReader::read GET ' . $path . ': ' . round(($now - $time) * 1000, 1) . 'ms');
         } catch (BadResponseException $error) {
             if ($error->getResponse()->getStatusCode() === 404) {
                 return null;
@@ -57,7 +60,10 @@ class DomainEventReader extends CouchDbStorage implements StorageReaderInterface
             $this->config->get('design_doc'),
             $this->config->get('view_name', 'events_by_timestamp')
         );
+$time = microtime(true);
         $result_data = $this->buildRequestFor($view_path, self::METHOD_GET, [], $view_params)->send()->json();
+$now = microtime(true);
+error_log('CouchDB DomainEventReader::readAll GET ' . $view_path . ': ' . round(($now - $time) * 1000, 1) . 'ms');
 
         $events = [];
         foreach ($result_data['rows'] as $event_data) {

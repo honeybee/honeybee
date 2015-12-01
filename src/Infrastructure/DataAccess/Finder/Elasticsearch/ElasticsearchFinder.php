@@ -26,8 +26,23 @@ abstract class ElasticsearchFinder extends Finder
         }
 
         try {
+            if ($this->config->get('log_connection_time', false) === true) {
+                $time = microtime(true);
+            }
             $raw_result = $this->connector->getConnection()->get($query);
+            if ($this->config->get('log_connection_time', false) === true) {
+                $now = microtime(true);
+                $this->logger->info('['.__METHOD__.'] get ' . $identifier . ': ' . round(($now - $time) * 1000, 2) . 'ms');
+            }
+
+            if ($this->config->get('log_result_mapping_time', false) === true) {
+                $time = microtime(true);
+            }
             $mapped_results = $this->mapResultData($raw_result);
+            if ($this->config->get('log_result_mapping_time', false) === true) {
+                $now = microtime(true);
+                $this->logger->info('['.__METHOD__.'] get – mapping of ' . count($mapped_results) . ' results: ' . round(($now - $time) * 1000, 2) . 'ms');
+            }
         } catch (Missing404Exception $error) {
             $mapped_results = [];
         }
@@ -51,9 +66,23 @@ abstract class ElasticsearchFinder extends Finder
             $this->logger->debug('['.__METHOD__.'] mget query = ' . json_encode($query, JSON_PRETTY_PRINT));
         }
 
+        if ($this->config->get('log_connection_time', false) === true) {
+            $time = microtime(true);
+        }
         $raw_result = $this->connector->getConnection()->mget($query);
+        if ($this->config->get('log_connection_time', false) === true) {
+            $now = microtime(true);
+            $this->logger->info('['.__METHOD__.'] mget ' . count($identifiers) . ' ids: ' . round(($now - $time) * 1000, 2) . 'ms');
+        }
 
+        if ($this->config->get('log_result_mapping_time', false) === true) {
+            $time = microtime(true);
+        }
         $mapped_results = $this->mapResultData($raw_result);
+        if ($this->config->get('log_result_mapping_time', false) === true) {
+            $now = microtime(true);
+            $this->logger->info('['.__METHOD__.'] mget – mapping of ' . count($mapped_results) . ' results: ' . round(($now - $time) * 1000, 2) . 'ms');
+        }
 
         return new FinderResult($mapped_results, count($mapped_results));
     }
@@ -67,10 +96,26 @@ abstract class ElasticsearchFinder extends Finder
             $this->logger->debug('['.__METHOD__.'] search query = ' . json_encode($query, JSON_PRETTY_PRINT));
         }
 
+        if ($this->config->get('log_connection_time', false) === true) {
+            $time = microtime(true);
+        }
         $raw_result = $this->connector->getConnection()->search($query);
+        if ($this->config->get('log_connection_time', false) === true) {
+            $now = microtime(true);
+            $this->logger->info('['.__METHOD__.'] search: ' . round(($now - $time) * 1000, 2) . 'ms');
+        }
+
+        if ($this->config->get('log_result_mapping_time', false) === true) {
+            $time = microtime(true);
+        }
+        $mapped_results = $this->mapResultData($raw_result);
+        if ($this->config->get('log_result_mapping_time', false) === true) {
+            $now = microtime(true);
+            $this->logger->info('['.__METHOD__.'] search – mapping of ' . count($mapped_results) . ' results: ' . round(($now - $time) * 1000, 2) . 'ms');
+        }
 
         return new FinderResult(
-            $this->mapResultData($raw_result),
+            $mapped_results,
             $raw_result['hits']['total'],
             $query['from'] ?: 0
         );
