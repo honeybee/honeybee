@@ -123,6 +123,7 @@ class HtmlActivityMapRenderer extends ActivityMapRenderer
 
         $default_css = 'activity-map';
         $params['css'] = $this->getOption('css', $default_css);
+        $params['emphasized'] = $this->getOption('emphasized', false);
 
         $params['trigger_id'] = $this->getOption('trigger_id');
         $params['trigger_css'] = $this->getOption('trigger_css');
