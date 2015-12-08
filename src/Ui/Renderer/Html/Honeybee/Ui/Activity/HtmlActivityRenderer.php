@@ -21,6 +21,7 @@ class HtmlActivityRenderer extends ActivityRenderer
         $params['form_parameters'] = $this->getOption('form_parameters', $activity->getUrl()->getParameters());
         $params['form_method'] = $this->getOption('form_method', ($activity->getVerb() === 'read') ? 'GET' : 'POST');
         $params['form_css'] = $this->getOption('form_css');
+        $params['activity_map_options'] = $this->getOption('activity_map_options', []);
 
         return array_replace_recursive(parent::getTemplateParameters(), $params);
     }

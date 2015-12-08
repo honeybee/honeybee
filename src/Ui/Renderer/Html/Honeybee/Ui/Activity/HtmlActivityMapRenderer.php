@@ -32,11 +32,6 @@ class HtmlActivityMapRenderer extends ActivityMapRenderer
 
     protected function getTemplateParameters()
     {
-        // activities in a dropdown or similar should be plain activities instead of buttons
-        $settings = $this->settings->toArray();
-        $settings['plain_activity'] = true;
-        $this->settings = new Settings($settings);
-
         $params = parent::getTemplateParameters();
 
         $original_activity_map = $this->getPayload('subject');
@@ -99,18 +94,34 @@ class HtmlActivityMapRenderer extends ActivityMapRenderer
                 $additional_payload['module'] = $this->payload->get('module');
             }
 
+            // retrieve config for specific activity
+            $specific_activity_options_key = 'activity.' . $activity->getName();
+            $default_config = $this->getOption($specific_activity_options_key, new Settings());
+
             $activity_renderer_config = $this->view_config_service->getRendererConfig(
                 $this->getOption('view_scope'),
                 $this->output_format,
-                'activity.' . $activity->getName(),
-                $this->config->toArray()
+                $specific_activity_options_key,
+                $default_config->toArray()
             );
+
+            // propagate subset of activitymap options to activities
+            $activity_map_option_propagated_keys = array_flip([
+                'as_dropdown',
+                'as_list',
+                'default_activity_name',
+                'emphasized',
+                'toggle_disabled'
+            ]);
+            $options = $this->getOptions();
+            $activity_map_propagated_options = array_intersect_key($options, $activity_map_option_propagated_keys);
+
             $rendered_activities[$name] = $this->renderer_service->renderSubject(
                 $activity,
                 $this->output_format,
                 $activity_renderer_config,
                 $additional_payload,
-                $this->settings
+                new Settings([ 'activity_map_options' => $activity_map_propagated_options ])
             );
         }
 
@@ -138,6 +149,7 @@ class HtmlActivityMapRenderer extends ActivityMapRenderer
         $default_label = $dropdown_label;
         if (!$this->getOption('as_dropdown', false)) {
             $default_label = $rendered_activities[$default_activity_name];
+            // @todo Should default-activity rels be used just when a replacement default content/label is not provided?
             $params['default_activity_rels'] = $default_activity->getRels();
         }
         $params['default_content'] = $this->getOption('default_content', $default_label);
