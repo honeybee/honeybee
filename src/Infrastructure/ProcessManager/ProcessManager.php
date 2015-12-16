@@ -58,7 +58,7 @@ class ProcessManager implements ProcessManagerInterface
         if (!$process->hasStarted($process_state)) {
             $this->runProcess($process_state, $event);
         } else {
-            throw new RuntimeError('Process has allready started and may not not be started again.');
+            throw new RuntimeError('Process has already started and may not not be started again.');
         }
 
         return $process_state;
@@ -88,7 +88,7 @@ class ProcessManager implements ProcessManagerInterface
                 }
             }
         } else {
-            throw new RuntimeError('The given process has allready completed and may not be run again.');
+            throw new RuntimeError('The given process has already completed and may not be run again.');
         }
         if ($this->hasCompleted(($process_state))) {
             $this->purgeProcessState($process_state);
@@ -108,7 +108,7 @@ class ProcessManager implements ProcessManagerInterface
             if (!$process_state || $process_state->getProcessName() !== $process_name) {
                 throw new RuntimeError(
                     sprintf(
-                        'Given process name "%s" coming from event meta-data does not match the loaded one : "%s"',
+                        'Given process name "%s" coming from event meta-data does not match the loaded one: "%s"',
                         $process_name,
                         $process_state->getProcessName()
                     )
