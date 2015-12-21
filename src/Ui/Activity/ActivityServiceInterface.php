@@ -23,4 +23,16 @@ interface ActivityServiceInterface
      * @return ActivityInterface|null
      */
     public function getActivity($scope, $name);
+
+    /**
+     * Returns the activity's URI with the given parameters/options applied. Takes the type of the Url
+     * of the activity into account.
+     *
+     * @param ActivityInterface $activity activity (with a URL and parameters)
+     * @param array $parameters parameters to merge/replace into the default URL parameters of the activity
+     * @param array $options options to take into account when generating the URL
+     *
+     * @return string resulting URI
+     */
+    public function getUri(ActivityInterface $activity, array $parameters = [], array $options = []);
 }

@@ -2,12 +2,14 @@
 
 namespace Honeybee\Ui\Activity;
 
-use Trellis\Common\Object;
-use Honeybee\Model\Aggregate\AggregateRootTypeMap;
-use Honeybee\Common\ScopeKeyInterface;
-use Honeybee\Common\GenericScopeKey;
-use Honeybee\Common\Error\RuntimeError;
 use AgaviContext;
+use Honeybee\Common\Error\RuntimeError;
+use Honeybee\Common\GenericScopeKey;
+use Honeybee\Common\ScopeKeyInterface;
+use Honeybee\Model\Aggregate\AggregateRootTypeMap;
+use Honeybee\Ui\UrlGeneratorInterface;
+use QL\UriTemplate\UriTemplate;
+use Trellis\Common\Object;
 
 class ActivityService extends Object implements ActivityServiceInterface
 {
@@ -24,11 +26,13 @@ class ActivityService extends Object implements ActivityServiceInterface
     public function __construct(
         WorkflowActivityService $workflow_activity_service,
         ActivityContainerMap $activity_container_map,
-        AggregateRootTypeMap $aggregate_root_type_map
+        AggregateRootTypeMap $aggregate_root_type_map,
+        UrlGeneratorInterface $url_generator
     ) {
         $this->activity_container_map = $activity_container_map;
         $this->workflow_activity_service = $workflow_activity_service;
         $this->aggregate_root_type_map = $aggregate_root_type_map;
+        $this->url_generator = $url_generator;
     }
 
     public function getContainers()
@@ -93,6 +97,34 @@ class ActivityService extends Object implements ActivityServiceInterface
         $container_state = [ 'scope' => $scope_key->getScopeKey(), 'activity_map' => $activity_map ];
 
         return new ActivityContainer($container_state);
+    }
+
+    /**
+     * Returns the activity's URI with the given parameters/options applied. Takes the type of the Url
+     * of the activity into account.
+     *
+     * @param ActivityInterface $activity activity (with a URL and parameters)
+     * @param array $parameters parameters to merge/replace into the default URL parameters of the activity
+     * @param array $options options to take into account when generating the URL
+     *
+     * @return string resulting URI
+     */
+    public function getUri(ActivityInterface $activity, array $parameters = [], array $options = [])
+    {
+        $url = $activity->getUrl();
+        $params = array_replace_recursive($url->getParameters(), $parameters);
+
+        $resulting_uri = '';
+        if ($url->getType() === Url::TYPE_ROUTE) {
+            $resulting_uri = $this->url_generator->generateUrl($url->getValue(), $params, $options);
+        } elseif ($url->getType() === Url::TYPE_URI_TEMPLATE) {
+            $uri_template = new UriTemplate($url->getValue());
+            $resulting_uri = $uri_template->expand($params);
+        } else {
+            $resulting_uri = $url->__toString(); // TODO apply params here as well as query params? syntax?
+        }
+
+        return $resulting_uri;
     }
 
     protected function resolveScopeKey($scope)
