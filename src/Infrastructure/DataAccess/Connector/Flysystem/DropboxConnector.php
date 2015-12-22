@@ -3,11 +3,10 @@
 namespace Honeybee\Infrastructure\DataAccess\Connector\Flysystem;
 
 use Dropbox\Client;
-use Honeybee\Infrastructure\DataAccess\Connector\Connector;
 use League\Flysystem\Dropbox\DropboxAdapter;
 use League\Flysystem\Filesystem;
 
-class DropboxConnector extends Connector
+class DropboxConnector extends AbstractFlysystemConnector
 {
     protected $client;
     protected $adapter;

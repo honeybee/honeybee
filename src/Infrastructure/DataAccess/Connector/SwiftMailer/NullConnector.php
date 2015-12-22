@@ -2,8 +2,10 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Connector\SwiftMailer;
 
+use Exception;
 use Honeybee\Common\Error\ConfigError;
 use Honeybee\Infrastructure\DataAccess\Connector\Connector;
+use Honeybee\Infrastructure\DataAccess\Connector\Status;
 use Swift_Mailer;
 use Swift_NullTransport;
 
@@ -36,5 +38,23 @@ class NullConnector extends Connector
     public function getTransport()
     {
         return $this->transport;
+    }
+
+    /**
+     * @return Status of this connector
+     */
+    public function getStatus()
+    {
+        if ($this->config->has('fake_status')) {
+            return new Status($this, $this->config->get('fake_status'));
+        }
+
+        try {
+            $this->getConnection();
+            return Status::working($this);
+        } catch (Exception $e) {
+            error_log('[' . static::CLASS . '] Null mailer connection failed: ' . $e->getTraceAsString());
+            return Status::failing($this, [ 'message' => 'Exception on creating the mailer: ' . $e->getMessage() ]);
+        }
     }
 }

@@ -3,18 +3,17 @@
 namespace Honeybee\Infrastructure\DataAccess\Connector\Flysystem;
 
 use Aws\S3\S3Client;
-use Honeybee\Infrastructure\DataAccess\Connector\Connector;
 use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use League\Flysystem\Filesystem;
 
-class AwsS3Connector extends Connector
+class AwsS3Connector extends AbstractFlysystemConnector
 {
     protected $client;
     protected $adapter;
     protected $filesystem;
 
     /**
-     * @return Filesystem with a AWS S3 adapter
+     * @return Filesystem with AWS S3 adapter
      */
     public function connect()
     {

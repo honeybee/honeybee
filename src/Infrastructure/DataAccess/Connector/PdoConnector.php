@@ -14,6 +14,8 @@ class PdoConnector extends Connector
 
     public function connect()
     {
+        $this->needs('adapter')->needs('database')->needs('port')->needs('user')->needs('password');
+
         $adapter = $this->config->get('adapter');
         $host = $this->config->get('host', self::DEFAULT_HOST);
         $port = $this->config->get('port');
@@ -25,10 +27,5 @@ class PdoConnector extends Connector
         $database_password = $this->config->get('password');
 
         return new PDO($connection_dsn, $database_password, $database_password);
-    }
-
-    protected function verifyConfiguration()
-    {
-        // @todo throw exceptions when database etc are missing
     }
 }

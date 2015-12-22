@@ -2,8 +2,6 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Connector\Flysystem;
 
-use Honeybee\Infrastructure\DataAccess\Connector\Connector;
-use Honeybee\Common\Error\ConfigError;
 use League\Flysystem\Filesystem;
 use League\Flysystem\Plugin\EmptyDir;
 use League\Flysystem\Plugin\GetWithMetadata;
@@ -11,9 +9,10 @@ use League\Flysystem\Plugin\ListFiles;
 use League\Flysystem\Plugin\ListPaths;
 use League\Flysystem\Plugin\ListWith;
 
-class LocalConnector extends Connector
+class LocalConnector extends AbstractFlysystemConnector
 {
     protected $adapter;
+    protected $filesystem;
 
     /**
      * @return Filesystem with a Local adapter

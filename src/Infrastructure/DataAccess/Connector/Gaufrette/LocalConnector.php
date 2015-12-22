@@ -6,7 +6,6 @@ use Gaufrette\Adapter;
 use Gaufrette\Adapter\Local;
 use Gaufrette\Filesystem;
 use Honeybee\Infrastructure\DataAccess\Connector\Connector;
-use Honeybee\Common\Error\ConfigError;
 
 class LocalConnector extends Connector
 {
@@ -17,9 +16,7 @@ class LocalConnector extends Connector
      */
     public function connect()
     {
-        if (!$this->config->has('directory')) {
-            throw new ConfigError('There must be a "directory" setting that defines where to store files.');
-        }
+        $this->needs('directory');
 
         $mode = $this->config->get('mode', '0644');
         if (is_string($mode)) {
