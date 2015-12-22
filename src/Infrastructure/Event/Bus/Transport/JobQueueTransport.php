@@ -36,10 +36,10 @@ class JobQueueTransport extends EventTransport
         $this->job_service->dispatch(
             $this->job_service->createJob($job_state),
             new Settings(
-                array(
-                    'route_key' => $this->queue_name ?: $event->getType(),
+                [
+                    'route_key' => $this->queue_name,
                     'exchange' => $this->exchange
-                )
+                ]
             )
         );
     }

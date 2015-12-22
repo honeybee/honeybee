@@ -49,7 +49,7 @@ class Worker implements WorkerInterface
 
         $bindings = (array)$this->config->get('bindings', []);
         if (empty($bindings)) {
-            $channel->queue_bind($queue_name, $exchange_name);
+            $channel->queue_bind($queue_name, $exchange_name, 'default');
         } else {
             foreach ($bindings as $binding) {
                 $channel->queue_bind($queue_name, $exchange_name, $binding);

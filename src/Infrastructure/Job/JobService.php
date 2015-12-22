@@ -52,7 +52,7 @@ class JobService implements JobServiceInterface
         $message_payload = json_encode($job->toArray());
         $message = new AMQPMessage($message_payload, [ 'delivery_mode' => 2 ]);
 
-        $this->channel->basic_publish($message, $exchange_name);
+        $this->channel->basic_publish($message, $exchange_name, $settings->get('route_key', 'default'));
     }
 
     public function createJob(array $job_state)
