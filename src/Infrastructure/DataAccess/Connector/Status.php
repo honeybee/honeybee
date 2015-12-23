@@ -11,7 +11,7 @@ final class Status implements JsonSerializable
     const FAILING = 'FAILING';
     const UNKNOWN = 'UNKNOWN';
 
-    public $states = [
+    public static $states = [
         self::WORKING,
         self::FAILING,
         self::UNKNOWN
@@ -23,42 +23,47 @@ final class Status implements JsonSerializable
 
     protected $status;
 
-    protected $info = [];
+    protected $details = [];
 
-    public function __construct(ConnectorInterface $connector, $status, array $info = [])
+    /**
+     * @param ConnectorInterface $connector
+     * @param string $status one of the known constants: WORKING, FAILING, UNKNOWN
+     * @param array $details additional information
+     */
+    public function __construct(ConnectorInterface $connector, $status, array $details = [])
     {
-        if (!is_string($status) || (is_string($status) && !in_array($status, $this->states, true))) {
-            throw new RuntimeError('Status must be a string out of constants: WORKING, FAILING or UNKNOWN.');
+        if (!is_string($status) || (is_string($status) && !in_array($status, self::$states, true))) {
+            throw new RuntimeError('Status must be one of the known states: WORKING, FAILING or UNKNOWN.');
         }
 
         $this->connection_name = $connector->getName();
         $this->implementor = get_class($connector);
         $this->status = $status;
-        $this->info = $info;
+        $this->details = $details;
     }
 
     /**
-     * @return Status new instance with status WORKING and given info
+     * @return Status new instance with status WORKING and given details
      */
-    public static function working(ConnectorInterface $connector, array $info = [])
+    public static function working(ConnectorInterface $connector, array $details = [])
     {
-        return new self($connector, self::WORKING, $info);
+        return new self($connector, self::WORKING, $details);
     }
 
     /**
-     * @return Status new instance with status FAILING and given info
+     * @return Status new instance with status FAILING and given details
      */
-    public static function failing(ConnectorInterface $connector, array $info = [])
+    public static function failing(ConnectorInterface $connector, array $details = [])
     {
-        return new self($connector, self::FAILING, $info);
+        return new self($connector, self::FAILING, $details);
     }
 
     /**
-     * @return Status new instance with status UNKNOWN and given info
+     * @return Status new instance with status UNKNOWN and given details
      */
-    public static function unknown(ConnectorInterface $connector, array $info = [])
+    public static function unknown(ConnectorInterface $connector, array $details = [])
     {
-        return new self($connector, self::UNKNOWN, $info);
+        return new self($connector, self::UNKNOWN, $details);
     }
 
     /**
@@ -112,9 +117,9 @@ final class Status implements JsonSerializable
     /**
      * @return array additional information about the status (if applicable/available)
      */
-    public function getInfo()
+    public function getDetails()
     {
-        return $this->info;
+        return $this->details;
     }
 
     /**
@@ -126,9 +131,9 @@ final class Status implements JsonSerializable
     }
 
     /**
-     * Returns the settings as an associative array.
+     * Returns the internal information an associative array.
      *
-     * @return array with all settings
+     * @return array
      */
     public function toArray()
     {
@@ -136,7 +141,7 @@ final class Status implements JsonSerializable
             'status' => $this->status,
             'connection_name' => $this->connection_name,
             'implementor' => $this->implementor,
-            'info' => $this->info
+            'details' => $this->details
         ];
     }
 
