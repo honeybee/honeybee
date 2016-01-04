@@ -33,6 +33,8 @@ class StatusReport implements JsonSerializable
     /**
      * Generates a new StatusReport by getting the Status from all known connections.
      *
+     * @todo Should only specific exceptions be catched when getStatus() is called on the connectors? Rethrow?
+     *
      * @param ConnectorMap $connector_map
      *
      * @return StatusReport
