@@ -13,7 +13,7 @@ class ElasticsearchConnector extends Connector
     /**
      * @return Client
      */
-    public function connect()
+    protected function connect()
     {
         $connection_dsn = sprintf(
             '%s:%d',

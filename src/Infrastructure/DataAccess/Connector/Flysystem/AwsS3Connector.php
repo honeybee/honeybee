@@ -15,7 +15,7 @@ class AwsS3Connector extends AbstractFlysystemConnector
     /**
      * @return Filesystem with AWS S3 adapter
      */
-    public function connect()
+    protected function connect()
     {
         $this->needs('key')
             ->needs('secret')

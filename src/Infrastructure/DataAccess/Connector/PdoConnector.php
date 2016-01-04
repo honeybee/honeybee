@@ -12,7 +12,7 @@ class PdoConnector extends Connector
 
     const DEFAULT_CHARSET = 'UTF8';
 
-    public function connect()
+    protected function connect()
     {
         $this->needs('adapter')->needs('database')->needs('port')->needs('user')->needs('password');
 

@@ -15,7 +15,7 @@ class DropboxConnector extends AbstractFlysystemConnector
     /**
      * @return Filesystem with a Dropbox adapter
      */
-    public function connect()
+    protected function connect()
     {
         $this->needs('access_token')->needs('app_id')->needs('path_prefix');
 

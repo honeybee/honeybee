@@ -21,7 +21,7 @@ class NullConnector extends Connector
     /**
      * @return Swift_Mailer
      */
-    public function connect()
+    protected function connect()
     {
         $this->transport = Swift_NullTransport::newInstance();
 

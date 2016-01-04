@@ -35,7 +35,7 @@ class SmtpConnector extends Connector
     /**
      * @return Swift_Mailer with a Swift_SmptTransport
      */
-    public function connect()
+    protected function connect()
     {
         $this->needs('host')->needs('username')->needs('password');
 

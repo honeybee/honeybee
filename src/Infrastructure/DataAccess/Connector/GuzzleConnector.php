@@ -11,7 +11,7 @@ class GuzzleConnector extends Connector
     /**
      * @return Client
      */
-    public function connect()
+    protected function connect()
     {
         $base_uri = $this->config->get('base_uri');
         if ($this->config->has('transport') && $this->config->has('host') && $this->config->has('port')) {

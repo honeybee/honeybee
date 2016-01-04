@@ -17,7 +17,7 @@ class LocalConnector extends AbstractFlysystemConnector
     /**
      * @return Filesystem with a Local adapter
      */
-    public function connect()
+    protected function connect()
     {
         $this->needs('directory');
 

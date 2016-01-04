@@ -21,7 +21,7 @@ abstract class Connector implements ConnectorInterface
      *
      * @return mixed the created connection/client
      */
-    abstract public function connect();
+    abstract protected function connect();
 
     /**
      * @param string $name name of connection

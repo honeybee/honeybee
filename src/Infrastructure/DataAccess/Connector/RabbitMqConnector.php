@@ -13,7 +13,7 @@ class RabbitMqConnector extends Connector
     /**
      * @return mixed
      */
-    public function connect()
+    protected function connect()
     {
         // don't recreate the connection by default
         if ($this->isConnected()) {
