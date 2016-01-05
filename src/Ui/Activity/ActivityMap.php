@@ -10,7 +10,7 @@ class ActivityMap extends TypedMap implements UniqueCollectionInterface
     public function filterByUrlParameter($name, $value)
     {
         return $this->filter(
-            function($activity) use ($name, $value) {
+            function ($activity) use ($name, $value) {
                 return $activity->getUrl()->getParameter($name) === $value;
             }
         );
@@ -19,7 +19,7 @@ class ActivityMap extends TypedMap implements UniqueCollectionInterface
     public function filterByType($type)
     {
         return $this->filter(
-            function($activity) use ($type) {
+            function ($activity) use ($type) {
                 return $activity->getType() === $type;
             }
         );

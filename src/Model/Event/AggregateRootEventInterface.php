@@ -17,5 +17,4 @@ interface AggregateRootEventInterface extends EventInterface
     public function getAffectedAttributeNames();
 
     public function getSeqNumber();
-
 }

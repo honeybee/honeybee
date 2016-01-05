@@ -49,12 +49,12 @@ class RelationStateProjectionProcessor extends RelationProjectionUpdater
             // decide the relation state transition based on the origin type
             $payload = [ 'origin_state' => $event->getWorkflowState() ];
             foreach ($affected_entities as $affected_entity) {
-               $payload[ 'affected_entities' ][] = [
+                $payload[ 'affected_entities' ][] = [
                    'identifier' => $affected_entity->getIdentifier(),
                    'revision' => $affected_entity->getRevision(),
                    'state' => $affected_entity->getWorkflowState(),
                    'type_prefix' => $affected_entity->getType()->getPrefix()
-               ];
+                ];
             }
 
             $process_state = new ProcessState(

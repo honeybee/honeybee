@@ -4,7 +4,7 @@ namespace Honeybee\Infrastructure\Security\Auth;
 
 interface PasswordHandlerInterface
 {
-       public function hash($password);
+    public function hash($password);
 
-       public function verify($password, $challenge);
+    public function verify($password, $challenge);
 }

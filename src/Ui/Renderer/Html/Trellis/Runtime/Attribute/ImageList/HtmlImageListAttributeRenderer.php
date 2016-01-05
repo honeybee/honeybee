@@ -47,8 +47,14 @@ class HtmlImageListAttributeRenderer extends HtmlAttributeRenderer
 
             if ($this->getOption('use_converjon', false)) {
                 $url_params = [ 'file' => $image->getLocation() ];
-                $additional_file_info['thumb_url'] = $this->url_generator->generateUrl($thumbnail_activity, $url_params);
-                $additional_file_info['preview_url'] = $this->url_generator->generateUrl($preview_activity, $url_params);
+                $additional_file_info['thumb_url'] = $this->url_generator->generateUrl(
+                    $thumbnail_activity,
+                    $url_params
+                );
+                $additional_file_info['preview_url'] = $this->url_generator->generateUrl(
+                    $preview_activity,
+                    $url_params
+                );
             }
 
             $images[] = array_merge($image->toNative(), $additional_file_info);

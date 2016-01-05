@@ -31,7 +31,6 @@ class ExecuteCommandJob extends Job
     protected function setCommand($command_state)
     {
         if (is_array($command_state)) {
-
             if (!isset($command_state[self::OBJECT_TYPE])) {
                 throw new RuntimeError("Unable to create command without type information.");
             }
@@ -43,7 +42,6 @@ class ExecuteCommandJob extends Job
 
             $this->command = new $command_implementor($command_state);
         } elseif ($command_state instanceof CommandInterface) {
-
             $this->command = $command_state;
         } else {
             throw new RuntimeError("Invalid command data-type given. Only array and CommandInterface are supported.");

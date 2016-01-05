@@ -81,8 +81,7 @@ class ViewConfigService extends Object implements ViewConfigServiceInterface
 
     protected function buildViewConfig($scope)
     {
-        if (
-            is_null($scope)
+        if (is_null($scope)
             || (!$this->view_config->has($scope) && false === $this->config->get('create_missing', false))
         ) {
             throw new RuntimeError(

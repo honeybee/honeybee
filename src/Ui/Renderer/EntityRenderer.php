@@ -78,7 +78,7 @@ abstract class EntityRenderer extends Renderer
             }
 
             if ($attribute) {
-                // atm the attribute_path below makes sure, that fields are provided with a cache-key, that is "unique enough"
+                // the attribute_path below ensures, that fields are provided with a cache-key, that is "unique enough"
                 $renderer_config = new ArrayConfig(
                     array_merge($field->getConfig()->toArray(), [ 'attribute_path' => $attribute->getPath() ])
                 );
@@ -178,7 +178,11 @@ abstract class EntityRenderer extends Renderer
             $default_data
         );
 
-        $activity_map_renderer = $this->renderer_service->getRenderer($activity_map, $this->output_format, $renderer_config);
+        $activity_map_renderer = $this->renderer_service->getRenderer(
+            $activity_map,
+            $this->output_format,
+            $renderer_config
+        );
 
         $rendered_activity_map = $activity_map_renderer->render(
             [ 'subject' => $activity_map, 'resource' => $resource ],

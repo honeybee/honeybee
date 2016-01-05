@@ -189,9 +189,9 @@ class ProjectionUpdater extends EventHandler
         foreach ($events as $event) {
             if ($event instanceof EmbeddedEntityAddedEvent) {
                 $this->onEmbeddedEntityAdded($projection, $event);
-            } else if ($event instanceof EmbeddedEntityModifiedEvent) {
+            } elseif ($event instanceof EmbeddedEntityModifiedEvent) {
                 $this->onEmbeddedEntityModified($projection, $event);
-            } else if ($event instanceof EmbeddedEntityRemovedEvent) {
+            } elseif ($event instanceof EmbeddedEntityRemovedEvent) {
                 $this->onEmbeddedEntityRemoved($projection, $event);
             } else {
                 throw new RuntimeError(
@@ -356,7 +356,7 @@ class ProjectionUpdater extends EventHandler
                 $referenced_classname = ltrim($reference_embed->getReferencedTypeClass(), '\\');
                 if ($referenced_classname === $source_classname) {
                     $attributes_to_mirror = $reference_embed->getAttributes()->filter(
-                        function($attribute) use ($affected_attributes) {
+                        function ($attribute) use ($affected_attributes) {
                             return in_array($attribute->getName(), $affected_attributes)
                                 && (bool)$attribute->getOption('mirrored', false);
                         }
@@ -375,7 +375,7 @@ class ProjectionUpdater extends EventHandler
             $reference_embeds = AttributeValuePath::getAttributeValueByPath($projection, $attribute_path);
             foreach ($reference_embeds as $pos => $reference_embed) {
                 if ($reference_embed->getReferencedIdentifier() === $event->getAggregateRootIdentifier()) {
-                $reference_embeds->removeItem($reference_embed);
+                    $reference_embeds->removeItem($reference_embed);
                     $reference_embeds->insertAt(
                         $pos,
                         $reference_embed->getType()->createEntity(

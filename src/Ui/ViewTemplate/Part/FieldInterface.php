@@ -21,4 +21,3 @@ interface FieldInterface extends NamedItemInterface
 
     public function getSetting($name, $default = null);
 }
-

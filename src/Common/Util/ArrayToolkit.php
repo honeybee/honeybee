@@ -138,7 +138,7 @@ class ArrayToolkit
         $keys = [];
         $flat_array = [];
 
-        foreach($iterator as $key => $value) {
+        foreach ($iterator as $key => $value) {
             $keys[$iterator->getDepth()] = $key;
             $name = $keys[0];
 
@@ -160,7 +160,7 @@ class ArrayToolkit
     public static function flattenToArrayPath(array $array_keys)
     {
         $parts = $array_keys;
-        if(count($parts) == 0) {
+        if (count($parts) == 0) {
             return '';
         }
 
@@ -168,7 +168,7 @@ class ArrayToolkit
         $parts = array_slice($parts, 1);
 
         $path = '';
-        if(count($parts)) {
+        if (count($parts)) {
             $path = sprintf('[%s]', implode('][', $parts));
         }
 

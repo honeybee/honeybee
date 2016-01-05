@@ -53,8 +53,11 @@ class RendererService implements RendererServiceInterface
         return $this->loaded_renderers[$cache_key];
     }
 
-    public function createRenderer($subject, OutputFormatInterface $output_format, ConfigInterface $renderer_config = null)
-    {
+    public function createRenderer(
+        $subject,
+        OutputFormatInterface $output_format,
+        ConfigInterface $renderer_config = null
+    ) {
         $implementor = $this->determineImplementor($subject, $output_format, $renderer_config);
 
         $state = [
@@ -65,8 +68,11 @@ class RendererService implements RendererServiceInterface
         return $this->service_locator->createEntity($implementor, $state);
     }
 
-    public function determineImplementor($subject, OutputFormatInterface $output_format, ConfigInterface $renderer_config = null)
-    {
+    public function determineImplementor(
+        $subject,
+        OutputFormatInterface $output_format,
+        ConfigInterface $renderer_config = null
+    ) {
         $locator = $this->getRendererLocatorForOutputFormat($output_format);
 
         return $locator->locateRendererFor($subject, $renderer_config);
@@ -95,8 +101,11 @@ class RendererService implements RendererServiceInterface
         return $this->loaded_locators[$name];
     }
 
-    protected function buildCacheKeyFor($subject, OutputFormatInterface $output_format, ConfigInterface $renderer_config)
-    {
+    protected function buildCacheKeyFor(
+        $subject,
+        OutputFormatInterface $output_format,
+        ConfigInterface $renderer_config
+    ) {
         // @todo this has to become way more sophisticated, maybe we could introduce an interface
         // so that objects could provide their own portion to the cache-key: ICacheKeySource.getCacheKey
         return sprintf(

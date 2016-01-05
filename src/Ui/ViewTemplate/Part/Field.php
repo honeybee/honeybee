@@ -60,4 +60,3 @@ class Field extends Object implements FieldInterface
         return $this->config->get($name, $default);
     }
 }
-

@@ -52,7 +52,11 @@ class EventStreamReader extends CouchDbStorage implements StorageReaderInterface
             }
         }
 
-        return $result_data['total_rows'] > 0 ? $this->createEventStream($identifier, array_reverse($result_data['rows'])) : null;
+        if ($result_data['total_rows'] > 0) {
+            return $this->createEventStream($identifier, array_reverse($result_data['rows']));
+        }
+
+        return null;
     }
 
     public function readAll(SettingsInterface $settings)

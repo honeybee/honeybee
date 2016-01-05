@@ -130,7 +130,7 @@ class ModifyAggregateRootStateNode extends AggregateRootCommandStateNode
         $aggregate_root_type = $this->getAggregateRootType();
         $projection = $this->getProjection($process_state);
         $embed_attributes = $aggregate_root_type->getAttributes()->filter(
-            function($attribute) {
+            function ($attribute) {
                 return $attribute instanceof EmbeddedEntityListAttribute
                     && !$attribute instanceof EntityReferenceListAttribute;
             }

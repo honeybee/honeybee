@@ -46,7 +46,10 @@ abstract class PaginationRenderer extends Renderer
 
         $params['current_page_url'] = $this->url_generator->generateUrl(null, $url_parameters);
 
-        $params['first_page_url'] = $this->url_generator->generateUrl(null, array_merge($url_parameters, [ 'offset' => 0 ]));
+        $params['first_page_url'] = $this->url_generator->generateUrl(
+            null,
+            array_merge($url_parameters, [ 'offset' => 0 ])
+        );
 
         $params['last_page_url'] = $this->url_generator->generateUrl(
             null,

@@ -15,12 +15,14 @@ class PropagateStateTransitionNode extends State
 
     protected $aggregate_root_type_map;
 
+    // @codingStandardsIgnoreStart
     public function __construct(
         $name,
         $type = self::TYPE_ACTIVE,
         array $options = [],
         AggregateRootTypeMap $aggregate_root_type_map
     ) {
+        // @codingStandardsIgnoreEnd
         parent::__construct($name, $type, $options);
         $this->transition_map = $this->options->get('transition_map');
         $this->aggregate_root_type_map = $aggregate_root_type_map;

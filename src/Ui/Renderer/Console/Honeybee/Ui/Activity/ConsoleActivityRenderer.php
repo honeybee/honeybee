@@ -28,4 +28,3 @@ class ConsoleActivityRenderer extends ActivityRenderer
         return $this->url_generator->generateUrl($route_name, $parameters);
     }
 }
-

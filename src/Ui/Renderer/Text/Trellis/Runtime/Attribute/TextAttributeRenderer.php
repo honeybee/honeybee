@@ -16,4 +16,3 @@ class TextAttributeRenderer extends AttributeRenderer
         return parent::getTemplateParameters();
     }
 }
-

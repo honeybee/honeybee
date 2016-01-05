@@ -371,7 +371,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
         $create_data['@type'] = get_class($this);
 
         $type = $this->getType();
-        $value_or_default = function($key, $default) use($create_data) {
+        $value_or_default = function ($key, $default) use ($create_data) {
             return isset($create_data[$key]) ? $create_data[$key] : $default;
         };
 
@@ -383,7 +383,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
 
         $default_attributes = $type->getDefaultAttributes();
         $non_default_attributes = $type->getAttributes()->filter(
-            function(AttributeInterface $attribute) use($default_attributes) {
+            function (AttributeInterface $attribute) use ($default_attributes) {
                 return !$attribute instanceof EmbeddedEntityListAttribute
                    && !array_key_exists($attribute->getName(), $default_attributes);
             }
@@ -450,7 +450,9 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
 
     protected function guardEventPreConditions(AggregateRootEventInterface $event)
     {
-        if (!$event instanceof AggregateRootCreatedEvent && $this->getIdentifier() !== $event->getAggregateRootIdentifier()) {
+        if (!$event instanceof AggregateRootCreatedEvent
+            && $this->getIdentifier() !== $event->getAggregateRootIdentifier()
+        ) {
             throw new RuntimeError(
                 sprintf(
                     'The AR\'s current identifier (%s) does not match the given event\'s AR identifier (%s).',
@@ -539,7 +541,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
 
         if ($command instanceof RemoveEmbeddedEntityCommand) {
             $event_state['embedded_entity_identifier'] = $command->getEmbeddedEntityIdentifier();
-        } else if ($command instanceof AddEmbeddedEntityCommand) {
+        } elseif ($command instanceof AddEmbeddedEntityCommand) {
             $create_data = $command->getValues();
             $create_data['identifier'] = UuidAttribute::generateVersion4();
             $event_state = array_merge(
@@ -550,7 +552,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
                     'embedded_entity_identifier' => $create_data['identifier']
                 ]
             );
-        } else if ($command instanceof ModifyEmbeddedEntityCommand) {
+        } elseif ($command instanceof ModifyEmbeddedEntityCommand) {
             $event_state = array_merge(
                 $event_state,
                 [

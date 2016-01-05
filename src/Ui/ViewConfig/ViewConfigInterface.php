@@ -22,5 +22,4 @@ interface ViewConfigInterface
      * @return ArrayConfig
      */
     public function getRendererConfig($subject_name, OutputFormatInterface $output_format, array $default_data = []);
-
 }

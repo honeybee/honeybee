@@ -50,7 +50,7 @@ abstract class Renderer implements RendererInterface
     public function __construct(
         RendererServiceInterface $renderer_service,
         OutputFormatInterface $output_format,
-        ConfigInterface $config = null,
+        ConfigInterface $config,
         TemplateRendererInterface $template_renderer,
         UrlGeneratorInterface $url_generator,
         TranslatorInterface $translator,
@@ -193,8 +193,10 @@ abstract class Renderer implements RendererInterface
         return $this->template_renderer;
     }
 
+    // @codingStandardsIgnoreStart
     protected function _($text, $domain = null, $locale = null, array $params = null, $fallback = null)
     {
+        // @codingStandardsIgnoreEnd
         return $this->translator->translate($text, $this->getTranslationDomain($domain), $locale, $params, $fallback);
     }
 
@@ -289,7 +291,7 @@ abstract class Renderer implements RendererInterface
     {
         if ($this->settings->has($name)) {
             return $this->settings->get($name);
-        } else if ($this->config->has($name)) {
+        } elseif ($this->config->has($name)) {
             return $this->config->get($name);
         }
 

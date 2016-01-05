@@ -77,7 +77,7 @@ abstract class EntityListRenderer extends Renderer
             if ($this->view_template_service->hasViewTemplate($scope, $hfvtn, $this->output_format)) {
                 $view_template = $this->view_template_service->getViewTemplate($scope, $hfvtn, $this->output_format);
                 $params['header_fields'] = $view_template->extractAllFields();
-            } else if (!$resource_collection->isEmpty() && !$resource_collection->containsMultipleTypes()) {
+            } elseif (!$resource_collection->isEmpty() && !$resource_collection->containsMultipleTypes()) {
                 $resource = $resource_collection->getFirst();
                 $vtn = $this->name_resolver->resolve($resource);
                 if ($this->view_template_service->hasViewTemplate($scope, $vtn, $this->output_format)) {

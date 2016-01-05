@@ -85,7 +85,7 @@ class CreateAggregateRootStateNode extends AggregateRootCommandStateNode
     {
         $aggregate_root_type = $this->getAggregateRootType();
         $embed_attributes = $aggregate_root_type->getAttributes()->filter(
-            function($attribute) {
+            function ($attribute) {
                 return $attribute instanceof EmbeddedEntityListAttribute
                     && !$attribute instanceof EntityReferenceListAttribute;
             }

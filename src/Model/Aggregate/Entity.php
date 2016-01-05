@@ -19,11 +19,14 @@ abstract class Entity extends BaseEntity
      * Apply the given aggregate-event to it's corresponding aggregate and return the resulting source-event.
      *
      * @param EmbeddedEntityEventInterface $embedded_entity_event
+     * @param boolean $auto_commit
      *
      * @return EmbeddedEntityEventInterface
      */
-    protected function applyEmbeddedEntityEvent(EmbeddedEntityEventInterface $embedded_entity_event, $auto_commit = true)
-    {
+    protected function applyEmbeddedEntityEvent(
+        EmbeddedEntityEventInterface $embedded_entity_event,
+        $auto_commit = true
+    ) {
         $attribute_name = $embedded_entity_event->getParentAttributeName();
         $embedded_entity_list = $this->getValue($attribute_name);
 
@@ -34,14 +37,14 @@ abstract class Entity extends BaseEntity
             );
             $embedded_entity = $embedded_type->createEntity([], $this);
             $embedded_entity_list->push($embedded_entity);
-        } else if ($embedded_entity_event instanceof EmbeddedEntityRemovedEvent) {
+        } elseif ($embedded_entity_event instanceof EmbeddedEntityRemovedEvent) {
             $embedded_entity = $this->getEmbeddedEntityFor(
                 $attribute_name,
                 $embedded_entity_event->getEmbeddedEntityIdentifier()
             );
 
             $embedded_entity_list->removeItem($embedded_entity);
-        } else if ($embedded_entity_event instanceof EmbeddedEntityModifiedEvent) {
+        } elseif ($embedded_entity_event instanceof EmbeddedEntityModifiedEvent) {
             $embedded_entity = $this->getEmbeddedEntityFor(
                 $attribute_name,
                 $embedded_entity_event->getEmbeddedEntityIdentifier()

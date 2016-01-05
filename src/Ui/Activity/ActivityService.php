@@ -131,7 +131,7 @@ class ActivityService extends Object implements ActivityServiceInterface
     {
         if ($scope instanceof ScopeKeyInterface) {
             $scope_key = $scope;
-        } else if (is_string($scope)) {
+        } elseif (is_string($scope)) {
             $scope_key = new GenericScopeKey($scope);
         } else {
             throw new RuntimeError(

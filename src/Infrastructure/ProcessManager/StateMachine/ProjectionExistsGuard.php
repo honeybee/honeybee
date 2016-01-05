@@ -19,11 +19,13 @@ class ProjectionExistsGuard extends VariableGuard
 
     protected $projection_type_map;
 
+    // @codingStandardsIgnoreStart
     public function __construct(
         array $options = [],
         DataAccessServiceInterface $data_access_service,
         ProjectionTypeMap $projection_type_map
     ) {
+        // @codingStandardsIgnoreEnd
         parent::__construct($options);
 
         $this->data_access_service = $data_access_service;

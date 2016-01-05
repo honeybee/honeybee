@@ -126,19 +126,19 @@ class ViewTemplateService extends Object implements ViewTemplateServiceInterface
      * fields as the resource type has attributes. To only include specific attributes as fields set
      * them in the attribute_names method argument.
      *
+     * @param string $view_template_name name of the created view template
      * @param ProjectionTypeInterface $resource_type
      * @param array $attribute_names list of attributes to include as view template fields; if empty all
      *                               attributes will be included as fields
-     * @param string $view_template_name name of the created view template
      *
      * @return ViewTemplateInterface instance with all or specified attributes as fields
      *
      * @throws RuntimeError in case of an empty view template name
      */
     public function createViewTemplate(
+        $view_template_name,
         ProjectionTypeInterface $resource_type,
-        array $attribute_names = [],
-        $view_template_name
+        array $attribute_names = []
     ) {
         if (empty($view_template_name)) {
             throw new RuntimeError('A view template name must be specified.');
@@ -148,7 +148,7 @@ class ViewTemplateService extends Object implements ViewTemplateServiceInterface
         foreach ($resource_type->getAttributes() as $attribute_name => $attribute) {
             if (empty($attribute_names)) {
                 $field_list->addItem(new Field($attribute_name));
-            } else if (in_array($attribute_name, $attribute_names)) {
+            } elseif (in_array($attribute_name, $attribute_names)) {
                 $field_list->addItem(new Field($attribute_name));
             }
         }

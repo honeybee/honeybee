@@ -6,9 +6,7 @@ use Assert\Assertion;
 use Honeybee\Common\Util\StringToolkit;
 use Honeybee\Infrastructure\Event\Event;
 
-abstract class AggregateRootEvent
-    extends Event
-    implements AggregateRootEventInterface, HasEmbeddedEntityEventsInterface
+abstract class AggregateRootEvent extends Event implements AggregateRootEventInterface, HasEmbeddedEntityEventsInterface
 {
     protected $aggregate_root_identifier;
 
@@ -49,7 +47,7 @@ abstract class AggregateRootEvent
     {
         if ($embedded_entity_events instanceof EmbeddedEntityEventList) {
             $this->embedded_entity_events = $embedded_entity_events;
-        } else if (is_array($embedded_entity_events)) {
+        } elseif (is_array($embedded_entity_events)) {
             $this->embedded_entity_events = new EmbeddedEntityEventList();
             foreach ($embedded_entity_events as $embedded_event_data) {
                 $event_class = $embedded_event_data[self::OBJECT_TYPE];

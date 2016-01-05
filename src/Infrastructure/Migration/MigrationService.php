@@ -72,7 +72,7 @@ class MigrationService implements MigrationServiceInterface
     public function getExecutedMigrations($target_name = null, $target_version = null)
     {
         return $this->getFilteredMigrations($target_name, self::FILTER_EXECUTED)->filter(
-            function(MigrationInterface $migration) use ($target_version) {
+            function (MigrationInterface $migration) use ($target_version) {
                 if (is_null($target_version)) {
                     return true;
                 }
@@ -127,7 +127,7 @@ class MigrationService implements MigrationServiceInterface
 
         if ($latest_version < $target_version) {
             return MigrationInterface::MIGRATE_UP;
-        } else if ($latest_version > $target_version) {
+        } elseif ($latest_version > $target_version) {
             return MigrationInterface::MIGRATE_DOWN;
         } else {
             return null;

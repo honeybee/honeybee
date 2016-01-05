@@ -17,8 +17,11 @@ class NavigationService extends Object implements NavigationServiceInterface
 
     protected $activity_service;
 
-    public function __construct(ConfigInterface $navigations_config, $default_navigation, ActivityServiceInterface $activity_service)
-    {
+    public function __construct(
+        ConfigInterface $navigations_config,
+        $default_navigation,
+        ActivityServiceInterface $activity_service
+    ) {
         $this->navigations_config = $navigations_config;
         $this->default_navigation_name = $default_navigation;
         $this->activity_service = $activity_service;

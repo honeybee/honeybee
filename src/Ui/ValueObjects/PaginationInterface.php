@@ -42,4 +42,3 @@ interface PaginationInterface
     public function getLastPageOffset();
     public function getLastPageNumber();
 }
-

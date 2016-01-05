@@ -57,16 +57,16 @@ interface ViewTemplateServiceInterface
      * fields as the resource type has attributes. To only include specific attributes as fields
      * set them in the attribute_names method argument.
      *
+     * @param string $view_template_name name of the created view template
      * @param ProjectionTypeInterface $resource_type
      * @param array $attribute_names list of attributes to include as view template fields; if empty all
      *                               attributes will be included as fields
-     * @param string $view_template_name name of the created view template
      *
      * @return ViewTemplateInterface instance with all or specified attributes as fields
      */
     public function createViewTemplate(
+        $view_template_name,
         ProjectionTypeInterface $resource_type,
-        array $attribute_names = [],
-        $view_template_name
+        array $attribute_names = []
     );
 }

@@ -58,7 +58,7 @@ class ProjectionTypeMap extends TypedMap
     public function filterByVendorPackage($vendor, $package)
     {
         return $this->filter(
-            function(ProjectionType $type) use ($vendor, $package) {
+            function (ProjectionType $type) use ($vendor, $package) {
                 return ($type->getVendor() === $vendor && $type->getPackage() === $package);
             }
         );

@@ -26,7 +26,7 @@ class TextActivityMapRenderer extends ActivityMapRenderer
 
         // remove all activities that are excluded via config/settings
         $activity_map = $original_activity_map->filter(
-            function($activity) use ($hidden_activity_names) {
+            function ($activity) use ($hidden_activity_names) {
                 if (in_array($activity->getName(), $hidden_activity_names)) {
                     return false;
                 }

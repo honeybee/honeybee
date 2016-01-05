@@ -63,7 +63,7 @@ class PhpClassParser
         do {
             $next_token = $this->next();
             $next_token = is_array($next_token) ? $next_token[0] : $next_token;
-        } while($next_token !== null && in_array($next_token, $skip_tokens));
+        } while ($next_token !== null && in_array($next_token, $skip_tokens));
     }
 
     protected function seek($token_or_tokens)
@@ -73,7 +73,7 @@ class PhpClassParser
         do {
             $next_token = $this->next();
             $next_token = is_array($next_token) ? $next_token[0] : $next_token;
-        } while($next_token !== null && !in_array($next_token, $expected_tokens));
+        } while ($next_token !== null && !in_array($next_token, $expected_tokens));
     }
 
     protected function parseNamespace()

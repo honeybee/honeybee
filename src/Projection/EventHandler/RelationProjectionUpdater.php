@@ -86,7 +86,7 @@ class RelationProjectionUpdater extends EventHandler
                 $referenced_type_impl = ltrim($reference_embed->getReferencedTypeClass(), '\\');
                 if ($referenced_type_impl === $foreign_projection_type_impl) {
                     $attributes_to_mirror = $reference_embed->getAttributes()->filter(
-                        function($attribute) use ($affected_attributes) {
+                        function ($attribute) use ($affected_attributes) {
                             return in_array($attribute->getName(), $affected_attributes)
                                 && (bool)$attribute->getOption('mirrored', false);
                         }

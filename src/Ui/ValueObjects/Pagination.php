@@ -203,4 +203,3 @@ class Pagination implements PaginationInterface
         return $this->metadata->get('last_page_offset', 0);
     }
 }
-

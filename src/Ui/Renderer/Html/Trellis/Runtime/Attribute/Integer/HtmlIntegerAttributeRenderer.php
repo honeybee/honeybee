@@ -24,8 +24,14 @@ class HtmlIntegerAttributeRenderer extends HtmlAttributeRenderer
         }
 
         // load settings or fallback to default attribute's options
-        $params['min_value'] = $this->getOption('min_value', $this->attribute->getOption(IntegerAttribute::OPTION_MIN_VALUE));
-        $params['max_value'] = $this->getOption('max_value', $this->attribute->getOption(IntegerAttribute::OPTION_MAX_VALUE));
+        $params['min_value'] = $this->getOption(
+            'min_value',
+            $this->attribute->getOption(IntegerAttribute::OPTION_MIN_VALUE)
+        );
+        $params['max_value'] = $this->getOption(
+            'max_value',
+            $this->attribute->getOption(IntegerAttribute::OPTION_MAX_VALUE)
+        );
         $params['value_step'] = $this->getOption('value_step');
 
         // verify the parameters are valid with integers

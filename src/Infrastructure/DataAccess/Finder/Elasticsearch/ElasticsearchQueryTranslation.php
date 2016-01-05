@@ -115,9 +115,9 @@ class ElasticsearchQueryTranslation implements QueryTranslationInterface
                         $elasticsearch_filters[] = $filters;
                     }
                 }
-            } else if ($criteria instanceof AttributeCriteria) {
+            } elseif ($criteria instanceof AttributeCriteria) {
                 $elasticsearch_filters[] = $this->buildFilterFor($criteria);
-            } else if ($criteria instanceof RangeCriteria) {
+            } elseif ($criteria instanceof RangeCriteria) {
                 $elasticsearch_filters[] = [
                     'range' => [
                         $attribute_path => [
@@ -126,7 +126,7 @@ class ElasticsearchQueryTranslation implements QueryTranslationInterface
                         ]
                     ]
                 ];
-            }else {
+            } else {
                 throw new RuntimeError(
                     sprintf('Invalid criteria type %s given to %s', get_class($criteria), staic::CLASS)
                 );

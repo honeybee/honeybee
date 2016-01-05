@@ -15,7 +15,7 @@ class GuzzleConnector extends Connector
     {
         $base_uri = $this->config->get('base_uri');
         if ($this->config->has('transport') && $this->config->has('host') && $this->config->has('port')) {
-           $base_uri = sprintf(
+            $base_uri = sprintf(
                 '%s://%s:%s',
                 $this->config->get('transport'),
                 $this->config->get('host'),

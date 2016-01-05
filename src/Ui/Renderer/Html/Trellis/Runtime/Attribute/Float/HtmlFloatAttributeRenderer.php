@@ -26,8 +26,14 @@ class HtmlFloatAttributeRenderer extends HtmlAttributeRenderer
         }
 
         // load settings or fallback to default attribute's options
-        $params['min_value'] = $this->getOption('min_value', $this->attribute->getOption(FloatAttribute::OPTION_MIN_VALUE));
-        $params['max_value'] = $this->getOption('max_value', $this->attribute->getOption(FloatAttribute::OPTION_MAX_VALUE));
+        $params['min_value'] = $this->getOption(
+            'min_value',
+            $this->attribute->getOption(FloatAttribute::OPTION_MIN_VALUE)
+        );
+        $params['max_value'] = $this->getOption(
+            'max_value',
+            $this->attribute->getOption(FloatAttribute::OPTION_MAX_VALUE)
+        );
         $params['value_step'] = $this->getOption('value_step', self::DEFAULT_VALUE_STEP);
 
         // verify the parameters are valid with floats

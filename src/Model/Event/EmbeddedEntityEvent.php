@@ -5,9 +5,9 @@ namespace Honeybee\Model\Event;
 use Assert\Assertion;
 use Trellis\Common\Object;
 
-abstract class EmbeddedEntityEvent
-    extends Object
-    implements EmbeddedEntityEventInterface, HasEmbeddedEntityEventsInterface
+abstract class EmbeddedEntityEvent extends Object implements
+    EmbeddedEntityEventInterface,
+    HasEmbeddedEntityEventsInterface
 {
     protected $data = [];
 
@@ -55,7 +55,7 @@ abstract class EmbeddedEntityEvent
     {
         if ($embedded_entity_events instanceof EmbeddedEntityEventList) {
             $this->embedded_entity_events = $embedded_entity_events;
-        } else if (is_array($embedded_entity_events)) {
+        } elseif (is_array($embedded_entity_events)) {
             $this->embedded_entity_events = new EmbeddedEntityEventList();
             foreach ($embedded_entity_events as $embedded_entity_event) {
                 $event_class = $embedded_entity_event[self::OBJECT_TYPE];

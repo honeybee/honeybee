@@ -40,7 +40,7 @@ class VndErrorJsonRenderer extends Renderer
                 $links_data[$link->getFirstRel()] = [
                     'href' => $link->getUri()
                 ];
-                foreach($link->getAttributes() as $attr_name => $attr_value) {
+                foreach ($link->getAttributes() as $attr_name => $attr_value) {
                     $links_data[$link->getFirstRel()][$attr_name] = $attr_value;
                 }
             }

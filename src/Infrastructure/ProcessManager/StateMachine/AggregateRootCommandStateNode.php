@@ -16,12 +16,14 @@ abstract class AggregateRootCommandStateNode extends State
 
     abstract protected function createCommand(ProcessStateInterface $process_state);
 
+    // @codingStandardsIgnoreStart
     public function __construct(
         $name,
         $type = self::TYPE_ACTIVE,
         array $options = [],
         AggregateRootTypeMap $aggregate_root_type_map
     ) {
+        // @codingStandardsIgnoreEnd
         parent::__construct($name, $type, $options);
 
         $this->aggregate_root_type_map = $aggregate_root_type_map;

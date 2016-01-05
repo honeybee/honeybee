@@ -14,7 +14,7 @@ abstract class EntityType extends BaseEntityType implements EntityTypeInterface,
     public function getMandatoryAttributes()
     {
         return $this->getAttributes()->filter(
-            function($attribute) {
+            function ($attribute) {
                 return $attribute->getOption('mandatory', false);
             }
         );

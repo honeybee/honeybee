@@ -11,7 +11,7 @@ use Swift_SendmailTransport;
  */
 class LocalSendmailConnector extends Connector
 {
-    CONST DEFAULT_COMMAND = '/usr/sbin/sendmail -bs';
+    const DEFAULT_COMMAND = '/usr/sbin/sendmail -bs';
 
     protected $mailer;
 

@@ -8,4 +8,3 @@ class TextEmailRenderer extends TextAttributeRenderer
 {
 
 }
-

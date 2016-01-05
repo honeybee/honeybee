@@ -103,13 +103,11 @@ class PermissionService extends Configurable implements PermissionServiceInterfa
             // would save us "unused" credentials and some bytes within the acl ...
             $entity_type_prefix = $matches[1];
             foreach ($this->aggregate_root_type_map as $aggregate_root_type) {
-
                 if ($aggregate_root_type->getPrefix() !== $entity_type_prefix) {
                     continue;
                 }
 
                 foreach ($aggregate_root_type->getAttributes() as $attribute) {
-
                     $read_permission = new Permission(
                         [
                             'name' => $attribute->getName() . ':read',
@@ -171,19 +169,19 @@ class PermissionService extends Configurable implements PermissionServiceInterfa
             switch ($acl_rule['type']) {
                 case '*':
                     $mapped_permissions = $this->evaluateWildcardRule($acl_rule);
-                break;
+                    break;
 
                 case 'activity':
                     $mapped_permissions = $this->evaluateActivityRule($acl_rule);
-                break;
+                    break;
 
                 case 'plugin':
                     $mapped_permissions = $this->evaluateWorkflowRule($acl_rule);
-                break;
+                    break;
 
                 case 'attribute':
                     $mapped_permissions = $this->evaluateAttributeRule($acl_rule);
-                break;
+                    break;
 
                 default:
                     throw new RuntimeError("Invalid credential type given: " . $acl_rule['type']);
@@ -233,7 +231,7 @@ class PermissionService extends Configurable implements PermissionServiceInterfa
                         $permission_data['access_type'] = $rule['access'];
                         $permission_data['expression'] = $rule['expression'];
                         $rule_permissions->addItem(new Permission($permission_data));
-                    break;
+                        break;
 
                     default:
                         throw new RuntimeError(
@@ -256,8 +254,7 @@ class PermissionService extends Configurable implements PermissionServiceInterfa
 
         $rule_permissions = new PermissionList();
         foreach ($scope_permissions as $scope_permission) {
-            if (
-                $scope_permission->getType() === 'activity'
+            if ($scope_permission->getType() === 'activity'
                 && ('*' === $rule['operation'] || $scope_permission->getName() === $rule['operation'])
             ) {
                 $permission_data = $scope_permission->toArray();
@@ -331,8 +328,7 @@ class PermissionService extends Configurable implements PermissionServiceInterfa
             // (as that was expanded above into "name:read" and "name:write")
             $allow_specific_operation_on_specific_attribute = in_array($permission_name, $supported_operations);
 
-            if (
-                $allow_all_operations_on_all_attributes
+            if ($allow_all_operations_on_all_attributes
                 || $allow_specific_operation_on_all_attributes
                 || $allow_specific_operation_on_specific_attribute
             ) {

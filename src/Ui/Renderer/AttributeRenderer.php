@@ -86,7 +86,7 @@ abstract class AttributeRenderer extends Renderer
         $group_parts = $this->getOption('group_parts', []);
         if ($group_parts instanceof SettingsInterface) {
             $group_parts = $group_parts->toArray();
-        } else if (!is_array($group_parts)) {
+        } elseif (!is_array($group_parts)) {
             throw new RuntimeError(
                 'Invalid value type given for "group_parts" option. Only arrays are supported here.'
             );

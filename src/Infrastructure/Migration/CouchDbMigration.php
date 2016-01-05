@@ -12,15 +12,15 @@ abstract class CouchDbMigration extends Migration
 
     const REDUCE_FILE_SUFFIX = '.reduce.js';
 
-    protected abstract function getViewsDirectory();
+    abstract protected function getViewsDirectory();
 
-    protected abstract function getDesignDocName();
+    abstract protected function getDesignDocName();
 
     protected function createDatabaseIfNotExists(MigrationTarget $migration_target, $update_views = false)
     {
         if (!$this->databaseExists($migration_target)) {
             $this->createDatabase($migration_target, $update_views);
-        } else if ($update_views) {
+        } elseif ($update_views) {
             $this->updateDesignDoc($migration_target);
         }
     }

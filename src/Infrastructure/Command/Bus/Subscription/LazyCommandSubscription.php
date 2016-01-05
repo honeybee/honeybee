@@ -40,7 +40,7 @@ class LazyCommandSubscription extends CommandSubscription
                     CommandHandlerInterface::CLASS
                 )
             );
-        } else if (!$command_handler instanceof CommandHandlerInterface) {
+        } elseif (!$command_handler instanceof CommandHandlerInterface) {
             throw new RuntimeError(
                 sprintf(
                     "Invalid command handler type given: %s, expected instance of %s",
