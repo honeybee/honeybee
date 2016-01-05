@@ -9,7 +9,7 @@ use Honeybee\Tests\TestCase;
 
 class GuzzleConnectorTest extends ConnectorInterfaceTest
 {
-    protected function getConnector($name = 'connector', ConfigInterface $config)
+    protected function getConnector($name, ConfigInterface $config)
     {
         return new GuzzleConnector($name, $config);
     }

@@ -13,7 +13,7 @@ use PHPUnit_Framework_TestCase;
  */
 abstract class ConnectorInterfaceTest extends PHPUnit_Framework_TestCase
 {
-    abstract protected function getConnector($name = 'connector', ConfigInterface $config);
+    abstract protected function getConnector($name, ConfigInterface $config);
 
     public function testGetNameWorks()
     {

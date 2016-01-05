@@ -186,7 +186,11 @@ return [
                                 [
                                     'or' => [
                                         [ 'term' => [ 'username.filter' => 'honeybee-tester' ] ],
-                                        [ 'term' => [ 'friends.referenced_identifier' => 'honeybee-system_account-user-123' ] ]
+                                        [ 'term' =>
+                                            [
+                                                'friends.referenced_identifier' => 'honeybee-system_account-user-123'
+                                            ]
+                                        ]
                                     ]
                                 ],
                                 [

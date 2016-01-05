@@ -10,7 +10,7 @@ use Honeybee\Tests\TestCase;
 
 class LocalConnectorTest extends ConnectorInterfaceTest
 {
-    protected function getConnector($name = 'connector', ConfigInterface $config)
+    protected function getConnector($name, ConfigInterface $config)
     {
         if (!$config->has('directory')) {
             $settings = $config->toArray();

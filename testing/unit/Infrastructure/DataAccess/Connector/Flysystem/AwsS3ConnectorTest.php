@@ -8,7 +8,7 @@ use Honeybee\Tests\TestCase;
 
 class AwsS3ConnectorTest extends ConnectorInterfaceTest
 {
-    protected function getConnector($name = 'connector', ConfigInterface $config)
+    protected function getConnector($name, ConfigInterface $config)
     {
         return new ProxyAwsS3Connector($name, $config);
     }

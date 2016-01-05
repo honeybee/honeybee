@@ -67,5 +67,4 @@ class ConnectorTest extends TestCase
         $this->assertTrue($status->isWorking());
         $this->assertSame('working', $status->getConnectionName());
     }
-
 }
