@@ -2,13 +2,20 @@ language: php
 php:
   - 5.5
   - 5.6
+  - 7.0
+  - hhvm
   - nightly
-install:
-  - curl -s http://getcomposer.org/installer | php -d date.timezone="Europe/Berlin"
-  - ./composer.phar install
+matrix:
+  fast_finish: true
+  allow_failures:
+    - php: hhvm
+    - php: nightly
+before_script:
+  - composer self-update
+  - composer install
 script:
-  - ./vendor/bin/phpunit testing/unit
-  - ./vendor/bin/phpcs --extensions=php --standard=psr2 src testing/unit
+  - vendor/bin/phpunit
+  - vendor/bin/phpcs --extensions=php --standard=psr2 src testing/unit
 after_script: php vendor/bin/coveralls -v
 notifications:
   irc:
