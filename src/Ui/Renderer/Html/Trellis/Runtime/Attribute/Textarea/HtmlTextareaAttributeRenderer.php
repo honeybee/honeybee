@@ -29,7 +29,7 @@ class HtmlTextareaAttributeRenderer extends HtmlAttributeRenderer
         );
         $params['wrap'] = $this->getOption('wrap', '');
         $params['cols'] = $this->getOption('cols', '');
-        $params['rows'] = $this->getOption('rows', '');
+        $params['rows'] = $this->getOption('rows', 12);
         $params['syntax'] = $this->getSyntaxParameters();
 
         return $params;
