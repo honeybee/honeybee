@@ -119,7 +119,7 @@ abstract class ActivityRenderer extends Renderer
      */
     protected function getDefaultTranslationDomain()
     {
-        $view_scope = $this->getOption('view_scope');
+        $view_scope = $this->getViewScope();
         $activity_scope = $this->getPayload('subject')->getScopeKey();
 
         if (empty($view_scope)) {
@@ -143,5 +143,16 @@ abstract class ActivityRenderer extends Renderer
         );
 
         return $translation_domain;
+    }
+
+    public function getViewScope()
+    {
+        $activity_map_options = $this->getOption('activity_map_options', []);
+        $activity_map_view_scope = isset($activity_map_options['view_scope'])
+            ? $activity_map_options['view_scope']
+            : null;
+        $view_scope = $this->getOption('view_scope', $activity_map_view_scope);
+
+        return $view_scope;
     }
 }

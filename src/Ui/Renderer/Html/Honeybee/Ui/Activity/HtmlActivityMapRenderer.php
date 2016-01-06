@@ -111,7 +111,8 @@ class HtmlActivityMapRenderer extends ActivityMapRenderer
                 'as_list',
                 'default_activity_name',
                 'emphasized',
-                'toggle_disabled'
+                'toggle_disabled',
+                'view_scope'
             ]);
             $options = $this->getOptions();
             $activity_map_propagated_options = array_intersect_key($options, $activity_map_option_propagated_keys);
