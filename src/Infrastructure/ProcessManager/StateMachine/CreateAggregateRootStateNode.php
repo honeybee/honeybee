@@ -60,21 +60,30 @@ class CreateAggregateRootStateNode extends AggregateRootCommandStateNode
 
     protected function buildReferenceCommands(ProcessStateInterface $process_state, array $payload)
     {
-        $reference_commands = [];
-        foreach ((array)$this->options->get('link_relations', []) as $reference_attribute_name => $payload_key) {
-            if (isset($payload[$payload_key])) {
-                $add_relation_command_payload = $payload[$payload_key][0];
-                $reference_embed_type = $add_relation_command_payload['@type'];
-                unset($add_relation_command_payload['@type']);
+        $buildCommand = function($type, $attribute, $position, $payload) {
+            return new AddEmbeddedEntityCommand([
+                'embedded_entity_type' => $type,
+                'parent_attribute_name' => $attribute,
+                'position' => $position,
+                'values' => $payload
+            ]);
+        };
 
-                $reference_commands[] = new AddEmbeddedEntityCommand(
-                    [
-                        'embedded_entity_type' => $reference_embed_type,
-                        'parent_attribute_name' => $reference_attribute_name,
-                        'position' => 0,
-                        'values' => $add_relation_command_payload
-                    ]
-                );
+        $reference_commands = [];
+        foreach ((array)$this->options->get('link_relations', []) as $attribute_name => $payload_key) {
+            $pos = 0;
+            if (is_array($payload_key)) {
+                foreach ($payload_key as $reference_key) {
+                    $command_values = $payload[$reference_key][0];
+                    $reference_type = $command_values['@type'];
+                    unset($command_values['@type']);
+                    $reference_commands[] = $buildCommand($reference_type, $attribute_name, $pos++, $command_values);
+                }
+            } elseif (isset($payload[$payload_key])) {
+                $command_values = $payload[$payload_key][0];
+                $reference_type = $command_values['@type'];
+                unset($command_values['@type']);
+                $reference_commands[] = $buildCommand($reference_type, $attribute_name, $pos++, $command_values);
             }
         }
 
