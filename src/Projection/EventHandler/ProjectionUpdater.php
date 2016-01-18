@@ -233,16 +233,16 @@ class ProjectionUpdater extends EventHandler
         $embedded_projection_attr = $projection->getType()->getAttribute($event->getParentAttributeName());
         $embedded_projection_type = $this->getEmbeddedEntityTypeFor($projection, $event);
 
-        $projection_list = $projection->getValue($embedded_projection_attr->getName());
+        $embedded_projections = $projection->getValue($embedded_projection_attr->getName());
         $projection_to_modify = null;
-        foreach ($projection_list as $projection) {
-            if ($projection->getIdentifier() === $event->getEmbeddedEntityIdentifier()) {
-                $projection_to_modify = $projection;
+        foreach ($embedded_projections as $embedded_projection) {
+            if ($embedded_projection->getIdentifier() === $event->getEmbeddedEntityIdentifier()) {
+                $projection_to_modify = $embedded_projection;
             }
         }
 
         if ($projection_to_modify) {
-            $projection_list->removeItem($projection_to_modify);
+            $embedded_projections->removeItem($projection_to_modify);
             $projection_to_modify = $embedded_projection_type->createEntity(
                 array_merge($projection_to_modify->toArray(), $event->getData()),
                 $projection
@@ -252,7 +252,7 @@ class ProjectionUpdater extends EventHandler
                 $projection_to_modify = $this->mirrorForeignValues($projection_to_modify);
             }
 
-            $projection_list->insertAt($event->getPosition(), $projection_to_modify);
+            $embedded_projections->insertAt($event->getPosition(), $projection_to_modify);
             $this->handleEmbeddedEntityEvents($projection_to_modify, $event->getEmbeddedEntityEvents());
         }
     }
@@ -310,8 +310,7 @@ class ProjectionUpdater extends EventHandler
         } else {
             $referenced_projection = $this->loadReferencedProjection($referenced_type, $referenced_identifier);
             if (!$referenced_projection) {
-                // zombie reference, "eventually" shouldn't happen.
-                $this->logger->debug('Unable to resolve referenced projection: ' . $referenced_identifier);
+                $this->logger->debug('[Zombie Alarm] Cant resolve referenced projection: '. $referenced_identifier);
                 return $projection;
             }
         }
