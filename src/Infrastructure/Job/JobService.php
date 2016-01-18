@@ -13,8 +13,6 @@ use Psr\Log\LoggerInterface;
 
 class JobService implements JobServiceInterface
 {
-    const DEFAULT_ROUTE_KEY = 'default';
-
     protected $connector;
 
     protected $config;
@@ -54,7 +52,7 @@ class JobService implements JobServiceInterface
         $message_payload = json_encode($job->toArray());
         $message = new AMQPMessage($message_payload, [ 'delivery_mode' => 2 ]);
 
-        $this->channel->basic_publish($message, $exchange_name, $settings->get('route_key', self::DEFAULT_ROUTE_KEY));
+        $this->channel->basic_publish($message, $exchange_name, $settings->get('route_key', null));
     }
 
     public function createJob(array $job_state)

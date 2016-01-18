@@ -9,6 +9,8 @@ use Honeybee\Infrastructure\Job\JobServiceInterface;
 
 class JobQueueTransport extends EventTransport
 {
+    const DEFAULT_MSG_ROUTE = 'default';
+
     protected $exchange;
 
     protected $msg_route;
@@ -20,7 +22,7 @@ class JobQueueTransport extends EventTransport
         parent::__construct($name);
 
         $this->exchange = $exchange;
-        $this->msg_route = $msg_route;
+        $this->msg_route = $msg_route ?: self::DEFAULT_MSG_ROUTE;
         $this->job_service = $job_service;
     }
 
@@ -32,7 +34,6 @@ class JobQueueTransport extends EventTransport
             'channel' => $channel_name,
             'subscription_index' => $subscription_index
         ];
-
         $this->job_service->dispatch(
             $this->job_service->createJob($job_state),
             new Settings(
