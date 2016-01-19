@@ -60,20 +60,20 @@ class CreateAggregateRootStateNode extends AggregateRootCommandStateNode
 
     protected function buildReferenceCommands(ProcessStateInterface $process_state, array $payload)
     {
-        $buildCommand = function($type, $attribute, $position, $payload) {
+        $buildCommand = function($type, $attribute, $position, $cmd_payload) {
             return new AddEmbeddedEntityCommand([
                 'embedded_entity_type' => $type,
                 'parent_attribute_name' => $attribute,
                 'position' => $position,
-                'values' => $payload
+                'values' => $cmd_payload
             ]);
         };
 
         $reference_commands = [];
         foreach ((array)$this->options->get('link_relations', []) as $attribute_name => $payload_key) {
             $pos = 0;
-            if (is_array($payload_key)) {
-                foreach ($payload_key as $reference_key) {
+            if (!is_string($payload_key)) { // dealing with a params instance
+                foreach ((array)$payload_key as $reference_key) {
                     $command_values = $payload[$reference_key][0];
                     $reference_type = $command_values['@type'];
                     unset($command_values['@type']);
