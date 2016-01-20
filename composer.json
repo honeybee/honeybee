@@ -87,11 +87,11 @@
     "scripts": {
         "build": [
             "@test",
-            "@check-coding-standard",
+            "@code-sniffer",
             "@validate-json"
         ],
         "test": "phpunit",
-        "check-coding-standard": "vendor/bin/phpcs --extensions=php --standard=psr2 src testing/unit",
+        "code-sniffer": "vendor/bin/phpcs --extensions=php --standard=psr2 src testing/unit",
         "validate-json": "composer validate --no-check-all --no-check-lock",
         "validate-deps": "composer validate --with-dependencies --strict"
     }
