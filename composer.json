@@ -90,7 +90,7 @@
             "@check-coding-standard",
             "@validate-json"
         ],
-        "test": "phpunit --colors=auto",
+        "test": "phpunit",
         "check-coding-standard": "vendor/bin/phpcs --extensions=php --standard=psr2 src testing/unit",
         "validate-json": "composer validate --no-check-all --no-check-lock",
         "validate-deps": "composer validate --with-dependencies --strict"
