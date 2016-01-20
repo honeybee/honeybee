@@ -86,12 +86,14 @@
 
     "scripts": {
         "build": [
-            "phpunit --colors=auto",
-            "vendor/bin/phpcs --extensions=php --standard=psr2 src testing/unit",
-            "composer validate --no-check-all --no-check-lock"
+            "@test",
+            "@check-coding-standard",
+            "@validate-json"
         ],
         "test": "phpunit --colors=auto",
-        "validate-strict": "composer validate -A --strict"
+        "check-coding-standard": "vendor/bin/phpcs --extensions=php --standard=psr2 src testing/unit",
+        "validate-json": "composer validate --no-check-all --no-check-lock",
+        "validate-deps": "composer validate --with-dependencies --strict"
     }
 }
 
