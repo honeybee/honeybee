@@ -81,43 +81,64 @@ class ModifyAggregateRootStateNode extends AggregateRootCommandStateNode
     protected function buildReferenceCommands(ProcessStateInterface $process_state, array $payload)
     {
         $projection = $this->getProjection($process_state);
+        $buildCommands = function($type, $attribute, $position, array $cmd_payloads) use ($projection) {
+            $commands = [];
+            foreach ($cmd_payloads as $cmd_payload) {
+                $reference_exists = false;
+                $referenced_identifier = $cmd_payload['referenced_identifier'];
+                foreach ($projection->getValue($attribute) as $reference_embed) {
+                    if ($reference_embed->getReferencedIdentifier() === $referenced_identifier) {
+                        $reference_exists = true;
+                    } else {
+                        $commands[] = new RemoveEmbeddedEntityCommand(
+                            [
+                                'embedded_entity_identifier' => $reference_embed->getIdentifier(),
+                                'embedded_entity_type' => $reference_embed->getType()->getPrefix(),
+                                'parent_attribute_name' => $attribute
+                            ]
+                        );
+                    }
+                }
+                if (!$reference_exists) {
+                    $commands[] = new AddEmbeddedEntityCommand(
+                        [
+                            'embedded_entity_type' => $type,
+                            'parent_attribute_name' => $attribute,
+                            'position' => $position,
+                            'values' => $command_values
+                        ]
+                    );
+                }
+            }
+
+            return $commands;
+        };
+
         $reference_commands = [];
-        foreach ((array)$this->options->get('link_relations', []) as $reference_attribute_name => $payload_key) {
+        foreach ((array)$this->options->get('link_relations', []) as $attribute_name => $payload_key) {
             $relation_payload = isset($payload[$payload_key]) ? $payload[$payload_key][0] : null;
             if (!$relation_payload) {
                 continue;
             }
 
-            $referenced_identifier = $relation_payload['referenced_identifier'];
-
-            $embeds_to_remove = [];
-            $reference_exists = false;
-            foreach ($projection->getValue($reference_attribute_name) as $reference_embed) {
-                $embeds_to_remove[$reference_attribute_name] = [];
-                if ($reference_embed->getReferencedIdentifier() !== $referenced_identifier) {
-                    $reference_commands[] = new RemoveEmbeddedEntityCommand(
-                        [
-                            'embedded_entity_identifier' => $reference_embed->getIdentifier(),
-                            'embedded_entity_type' => $reference_embed->getType()->getPrefix(),
-                            'parent_attribute_name' => $reference_attribute_name
-                        ]
+            $pos = 0;
+            if (!is_string($payload_key)) { // dealing with a params instance
+                foreach ((array)$payload_key as $reference_key) {
+                    $command_values = $payload[$reference_key][0];
+                    $reference_type = $command_values['@type'];
+                    unset($command_values['@type']);
+                    $reference_commands = array_merge(
+                        $buildCommands($reference_type, $attribute_name, $pos++, $command_values),
+                        $reference_commands
                     );
-                } else {
-                    $reference_exists = true;
-                    continue;
                 }
-            }
-
-            if (!$reference_exists) {
-                $embedded_entity_type = $relation_payload['@type'];
-                unset($relation_payload['@type']);
-                $reference_commands[] = new AddEmbeddedEntityCommand(
-                    [
-                        'embedded_entity_type' => $embedded_entity_type,
-                        'parent_attribute_name' => $reference_attribute_name,
-                        'position' => 0,
-                        'values' => $relation_payload
-                    ]
+            } elseif (isset($payload[$payload_key])) {
+                $command_values = $payload[$payload_key][0];
+                $reference_type = $command_values['@type'];
+                unset($command_values['@type']);
+                $reference_commands = array_merge(
+                    $buildCommands($reference_type, $attribute_name, $pos++, [ $command_values ]),
+                    $reference_commands
                 );
             }
         }
