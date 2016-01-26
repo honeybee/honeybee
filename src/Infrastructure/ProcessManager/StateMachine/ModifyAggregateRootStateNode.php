@@ -81,10 +81,11 @@ class ModifyAggregateRootStateNode extends AggregateRootCommandStateNode
     protected function buildReferenceCommands(ProcessStateInterface $process_state, array $payload)
     {
         $projection = $this->getProjection($process_state);
-        $buildCommands = function($type, $attribute, $position, array $cmd_payloads) use ($projection) {
+        $buildCommands = function($attribute, $position, array $cmd_payloads) use ($projection) {
             $commands = [];
             foreach ($cmd_payloads as $cmd_payload) {
                 $reference_exists = false;
+                if ($this->getName() === 'update_advertisement') var_dump(__METHOD__, $cmd_payload);
                 $referenced_identifier = $cmd_payload['referenced_identifier'];
                 foreach ($projection->getValue($attribute) as $reference_embed) {
                     if ($reference_embed->getReferencedIdentifier() === $referenced_identifier) {
@@ -102,10 +103,10 @@ class ModifyAggregateRootStateNode extends AggregateRootCommandStateNode
                 if (!$reference_exists) {
                     $commands[] = new AddEmbeddedEntityCommand(
                         [
-                            'embedded_entity_type' => $type,
+                            'embedded_entity_type' => $cmd_payload['@type'],
                             'parent_attribute_name' => $attribute,
                             'position' => $position,
-                            'values' => $command_values
+                            'values' => $cmd_payload
                         ]
                     );
                 }
@@ -116,28 +117,18 @@ class ModifyAggregateRootStateNode extends AggregateRootCommandStateNode
 
         $reference_commands = [];
         foreach ((array)$this->options->get('link_relations', []) as $attribute_name => $payload_key) {
-            $relation_payload = isset($payload[$payload_key]) ? $payload[$payload_key][0] : null;
-            if (!$relation_payload) {
-                continue;
-            }
-
             $pos = 0;
             if (!is_string($payload_key)) { // dealing with a params instance
                 foreach ((array)$payload_key as $reference_key) {
-                    $command_values = $payload[$reference_key][0];
-                    $reference_type = $command_values['@type'];
-                    unset($command_values['@type']);
                     $reference_commands = array_merge(
-                        $buildCommands($reference_type, $attribute_name, $pos++, $command_values),
+                        $buildCommands($attribute_name, $pos++, $payload[$reference_key]),
                         $reference_commands
                     );
                 }
             } elseif (isset($payload[$payload_key])) {
-                $command_values = $payload[$payload_key][0];
-                $reference_type = $command_values['@type'];
-                unset($command_values['@type']);
+                if ($this->getName() === 'update_advertisement') var_dump($payload[$payload_key]);
                 $reference_commands = array_merge(
-                    $buildCommands($reference_type, $attribute_name, $pos++, [ $command_values ]),
+                    $buildCommands($attribute_name, $pos++, $payload[$payload_key]),
                     $reference_commands
                 );
             }
