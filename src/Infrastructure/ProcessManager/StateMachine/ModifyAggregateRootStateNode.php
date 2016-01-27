@@ -81,32 +81,38 @@ class ModifyAggregateRootStateNode extends AggregateRootCommandStateNode
     protected function buildReferenceCommands(ProcessStateInterface $process_state, array $payload)
     {
         $projection = $this->getProjection($process_state);
-        $buildCommands = function($attribute, $position, array $cmd_payloads) use ($projection) {
+        $buildCommands = function($attribute, array $cmd_payloads) use ($projection) {
             $commands = [];
-            foreach ($cmd_payloads as $cmd_payload) {
+            $processed_identifiers = [];
+            foreach ($cmd_payloads as $position => $cmd_payload) {
                 $reference_exists = false;
-                if ($this->getName() === 'update_advertisement') var_dump(__METHOD__, $cmd_payload);
                 $referenced_identifier = $cmd_payload['referenced_identifier'];
+                $processed_identifiers[] = $referenced_identifier;
                 foreach ($projection->getValue($attribute) as $reference_embed) {
                     if ($reference_embed->getReferencedIdentifier() === $referenced_identifier) {
                         $reference_exists = true;
-                    } else {
-                        $commands[] = new RemoveEmbeddedEntityCommand(
-                            [
-                                'embedded_entity_identifier' => $reference_embed->getIdentifier(),
-                                'embedded_entity_type' => $reference_embed->getType()->getPrefix(),
-                                'parent_attribute_name' => $attribute
-                            ]
-                        );
                     }
                 }
                 if (!$reference_exists) {
+                    $embed_type = $cmd_payload['@type'];
+                    unset($cmd_payload['@type']);
                     $commands[] = new AddEmbeddedEntityCommand(
                         [
-                            'embedded_entity_type' => $cmd_payload['@type'],
+                            'embedded_entity_type' => $embed_type,
                             'parent_attribute_name' => $attribute,
                             'position' => $position,
                             'values' => $cmd_payload
+                        ]
+                    );
+                }
+            }
+            foreach ($projection->getValue($attribute) as $reference_embed) {
+                if (!in_array($reference_embed->getReferencedIdentifier(), $processed_identifiers)) {
+                    $commands[] = new RemoveEmbeddedEntityCommand(
+                        [
+                            'embedded_entity_identifier' => $reference_embed->getIdentifier(),
+                            'embedded_entity_type' => $reference_embed->getType()->getPrefix(),
+                            'parent_attribute_name' => $attribute
                         ]
                     );
                 }
@@ -117,18 +123,18 @@ class ModifyAggregateRootStateNode extends AggregateRootCommandStateNode
 
         $reference_commands = [];
         foreach ((array)$this->options->get('link_relations', []) as $attribute_name => $payload_key) {
-            $pos = 0;
             if (!is_string($payload_key)) { // dealing with a params instance
+                $relation_payload = [];
                 foreach ((array)$payload_key as $reference_key) {
-                    $reference_commands = array_merge(
-                        $buildCommands($attribute_name, $pos++, $payload[$reference_key]),
-                        $reference_commands
-                    );
+                    $relation_payload = array_merge($relation_payload, $payload[$reference_key]);
                 }
-            } elseif (isset($payload[$payload_key])) {
-                if ($this->getName() === 'update_advertisement') var_dump($payload[$payload_key]);
                 $reference_commands = array_merge(
-                    $buildCommands($attribute_name, $pos++, $payload[$payload_key]),
+                    $buildCommands($attribute_name, $relation_payload),
+                    $reference_commands
+                );
+            } elseif (isset($payload[$payload_key])) {
+                $reference_commands = array_merge(
+                    $buildCommands($attribute_name, $payload[$payload_key]),
                     $reference_commands
                 );
             }
