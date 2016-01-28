@@ -8,6 +8,9 @@ use Honeybee\Model\Aggregate\AggregateRootTypeMap;
 use Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\AddEmbeddedEntityCommand;
 use Honeybee\Model\Task\ModifyAggregateRoot\ModifyEmbeddedEntity\ModifyEmbeddedEntityCommand;
 use Honeybee\Model\Task\ModifyAggregateRoot\RemoveEmbeddedEntity\RemoveEmbeddedEntityCommand;
+use Trellis\Runtime\Attribute\EmbeddedEntityList\EmbeddedEntityListAttribute;
+use Trellis\Runtime\Attribute\EntityReferenceList\EntityReferenceListAttribute;
+use Trellis\Runtime\Validator\Result\IncidentInterface;
 use Workflux\StatefulSubjectInterface;
 
 class ModifyAggregateRootStateNode extends AggregateRootCommandStateNode
@@ -161,7 +164,6 @@ class ModifyAggregateRootStateNode extends AggregateRootCommandStateNode
                 foreach ($payload[$embed_attribute_name] as $pos => $embed_data) {
                     $embed_type = $embed_data['@type'];
                     unset($embed_data['@type']);
-
                     $embedded_entity = $embedded_entity_list->getItem($pos);
                     if (!$embedded_entity) {
                         $embed_commands[] = new AddEmbeddedEntityCommand(
@@ -187,8 +189,12 @@ class ModifyAggregateRootStateNode extends AggregateRootCommandStateNode
                     }
 
                     $modified_data = [];
-                    foreach ($embed_data as $key => $value) {
-                        $value_holder = $embedded_entity->getType()->getAttribute($key)->createValueHolder();
+                    foreach ($embedded_entity->getType()->getAttributes() as $current_attribute) {
+                        if (!isset($embed_data[$current_attribute->getName()])) {
+                            continue;
+                        }
+                        $value_holder = $current_attribute->createValueHolder();
+                        $value = $embed_data[$current_attribute->getName()];
                         $result = $value_holder->setValue($value, $embedded_entity);
                         if ($result->getSeverity() >= IncidentInterface::NOTICE) {
                             if (!$value_holder->sameValueAs($embedded_entity->getValue($key))) {
