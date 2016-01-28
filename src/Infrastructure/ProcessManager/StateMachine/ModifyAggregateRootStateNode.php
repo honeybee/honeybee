@@ -195,9 +195,10 @@ class ModifyAggregateRootStateNode extends AggregateRootCommandStateNode
                         }
                         $value_holder = $current_attribute->createValueHolder();
                         $value = $embed_data[$current_attribute->getName()];
+                        $embed_value = $embedded_entity->getValue($current_attribute->getName());
                         $result = $value_holder->setValue($value, $embedded_entity);
                         if ($result->getSeverity() >= IncidentInterface::NOTICE) {
-                            if (!$value_holder->sameValueAs($embedded_entity->getValue($key))) {
+                            if (!$value_holder->sameValueAs($embed_value)) {
                                 $modified_data[$key] = $value_holder->toNative();
                             }
                         } else {
