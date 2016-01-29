@@ -197,12 +197,19 @@ class ModifyAggregateRootStateNode extends AggregateRootCommandStateNode
                         $value = $embed_data[$current_attribute->getName()];
                         $embed_value = $embedded_entity->getValue($current_attribute->getName());
                         $result = $value_holder->setValue($value, $embedded_entity);
-                        if ($result->getSeverity() >= IncidentInterface::NOTICE) {
+                        if ($result->getSeverity() <= IncidentInterface::NOTICE) {
                             if (!$value_holder->sameValueAs($embed_value)) {
                                 $modified_data[$key] = $value_holder->toNative();
                             }
                         } else {
-                            error_log(__METHOD__ . " - Invalid embed-data given.");
+                            error_log(
+                                sprintf(
+                                    '[%s] Invalid embed-data given for "%s": %s',
+                                    __METHOD__,
+                                    $current_attribute->getPath(),
+                                    var_export($value, true)
+                                )
+                            );
                         }
                     }
                     if (!empty($modified_data)) {
