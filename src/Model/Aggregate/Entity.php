@@ -42,22 +42,25 @@ abstract class Entity extends BaseEntity
                 $attribute_name,
                 $embedded_entity_event->getEmbeddedEntityIdentifier()
             );
-
             $embedded_entity_list->removeItem($embedded_entity);
+            if (!$embedded_entity) {
+                error_log(__METHOD__ . " - Embedded entity already was removed.");
+                return $embedded_entity_event;
+            }
         } elseif ($embedded_entity_event instanceof EmbeddedEntityModifiedEvent) {
             $embedded_entity = $this->getEmbeddedEntityFor(
                 $attribute_name,
                 $embedded_entity_event->getEmbeddedEntityIdentifier()
             );
+            if (!$embedded_entity) {
+                throw new RuntimeError(
+                    'Unable to resolve embedded-entity for embed-event: ' . json_encode($embedded_entity_event->toArray())
+                    . "\nAR-Id: " . $this->getIdentifier()
+                );
+            }
             if ($embedded_entity_list->getKey($embedded_entity) !== $embedded_entity_event->getPosition()) {
                 $embedded_entity_list->moveTo($embedded_entity_event->getPosition(), $embedded_entity);
             }
-        }
-
-        if (!$embedded_entity) {
-            throw new RuntimeError(
-                'Unable to resolve embedded-entity for event: ' . json_encode($embedded_entity_event->toArray())
-            );
         }
 
         return $embedded_entity->applyEvent($embedded_entity_event, $auto_commit);
@@ -92,6 +95,7 @@ abstract class Entity extends BaseEntity
         foreach ($this->getValue($attribute_name) as $embedded_entity) {
             if ($embedded_entity->getIdentifier() === $embedded_entity_id) {
                 $found_entity = $embedded_entity;
+                break;
             }
         }
 

@@ -532,7 +532,6 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
     {
         $event_class = $command->getEventClass();
         $attribute_name = $command->getParentAttributeName();
-        $embedded_entity_events = [];
 
         $event_state = [
             'parent_attribute_name' => $attribute_name,
@@ -543,7 +542,9 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
             $event_state['embedded_entity_identifier'] = $command->getEmbeddedEntityIdentifier();
         } elseif ($command instanceof AddEmbeddedEntityCommand) {
             $create_data = $command->getValues();
-            $create_data['identifier'] = UuidAttribute::generateVersion4();
+            if (!isset($create_data['identifier'])) {
+                $create_data['identifier'] = UuidAttribute::generateVersion4();
+            }
             $event_state = array_merge(
                 $event_state,
                 [

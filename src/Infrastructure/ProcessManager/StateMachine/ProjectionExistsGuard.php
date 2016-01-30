@@ -40,12 +40,12 @@ class ProjectionExistsGuard extends VariableGuard
             return false;
         }
 
+        $export_val = null;
+        $export_key = $this->options->get('export_to', false);
+        $execution_context = $process_state->getExecutionContext();
         $projection = $this->findProjection($this->getPayloadIdentifier($process_state));
         if ($projection) {
-            $execution_context = $process_state->getExecutionContext();
-            if ($export_key = $this->options->get('export_to', false)) {
-                $execution_context->setParameter($export_key, $projection);
-            }
+            $export_val = $projection;
             if ($this->options->has('export_as_reference')) {
                 $export_config = $this->options->get('export_as_reference');
                 $embed_type = $export_config->get('reference_embed_type');
@@ -54,10 +54,13 @@ class ProjectionExistsGuard extends VariableGuard
                     [ [ '@type' => $embed_type, 'referenced_identifier' => $projection->getIdentifier() ] ]
                 );
             }
-            return true;
         }
 
-        return false;
+        if ($export_key) {
+            $execution_context->setParameter($export_key, $export_val);
+        }
+
+        return $projection != null;
     }
 
     public function __toString()
@@ -78,7 +81,7 @@ class ProjectionExistsGuard extends VariableGuard
         if ($result->getTotalCount() > 0) {
             $projection = $result->getFirstResult();
             if ($result->getTotalCount() > 1) {
-                // @todo log multiple matches for same oen-id, shouldn't happen.
+                error_log(__METHOD__ . " - Unexpected multiple hits for projection check.");
             }
         }
 

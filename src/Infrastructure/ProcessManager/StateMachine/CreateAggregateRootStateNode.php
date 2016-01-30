@@ -37,17 +37,15 @@ class CreateAggregateRootStateNode extends AggregateRootCommandStateNode
         $aggregate_root_type = $this->getAggregateRootType();
         $command_payload = $this->getCommandPayload($process_state);
 
-        return new $command_class(
-            [
-                'aggregate_root_type' => get_class($aggregate_root_type),
-                'values' => $command_payload,
-                'embedded_entity_commands' => $this->buildEmbedCommandList($process_state, $command_payload),
-                'meta_data' => [
-                    'process_name' => $process_state->getProcessName(),
-                    'process_uuid' => $process_state->getUuid()
-                ]
+        return new $command_class([
+            'aggregate_root_type' => get_class($aggregate_root_type),
+            'values' => $command_payload,
+            'embedded_entity_commands' => $this->buildEmbedCommandList($process_state, $command_payload),
+            'meta_data' => [
+                'process_name' => $process_state->getProcessName(),
+                'process_uuid' => $process_state->getUuid()
             ]
-        );
+        ]);
     }
 
     protected function buildEmbedCommandList(ProcessStateInterface $process_state, $command_payload = [])
@@ -79,7 +77,7 @@ class CreateAggregateRootStateNode extends AggregateRootCommandStateNode
                     unset($command_values['@type']);
                     $reference_commands[] = $buildCommand($reference_type, $attribute_name, $pos++, $command_values);
                 }
-            } elseif (isset($payload[$payload_key])) {
+            } elseif (array_key_exists($payload_key, $payload)) {
                 $command_values = $payload[$payload_key][0];
                 $reference_type = $command_values['@type'];
                 unset($command_values['@type']);
@@ -92,28 +90,27 @@ class CreateAggregateRootStateNode extends AggregateRootCommandStateNode
 
     protected function buildEmbedCommands(ProcessStateInterface $process_state, array $payload)
     {
-        $aggregate_root_type = $this->getAggregateRootType();
-        $embed_attributes = $aggregate_root_type->getAttributes()->filter(
+        $embed_attributes = $this->getAggregateRootType()->getAttributes()->filter(
             function ($attribute) {
                 return $attribute instanceof EmbeddedEntityListAttribute
                     && !$attribute instanceof EntityReferenceListAttribute;
             }
         );
+
         $embed_commands = [];
         foreach ($embed_attributes as $embed_attribute_name => $embed_attribute) {
-            if (isset($payload[$embed_attribute_name])) {
-                foreach ($payload[$embed_attribute_name] as $embed_data) {
-                    $embed_type = $embed_data['@type'];
-                    unset($embed_data['@type']);
-                    $embed_commands[] = new AddEmbeddedEntityCommand(
-                        [
-                            'embedded_entity_type' => $embed_type,
-                            'parent_attribute_name' => $embed_attribute_name,
-                            'values' => $embed_data,
-                            'position' => 0
-                        ]
-                    );
-                }
+            if (!array_key_exists($embed_attribute_name, $payload)) {
+                continue;
+            }
+            foreach ($payload[$embed_attribute_name] as $pos => $embed_data) {
+                $embed_type = $embed_data['@type'];
+                unset($embed_data['@type']);
+                $embed_commands[] = new AddEmbeddedEntityCommand([
+                    'embedded_entity_type' => $embed_type,
+                    'parent_attribute_name' => $embed_attribute_name,
+                    'values' => $embed_data,
+                    'position' => $pos
+                ]);
             }
         }
 
