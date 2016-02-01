@@ -2,7 +2,7 @@
 
 namespace Honeybee\Infrastructure\ProcessManager\StateMachine;
 
-use Honeybee\Entity;
+use Honeybee\EntityInterface;
 use Honeybee\Infrastructure\Event\NoOpSignal;
 use Honeybee\Infrastructure\ProcessManager\ProcessStateInterface;
 use Honeybee\Model\Aggregate\AggregateRootTypeMap;
@@ -86,7 +86,7 @@ class ModifyAggregateRootStateNode extends AggregateRootCommandStateNode
                 $processed_identifiers[] = $referenced_identifier;
                 $embedded_entity_list = $projection->getValue($attribute);
                 $affected_entity = $embedded_entity_list->filter(
-                    function (Entity $reference_embed) use($referenced_identifier) {
+                    function (EntityInterface $reference_embed) use($referenced_identifier) {
                         return $reference_embed->getReferencedIdentifier() === $referenced_identifier;
                     }
                 )->getFirst();
@@ -163,10 +163,13 @@ class ModifyAggregateRootStateNode extends AggregateRootCommandStateNode
             foreach ($payload[$embed_attribute_name] as $pos => $embed_data) {
                 $embed_type = $embed_data['@type'];
                 unset($embed_data['@type']);
-                $affected_entity = $embedded_entity_list->filter(function(Entity $embedded_entity) use ($embed_data) {
-                    return isset($embed_data['identifier'])
-                        && $embedded_entity->getIdentifier() === $embed_data['identifier'];
-                })->getFirst();
+                $affected_entity = $embedded_entity_list->filter(
+                    function(EntityInterface $embedded_entity) use ($embed_data) {
+                        return isset($embed_data['identifier'])
+                            && $embedded_entity->getIdentifier() === $embed_data['identifier'];
+                    }
+                )->getFirst();
+
                 if (!$affected_entity) {
                     $add_commands[] = new AddEmbeddedEntityCommand([
                         'embedded_entity_type' => $embed_type,
@@ -191,11 +194,23 @@ class ModifyAggregateRootStateNode extends AggregateRootCommandStateNode
 
             foreach ($embedded_entity_list as $embedded_entity) {
                 if (!in_array($embedded_entity->getIdentifier(), $processed_identifiers)) {
-                    $remove_commands[] = new RemoveEmbeddedEntityCommand([
-                        'embedded_entity_type' => $embedded_entity->getType()->getPrefix(),
-                        'parent_attribute_name' => $embed_attribute_name,
-                        'embedded_entity_identifier' => $embedded_entity->getIdentifier()
-                    ]);
+                    $compensation_cmd = null;
+                    foreach ($add_commands as $add_command) {
+                        if ($this->isCompensatedBy($embedded_entity, $add_command)) {
+                            $compensation_cmd = $add_command;
+                            break;
+                        }
+                    }
+                    if ($compensation_cmd) {
+                        $cmd_idx = array_search($compensation_cmd, $add_commands, true);
+                        array_splice($add_commands, $cmd_idx, 1);
+                    } else {
+                        $remove_commands[] = new RemoveEmbeddedEntityCommand([
+                            'embedded_entity_type' => $embedded_entity->getType()->getPrefix(),
+                            'parent_attribute_name' => $embed_attribute_name,
+                            'embedded_entity_identifier' => $embedded_entity->getIdentifier()
+                        ]);
+                    }
                 }
             }
             $embed_commands = array_merge($embed_commands, $modify_commands, $remove_commands, $add_commands);
@@ -204,14 +219,14 @@ class ModifyAggregateRootStateNode extends AggregateRootCommandStateNode
         return $embed_commands;
     }
 
-    protected function entityDataEqualsPayload(Entity $embedded_entity, array $payload)
+    protected function isCompensatedBy(EntityInterface $embedded_entity, AddEmbeddedEntityCommand $add_cmd)
     {
-        $delta = $this->filterModifiedValues($embedded_entity, $data);
+        $delta = $this->filterModifiedValues($embedded_entity, $add_cmd->getValues());
 
         return empty($delta);
     }
 
-    protected function filterModifiedValues(Entity $embedded_entity, array $embed_payload)
+    protected function filterModifiedValues(EntityInterface $embedded_entity, array $embed_payload)
     {
         $modified_data = [];
         foreach ($embedded_entity->getType()->getAttributes() as $current_attribute) {
