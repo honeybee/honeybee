@@ -100,14 +100,13 @@ class Worker implements WorkerInterface
                 break;
 
             case JobInterface::STATE_ERROR:
-                // @todo log error
-                $channel->basic_nack($delivery_tag);
+                $channel->basic_reject($delivery_tag, true);
                 break;
 
             case JobInterface::STATE_FATAL:
                 // @todo the job is now dropped from queue as fatal.
                 // we might want to push it to an error queue or to a journal/recovery file for fatal jobs.
-                $channel->basic_reject($delivery_tag);
+                $channel->basic_reject($delivery_tag, false);
                 break;
         }
     }

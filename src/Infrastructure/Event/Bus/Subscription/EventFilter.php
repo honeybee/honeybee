@@ -36,4 +36,9 @@ class EventFilter extends Object implements EventFilterInterface
 
         return $this->expression_service->evaluate($expression, [ 'event' => $event ]);
     }
+
+    public function __toString()
+    {
+        return $this->settings->get('expression', false);
+    }
 }
