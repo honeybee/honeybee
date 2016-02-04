@@ -109,7 +109,6 @@ class UnitOfWork implements UnitOfWorkInterface
                 sprintf('Unable to load event stream for given AR identifier: %s', $aggregate_root_id)
             );
         }
-
         return $aggregate_root;
     }
 

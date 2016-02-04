@@ -3,22 +3,11 @@
 namespace Honeybee\Infrastructure\Command;
 
 use Exception;
-use Honeybee\Common\Error\RuntimeError;
-use Honeybee\Infrastructure\Command\CommandInterface;
-use Honeybee\Infrastructure\Event\Bus\EventBusInterface;
-use Honeybee\Infrastructure\Event\EventList;
-use Honeybee\Infrastructure\Event\NoOpSignal;
 use Psr\Log\LoggerInterface;
-use Trellis\Common\Collection\ArrayList;
 use Trellis\Common\Object;
 
 abstract class CommandHandler extends Object implements CommandHandlerInterface
 {
-    /**
-     * @var EventBusInterface $event_bus
-     */
-    protected $event_bus;
-
     /**
      * @var LoggerInterface $logger
      */
@@ -35,23 +24,12 @@ abstract class CommandHandler extends Object implements CommandHandlerInterface
     abstract protected function tryToExecute(CommandInterface $command, $retry_count = 0);
 
     /**
-     * Return the name of the event-channel used to post events to subscribers.
-     *
-     * @return string
-     */
-    abstract protected function getEventChannelName($type = 'domain');
-
-    /**
      * Creates a new CommandHandler instance.
      *
-     * @var EventBusInterface $event_bus
      * @var LoggerInterface $logger
      */
-    public function __construct(
-        EventBusInterface $event_bus,
-        LoggerInterface $logger
-    ) {
-        $this->event_bus = $event_bus;
+    public function __construct(LoggerInterface $logger)
+    {
         $this->logger = $logger;
     }
 
@@ -66,12 +44,12 @@ abstract class CommandHandler extends Object implements CommandHandlerInterface
         $max_retries = 3;
         $retry_timeout = 100000;
         $retry_count = 0;
-        $events = new EventList();
+        $done = false;
 
-        while ($retry_count <= $max_retries) {
+        while (!$done && $retry_count <= $max_retries) {
             try {
-                $events = $this->tryToExecute($command, $retry_count);
-                break;
+                $this->tryToExecute($command, $retry_count);
+                $done = true;
             } catch (Exception $conflict) {
                 // TODO introduce DataAccess(Conflict)Error or similar and throw it from the storage etc, classes?
                 if ($retry_count === $max_retries) {
@@ -81,27 +59,6 @@ abstract class CommandHandler extends Object implements CommandHandlerInterface
                     usleep($retry_timeout);
                     $this->logger->error(static::class . ' ~ ' . $conflict->getMessage());
                 }
-            }
-        }
-
-        if (!$events instanceof EventList) {
-            throw new RuntimeError(
-                sprintf(
-                    'Unexpected type returned from call to tryExecute. Expecting typeof %s, but given %s. ',
-                    EventList::CLASS,
-                    get_class($events)
-                )
-            );
-        }
-        if ($events->isEmpty()) {
-            $event = new NoOpSignal([
-                'command_data' => $command->toArray(),
-                'meta_data' => $command->getMetaData()
-            ]);
-            $this->event_bus->distribute($this->getEventChannelName('infrastructure'), $event);
-        } else {
-            foreach ($events as $event) {
-                $this->event_bus->distribute($this->getEventChannelName('domain'), $event);
             }
         }
     }

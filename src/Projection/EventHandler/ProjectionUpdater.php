@@ -62,30 +62,19 @@ class ProjectionUpdater extends EventHandler
     public function handleEvent(EventInterface $event)
     {
         $affected_entities = new EntityList;
-        $projection = $this->invokeEventHandler($event, 'on');
 
-        if (!$projection) {
-            switch (true) {
-                case $event instanceof AggregateRootCreatedEvent:
-                    $projection = $this->onAggregateRootCreated($event);
-                    break;
-                case $event instanceof WorkflowProceededEvent:
-                    $projection = $this->onWorkflowProceeded($event);
-                    break;
-                case $event instanceof AggregateRootNodeMovedEvent:
-                    $projection = $this->onAggregateRootNodeMoved($event);
-                    break;
-                case $event instanceof AggregateRootModifiedEvent:
-                    $projection = $this->onAggregateRootModified($event);
-                    break;
-                default:
-                    // @todo unsupported event type given, log or throw exception?
-            }
-        }
+        $projection = $this->invokeEventHandler($event, 'on');
 
         if ($projection) {
             $affected_entities->push($projection);
-            $this->afterProjectionUpdated($event, $projection);
+            $this->invokeEventHandler($event, 'after', [ $projection ]);
+            $updated_event = new ProjectionUpdatedEvent([
+                'uuid' => $projection->getUuid(),
+                'source_event_data' => $event->toArray(),
+                'projection_type' => $projection->getType()->getPrefix(),
+                'projection_data' => $projection->toArray()
+            ]);
+            // @todo post ProjectionUpdatedEvent to the event-bus ('honeybee.projection_events' channel)
         }
 
         return $affected_entities;
@@ -271,23 +260,6 @@ class ProjectionUpdater extends EventHandler
         if ($projection_to_remove) {
             $projection_list->removeItem($projection_to_remove);
         }
-    }
-
-    protected function afterProjectionUpdated(AggregateRootEventInterface $source_event, EntityInterface $projection)
-    {
-        $this->invokeEventHandler($source_event, 'after', [ $projection ]);
-
-        $updated_event = new ProjectionUpdatedEvent(
-            [
-                'uuid' => $projection->getUuid(),
-                'source_event_data' => $source_event->toArray(),
-                'projection_type' => $projection->getType()->getPrefix(),
-                'projection_data' => $projection->toArray()
-            ]
-        );
-        // @todo post ProjectionUpdatedEvent to the event-bus ('honeybee.projection_events' channel)
-        // this requires a dep to the event-bus, which will cause a cycle within the di-container
-        // in order to get it to work, we could create a LazyEventSubscription as done within the CommandBus
     }
 
     protected function mirrorForeignValues(EntityInterface $projection)

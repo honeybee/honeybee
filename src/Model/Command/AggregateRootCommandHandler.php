@@ -4,26 +4,28 @@ namespace Honeybee\Model\Command;
 
 use Exception;
 use Honeybee\Common\Error\RuntimeError;
-use Honeybee\EntityTypeInterface;
 use Honeybee\Infrastructure\Command\CommandHandler;
 use Honeybee\Infrastructure\Command\CommandInterface;
 use Honeybee\Infrastructure\DataAccess\DataAccessServiceInterface;
 use Honeybee\Infrastructure\Event\Bus\EventBusInterface;
-use Honeybee\Infrastructure\Filesystem\FilesystemServiceInterface;
+use Honeybee\Infrastructure\Event\NoOpSignal;
 use Honeybee\Model\Aggregate\AggregateRootInterface;
 use Honeybee\Model\Aggregate\AggregateRootTypeInterface;
 use Honeybee\Model\Event\AggregateRootEventList;
-use Honeybee\Model\Event\HasEmbeddedEntityEventsInterface;
 use Honeybee\Model\Task\CreateAggregateRoot\CreateAggregateRootCommand;
 use Psr\Log\LoggerInterface;
-use Trellis\Runtime\Attribute\HandlesFileInterface;
-use Trellis\Runtime\Attribute\HandlesFileListInterface;
 
 abstract class AggregateRootCommandHandler extends CommandHandler
 {
-    const EVENT_BUS_CHANNEL_PREFIX = 'honeybee.events.';
+    const CHANNEL_DOMAIN = 'honeybee.events.domain';
+
+    const CHANNEL_INFRA = 'honeybee.events.infrastructure';
+
+    const CHANNEL_FILES = 'honeybee.events.files';
 
     protected $aggregate_root_type;
+
+    protected $event_bus;
 
     protected $data_access_service;
 
@@ -34,35 +36,45 @@ abstract class AggregateRootCommandHandler extends CommandHandler
     public function __construct(
         AggregateRootTypeInterface $aggregate_root_type,
         DataAccessServiceInterface $data_access_service,
-        FilesystemServiceInterface $filesystem_service,
         EventBusInterface $event_bus,
         LoggerInterface $logger
     ) {
-        parent::__construct($event_bus, $logger);
+        parent::__construct($logger);
 
+        $this->event_bus = $event_bus;
         $this->aggregate_root_type = $aggregate_root_type;
         $this->data_access_service = $data_access_service;
-        $this->filesystem_service = $filesystem_service;
     }
 
     protected function tryToExecute(CommandInterface $command, $retry_count = 0)
     {
-        $aggregate_root = $this->loadAggregateRoot($command);
+        $aggregate_root = $this->checkoutOrCreateAggregateRoot($command);
         $this->doExecute($command, $aggregate_root);
-        // commit pending events and then send them down the event-bus
-        $comitted_events = new AggregateRootEventList();
-        foreach ($this->getUnitOfWork()->commit() as $aggregate_root_id => $comitted_events_list) {
-            foreach ($comitted_events_list as $comitted_event) {
-                // move files from tmp- to final-storage
-                $this->copyTempFilesToFinalLocation($comitted_event, $aggregate_root->getType());
-                $comitted_events->push($comitted_event);
+        $comitted_events = $this->getUnitOfWork()->commit()->filter(function(AggregateRootEventList $event_list) {
+            return !$event_list->isEmpty();
+        });
+
+        if ($comitted_events->isEmpty()) {
+            $this->event_bus->distribute(
+                self::CHANNEL_INFRA,
+                new NoOpSignal([
+                    'command_data' => $command->toArray(),
+                    'meta_data' => $command->getMetaData()
+                ])
+            );
+        } else {
+            foreach ($comitted_events as $aggregate_root_id => $event_list) {
+                foreach ($event_list as $event) {
+                    $this->event_bus->distribute(self::CHANNEL_FILES, $event);
+                    $this->event_bus->distribute(self::CHANNEL_DOMAIN, $event);
+                }
             }
         }
 
         return $comitted_events;
     }
 
-    protected function loadAggregateRoot(CommandInterface $command)
+    protected function checkoutOrCreateAggregateRoot(CommandInterface $command)
     {
         if ($command instanceof AggregateRootCommandInterface) {
             $aggregate_root = $this->getUnitOfWork()->checkout($command->getAggregateRootIdentifier());
@@ -75,66 +87,10 @@ abstract class AggregateRootCommandHandler extends CommandHandler
         return $aggregate_root;
     }
 
-    protected function copyTempFilesToFinalLocation(
-        HasEmbeddedEntityEventsInterface $command,
-        EntityTypeInterface $entity_type
-    ) {
-        foreach ($command->getData() as $attr_name => $attr_data) {
-            $attribute = $entity_type->getAttribute($attr_name);
-            $art = $attribute->getRootType();
-            if ($attribute instanceof HandlesFileListInterface) {
-                $property_name = $attribute->getFileLocationPropertyName();
-                foreach ($attr_data as $file) {
-                    $this->copyTempFileToFinalLocation($file[$property_name], $art);
-                }
-            } elseif ($attribute instanceof HandlesFileInterface) {
-                $this->copyTempFileToFinalLocation($attr_data[$attribute->getFileLocationPropertyName()], $art);
-            }
-        }
-
-        // there may be embedded entity commands that have files on their attributes as well => recurse into them
-        foreach ($command->getEmbeddedEntityEvents() as $embedded_command) {
-            $attr_name = $embedded_command->getParentAttributeName();
-            $embedded_entity_type = $embedded_command->getEmbeddedEntityType();
-            $embedded_attribute = $entity_type->getAttribute($attr_name);
-            $embedded_type = $embedded_attribute->getEmbeddedTypeByPrefix($embedded_entity_type);
-            $this->copyTempFilesToFinalLocation($embedded_command, $embedded_type);
-        }
-    }
-
-    protected function copyTempFileToFinalLocation($location, EntityTypeInterface $art)
-    {
-        $from_uri = $this->filesystem_service->createTempUri($location, $art); // from temporary storage
-        $to_uri = $this->filesystem_service->createUri($location, $art); // to final storage
-        $success = false;
-        try {
-            if (!$this->filesystem_service->has($to_uri)) {
-                $success = $this->filesystem_service->copy($from_uri, $to_uri);
-            }
-        } catch (Exception $copy_error) {
-            $this->logger->error(
-                '[{method}] File could not be copied from {from_uri} to {to_uri}. Error: {error}',
-                [
-                    'method' => __METHOD__,
-                    'from_uri' => $from_uri,
-                    'to_uri' => $to_uri,
-                    'error' => $copy_error->getMessage()
-                ]
-            );
-        }
-
-        return $success;
-    }
-
     protected function getUnitOfWork()
     {
         $uow_key = sprintf('%s::domain_event::event_source::unit_of_work', $this->aggregate_root_type->getPrefix());
 
         return $this->data_access_service->getUnitOfWork($uow_key);
-    }
-
-    protected function getEventChannelName($type = 'domain')
-    {
-        return self::EVENT_BUS_CHANNEL_PREFIX . $type;
     }
 }
