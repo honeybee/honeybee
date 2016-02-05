@@ -29,8 +29,6 @@ abstract class AggregateRootCommandHandler extends CommandHandler
 
     protected $data_access_service;
 
-    protected $filesystem_service;
-
     abstract protected function doExecute(CommandInterface $command, AggregateRootInterface $aggregate_root);
 
     public function __construct(
