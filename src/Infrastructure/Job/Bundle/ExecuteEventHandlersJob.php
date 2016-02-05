@@ -27,7 +27,7 @@ class ExecuteEventHandlersJob extends Job
         $this->event_bus = $event_bus;
     }
 
-    protected function execute()
+    public function run(array $parameters = [])
     {
         if (!$this->channel) {
             throw new RuntimeError("Missing required channel parameter.");

@@ -3,9 +3,9 @@
 namespace Honeybee\Infrastructure\Job\Bundle;
 
 use Honeybee\Common\Error\RuntimeError;
-use Honeybee\Infrastructure\Job\Job;
-use Honeybee\Infrastructure\Command\CommandInterface;
 use Honeybee\Infrastructure\Command\Bus\CommandBusInterface;
+use Honeybee\Infrastructure\Command\CommandInterface;
+use Honeybee\Infrastructure\Job\Job;
 
 class ExecuteCommandJob extends Job
 {
@@ -23,7 +23,7 @@ class ExecuteCommandJob extends Job
         $this->command_bus = $command_bus;
     }
 
-    protected function execute()
+    public function run(array $parameters = [])
     {
         $this->command_bus->execute($this->command);
     }

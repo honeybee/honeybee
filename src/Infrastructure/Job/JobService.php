@@ -2,13 +2,13 @@
 
 namespace Honeybee\Infrastructure\Job;
 
-use Honeybee\Infrastructure\Config\ConfigInterface;
-use Honeybee\Infrastructure\Config\SettingsInterface;
-use Honeybee\Infrastructure\Config\Settings;
-use Honeybee\Infrastructure\DataAccess\Connector\RabbitMqConnector;
-use PhpAmqpLib\Message\AMQPMessage;
-use Honeybee\ServiceLocatorInterface;
 use Honeybee\Common\Error\RuntimeError;
+use Honeybee\Infrastructure\Config\ConfigInterface;
+use Honeybee\Infrastructure\Config\Settings;
+use Honeybee\Infrastructure\Config\SettingsInterface;
+use Honeybee\Infrastructure\DataAccess\Connector\RabbitMqConnector;
+use Honeybee\ServiceLocatorInterface;
+use PhpAmqpLib\Message\AMQPMessage;
 use Psr\Log\LoggerInterface;
 
 class JobService implements JobServiceInterface
