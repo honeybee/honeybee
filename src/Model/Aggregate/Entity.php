@@ -54,8 +54,9 @@ abstract class Entity extends BaseEntity
             );
             if (!$embedded_entity) {
                 throw new RuntimeError(
-                    'Unable to resolve embedded-entity for embed-event: ' . json_encode($embedded_entity_event->toArray())
-                    . "\nAR-Id: " . $this->getIdentifier()
+                    'Unable to resolve embedded-entity for embed-event: ' .
+                    json_encode($embedded_entity_event->toArray()) .
+                    "\nAR-Id: " . $this->getIdentifier()
                 );
             }
             if ($embedded_entity_list->getKey($embedded_entity) !== $embedded_entity_event->getPosition()) {

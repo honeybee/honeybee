@@ -78,7 +78,7 @@ class ModifyAggregateRootStateNode extends AggregateRootCommandStateNode
     protected function buildReferenceCommands(ProcessStateInterface $process_state, array $payload)
     {
         $projection = $this->getProjection($process_state);
-        $buildCommands = function($attribute, array $cmd_payloads) use ($projection) {
+        $buildCommands = function ($attribute, array $cmd_payloads) use ($projection) {
             $commands = [];
             $processed_identifiers = [];
             foreach ($cmd_payloads as $position => $cmd_payload) {
@@ -86,7 +86,7 @@ class ModifyAggregateRootStateNode extends AggregateRootCommandStateNode
                 $processed_identifiers[] = $referenced_identifier;
                 $embedded_entity_list = $projection->getValue($attribute);
                 $affected_entity = $embedded_entity_list->filter(
-                    function (EntityInterface $reference_embed) use($referenced_identifier) {
+                    function (EntityInterface $reference_embed) use ($referenced_identifier) {
                         return $reference_embed->getReferencedIdentifier() === $referenced_identifier;
                     }
                 )->getFirst();
@@ -164,7 +164,7 @@ class ModifyAggregateRootStateNode extends AggregateRootCommandStateNode
                 $embed_type = $embed_data['@type'];
                 unset($embed_data['@type']);
                 $affected_entity = $embedded_entity_list->filter(
-                    function(EntityInterface $embedded_entity) use ($embed_data) {
+                    function (EntityInterface $embedded_entity) use ($embed_data) {
                         return isset($embed_data['identifier'])
                             && $embedded_entity->getIdentifier() === $embed_data['identifier'];
                     }

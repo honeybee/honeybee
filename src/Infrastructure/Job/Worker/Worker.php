@@ -106,12 +106,12 @@ class Worker implements WorkerInterface
             $this->retry_tracking[$jid]++;
             // @todo appropiate error-logging
             error_log(__METHOD__ . ' - ' . $runtime_error->getMessage() . PHP_EOL . $runtime_error->getMessage());
-printf(
-    "\n\n[Worker] Unexpected error during execution of job(id) '%s' with message %s and trace:\n%s\n\n",
-    $jid,
-    $runtime_error->getMessage(),
-    $runtime_error->getTraceAsString()
-);
+            printf(
+                "\n\n[Worker] Unexpected error during execution of job(id) '%s' with message %s and trace:\n%s\n\n",
+                $jid,
+                $runtime_error->getMessage(),
+                $runtime_error->getTraceAsString()
+            );
         }
 
         $delivery_info = $job_message->delivery_info;

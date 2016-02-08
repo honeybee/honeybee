@@ -48,7 +48,7 @@ abstract class AggregateRootCommandHandler extends CommandHandler
     {
         $aggregate_root = $this->checkoutOrCreateAggregateRoot($command);
         $this->doExecute($command, $aggregate_root);
-        $comitted_events = $this->getUnitOfWork()->commit()->filter(function(AggregateRootEventList $event_list) {
+        $comitted_events = $this->getUnitOfWork()->commit()->filter(function (AggregateRootEventList $event_list) {
             return !$event_list->isEmpty();
         });
 
