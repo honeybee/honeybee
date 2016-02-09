@@ -326,19 +326,19 @@ return [
     //
     [
         'query' => new Query(
-                new CriteriaList,
-                new CriteriaList(
-                    [
-                        new RangeCriteria(
-                            'created_at',
-                            new GreaterThan('2016-02-02'),
-                            new LessThan('2016-03-02')
-                        )
-                    ]
-                ),
-                new CriteriaList,
-                0,
-                100
+            new CriteriaList,
+            new CriteriaList(
+                [
+                    new RangeCriteria(
+                        'created_at',
+                        new GreaterThan('2016-02-02'),
+                        new LessThan('2016-03-02')
+                    )
+                ]
+            ),
+            new CriteriaList,
+            0,
+            100
         ),
         'expected_es_query' => [
             'index' => 'honeybee-system_account',
