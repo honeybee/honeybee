@@ -6,12 +6,15 @@ class AttributeCriteria implements CriteriaInterface
 {
     protected $attribute_path;
 
-    protected $comparison;
+    protected $comparator;
 
-    public function __construct($attribute_path, Comparison $comparison)
+    protected $value;
+
+    public function __construct($attribute_path, $value, $comparator = self::EQUALS)
     {
         $this->attribute_path = $attribute_path;
-        $this->comparison = $comparison;
+        $this->value = $value;
+        $this->comparator = $comparator;
     }
 
     public function getAttributePath()
@@ -19,17 +22,23 @@ class AttributeCriteria implements CriteriaInterface
         return $this->attribute_path;
     }
 
-    public function getComparison()
+    public function getComparator()
     {
-        return $this->comparison;
+        return $this->comparator;
+    }
+
+    public function getValue()
+    {
+        return $this->value;
     }
 
     public function __toString()
     {
         return sprintf(
-            'ATTRIBUTE %s %s',
+            'ATTRIBUTE %s %s %s',
             $this->attribute_path,
-            $this->comparison
+            strtoupper($this->comparator),
+            $this->value
         );
     }
 }
