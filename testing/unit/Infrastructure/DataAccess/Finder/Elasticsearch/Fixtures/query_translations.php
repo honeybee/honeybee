@@ -6,8 +6,9 @@ use Honeybee\Infrastructure\DataAccess\Query\Query;
 use Honeybee\Infrastructure\DataAccess\Query\SearchCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\SortCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\RangeCriteria;
-use Honeybee\Infrastructure\DataAccess\Query\Comparison;
-use Honeybee\Infrastructure\DataAccess\Query\CriteriaInterface;
+use Honeybee\Infrastructure\DataAccess\Query\Comparison\LessThan;
+use Honeybee\Infrastructure\DataAccess\Query\Comparison\GreaterThan;
+use Honeybee\Infrastructure\DataAccess\Query\Comparison\GreaterThanOrEquals;
 
 return [
     //
@@ -281,8 +282,8 @@ return [
             new CriteriaList,
             new CriteriaList(
                 [
-                    new RangeCriteria('created_at', new Comparison(Comparison::LESS_THAN, '2016-03-02')),
-                    new RangeCriteria('modified_at', new Comparison(Comparison::GREATER_THAN_EQUAL, '2016-03-02'))
+                    new RangeCriteria('created_at', new LessThan('2016-03-02')),
+                    new RangeCriteria('modified_at', new GreaterThanOrEquals('2016-03-02'))
                 ]
             ),
             new CriteriaList,
@@ -330,8 +331,8 @@ return [
                     [
                         new RangeCriteria(
                             'created_at',
-                            new Comparison(Comparison::GREATER_THAN, '2016-02-02'),
-                            new Comparison(Comparison::LESS_THAN, '2016-03-02')
+                            new GreaterThan('2016-02-02'),
+                            new LessThan('2016-03-02')
                         )
                     ]
                 ),
