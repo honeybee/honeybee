@@ -5,6 +5,9 @@ use Honeybee\Infrastructure\DataAccess\Query\CriteriaList;
 use Honeybee\Infrastructure\DataAccess\Query\Query;
 use Honeybee\Infrastructure\DataAccess\Query\SearchCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\SortCriteria;
+use Honeybee\Infrastructure\DataAccess\Query\RangeCriteria;
+use Honeybee\Infrastructure\DataAccess\Query\Comparison;
+use Honeybee\Infrastructure\DataAccess\Query\CriteriaInterface;
 
 return [
     //
@@ -34,7 +37,7 @@ return [
                         ]
                     ]
                 ],
-                'sort' => [[ 'created_at' => [ 'order' => 'asc', 'unmapped_type' => 'date' ] ]]
+                'sort' => [ [ 'created_at' => [ 'order' => 'asc', 'unmapped_type' => 'date' ] ] ]
             ],
             'size' => 100,
             'from' => 0
@@ -73,7 +76,7 @@ return [
                         ]
                     ]
                 ],
-                'sort' => [[ 'created_at' => [ 'order' => 'asc', 'unmapped_type' => 'date' ]]]
+                'sort' => [ [ 'created_at' => [ 'order' => 'asc', 'unmapped_type' => 'date' ] ] ]
             ],
             'size' => 100,
             'from' => 0
@@ -113,7 +116,7 @@ return [
                         ]
                     ]
                 ],
-                'sort' => [[ 'created_at' => [ 'order' => 'asc', 'unmapped_type' => 'date' ]]]
+                'sort' => [ [ 'created_at' => [ 'order' => 'asc', 'unmapped_type' => 'date' ] ] ]
             ],
             'size' => 100,
             'from' => 0
@@ -137,7 +140,7 @@ return [
                 'query' => [
                     'match' => [ '_all' => [ 'query' => 'foobar', 'type' => 'phrase_prefix' ] ]
                 ],
-                'sort' => [[ 'created_at' => [ 'order' => 'asc', 'unmapped_type' => 'date' ]]]
+                'sort' => [ [ 'created_at' => [ 'order' => 'asc', 'unmapped_type' => 'date' ] ] ]
             ],
             'size' => 100,
             'from' => 0
@@ -202,7 +205,7 @@ return [
                         ]
                     ]
                 ],
-                'sort' => [[ 'created_at' => [ 'order' => 'asc', 'unmapped_type' => 'date' ]]]
+                'sort' => [ [ 'created_at' => [ 'order' => 'asc', 'unmapped_type' => 'date' ] ] ]
             ],
             'size' => 100,
             'from' => 0
@@ -263,6 +266,101 @@ return [
             'body' => [
                 'query' => [
                     'match_all' => []
+                ],
+                'sort' => []
+            ],
+            'size' => 100,
+            'from' => 0
+        ]
+    ],
+    //
+    // "match_all" with "range" filter
+    //
+    [
+        'query' => new Query(
+            new CriteriaList,
+            new CriteriaList(
+                [
+                    new RangeCriteria('created_at', new Comparison(Comparison::LESS_THAN, '2016-03-02')),
+                    new RangeCriteria('modified_at', new Comparison(Comparison::GREATER_THAN_EQUAL, '2016-03-02'))
+                ]
+            ),
+            new CriteriaList,
+            50,
+            1000
+        ),
+        'expected_es_query' => [
+            'index' => 'honeybee-system_account',
+            'type' => 'user',
+            'body' => [
+                'query' => [
+                    'filtered' => [
+                        'query' => [
+                            'match_all' => []
+                        ],
+                        'filter' => [
+                            'and' => [
+                                [
+                                    'range' => [
+                                        'created_at' => [ 'lt' => '2016-03-02' ]
+                                     ]
+                                ],
+                                [
+                                    'range' => [
+                                        'modified_at' => [ 'gte' => '2016-03-02' ]
+                                     ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+                'sort' => []
+            ],
+            'size' => 1000,
+            'from' => 50
+        ]
+    ],
+    //
+    // "match_all" with multiple "range" filters on same attribute
+    //
+    [
+        'query' => new Query(
+                new CriteriaList,
+                new CriteriaList(
+                    [
+                        new RangeCriteria(
+                            'created_at',
+                            new Comparison(Comparison::GREATER_THAN, '2016-02-02'),
+                            new Comparison(Comparison::LESS_THAN, '2016-03-02')
+                        )
+                    ]
+                ),
+                new CriteriaList,
+                0,
+                100
+        ),
+        'expected_es_query' => [
+            'index' => 'honeybee-system_account',
+            'type' => 'user',
+            'body' => [
+                'query' => [
+                    'filtered' => [
+                        'query' => [
+                            'match_all' => []
+                        ],
+                        'filter' => [
+                            'and' => [
+                                [
+                                    'range' => [
+                                        'created_at' => [
+                                            'gt' => '2016-02-02',
+                                            'lt' => '2016-03-02'
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
                 ],
                 'sort' => []
             ],

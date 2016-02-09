@@ -118,14 +118,7 @@ class ElasticsearchQueryTranslation implements QueryTranslationInterface
             } elseif ($criteria instanceof AttributeCriteria) {
                 $elasticsearch_filters[] = $this->buildFilterFor($criteria);
             } elseif ($criteria instanceof RangeCriteria) {
-                $elasticsearch_filters[] = [
-                    'range' => [
-                        $attribute_path => [
-                            'gte' => $criteria->getLower(),
-                            'lte' => $criteria->getUpper()
-                        ]
-                    ]
-                ];
+                $elasticsearch_filters[] = $this->buildRangeFilterFor($criteria);
             } else {
                 throw new RuntimeError(
                     sprintf('Invalid criteria type %s given to %s', get_class($criteria), staic::CLASS)
@@ -138,6 +131,19 @@ class ElasticsearchQueryTranslation implements QueryTranslationInterface
         } else {
             return [];
         }
+    }
+
+    protected function buildRangeFilterFor(CriteriaInterface $criteria)
+    {
+        $attribute_path = $criteria->getAttributePath();
+
+        foreach ($criteria->getItems() as $comparison) {
+            $comparisons[$comparison->getComparator()] = $comparison->getComparand();
+        }
+
+        return [
+            'range' => [ $attribute_path => $comparisons ]
+        ];
     }
 
     protected function buildFilterFor(CriteriaInterface $criteria)

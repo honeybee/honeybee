@@ -2,21 +2,20 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Query;
 
-class RangeCriteria implements CriteriaInterface
+use Trellis\Common\Collection\TypedList;
+use Honeybee\Infrastructure\DataAccess\Query\CriteriaInterface;
+
+class RangeCriteria extends TypedList implements CriteriaInterface
 {
     protected $attribute_path;
 
-    protected $comparator;
-
-    protected $lower;
-
-    protected $upper;
-
-    public function __construct($attribute_path, $lower, $upper)
+    public function __construct($attribute_path, Comparison $first, Comparison $second = null)
     {
         $this->attribute_path = $attribute_path;
-        $this->lower = $lower;
-        $this->upper = $upper;
+        parent::__construct([ $first ]);
+        if (!is_null($second)) {
+            $this->addItem($second);
+        }
     }
 
     public function getAttributePath()
@@ -24,24 +23,17 @@ class RangeCriteria implements CriteriaInterface
         return $this->attribute_path;
     }
 
-    public function getLower()
+    protected function getItemImplementor()
     {
-        return $this->lower;
-    }
-
-    public function getUpper()
-    {
-        return $this->upper;
+        return Comparison::CLASS;
     }
 
     public function __toString()
     {
         return sprintf(
-            'ATTRIBUTE %s lower: %s, upper: %s',
+            'ATTRIBUTE %s RANGE %s',
             $this->attribute_path,
-            strtoupper($this->comparator),
-            $this->lower,
-            $this->upper
+            implode(' AND ', $this->items)
         );
     }
 }
