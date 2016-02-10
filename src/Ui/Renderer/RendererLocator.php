@@ -10,7 +10,10 @@ use Psr\Log\LoggerInterface;
 
 class RendererLocator implements RendererLocatorInterface
 {
-    const DEFAULT_LOOKUP_NAMESPACE_TEMPLATE = 'Honeybee\\Ui\\Renderer\\{OUTPUT_FORMAT_NAME}\\{SUBJECT}Renderer';
+    const DEFAULT_LOOKUP_TEMPLATE = '{NAMESPACE}\\{OUTPUT_FORMAT_NAME}\\{SUBJECT}{MODIFIER}{SUFFIX}';
+    const DEFAULT_LOOKUP_NAMESPACE = 'Honeybee\\Ui\\Renderer';
+    const DEFAULT_LOOKUP_MODIFIER = '';
+    const DEFAULT_LOOKUP_SUFFIX = 'Renderer';
 
     protected $logger;
     protected $output_format;
@@ -73,7 +76,7 @@ class RendererLocator implements RendererLocatorInterface
 
     protected function locateRendererImplementor($subject, ConfigInterface $renderer_config = null)
     {
-        $format_implementor = $this->getImplementorTemplate();
+        $format_implementor = $this->getImplementorTemplate($renderer_config);
 
         $logging_enabled = false;
         if (!empty($renderer_config)) {
@@ -143,13 +146,19 @@ class RendererLocator implements RendererLocatorInterface
         return $implementor;
     }
 
-    protected function getImplementorTemplate()
+    protected function getImplementorTemplate(ConfigInterface $renderer_config = null)
     {
-        return str_replace(
-            '{OUTPUT_FORMAT_NAME}',
-            $this->output_format_name,
-            self::DEFAULT_LOOKUP_NAMESPACE_TEMPLATE
-        );
+        $implementor_template = $renderer_config->get('renderer_locator_lookup_template', self::DEFAULT_LOOKUP_TEMPLATE);
+        $implementor_namespace = $renderer_config->get('renderer_locator_namespace', self::DEFAULT_LOOKUP_NAMESPACE);
+        $implementor_modifier = $renderer_config->get('renderer_locator_modifier', self::DEFAULT_LOOKUP_MODIFIER);
+        $implementor_suffix = $renderer_config->get('renderer_locator_suffix', self::DEFAULT_LOOKUP_SUFFIX);
+
+        $implementor_template = str_replace('{NAMESPACE}', $implementor_namespace, $implementor_template);
+        $implementor_template = str_replace('{OUTPUT_FORMAT_NAME}', StringToolkit::asStudlyCaps($this->output_format_name), $implementor_template);
+        $implementor_template = str_replace('{MODIFIER}', StringToolkit::asStudlyCaps($implementor_modifier), $implementor_template);
+        $implementor_template = str_replace('{SUFFIX}', StringToolkit::asStudlyCaps($implementor_suffix), $implementor_template);
+
+        return $implementor_template;
     }
 
     protected function buildTypeString($namespaced_type)
