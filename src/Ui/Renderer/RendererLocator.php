@@ -148,15 +148,43 @@ class RendererLocator implements RendererLocatorInterface
 
     protected function getImplementorTemplate(ConfigInterface $renderer_config = null)
     {
-        $implementor_template = $renderer_config->get('renderer_locator_lookup_template', self::DEFAULT_LOOKUP_TEMPLATE);
-        $implementor_namespace = $renderer_config->get('renderer_locator_namespace', self::DEFAULT_LOOKUP_NAMESPACE);
-        $implementor_modifier = $renderer_config->get('renderer_locator_modifier', self::DEFAULT_LOOKUP_MODIFIER);
-        $implementor_suffix = $renderer_config->get('renderer_locator_suffix', self::DEFAULT_LOOKUP_SUFFIX);
+        $implementor_template = $renderer_config->get(
+            'renderer_locator_lookup_template',
+            self::DEFAULT_LOOKUP_TEMPLATE
+        );
+        $implementor_namespace = $renderer_config->get(
+            'renderer_locator_namespace',
+            self::DEFAULT_LOOKUP_NAMESPACE
+        );
+        $implementor_modifier = $renderer_config->get(
+            'renderer_locator_modifier',
+            self::DEFAULT_LOOKUP_MODIFIER
+        );
+        $implementor_suffix = $renderer_config->get(
+            'renderer_locator_suffix',
+            self::DEFAULT_LOOKUP_SUFFIX
+        );
 
-        $implementor_template = str_replace('{NAMESPACE}', $implementor_namespace, $implementor_template);
-        $implementor_template = str_replace('{OUTPUT_FORMAT_NAME}', StringToolkit::asStudlyCaps($this->output_format_name), $implementor_template);
-        $implementor_template = str_replace('{MODIFIER}', StringToolkit::asStudlyCaps($implementor_modifier), $implementor_template);
-        $implementor_template = str_replace('{SUFFIX}', StringToolkit::asStudlyCaps($implementor_suffix), $implementor_template);
+        $implementor_template = str_replace(
+            '{NAMESPACE}',
+            $implementor_namespace,
+            $implementor_template
+        );
+        $implementor_template = str_replace(
+            '{OUTPUT_FORMAT_NAME}',
+            StringToolkit::asStudlyCaps($this->output_format_name),
+            $implementor_template
+        );
+        $implementor_template = str_replace(
+            '{MODIFIER}',
+            StringToolkit::asStudlyCaps($implementor_modifier),
+            $implementor_template
+        );
+        $implementor_template = str_replace(
+            '{SUFFIX}',
+            StringToolkit::asStudlyCaps($implementor_suffix),
+            $implementor_template
+        );
 
         return $implementor_template;
     }
