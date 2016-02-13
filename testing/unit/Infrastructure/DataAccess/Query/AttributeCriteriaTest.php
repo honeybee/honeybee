@@ -2,8 +2,8 @@
 
 namespace Honeybee\Tests\DataAccess\Query;
 
-use Honeybee\Infrastructure\DataAccess\Query\AttributeCriteria;
 use Honeybee\Tests\TestCase;
+use Honeybee\Infrastructure\DataAccess\Query\AttributeCriteria;
 
 class AttributeCriteriaTest extends TestCase
 {
@@ -14,5 +14,6 @@ class AttributeCriteriaTest extends TestCase
         $this->assertEquals('username', $criteria->getAttributePath());
         $this->assertEquals('honeybee-tester', $criteria->getValue());
         $this->assertEquals(AttributeCriteria::EQUALS, $criteria->getComparator());
+        $this->assertEquals('ATTRIBUTE username EQ honeybee-tester', (string)$criteria);
     }
 }

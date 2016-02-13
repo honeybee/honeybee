@@ -36,6 +36,6 @@ class Comparison
 
     public function __toString()
     {
-        return $this->comparator . ' ' . $this->comparand;
+        return strtoupper($this->comparator) . ' ' . $this->comparand;
     }
 }

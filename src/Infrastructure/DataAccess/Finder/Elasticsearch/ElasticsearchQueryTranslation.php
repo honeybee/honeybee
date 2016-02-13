@@ -12,6 +12,12 @@ use Honeybee\Infrastructure\DataAccess\Query\QueryInterface;
 use Honeybee\Infrastructure\DataAccess\Query\QueryTranslationInterface;
 use Honeybee\Infrastructure\DataAccess\Query\RangeCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\SearchCriteria;
+use Honeybee\Infrastructure\DataAccess\Query\SpatialCriteria;
+use Honeybee\Infrastructure\DataAccess\Query\Geometry\Inside;
+use Honeybee\Infrastructure\DataAccess\Query\Geometry\Circle;
+use Honeybee\Infrastructure\DataAccess\Query\Geometry\Annulus;
+use Honeybee\Infrastructure\DataAccess\Query\Geometry\Polygon;
+use Honeybee\Infrastructure\DataAccess\Query\Geometry\Box;
 
 class ElasticsearchQueryTranslation implements QueryTranslationInterface
 {
@@ -119,9 +125,11 @@ class ElasticsearchQueryTranslation implements QueryTranslationInterface
                 $elasticsearch_filters[] = $this->buildFilterFor($criteria);
             } elseif ($criteria instanceof RangeCriteria) {
                 $elasticsearch_filters[] = $this->buildRangeFilterFor($criteria);
+            } elseif ($criteria instanceof SpatialCriteria) {
+                $elasticsearch_filters[] = $this->buildSpatialFilterFor($criteria);
             } else {
                 throw new RuntimeError(
-                    sprintf('Invalid criteria type %s given to %s', get_class($criteria), staic::CLASS)
+                    sprintf('Invalid criteria type %s given to %s', get_class($criteria), static::CLASS)
                 );
             }
         }
@@ -131,19 +139,6 @@ class ElasticsearchQueryTranslation implements QueryTranslationInterface
         } else {
             return [];
         }
-    }
-
-    protected function buildRangeFilterFor(CriteriaInterface $criteria)
-    {
-        $attribute_path = $criteria->getAttributePath();
-
-        foreach ($criteria->getItems() as $comparison) {
-            $comparisons[$comparison->getComparator()] = $comparison->getComparand();
-        }
-
-        return [
-            'range' => [ $attribute_path => $comparisons ]
-        ];
     }
 
     protected function buildFilterFor(CriteriaInterface $criteria)
@@ -169,6 +164,72 @@ class ElasticsearchQueryTranslation implements QueryTranslationInterface
         return $negate_filter ? $this->negateFilter($attr_filter) : $attr_filter;
     }
 
+    protected function buildRangeFilterFor(CriteriaInterface $criteria)
+    {
+        $attribute_path = $criteria->getAttributePath();
+
+        foreach ($criteria->getItems() as $comparison) {
+            $comparisons[$comparison->getComparator()] = $comparison->getComparand();
+        }
+
+        return [
+            'range' => [ $attribute_path => $comparisons ]
+        ];
+    }
+
+    protected function buildSpatialFilterFor(CriteriaInterface $criteria)
+    {
+        $attribute_path = $criteria->getAttributePath();
+        $position = $criteria->getPosition();
+        $geometry = $position->getGeometry();
+
+        if ($position instanceof Inside) {
+            if ($geometry instanceof Circle) {
+                $filter = [
+                    'geo_distance' => [
+                        'distance' => $geometry->getRadius(),
+                        $attribute_path => (string)$geometry->getCenter()
+                    ]
+                ];
+            } elseif ($geometry instanceof Annulus) {
+                $filter = [
+                    'geo_distance_range' => [
+                        'from' => $geometry->getInnerRadius(),
+                        'to' => $geometry->getOuterRadius(),
+                        $attribute_path => (string)$geometry->getCenter()
+                    ]
+                ];
+            } elseif ($geometry instanceof Box) {
+                $filter = [
+                    'geo_bounding_box' => [
+                        $attribute_path => [
+                            'top_left' => (string)$geometry->getTopLeft(),
+                            'bottom_right' => (string)$geometry->getBottomRight()
+                        ]
+                    ]
+                ];
+            } elseif ($geometry instanceof Polygon) {
+                $filter = [
+                    'geo_polygon' => [
+                        $attribute_path => [
+                            'points' => array_map('strval', $geometry->toArray())
+                        ]
+                    ]
+                ];
+            } else {
+                throw new RuntimeError(
+                    sprintf('Invalid geometry %s given to %s', get_class($criteria), static::CLASS)
+                );
+            }
+        } else {
+            throw new RuntimeError(
+                sprintf('Invalid spatial query position %s given to %s', get_class($criteria), static::CLASS)
+            );
+        }
+
+        return $filter;
+    }
+
     protected function buildMissingFilter(CriteriaInterface $criteria)
     {
         return [
@@ -186,7 +247,6 @@ class ElasticsearchQueryTranslation implements QueryTranslationInterface
         if (strpos($attribute_value, '!') === 0) {
             $attribute_value = substr($attribute_value, 1);
         }
-
 
         $attribute_path = $criteria->getAttributePath();
 
