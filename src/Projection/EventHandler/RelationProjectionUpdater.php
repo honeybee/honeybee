@@ -142,7 +142,7 @@ class RelationProjectionUpdater extends EventHandler
                         }
                     }
                 }
-                $this->getStorageWriter($entity_to_update)->write($entity_to_update);
+                $this->getStorageWriter()->write($entity_to_update);
                 $updated_entities->push($entity_to_update);
             }
         }

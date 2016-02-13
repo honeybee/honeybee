@@ -425,6 +425,6 @@ class ProjectionUpdater extends EventHandler
                 break;
         }
 
-        throw new RuntimeError('Invalid dbal component name given: ' . $component);
+        throw new RuntimeError('Invalid data access component name given: ' . $component);
     }
 }
