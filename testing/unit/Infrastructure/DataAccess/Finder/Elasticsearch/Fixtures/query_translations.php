@@ -9,6 +9,7 @@ use Honeybee\Infrastructure\DataAccess\Query\RangeCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\Comparison\LessThan;
 use Honeybee\Infrastructure\DataAccess\Query\Comparison\GreaterThan;
 use Honeybee\Infrastructure\DataAccess\Query\Comparison\GreaterThanOrEquals;
+use Honeybee\Infrastructure\DataAccess\Query\Comparison\Equals;
 use Honeybee\Infrastructure\DataAccess\Query\SpatialCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\Geometry\Inside;
 use Honeybee\Infrastructure\DataAccess\Query\Geometry\Circle;
@@ -25,7 +26,7 @@ return [
     [
         'query' => new Query(
             new CriteriaList,
-            new CriteriaList([ new AttributeCriteria('username', 'honeybee-tester') ]),
+            new CriteriaList([ new AttributeCriteria('username', new Equals('honeybee-tester')) ]),
             new CriteriaList([ new SortCriteria('created_at') ]),
             0,
             100
@@ -60,8 +61,11 @@ return [
             new CriteriaList,
             new CriteriaList(
                 [
-                    new AttributeCriteria('username', 'honeybee-tester'),
-                    new AttributeCriteria('friends.referenced_identifier', 'honeybee-system_account-user-123')
+                    new AttributeCriteria('username', new Equals('honeybee-tester')),
+                    new AttributeCriteria(
+                        'friends.referenced_identifier',
+                        new Equals('honeybee-system_account-user-123')
+                    )
                 ]
             ),
             new CriteriaList([ new SortCriteria('created_at') ]),
@@ -99,8 +103,11 @@ return [
             new CriteriaList,
             new CriteriaList(
                 [
-                    new AttributeCriteria('username', 'honeybee-tester'),
-                    new AttributeCriteria('friends.referenced_identifier', 'honeybee-system_account-user-123')
+                    new AttributeCriteria('username', new Equals('honeybee-tester')),
+                    new AttributeCriteria(
+                        'friends.referenced_identifier',
+                        new Equals('honeybee-system_account-user-123')
+                    )
                 ],
                 CriteriaList::OP_OR
             ),
@@ -163,17 +170,20 @@ return [
             new CriteriaList,
             new CriteriaList(
                 [
-                    new AttributeCriteria('workflow_state', 'deleted'),
+                    new AttributeCriteria('workflow_state', new Equals('deleted')),
                     new CriteriaList(
                         [
-                            new AttributeCriteria('username', 'honeybee-tester'),
-                            new AttributeCriteria('friends.referenced_identifier', 'honeybee-system_account-user-123')
+                            new AttributeCriteria('username', new Equals('honeybee-tester')),
+                            new AttributeCriteria(
+                                'friends.referenced_identifier',
+                                new Equals('honeybee-system_account-user-123')
+                            )
                         ],
                         CriteriaList::OP_OR
                     ),
                     new CriteriaList(
                         [
-                            new AttributeCriteria('username', 'honeybee-tester'),
+                            new AttributeCriteria('username', new Equals('honeybee-tester')),
                         ],
                         CriteriaList::OP_AND
                     )
@@ -228,7 +238,7 @@ return [
             new CriteriaList,
             new CriteriaList(
                 [
-                    new AttributeCriteria('workflow_state', 'deleted'),
+                    new AttributeCriteria('workflow_state', new Equals('deleted')),
                     new CriteriaList([], CriteriaList::OP_OR)
                 ]
             ),

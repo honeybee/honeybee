@@ -18,6 +18,7 @@ use Honeybee\Infrastructure\DataAccess\Query\Geometry\Circle;
 use Honeybee\Infrastructure\DataAccess\Query\Geometry\Annulus;
 use Honeybee\Infrastructure\DataAccess\Query\Geometry\Polygon;
 use Honeybee\Infrastructure\DataAccess\Query\Geometry\Box;
+use Honeybee\Infrastructure\DataAccess\Query\Comparison\Equals;
 
 class ElasticsearchQueryTranslation implements QueryTranslationInterface
 {
@@ -52,7 +53,7 @@ class ElasticsearchQueryTranslation implements QueryTranslationInterface
     {
         $filter_criteria_list = $query->getFilterCriteriaList();
         foreach ($this->config->get('query_filters', []) as $attribute_path => $attribute_value) {
-            $criteria = new AttributeCriteria($attribute_path, $attribute_value);
+            $criteria = new AttributeCriteria($attribute_path, new Equals($attribute_value));
             $filter_criteria_list->push($criteria);
         }
 
@@ -144,7 +145,7 @@ class ElasticsearchQueryTranslation implements QueryTranslationInterface
     protected function buildFilterFor(CriteriaInterface $criteria)
     {
         $negate_filter = false;
-        $attribute_value = $criteria->getValue();
+        $attribute_value = $criteria->getComparison()->getComparand();
         $attribute_path = $criteria->getAttributePath();
 
         if (is_array($attribute_value)) {
@@ -243,7 +244,7 @@ class ElasticsearchQueryTranslation implements QueryTranslationInterface
 
     protected function buildTermFilter(CriteriaInterface $criteria)
     {
-        $attribute_value = $criteria->getValue();
+        $attribute_value = $criteria->getComparison()->getComparand();
         if (strpos($attribute_value, '!') === 0) {
             $attribute_value = substr($attribute_value, 1);
         }

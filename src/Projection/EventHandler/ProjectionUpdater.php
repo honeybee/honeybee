@@ -36,6 +36,7 @@ use Trellis\Runtime\Entity\EntityInterface;
 use Trellis\Runtime\Entity\EntityList;
 use Trellis\Runtime\Entity\EntityReferenceInterface;
 use Trellis\Runtime\ReferencedEntityTypeInterface;
+use Honeybee\Infrastructure\DataAccess\Query\Comparison\Equals;
 
 class ProjectionUpdater extends EventHandler
 {
@@ -149,7 +150,9 @@ class ProjectionUpdater extends EventHandler
         $recursive_children_result = $this->getQueryService()->find(
             new Query(
                 new CriteriaList,
-                new CriteriaList([ new AttributeCriteria('materialized_path', implode('/', $child_path_parts)) ]),
+                new CriteriaList(
+                    [ new AttributeCriteria('materialized_path', new Equals(implode('/', $child_path_parts))) ]
+                ),
                 new CriteriaList,
                 0,
                 10000

@@ -4,9 +4,6 @@ namespace Honeybee\Tests\DataAccess\Finder\Elasticsearch;
 
 use Honeybee\Infrastructure\Config\ArrayConfig;
 use Honeybee\Infrastructure\DataAccess\Finder\Elasticsearch\ElasticsearchQueryTranslation;
-use Honeybee\Infrastructure\DataAccess\Query\AttributeCriteria;
-use Honeybee\Infrastructure\DataAccess\Query\CriteriaList;
-use Honeybee\Infrastructure\DataAccess\Query\Query;
 use Honeybee\Infrastructure\DataAccess\Query\QueryInterface;
 use Honeybee\Tests\TestCase;
 

@@ -8,6 +8,7 @@ use Honeybee\Infrastructure\DataAccess\Query\AttributeCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\CriteriaList;
 use Honeybee\Infrastructure\DataAccess\Query\Query;
 use Honeybee\Infrastructure\DataAccess\Query\QueryServiceMap;
+use Honeybee\Infrastructure\DataAccess\Query\Comparison\Equals;
 use Honeybee\Infrastructure\DataAccess\Storage\StorageWriterMap;
 use Honeybee\Infrastructure\Event\Bus\EventBusInterface;
 use Honeybee\Infrastructure\Event\Event;
@@ -102,7 +103,7 @@ class RelationProjectionUpdater extends EventHandler
                 $reference_filter_list->push(
                     new AttributeCriteria(
                         $this->buildFieldFilterSpec($ref_attribute),
-                        $event->getAggregateRootIdentifier()
+                        new Equals($event->getAggregateRootIdentifier())
                     )
                 );
             }
@@ -112,7 +113,7 @@ class RelationProjectionUpdater extends EventHandler
         if (!empty($reference_filter_list)) {
             $filter_criteria_list = new CriteriaList;
             $filter_criteria_list->push(
-                new AttributeCriteria('identifier', '!' . $event->getAggregateRootIdentifier())
+                new AttributeCriteria('identifier', new Equals('!' . $event->getAggregateRootIdentifier()))
             );
             $filter_criteria_list->push($reference_filter_list);
             $query_result = $this->getQueryService()->find(

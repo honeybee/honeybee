@@ -11,6 +11,7 @@ use Honeybee\Infrastructure\DataAccess\Query\Query;
 use Honeybee\Infrastructure\DataAccess\Query\QueryInterface;
 use Honeybee\Infrastructure\DataAccess\Query\QueryTranslationInterface;
 use Honeybee\Infrastructure\DataAccess\Query\SortCriteria;
+use Honeybee\Infrastructure\DataAccess\Query\Comparison\Equals;
 use Honeybee\Projection\ProjectionTypeInterface;
 use Psr\Log\LoggerInterface;
 
@@ -74,7 +75,7 @@ class QueryService implements QueryServiceInterface
             $this->getQueryTranslation('domain_event')->translate(
                 new Query(
                     new CriteriaList,
-                    new CriteriaList([ new AttributeCriteria('aggregate_root_identifier', $identifier) ]),
+                    new CriteriaList([ new AttributeCriteria('aggregate_root_identifier', new Equals($identifier)) ]),
                     new CriteriaList([ new SortCriteria('seq_number', SortCriteria::SORT_ASC) ]),
                     $offset,
                     $limit

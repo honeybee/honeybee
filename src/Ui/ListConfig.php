@@ -9,6 +9,7 @@ use Honeybee\Infrastructure\DataAccess\Query\CriteriaList;
 use Honeybee\Infrastructure\DataAccess\Query\Query;
 use Honeybee\Infrastructure\DataAccess\Query\SearchCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\SortCriteria;
+use Honeybee\Infrastructure\DataAccess\Query\Comparison\Equals;
 use Trellis\Common\Object;
 
 class ListConfig extends Object implements ListConfigInterface
@@ -37,7 +38,7 @@ class ListConfig extends Object implements ListConfigInterface
         $filter_criteria_list = new CriteriaList;
         if ($this->hasFilter()) {
             foreach ($this->getFilter() as $attribute_path => $value) {
-                $filter_criteria_list->push(new AttributeCriteria($attribute_path, $value));
+                $filter_criteria_list->push(new AttributeCriteria($attribute_path, new Equals($value)));
             }
         }
 

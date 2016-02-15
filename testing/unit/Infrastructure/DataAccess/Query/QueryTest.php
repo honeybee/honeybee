@@ -6,6 +6,7 @@ use Honeybee\Infrastructure\DataAccess\Query\AttributeCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\CriteriaList;
 use Honeybee\Infrastructure\DataAccess\Query\Query;
 use Honeybee\Infrastructure\DataAccess\Query\SortCriteria;
+use Honeybee\Infrastructure\DataAccess\Query\Comparison\Equals;
 use Honeybee\Tests\TestCase;
 
 class QueryTest extends TestCase
@@ -15,7 +16,7 @@ class QueryTest extends TestCase
         $query = new Query(
             new CriteriaList,
             new CriteriaList(
-                [ new AttributeCriteria('username', 'honeybee-tester') ]
+                [ new AttributeCriteria('username', new Equals('honeybee-tester')) ]
             ),
             new CriteriaList([ new SortCriteria('created_at') ]),
             0,

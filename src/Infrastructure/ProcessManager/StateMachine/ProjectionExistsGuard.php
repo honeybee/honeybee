@@ -7,6 +7,7 @@ use Honeybee\Infrastructure\DataAccess\DataAccessServiceInterface;
 use Honeybee\Infrastructure\DataAccess\Query\AttributeCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\CriteriaList;
 use Honeybee\Infrastructure\DataAccess\Query\Query;
+use Honeybee\Infrastructure\DataAccess\Query\Comparison\Equals;
 use Honeybee\Infrastructure\ProcessManager\ProcessStateInterface;
 use Honeybee\Projection\ProjectionTypeMap;
 use JmesPath\AstRuntime;
@@ -107,7 +108,7 @@ class ProjectionExistsGuard extends VariableGuard
     {
         return new Query(
             new CriteriaList,
-            new CriteriaList([ new AttributeCriteria($attribute_path, $identifier) ]),
+            new CriteriaList([ new AttributeCriteria($attribute_path, new Equals($identifier)) ]),
             new CriteriaList,
             0,
             1
