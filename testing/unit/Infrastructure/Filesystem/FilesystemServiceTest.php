@@ -7,7 +7,7 @@ use Honeybee\Tests\Model\Aggregate\Fixtures\Author\AuthorType;
 use Honeybee\Tests\TestCase;
 use Workflux\Builder\XmlStateMachineBuilder;
 
-class FileSystemTest extends TestCase
+class FilesystemServiceTest extends TestCase
 {
     public function testGenerateIdentifier()
     {
