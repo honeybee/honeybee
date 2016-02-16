@@ -30,7 +30,7 @@ class ExecuteEventHandlersJob extends Job
     public function run(array $parameters = [])
     {
         if (!$this->channel) {
-            throw new RuntimeError("Missing required channel parameter.");
+            throw new RuntimeError('Missing required channel parameter.');
         }
 
         $this->event_bus->executeHandlers($this->channel, $this->event, $this->subscription_index);
@@ -40,12 +40,12 @@ class ExecuteEventHandlersJob extends Job
     {
         if (is_array($event_state)) {
             if (!isset($event_state[self::OBJECT_TYPE])) {
-                throw new RuntimeError("Unable to create event without type information.");
+                throw new RuntimeError('Unable to create event without type information.');
             }
 
             $event_implementor = $event_state[self::OBJECT_TYPE];
             if (!class_exists($event_implementor)) {
-                throw new RuntimeError("Unable to resolve event implementor: " . $event_implementor);
+                throw new RuntimeError('Unable to resolve event implementor: ' . $event_implementor);
             }
 
             $this->event = new $event_implementor($event_state);
@@ -54,7 +54,7 @@ class ExecuteEventHandlersJob extends Job
         } else {
             throw new RuntimeError(
                 sprintf(
-                    'Invalid event data-type given. Only array and DomainEventInterface are supported.',
+                    'Invalid event data-type given. Only array and EventInterface are supported.',
                     EventInterface::CLASS
                 )
             );
