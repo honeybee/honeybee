@@ -40,13 +40,13 @@ class ProjectionFileHandler extends EventHandler
     protected function onAggregateRootCreated(AggregateRootCreatedEvent $event)
     {
         $ar_type = $this->aggregate_root_type_map->getByClassName($event->getAggregateRootType());
-        $this->copyTempFilesToFinalLocation($event, $ar_type);
+        $this->moveTempFilesToFinalLocation($event, $ar_type);
     }
 
     protected function onAggregateRootModified(AggregateRootModifiedEvent $event)
     {
         $ar_type = $this->aggregate_root_type_map->getByClassName($event->getAggregateRootType());
-        $this->copyTempFilesToFinalLocation($event, $ar_type);
+        $this->moveTempFilesToFinalLocation($event, $ar_type);
     }
 
     protected function onWorkflowProceeded(WorkflowProceededEvent $event)
@@ -54,7 +54,7 @@ class ProjectionFileHandler extends EventHandler
         // @todo do we support file operations upon workflow traversal?
     }
 
-    protected function copyTempFilesToFinalLocation(
+    protected function moveTempFilesToFinalLocation(
         HasEmbeddedEntityEventsInterface $event,
         EntityTypeInterface $entity_type
     ) {
@@ -64,10 +64,10 @@ class ProjectionFileHandler extends EventHandler
             if ($attribute instanceof HandlesFileListInterface) {
                 $property_name = $attribute->getFileLocationPropertyName();
                 foreach ($attr_data as $file) {
-                    $this->copyTempFileToFinalLocation($file[$property_name], $art);
+                    $this->moveTempFileToFinalLocation($file[$property_name], $art);
                 }
             } elseif ($attribute instanceof HandlesFileInterface) {
-                $this->copyTempFileToFinalLocation($attr_data[$attribute->getFileLocationPropertyName()], $art);
+                $this->moveTempFileToFinalLocation($attr_data[$attribute->getFileLocationPropertyName()], $art);
             }
         }
 
@@ -77,32 +77,21 @@ class ProjectionFileHandler extends EventHandler
             $embedded_entity_type = $embedded_event->getEmbeddedEntityType();
             $embedded_attribute = $entity_type->getAttribute($attr_name);
             $embedded_type = $embedded_attribute->getEmbeddedTypeByPrefix($embedded_entity_type);
-            $this->copyTempFilesToFinalLocation($embedded_event, $embedded_type);
+            $this->moveTempFilesToFinalLocation($embedded_event, $embedded_type);
         }
     }
 
-    protected function copyTempFileToFinalLocation($location, EntityTypeInterface $art)
+    protected function moveTempFileToFinalLocation($location, EntityTypeInterface $art)
     {
         $from_uri = $this->filesystem_service->createTempUri($location, $art); // from temporary storage
         $to_uri = $this->filesystem_service->createUri($location, $art); // to final storage
-        $result = false;
+
         try {
-            $result = $this->filesystem_service->has($to_uri);
-            if (true !== $result) {
-                $result = $this->filesystem_service->copy($from_uri, $to_uri);
-                if (true === $result) {
-                    if (true !== $this->filesystem_service->delete($from_uri)) {
-                        // log deletion failure and continue
-                        $this->logger->error(
-                            '[{method}] File could not be deleted from {from_uri}.',
-                            [
-                                'method' => __METHOD__,
-                                'from_uri' => $from_uri
-                            ]
-                        );
-                    }
-                } else {
-                    throw new FilesystemError("File copy failed with response '$result'.");
+            $file_copied = $this->filesystem_service->has($to_uri);
+            if (true !== $file_copied) {
+                $file_copied = $this->filesystem_service->copy($from_uri, $to_uri);
+                if (true !== $file_copied) {
+                    throw new FilesystemError(sprintf('File copy failed with result "%s".', $file_copied));
                 }
             }
         } catch (Exception $copy_error) {
@@ -118,6 +107,25 @@ class ProjectionFileHandler extends EventHandler
             throw new FilesystemError('File could not be copied to final storage.');
         }
 
-        return $result;
+        // source file deletion failure is acceptable so the deletion process is done separately.
+        // the file must exist at final destination in order to get to this block.
+        try {
+            $file_deleted = $this->filesystem_service->delete($from_uri);
+            if (true !== $file_deleted) {
+                throw new FilesystemError(sprintf('File deletion failed with result "%s".', $file_deleted));
+            }
+        } catch (Exception $deletion_error) {
+            // log deletion error and continue
+            $this->logger->error(
+                '[{method}] File could not be deleted from {from_uri}. Error: {error}',
+                [
+                    'method' => __METHOD__,
+                    'from_uri' => $from_uri,
+                    'error' => $deletion_error->getMessage()
+                ]
+            );
+        }
+
+        return true;
     }
 }
