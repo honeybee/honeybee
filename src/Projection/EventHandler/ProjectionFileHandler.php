@@ -4,6 +4,7 @@ namespace Honeybee\Projection\EventHandler;
 
 use Exception;
 use Honeybee\Common\Error\RuntimeError;
+use Honeybee\Common\Error\FilesystemError;
 use Honeybee\EntityTypeInterface;
 use Honeybee\Infrastructure\Config\ConfigInterface;
 use Honeybee\Infrastructure\Event\EventHandler;
@@ -84,10 +85,25 @@ class ProjectionFileHandler extends EventHandler
     {
         $from_uri = $this->filesystem_service->createTempUri($location, $art); // from temporary storage
         $to_uri = $this->filesystem_service->createUri($location, $art); // to final storage
-        $success = false;
+        $result = false;
         try {
-            if (!$this->filesystem_service->has($to_uri)) {
-                $success = $this->filesystem_service->copy($from_uri, $to_uri);
+            $result = $this->filesystem_service->has($to_uri);
+            if (true !== $result) {
+                $result = $this->filesystem_service->copy($from_uri, $to_uri);
+                if (true === $result) {
+                    if (true !== $this->filesystem_service->delete($from_uri)) {
+                        // log deletion failure and continue
+                        $this->logger->error(
+                            '[{method}] File could not be deleted from {from_uri}.',
+                            [
+                                'method' => __METHOD__,
+                                'from_uri' => $from_uri
+                            ]
+                        );
+                    }
+                } else {
+                    throw new FilesystemError("File copy failed with response '$result'.");
+                }
             }
         } catch (Exception $copy_error) {
             $this->logger->error(
@@ -99,8 +115,9 @@ class ProjectionFileHandler extends EventHandler
                     'error' => $copy_error->getMessage()
                 ]
             );
+            throw new FilesystemError('File could not be copied to final storage.');
         }
 
-        return $success;
+        return $result;
     }
 }
