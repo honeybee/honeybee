@@ -41,6 +41,7 @@ abstract class EntityRenderer extends Renderer
         $params['grouped_base_path'] = ArrayToolkit::flattenToArrayPath($group_parts);
         $params['resource'] = $entity->toArray();
         $params['entity_type'] = $entity->getType()->getPrefix();
+        $params['embed_path'] = $this->getOption('embed_path', $entity->asEmbedPath());
         $params['is_embed_template'] = $this->getOption('is_embed_template', false);
         $params['is_new'] = !$entity->hasValue('identifier');
         // when entity is part of a list (embed or reference)

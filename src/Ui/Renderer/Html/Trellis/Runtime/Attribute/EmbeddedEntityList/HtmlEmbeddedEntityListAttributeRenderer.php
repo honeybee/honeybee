@@ -5,6 +5,7 @@ namespace Honeybee\Ui\Renderer\Html\Trellis\Runtime\Attribute\EmbeddedEntityList
 use Trellis\Runtime\Entity\EntityInterface;
 use Trellis\Runtime\Attribute\ListAttribute;
 use Honeybee\Ui\Renderer\Html\Trellis\Runtime\Attribute\HtmlAttributeRenderer;
+use Honeybee\Infrastructure\Config\ArrayConfig;
 use Honeybee\Infrastructure\Config\Settings;
 use Honeybee\Ui\Activity\Activity;
 use Honeybee\Ui\Activity\Url;
@@ -12,6 +13,10 @@ use Honeybee\Ui\Activity\ActivityMap;
 
 class HtmlEmbeddedEntityListAttributeRenderer extends HtmlAttributeRenderer
 {
+    const GLANCE_ENABLED = false;
+    const GLANCE_CONFIG_GLOBAL_SCOPE = 'application';
+    const GLANCE_RENDERER_CONFIG_NAME = '#glance';
+
     protected function getDefaultTemplateIdentifier()
     {
         return $this->output_format->getName() . '/attribute/embedded-entity-list/as_input.twig';
@@ -89,6 +94,7 @@ class HtmlEmbeddedEntityListAttributeRenderer extends HtmlAttributeRenderer
     protected function renderEmbeddedEntity(EntityInterface $embedded_entity, $position, $is_embed_template = false)
     {
         $view_scope = $this->getOption('view_scope');
+        $glance_renderer_config = $this->getGlanceConfig();
 
         $group_parts = array_merge(
             (array)$this->getOption('group_parts', []),
@@ -98,8 +104,15 @@ class HtmlEmbeddedEntityListAttributeRenderer extends HtmlAttributeRenderer
         $default_settings = [
             'view_scope' => $view_scope,
             'group_parts' => $group_parts,
-            'is_embed_template' => $is_embed_template
+            'is_embed_template' => $is_embed_template,
+            'expand_content_disabled' => $this->getOption('expand_items_content_disabled', false),
+            'expand_content_by_default' => $this->getOption('expand_items_content_by_default', false),
+            'glance_enabled' => $glance_renderer_config->get('enabled', static::GLANCE_ENABLED),
+            'glance_config' => $glance_renderer_config->toArray()
         ];
+        if ($is_embed_template) {
+            $default_settings['expand_content_by_default'] = $this->getOption('expand_content_for_new_items', true);
+        }
 
         $renderer_config = $this->view_config_service->getRendererConfig(
             $view_scope,
@@ -120,6 +133,46 @@ class HtmlEmbeddedEntityListAttributeRenderer extends HtmlAttributeRenderer
             [],
             Settings::createFromArray($renderer_settings)
         );
+    }
+
+    protected function getGlanceConfig($default_config = [])
+    {
+        $view_scope = $this->getOption('view_scope');
+
+        // view_config for generic glance scope.
+        $render_config_global = $this->view_config_service->getRendererConfig(
+            self::GLANCE_CONFIG_GLOBAL_SCOPE,
+            $this->output_format,
+            self::GLANCE_RENDERER_CONFIG_NAME
+        );
+
+        // view_config for whole view.
+        $renderer_config_view = $this->view_config_service->getRendererConfig(
+            $view_scope,
+            $this->output_format,
+            self::GLANCE_RENDERER_CONFIG_NAME
+        );
+
+        // glance view_config for the specific list
+        $entity_list_renderer_config_name = sprintf(
+            '%s.%s.%s',
+            $this->attribute->getRootType()->getPrefix(),
+            $this->attribute->getPath(),
+            self::GLANCE_RENDERER_CONFIG_NAME
+        );
+        $entity_list_glance_config = $this->view_config_service->getRendererConfig(
+            $view_scope,
+            $this->output_format,
+            $entity_list_renderer_config_name,
+            []
+        );
+
+        return new ArrayConfig(array_replace_recursive(
+            $default_config,
+            $render_config_global->toArray(),
+            $renderer_config_view->toArray(),
+            $entity_list_glance_config->toArray()
+        ));
     }
 
     protected function determineAttributeValue($attribute_name, $default_value = '')
@@ -163,11 +216,28 @@ class HtmlEmbeddedEntityListAttributeRenderer extends HtmlAttributeRenderer
     {
         $widget_options = parent::getWidgetOptions();
 
+        $resource = $this->getPayload('resource');
+
+        if ($resource->hasValue('identifier')) {
+            $render_embed_uri_tpl = $this->url_generator->generateUrl(
+                'module.resource.embed',
+                [ 'resource' => $resource, 'embed_path' => '{EMBED_PATH}' ],
+                [ 'relative' => true ]
+            );
+        } else {
+            $render_embed_uri_tpl = $this->url_generator->generateUrl(
+                'module.embed',
+                [ 'module' => $resource->getType(), 'embed_path' => '{EMBED_PATH}' ],
+                [ 'relative' => true ]
+            );
+        }
+
         $widget_options['min_count'] = $this->getMinCount($this->isRequired());
         $widget_options['max_count'] = $this->getMaxCount();
         $widget_options['inline_mode'] = $this->attribute->getOption('inline_mode', false);
         $widget_options['input_group'] = (array)$this->getOption('group_parts', []);
         $widget_options['fieldname'] = $this->attribute->getName();
+        $widget_options['render_embed_uri_tpl'] = $render_embed_uri_tpl;
 
         return $widget_options;
     }
