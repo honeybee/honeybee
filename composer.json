@@ -81,7 +81,7 @@
         "league/flysystem-sftp": "to handle files via sftp",
         "cboden/Ratchet": "0.3.* to handle messages over websocket",
         "react/zmq": "0.3.* to handle messages async with zeromq",
-        "videlalvaro/php-amqplib": "2.5.* as AMQP implementing message queue in async setups with e.g. rabbitmq"
+        "php-amqplib/php-amqplib": "2.6.* as AMQP implementing message queue in async setups with e.g. rabbitmq"
     },
 
     "scripts": {
