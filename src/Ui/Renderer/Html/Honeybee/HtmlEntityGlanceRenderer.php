@@ -39,16 +39,12 @@ class HtmlEntityGlanceRenderer extends Renderer
         $resource = $this->getPayload('subject');
         $glance_image = $this->getGlanceImage($resource);
 
-        $params['glance_image_width'] = $this->getOption('glance_image_width', $glance_image['width']);
-        $params['glance_image_height'] = $this->getOption('glance_image_height', $glance_image['height']);
-        $params['glance_image_url'] = $glance_image['location'];
-        $params['glance_title'] = $this->getGlanceTitle($resource);
-        $params['glance_description'] = $this->getGlanceDescription($resource);
-        $params['glance_view_scope'] = $this->getOption(
-            'glance_view_scope',
-            $this->getOption('view_scope', 'missing_view_scope')
-        );
-        $params['glance_css'] = $this->getOption('glance_css', '');
+        $params['image_width'] = $this->getOption('image_width', $glance_image['width']);
+        $params['image_height'] = $this->getOption('image_height', $glance_image['height']);
+        $params['image_url'] = $glance_image['location'];
+        $params['title'] = $this->getGlanceTitle($resource);
+        $params['description'] = $this->getGlanceDescription($resource);
+        $params['css'] = $this->getOption('css', '');
 
         return $params;
     }
@@ -61,8 +57,8 @@ class HtmlEntityGlanceRenderer extends Renderer
             'height' => 100
         ];
 
-        $glance_image_url = $this->getOption('glance_image_url');
-        if (!empty($glance_image_url) || !$this->hasOption('glance_image_value_path')) {
+        $glance_image_url = $this->getOption('image_url');
+        if (!empty($glance_image_url) || !$this->hasOption('image_value_path')) {
             // empty value would reset eventual global options and allow to use the value_path option
             return array_replace($image_default_attributes, [ 'location' => $glance_image_url ]);
         }
@@ -72,8 +68,8 @@ class HtmlEntityGlanceRenderer extends Renderer
         $glance_image_activity = null;
         if ($converjon_enabled) {
             $glance_image_activity = $this->activity_service->getActivity(
-                $this->getOption('glance_image_activity_scope', 'converjon'),
-                $this->getOption('glance_image_activity_name', 'thumbnail')
+                $this->getOption('image_activity_scope', 'converjon'),
+                $this->getOption('image_activity_name', 'thumbnail')
             );
 
             $glance_image_activity_url = $glance_image_activity->getUrl();
@@ -82,12 +78,12 @@ class HtmlEntityGlanceRenderer extends Renderer
         }
 
         // get value from configured value path
-        if ($this->hasOption('glance_image_value_path')) {
-            $path = $this->getOption('glance_image_value_path');
+        if ($this->hasOption('image_value_path')) {
+            $path = $this->getOption('image_value_path');
             $image_attribute = AttributePath::getAttributeByPath($resource->getType(), $path);
             if ($image_attribute instanceof HandlesFileListInterface && $image_attribute->getFiletypeName() === HandlesFileInterface::FILETYPE_IMAGE) {
                 $image_value = AttributeValuePath::getAttributeValueByPath($resource, $path);
-                $index = $this->getOption('glance_image_value_path_index', 0);
+                $index = $this->getOption('image_value_path_index', 0);
                 if (array_key_exists($index, $image_value)) {
                     $image = $image_value[$index]->toNative();
                     $location = $image[$image_attribute->getFileLocationPropertyName()];
@@ -167,11 +163,11 @@ class HtmlEntityGlanceRenderer extends Renderer
 
     protected function getGlanceTitle(EntityInterface $resource)
     {
-        if ($this->hasOption('glance_title')) {
-            $glance_title = $this->getOption('glance_title');
+        if ($this->hasOption('title')) {
+            $glance_title = $this->getOption('title');
             // empty value would reset eventual global options and allow to use the value_path option
-            if ($this->hasOption('glance_title_value_path') && empty($glance_title)) {
-                return AttributeValuePath::getAttributeValueByPath($resource, $this->getOption('glance_title_value_path'));
+            if ($this->hasOption('title_value_path') && empty($glance_title)) {
+                return AttributeValuePath::getAttributeValueByPath($resource, $this->getOption('title_value_path'));
             } else {
                 return $glance_title;
             }
@@ -189,11 +185,11 @@ class HtmlEntityGlanceRenderer extends Renderer
 
     protected function getGlanceDescription(EntityInterface $resource)
     {
-        if ($this->hasOption('glance_description')) {
-            $glance_description = $this->getOption('glance_description');
+        if ($this->hasOption('description')) {
+            $glance_description = $this->getOption('description');
             // empty value would reset eventual global options and allow to use the value_path option
-            if ($this->hasOption('glance_description_value_path') && empty($glance_description)) {
-                return AttributeValuePath::getAttributeValueByPath($resource, $this->getOption('glance_description_value_path'));
+            if ($this->hasOption('description_value_path') && empty($glance_description)) {
+                return AttributeValuePath::getAttributeValueByPath($resource, $this->getOption('description_value_path'));
             } else {
                 return $glance_description;
             }

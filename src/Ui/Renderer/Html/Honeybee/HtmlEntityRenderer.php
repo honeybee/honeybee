@@ -78,7 +78,7 @@ class HtmlEntityRenderer extends EntityRenderer
             )
         );
 
-        if (!$renderer_config->get('enabled', false)) {
+        if (!$renderer_config->get('enabled', true)) {
             return '';
         }
 
