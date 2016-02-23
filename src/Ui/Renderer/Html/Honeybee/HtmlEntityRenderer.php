@@ -39,8 +39,6 @@ class HtmlEntityRenderer extends EntityRenderer
             'view_scope' => $view_scope,
             'renderer_locator_modifier' => self::GLANCE_RENDERER_LOCATOR_MODIFIER   // render with {subject}GlanceRenderer
         ];
-        // support glance options also directly on the entity
-        $renderer_config_default = array_replace_recursive($renderer_config_default, (array)$this->getOption('glance_config', []));
 
         // view_config for generic glance scope.
         $renderer_config_global = $this->view_config_service->getRendererConfig(
@@ -56,7 +54,10 @@ class HtmlEntityRenderer extends EntityRenderer
             self::GLANCE_RENDERER_CONFIG_NAME
         );
 
-        // check view_config for resource type.
+        // view_config propagated by entity-list or specified directly on the entity config
+        $renderer_config_entity_list = (array)$this->getOption('glance_config', []);
+
+        // view_config for resource type.
         $resource_type_renderer_config_name = sprintf(
             '%s.%s',
             $resource->getType()->getScopeKey(),
@@ -74,6 +75,7 @@ class HtmlEntityRenderer extends EntityRenderer
                 $renderer_config_default,
                 $renderer_config_global->toArray(),
                 $renderer_config_view->toArray(),
+                $renderer_config_entity_list,
                 $renderer_config->toArray()
             )
         );

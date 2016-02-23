@@ -27,6 +27,8 @@ class HtmlEmbeddedEntityListAttributeRenderer extends HtmlAttributeRenderer
         $params = parent::getTemplateParameters();
         $embedded_entity_list = $this->determineAttributeValue($this->attribute->getName());
 
+        $this->glance_config = $this->getGlanceConfig();
+
         $rendered_entities = [];
         foreach ($embedded_entity_list as $pos => $embedded_entity) {
             $rendered_entities[] = $this->renderEmbeddedEntity($embedded_entity, $pos);
@@ -94,7 +96,7 @@ class HtmlEmbeddedEntityListAttributeRenderer extends HtmlAttributeRenderer
     protected function renderEmbeddedEntity(EntityInterface $embedded_entity, $position, $is_embed_template = false)
     {
         $view_scope = $this->getOption('view_scope');
-        $glance_renderer_config = $this->getGlanceConfig();
+        $glance_renderer_config = $this->glance_config;
 
         $group_parts = array_merge(
             (array)$this->getOption('group_parts', []),
