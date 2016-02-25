@@ -41,7 +41,7 @@ class JobQueueTransport extends CommandTransport
             ),
             new Settings(
                 [
-                    'route_key' => $this->queue_name ?: $command->getType(),
+                    'routing_key' => $this->queue_name ?: $command->getType(),
                     'exchange' => $this->exchange
                 ]
             )

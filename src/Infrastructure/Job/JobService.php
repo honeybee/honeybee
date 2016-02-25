@@ -37,11 +37,18 @@ class JobService implements JobServiceInterface
 
     public function dispatch(JobInterface $job, SettingsInterface $settings = null)
     {
+        $message_payload = json_encode($job->toArray());
+        $message = new AMQPMessage($message_payload, [ 'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT ]);
+        $this->publish($message, $settings);
+    }
+
+    public function publish(AMQPMessage $message, SettingsInterface $settings = null)
+    {
         $settings = $settings ?: new Settings;
 
         $exchange_name = $settings->get('exchange', $this->config->get('exchange'));
         if (!$exchange_name) {
-            throw new RuntimeError('Missing required "exchange" setting for JobService dispatch call.');
+            throw new RuntimeError('Missing required "exchange" setting for JobService publish method.');
         }
 
         if (!$this->channel) {
@@ -49,10 +56,7 @@ class JobService implements JobServiceInterface
             $this->channel->exchange_declare($exchange_name, 'direct', false, true, false);
         }
 
-        $message_payload = json_encode($job->toArray());
-        $message = new AMQPMessage($message_payload, [ 'delivery_mode' => 2 ]);
-
-        $this->channel->basic_publish($message, $exchange_name, $settings->get('route_key', null));
+        $this->channel->basic_publish($message, $exchange_name, $settings->get('routing_key', null));
     }
 
     public function createJob(array $job_state)

@@ -9,14 +9,19 @@ use Honeybee\Infrastructure\Config\ConfigInterface;
 use Honeybee\Infrastructure\DataAccess\Connector\RabbitMqConnector;
 use Honeybee\Infrastructure\Job\JobInterface;
 use Honeybee\Infrastructure\Job\JobServiceInterface;
+use Honeybee\Infrastructure\Job\Bundle\ExecuteEventHandlersJob;
+use Honeybee\Infrastructure\Event\FailedJobEvent;
+use Honeybee\Infrastructure\Config\Settings;
 
 class Worker implements WorkerInterface
 {
-    const DEFAULT_EXPIRATION = 5000;
+    const DEFAULT_MIN_EXPIRATION = 4000;
 
     const DEFAULT_EXPIRATION_MULTIPLIER = 3;
 
     const DEFAULT_MAX_EXPIRATION = 86400000;
+
+    const DEFAULT_FAILURE_CHANNEL = 'honeybee.events.failed';
 
     protected $running = false;
 
@@ -85,7 +90,7 @@ class Worker implements WorkerInterface
             'x-dead-letter-exchange' => [ 'S', $exchange_name ]
         ]);
 
-        // bind routing keys to both exchange and wait_exchange to enable DLX retry
+        // bind routing keys to both exchange and wait exchange to enable DLX retry
         $bindings = (array)$this->config->get('bindings', []);
         if (empty($bindings)) {
             $channel->queue_bind($queue_name, $exchange_name, 'default');
@@ -111,27 +116,47 @@ class Worker implements WorkerInterface
             $delivery_info = $job_message->delivery_info;
             $channel = $delivery_info['channel'];
             $delivery_tag = $delivery_info['delivery_tag'];
-            $job = $this->job_service->createJob(JsonToolkit::parse($job_message->body));
+            $job_state = JsonToolkit::parse($job_message->body);
+            $job = $this->job_service->createJob($job_state);
             $job->run();
         } catch (Exception $runtime_error) {
             // @todo appropiate error-logging
             error_log(__METHOD__ . ' - ' . $runtime_error->getMessage() . PHP_EOL . $runtime_error->getMessage());
             printf(
-                "\n\n[Worker] Unexpected error during execution of job(id) '%s' with message %s and trace:\n%s\n\n",
+                "\n\n[Worker] Unexpected error during execution of job(id) '%s' with message: %s and trace:\n%s\n\n",
                 $job->getUuid(),
                 $runtime_error->getMessage(),
                 $runtime_error->getTraceAsString()
             );
 
-            // republish failed message to wait exchange with new expiration time
-            $job_message->set('expiration', $this->getExpirationIntervalFor($job_message));
-            $channel->basic_publish(
-                $job_message,
-                $this->config->get('wait_exchange'),
-                $job_message->get('routing_key')
-            );
-
-            //@todo handle failed message by publishing a new event
+            $expiration = $this->getExpirationIntervalFor($job_message);
+            if ($expiration !== false) {
+                // republish failed message to wait exchange with new expiration time
+                $job_message->set('expiration', $expiration);
+                $this->job_service->publish($job_message, new Settings(
+                    [
+                        'exchange' => $this->config->get('wait_exchange'),
+                        'routing_key' => $delivery_info['routing_key']
+                    ]
+                ));
+            } else {
+                // handle failed message by publishing a failure event to the same queue
+                $this->job_service->dispatch(
+                    $this->job_service->createJob([
+                        ExecuteEventHandlersJob::OBJECT_TYPE => ExecuteEventHandlersJob::CLASS,
+                        'event' => new FailedJobEvent(
+                            [
+                                'job_state' => $job_state,
+                                'delivery_info' => $delivery_info,
+                                'message_headers' => $this->getMessageHeaders($job_message)
+                            ]
+                        ),
+                        'channel' => self::DEFAULT_FAILURE_CHANNEL,
+                        'subscription_index' => 0
+                    ]),
+                    new Settings($delivery_info)
+                );
+            }
         }
 
         // acknowledge the message to remove it from the event queue. An 'ack' is effectively the
@@ -139,19 +164,30 @@ class Worker implements WorkerInterface
         $channel->basic_ack($delivery_tag);
     }
 
+    protected function getMessageHeaders($job_message)
+    {
+        return $job_message->has('application_headers')
+            ? $job_message->get('application_headers')->getNativeData()
+            : [];
+    }
+
     protected function getExpirationIntervalFor($job_message)
     {
-        $expiration = self::DEFAULT_EXPIRATION;
-        if ($job_message->has('application_headers')) {
-            $headers = $job_message->get('application_headers')->getNativeData();
-            //@note the size of the x-death array is the number of attempts for the message
-            if (isset($headers['x-death'][0]['original-expiration'])) {
+        $expiration = self::DEFAULT_MIN_EXPIRATION;
+        $headers = $this->getMessageHeaders($job_message);
+        //@note the size of the x-death array is the number of attempts for the message
+        if (isset($headers['x-death'][0]['original-expiration'])) {
+            $original_expiration = $headers['x-death'][0]['original-expiration'];
+            // fail message when previous attempt reaches maximum interval
+            if ($original_expiration >= self::DEFAULT_MAX_EXPIRATION) {
+                $expiration = false;
+            } else {
                 $expiration = min(
-                    $headers['x-death'][0]['original-expiration'] * self::DEFAULT_EXPIRATION_MULTIPLIER,
+                    $original_expiration * self::DEFAULT_EXPIRATION_MULTIPLIER,
                     self::DEFAULT_MAX_EXPIRATION
                 );
             }
         }
-        return (int)$expiration;
+        return $expiration;
     }
 }

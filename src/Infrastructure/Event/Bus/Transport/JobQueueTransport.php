@@ -38,7 +38,7 @@ class JobQueueTransport extends EventTransport
             $this->job_service->createJob($job_state),
             new Settings(
                 [
-                    'route_key' => $this->msg_route,
+                    'routing_key' => $this->msg_route,
                     'exchange' => $this->exchange
                 ]
             )
