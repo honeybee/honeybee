@@ -13,6 +13,8 @@ use Ramsey\Uuid\Uuid;
 
 class ProcessListener extends EventHandler
 {
+    protected $event_bus;
+
     protected $process_manager;
 
     public function __construct(
