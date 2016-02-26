@@ -6,6 +6,7 @@ use Trellis\Runtime\Entity\EntityInterface;
 use Trellis\Runtime\Attribute\ListAttribute;
 use Honeybee\Ui\Renderer\Html\Trellis\Runtime\Attribute\HtmlAttributeRenderer;
 use Honeybee\Infrastructure\Config\ArrayConfig;
+use Honeybee\Infrastructure\Config\ConfigInterface;
 use Honeybee\Infrastructure\Config\Settings;
 use Honeybee\Ui\Activity\Activity;
 use Honeybee\Ui\Activity\Url;
@@ -13,9 +14,11 @@ use Honeybee\Ui\Activity\ActivityMap;
 
 class HtmlEmbeddedEntityListAttributeRenderer extends HtmlAttributeRenderer
 {
-    const GLANCE_ENABLED = false;
+    const GLANCE_ENABLED = true;
     const GLANCE_CONFIG_GLOBAL_SCOPE = 'application';
-    const GLANCE_RENDERER_CONFIG_NAME = '#glance';
+
+    protected $glance_config;
+    protected $entity_type_glance_configs;
 
     protected function getDefaultTemplateIdentifier()
     {
@@ -26,8 +29,6 @@ class HtmlEmbeddedEntityListAttributeRenderer extends HtmlAttributeRenderer
     {
         $params = parent::getTemplateParameters();
         $embedded_entity_list = $this->determineAttributeValue($this->attribute->getName());
-
-        $this->glance_config = $this->getGlanceConfig();
 
         $rendered_entities = [];
         foreach ($embedded_entity_list as $pos => $embedded_entity) {
@@ -96,8 +97,6 @@ class HtmlEmbeddedEntityListAttributeRenderer extends HtmlAttributeRenderer
     protected function renderEmbeddedEntity(EntityInterface $embedded_entity, $position, $is_embed_template = false)
     {
         $view_scope = $this->getOption('view_scope');
-        $glance_renderer_config = $this->glance_config;
-
         $group_parts = array_merge(
             (array)$this->getOption('group_parts', []),
             [ $this->attribute->getName(), $position ]
@@ -109,8 +108,6 @@ class HtmlEmbeddedEntityListAttributeRenderer extends HtmlAttributeRenderer
             'is_embed_template' => $is_embed_template,
             'expand_content_disabled' => $this->getOption('expand_items_content_disabled', false),
             'expand_content_by_default' => $this->getOption('expand_items_content_by_default', false),
-            'glance_enabled' => $glance_renderer_config->get('enabled', static::GLANCE_ENABLED),
-            'glance_config' => $glance_renderer_config->toArray()
         ];
         if ($is_embed_template) {
             $default_settings['expand_content_by_default'] = $this->getOption('expand_content_for_new_items', true);
@@ -127,6 +124,9 @@ class HtmlEmbeddedEntityListAttributeRenderer extends HtmlAttributeRenderer
             'add_item_to_parent_list_allowed' => $this->isAddItemAllowed(),
             'readonly' => $this->isReadonly()
         ];
+        if (static::GLANCE_ENABLED) {
+            $renderer_settings['glance_config'] = $this->getGlanceRenderConfig($embedded_entity);
+        }
 
         return $this->renderer_service->renderSubject(
             $embedded_entity,
@@ -137,43 +137,51 @@ class HtmlEmbeddedEntityListAttributeRenderer extends HtmlAttributeRenderer
         );
     }
 
-    protected function getGlanceConfig($default_config = [])
+    /**
+     * @return ArrayConfig
+     */
+    protected function getGlanceRenderConfig(EntityInterface $entity, $additional_config = [])
     {
         $view_scope = $this->getOption('view_scope');
+        $entity_type = $entity->getType();
 
-        // view_config for generic glance scope.
-        $render_config_global = $this->view_config_service->getRendererConfig(
-            self::GLANCE_CONFIG_GLOBAL_SCOPE,
-            $this->output_format,
-            self::GLANCE_RENDERER_CONFIG_NAME
-        );
+        if (!$this->glance_config instanceof ConfigInterface) {
+            // global view_config
+            $global_view_config = $this->view_config_service->getViewConfig(self::GLANCE_CONFIG_GLOBAL_SCOPE);
+            $global_view_config_settings = $global_view_config->getSettings();
+            $global_glance_config = $global_view_config_settings->get('glance_config', new Settings);
 
-        // view_config for whole view.
-        $renderer_config_view = $this->view_config_service->getRendererConfig(
-            $view_scope,
-            $this->output_format,
-            self::GLANCE_RENDERER_CONFIG_NAME
-        );
+            // view_config for specific view
+            $view_config = $this->view_config_service->getViewConfig($view_scope);
+            $view_config_settings = $view_config->getSettings();
+            $view_glance_config = $view_config_settings->get('glance_config', new Settings);
 
-        // glance view_config for the specific list
-        $entity_list_renderer_config_name = sprintf(
-            '%s.%s.%s',
-            $this->attribute->getRootType()->getPrefix(),
-            $this->attribute->getPath(),
-            self::GLANCE_RENDERER_CONFIG_NAME
-        );
-        $entity_list_glance_config = $this->view_config_service->getRendererConfig(
-            $view_scope,
-            $this->output_format,
-            $entity_list_renderer_config_name,
-            []
-        );
+            // view_template settings for current embedded-entity-list
+            $list_glance_config = $this->settings->get('glance_config', new Settings);
+
+            $this->glance_config = new ArrayConfig(array_replace_recursive(
+                $global_glance_config->toArray(),
+                $view_glance_config->toArray(),
+                $list_glance_config->toArray()
+            ));
+        }
+
+        // view_config for resource type.
+        $type_name = $entity_type->getName();
+        if (!isset($this->entity_type_glance_configs[ $type_name ])) {
+            $renderer_config_entity_type = $this->view_config_service->getRendererConfig(
+                $view_scope,
+                $this->output_format,
+                $entity_type->getScopeKey()
+            );
+
+            $this->entity_type_glance_configs[$type_name] = $renderer_config_entity_type->get('glance_config', new Settings);
+        }
 
         return new ArrayConfig(array_replace_recursive(
-            $default_config,
-            $render_config_global->toArray(),
-            $renderer_config_view->toArray(),
-            $entity_list_glance_config->toArray()
+            $this->glance_config->toArray(),
+            $this->entity_type_glance_configs[ $type_name ]->toArray(),
+            $additional_config
         ));
     }
 

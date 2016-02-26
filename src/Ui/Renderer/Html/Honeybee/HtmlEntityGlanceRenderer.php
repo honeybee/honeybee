@@ -39,6 +39,7 @@ class HtmlEntityGlanceRenderer extends Renderer
         $resource = $this->getPayload('subject');
         $image = $this->getGlanceImage($resource);
 
+        $params['resource'] = $resource->toNative();
         $params['image_width'] = $this->getOption('image_width', $image['width']);
         $params['image_height'] = $this->getOption('image_height', $image['height']);
         $params['image_url'] = $image['location'];

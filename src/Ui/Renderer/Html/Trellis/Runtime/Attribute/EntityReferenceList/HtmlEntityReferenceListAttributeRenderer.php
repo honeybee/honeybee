@@ -10,6 +10,7 @@ class HtmlEntityReferenceListAttributeRenderer extends HtmlEmbeddedEntityListAtt
 {
     const SUGGEST_VALUE_IDENTIFIER = 'identifier';
     const SUGGEST_VALUE_ATTRIBUTE = 'referenced_identifier';
+    const GLANCE_ENABLED = false;
 
     protected function getDefaultTemplateIdentifier()
     {
