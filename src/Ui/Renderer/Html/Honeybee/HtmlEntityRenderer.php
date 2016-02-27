@@ -37,7 +37,8 @@ class HtmlEntityRenderer extends EntityRenderer
 
         $renderer_config_default = [
             'view_scope' => $view_scope,
-            'renderer_locator_modifier' => self::GLANCE_RENDERER_LOCATOR_MODIFIER   // render with {subject}GlanceRenderer
+            // render with {subject}GlanceRenderer
+            'renderer_locator_modifier' => self::GLANCE_RENDERER_LOCATOR_MODIFIER
         ];
 
         // view_config for generic glance scope.

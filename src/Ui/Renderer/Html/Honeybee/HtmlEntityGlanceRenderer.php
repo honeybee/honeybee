@@ -85,7 +85,9 @@ class HtmlEntityGlanceRenderer extends Renderer
         if ($this->hasOption('image_value_path')) {
             $path = $this->getOption('image_value_path');
             $image_attribute = AttributePath::getAttributeByPath($resource->getType(), $path);
-            if ($image_attribute instanceof HandlesFileListInterface && $image_attribute->getFiletypeName() === HandlesFileInterface::FILETYPE_IMAGE) {
+            if ($image_attribute instanceof HandlesFileListInterface
+                && $image_attribute->getFiletypeName() === HandlesFileInterface::FILETYPE_IMAGE
+            ) {
                 $image_value = AttributeValuePath::getAttributeValueByPath($resource, $path);
                 $index = $this->getOption('image_value_path_index', 0);
                 if (array_key_exists($index, $image_value)) {
@@ -112,7 +114,8 @@ class HtmlEntityGlanceRenderer extends Renderer
         }
 
         // figure out a fallback value if there are attributes containing images
-        $image_attributes = $resource->getType()->getAttributes(); // @todo Support class intefaces as getAttributes parameter
+        // @todo Support class intefaces as getAttributes parameter
+        $image_attributes = $resource->getType()->getAttributes();
         if (!empty($image_attributes)) {
             foreach ($image_attributes as $image_attribute) {
                 if (!$image_attribute instanceof HandlesFileInterface) {
@@ -193,7 +196,10 @@ class HtmlEntityGlanceRenderer extends Renderer
             $description = $this->getOption('description');
             // empty value would reset eventual global options and allow to use the value_path option
             if ($this->hasOption('description_value_path') && empty($description)) {
-                return AttributeValuePath::getAttributeValueByPath($resource, $this->getOption('description_value_path'));
+                return AttributeValuePath::getAttributeValueByPath(
+                    $resource,
+                    $this->getOption('description_value_path')
+                );
             } else {
                 return $description;
             }
