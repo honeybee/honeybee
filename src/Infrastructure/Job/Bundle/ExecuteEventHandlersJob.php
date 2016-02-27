@@ -36,6 +36,24 @@ class ExecuteEventHandlersJob extends Job
         $this->event_bus->executeHandlers($this->channel, $this->event, $this->subscription_index);
     }
 
+    public function canRetry()
+    {
+        return !$this->getStrategy()->getFailureStrategy()->hasFailed($this);
+    }
+
+    public function getRetryInterval()
+    {
+        return $this->getStrategy()->getRetryStrategy()->getInterval($this);
+    }
+
+    protected function getStrategy()
+    {
+        return $this->event_bus
+            ->getSubscriptions($this->channel)
+            ->getItem($this->subscription_index)
+            ->getEventStrategy();
+    }
+
     protected function setEvent($event_state)
     {
         if (is_array($event_state)) {
