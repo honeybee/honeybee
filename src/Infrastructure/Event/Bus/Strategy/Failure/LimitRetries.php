@@ -15,7 +15,11 @@ class LimitRetries implements FailureStrategyInterface
     {
         $settings = $settings ?: new Settings;
 
-        $this->limit = (int)$settings->get('limit');
+        if (!$settings->has('limit')) {
+            throw new RuntimeError('LimitRetries strategy requires "limit" setting.');
+        }
+
+        $this->limit = $settings->get('limit');
     }
 
     public function hasFailed(JobInterface $job)

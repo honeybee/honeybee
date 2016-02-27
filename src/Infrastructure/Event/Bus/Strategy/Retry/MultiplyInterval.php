@@ -9,7 +9,7 @@ use Honeybee\Infrastructure\Job\JobInterface;
 
 class MultiplyInterval implements RetryStrategyInterface
 {
-    const DEFAULT_INTERVAL = 1000;
+    const DEFAULT_INTERVAL = 1; //seconds
 
     const DEFAULT_MULTIPLIER = 2;
 
@@ -37,7 +37,7 @@ class MultiplyInterval implements RetryStrategyInterface
 
         $interval = $this->interval;
         if ($retries > 0) {
-            $interval = ($this->multiplier ** $retries) * $this->interval;
+            $interval = pow($this->multiplier, $retries) * $this->interval;
             if ($this->max_interval) {
                 $interval = min($interval, $this->max_interval);
             }

@@ -33,17 +33,26 @@ class ExecuteEventHandlersJob extends Job
             throw new RuntimeError('Missing required channel parameter.');
         }
 
+        if ($this->hasFailed()) {
+            throw new RuntimeError('Event is no longer valid according to strategy.');
+        }
+
         $this->event_bus->executeHandlers($this->channel, $this->event, $this->subscription_index);
     }
 
-    public function canRetry()
+    public function hasFailed()
     {
-        return !$this->getStrategy()->getFailureStrategy()->hasFailed($this);
+        return $this->getStrategy()->getFailureStrategy()->hasFailed($this);
     }
 
-    public function getRetryInterval()
+    public function getInterval()
     {
         return $this->getStrategy()->getRetryStrategy()->getInterval($this);
+    }
+
+    public function getEvent()
+    {
+        return $this->event;
     }
 
     protected function getStrategy()

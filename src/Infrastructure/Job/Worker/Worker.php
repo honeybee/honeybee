@@ -98,11 +98,11 @@ class Worker implements WorkerInterface
             $job = $this->job_service->createJob($job_state);
             $job->run();
         } catch (Exception $error) {
-            if ($job->canRetry()) {
+            if (!$job->hasFailed()) {
                 $this->job_service->retryJob(
                     $job_state,
                     new Settings([
-                        'retry_interval' => $job->getRetryInterval(),
+                        'retry_interval' => $job->getInterval() * 1000, //interval in milliseconds
                         'wait_exchange' => $this->config->get('wait_exchange'),
                         'routing_key' => $delivery_info['routing_key']
                     ])
