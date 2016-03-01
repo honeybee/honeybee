@@ -3,6 +3,7 @@
 namespace Honeybee\Ui\Renderer\Html\Honeybee;
 
 use Honeybee\Ui\Renderer\Renderer;
+use Honeybee\Ui\Renderer\EntityRenderer;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\EntityInterface;
 use Trellis\Runtime\Attribute\AttributePath;
@@ -13,39 +14,42 @@ use Trellis\Runtime\Attribute\Textarea\TextareaAttribute;
 use Trellis\Runtime\Attribute\HandlesFileListInterface;
 use Trellis\Runtime\Attribute\HandlesFileInterface;
 
-class HtmlEntityGlanceRenderer extends Renderer
+class HtmlEntityGlanceRenderer extends EntityRenderer
 {
-    protected function validate()
-    {
-        if (!$this->getPayload('subject') instanceof EntityInterface) {
-            throw new RuntimeError(sprintf('Payload "subject" must implement "%s".', EntityInterface::CLASS));
-        }
-    }
-
-    protected function doRender()
-    {
-        return $this->getTemplateRenderer()->render($this->getTemplateIdentifier(), $this->getTemplateParameters());
-    }
-
     protected function getDefaultTemplateIdentifier()
     {
-        return 'html/ui/entity-glance.twig';
+        return $this->hasOption('view_template_name')
+            ? 'html/entity_glance/as_fields_with_viewtemplate_without_tabs.twig'    // view_template
+            : 'html/entity_glance/entity-glance.twig';  // default
     }
 
     protected function getTemplateParameters()
     {
-        $params = parent::getTemplateParameters();
+        $params = parent::getDefaultTemplateParameters();
 
         $resource = $this->getPayload('subject');
-        $image = $this->getGlanceImage($resource);
 
+        $params['html_attributes'] = $this->getOption('html_attributes', []);
         $params['resource'] = $resource->toNative();
-        $params['image_width'] = $this->getOption('image_width', $image['width']);
-        $params['image_height'] = $this->getOption('image_height', $image['height']);
-        $params['image_url'] = $image['location'];
-        $params['title'] = $this->getGlanceTitle($resource);
-        $params['description'] = $this->getGlanceDescription($resource);
+        $params['is_new'] = !$resource->hasValue('identifier');
         $params['css'] = $this->getOption('css', '');
+
+        if ($this->hasOption('view_template_name')) {
+            // use view_template
+            $params = array_replace_recursive($this->lookupViewTemplate(), $params);
+
+            $params['rendered_fields'] = $this->getRenderedFields($resource, $params['view_template']);
+            $params['css'] .= $params['is_new'] ? ' hb-glance--empty' : null;
+        } else {
+            // get default values
+            $image = $this->getGlanceImage($resource);
+
+            $params['image_width'] = $this->getOption('image_width', $image['width']);
+            $params['image_height'] = $this->getOption('image_height', $image['height']);
+            $params['image_url'] = $image['location'];
+            $params['title'] = $this->getGlanceTitle($resource);
+            $params['description'] = $this->getGlanceDescription($resource);
+        }
 
         return $params;
     }
