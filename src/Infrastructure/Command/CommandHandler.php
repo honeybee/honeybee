@@ -40,26 +40,6 @@ abstract class CommandHandler extends Object implements CommandHandlerInterface
      */
     public function execute(CommandInterface $command)
     {
-        // @todo allow providing settings within the commands.xml and use them here
-        $max_retries = 3;
-        $retry_timeout = 100000;
-        $retry_count = 0;
-        $done = false;
-
-        while (!$done && $retry_count <= $max_retries) {
-            try {
-                $this->tryToExecute($command, $retry_count);
-                $done = true;
-            } catch (Exception $conflict) {
-                // TODO introduce DataAccess(Conflict)Error or similar and throw it from the storage etc, classes?
-                if ($retry_count === $max_retries) {
-                    throw $conflict;
-                } else {
-                    $retry_count++;
-                    usleep($retry_timeout);
-                    $this->logger->error(static::class . ' ~ ' . $conflict->getMessage());
-                }
-            }
-        }
+        $this->tryToExecute($command, 0);
     }
 }
