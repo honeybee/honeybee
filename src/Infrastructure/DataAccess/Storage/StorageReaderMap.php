@@ -2,6 +2,7 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Storage;
 
+use Honeybee\Common\Error\RuntimeError;
 use Trellis\Common\Collection\TypedMap;
 use Trellis\Common\Collection\UniqueCollectionInterface;
 
