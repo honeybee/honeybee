@@ -15,17 +15,24 @@ class HtmlEntityRenderer extends EntityRenderer
 
         $glance_config = $this->getOption('glance_config', new ArrayConfig([]));
 
-        $params['html_attributes'] = $this->getOption('html_attributes', []);
+        $params['css'] = $this->getOption('css', '');
         $params['trigger_id'] = $this->getOption('trigger_id', sprintf('%s-%s', $params['grouped_base_path'], rand()));
+        $params['html_attributes'] = $this->getOption('html_attributes', []);
         $params['expand_content_disabled'] = $this->getOption('expand_content_disabled', false);
         $params['expand_content_by_default'] = $this->getOption('expand_content_by_default', false);
         $params['rendered_glance_content'] = $glance_config->get('enabled', false)
             ? $this->renderGlance($glance_config->toArray())
             : '';
 
-        // expand if no clickable glance is rendered
         if (empty($params['rendered_glance_content'])) {
-            $params['expand_content_by_default'] = true;
+            // expand if no clickable glance is rendered
+            $params['expand_content_by_default'] = $params['expand_content_disabled'] = true;
+        } elseif ($params['has_parent_attribute']) {
+            $params['css'] .= ' hb-embed-item--has_glance';
+        }
+
+        if ($params['expand_content_by_default']) {
+            $params['css'] .= ' hb-embed-item--expanded';
         }
 
         return $params;

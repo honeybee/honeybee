@@ -16,6 +16,7 @@ class HtmlProjectionRenderer extends EntityRenderer
 
         $css = (string)$this->getOption('css', '');
         $css = 'hb-item ' . $this->getOption('css_prefix', 'hb-item-') . $resource->getIdentifier() . ' ' . $css;
+        $css .= !empty($params['rendered_glance_content']) ? ' hb-item--has_glance' : '';
         $params['css'] = $css;
 
         return $params;

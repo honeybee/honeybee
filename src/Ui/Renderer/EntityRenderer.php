@@ -36,8 +36,7 @@ abstract class EntityRenderer extends Renderer
 
         $params = parent::getTemplateParameters();
 
-        $params['css'] = $this->getOption('css', '');
-        $params['css'] .= $parent_attribute !== null ? ' hb-embed-item' : null;
+        $params['has_parent_attribute'] = $parent_attribute !== null;
         $params['grouped_base_path'] = ArrayToolkit::flattenToArrayPath($group_parts);
         $params['resource'] = $entity->toArray();
         $params['entity_type'] = $entity->getType()->getPrefix();

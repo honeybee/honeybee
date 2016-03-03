@@ -14,7 +14,7 @@ use Honeybee\Ui\Activity\ActivityMap;
 
 class HtmlEmbeddedEntityListAttributeRenderer extends HtmlAttributeRenderer
 {
-    const GLANCE_ENABLED = true;
+    const RENDER_GLANCE = true;
     const GLANCE_CONFIG_GLOBAL_SCOPE = 'application';
 
     protected $glance_config;
@@ -124,7 +124,7 @@ class HtmlEmbeddedEntityListAttributeRenderer extends HtmlAttributeRenderer
             'add_item_to_parent_list_allowed' => $this->isAddItemAllowed(),
             'readonly' => $this->isReadonly()
         ];
-        if (static::GLANCE_ENABLED) {
+        if (static::RENDER_GLANCE) {
             $renderer_settings['glance_config'] = $this->getGlanceRenderConfig($embedded_entity);
         }
 

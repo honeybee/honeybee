@@ -5,6 +5,7 @@ namespace Honeybee\Ui\Renderer\Html\Honeybee;
 use Honeybee\Ui\Renderer\Renderer;
 use Honeybee\Ui\Renderer\EntityRenderer;
 use Honeybee\Common\Error\RuntimeError;
+use Honeybee\Common\Util\ArrayToolkit;
 use Honeybee\EntityInterface;
 use Trellis\Runtime\Attribute\AttributePath;
 use Trellis\Runtime\Attribute\AttributeValuePath;
@@ -28,7 +29,12 @@ class HtmlEntityGlanceRenderer extends EntityRenderer
         $params = parent::getDefaultTemplateParameters();
 
         $resource = $this->getPayload('subject');
+        $parent_attribute = $resource->getType()->getParentAttribute();
+        $group_parts = (array)$this->getOption('group_parts', []);
 
+        $params['grouped_base_path'] = ArrayToolkit::flattenToArrayPath($group_parts);
+        $params['is_embed_template'] = $this->getOption('is_embed_template', false);
+        $params['has_parent_attribute'] = $parent_attribute !== null;
         $params['html_attributes'] = $this->getOption('html_attributes', []);
         $params['resource'] = $resource->toNative();
         $params['is_new'] = !$resource->hasValue('identifier');
