@@ -32,7 +32,7 @@ class HtmlEntityRenderer extends EntityRenderer
         }
 
         if ($params['expand_content_by_default']) {
-            $params['css'] .= ' hb-embed-item--expanded';
+            $params['css'] .= ' hb-embed-item--is_expanded';
         }
 
         return $params;
