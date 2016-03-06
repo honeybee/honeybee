@@ -195,7 +195,8 @@ abstract class EntityRenderer extends Renderer
     {
         $view_template_name = $this->getOption('view_template_name');
         if (!$this->hasOption('view_template_name')) {
-            $view_template_name = $this->name_resolver->resolve($this->getPayload('subject'));  // should it be different for glances?
+            // should it be different for glances?
+            $view_template_name = $this->name_resolver->resolve($this->getPayload('subject'));
         }
 
         $view_template = $this->view_template_service->getViewTemplate(

@@ -175,7 +175,10 @@ class HtmlEmbeddedEntityListAttributeRenderer extends HtmlAttributeRenderer
                 $entity_type->getScopeKey()
             );
 
-            $this->entity_type_glance_configs[$type_name] = $renderer_config_entity_type->get('glance_config', new Settings);
+            $this->entity_type_glance_configs[$type_name] = $renderer_config_entity_type->get(
+                'glance_config',
+                new Settings
+            );
         }
 
         return new ArrayConfig(array_replace_recursive(
