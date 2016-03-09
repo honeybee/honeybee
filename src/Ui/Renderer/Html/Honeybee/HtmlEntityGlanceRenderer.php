@@ -7,6 +7,7 @@ use Honeybee\Ui\Renderer\EntityRenderer;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Common\Util\ArrayToolkit;
 use Honeybee\EntityInterface;
+use Honeybee\Ui\ViewTemplate\ViewTemplateInterface;
 use Trellis\Runtime\Attribute\AttributePath;
 use Trellis\Runtime\Attribute\AttributeValuePath;
 use Trellis\Runtime\Attribute\AttributePathInterface;
@@ -41,29 +42,29 @@ class HtmlEntityGlanceRenderer extends EntityRenderer
         $params['is_new'] = !$resource->hasValue('identifier');
         $params['css'] = $this->getOption('css', '');
 
+        $params = array_replace_recursive($this->lookupViewTemplate(), $params);
+
         if ($this->hasOption('view_template_name')) {
             // use view_template
-            $params = array_replace_recursive($this->lookupViewTemplate(), $params);
-
             $params['rendered_fields'] = $this->getRenderedFields($resource, $params['view_template']);
             $params['css'] .= $params['is_new'] ? ' hb-glance--empty' : null;
         } else {
             // get default values
             if (!$params['image_disabled']) {
-                $image = $this->getGlanceImage($resource);
+                $image = $this->getGlanceImage($resource, $params['view_template']);
 
                 $params['image_width'] = $this->getOption('image_width', $image['width']);
                 $params['image_height'] = $this->getOption('image_height', $image['height']);
                 $params['image_url'] = $image['location'];
             }
-            $params['title'] = $this->getGlanceTitle($resource);
-            $params['description'] = $this->getGlanceDescription($resource);
+            $params['title'] = $this->getGlanceTitle($resource, $params['view_template']);
+            $params['description'] = $this->getGlanceDescription($resource, $params['view_template']);
         }
 
         return $params;
     }
 
-    protected function getGlanceImage(EntityInterface $resource)
+    protected function getGlanceImage(EntityInterface $resource, ViewTemplateInterface $view_template)
     {
         $image_default_attributes = [
             'location' => '',
@@ -127,22 +128,39 @@ class HtmlEntityGlanceRenderer extends EntityRenderer
             }
         }
 
-        // figure out a fallback value if there are attributes containing images
-        // @todo Support class intefaces as getAttributes parameter
-        $image_attributes = $resource->getType()->getAttributes();
-        if (!empty($image_attributes)) {
-            foreach ($image_attributes as $image_attribute) {
-                if (!$image_attribute instanceof HandlesFileInterface) {
-                    continue;
-                }
-                if ($image_attribute->getFiletypeName() !== HandlesFileInterface::FILETYPE_IMAGE) {
-                    continue;
-                }
-                $image_value = $resource->getValue($image_attribute->getName());
-                if ($image_attribute instanceof HandlesFileListInterface) {
-                    if (array_key_exists(0, $image_value)) {
-                        $image = $image_value[0]->toNative();
-                        $location = $image[$image_attribute->getFileLocationPropertyName()];
+
+        // otherwise figure out a fallback value if there are attributes containing images
+        $view_template_fields = $view_template->extractAllFields();
+        foreach ($view_template_fields as $field) {
+            $attribute_path = $field->getSetting('attribute_path');
+            if ($attribute_path) {
+                $attribute = AttributePath::getAttributeByPath($resource->getType(), $attribute_path);
+
+                if ($attribute instanceof HandlesFileInterface
+                    && $attribute->getFiletypeName() === HandlesFileInterface::FILETYPE_IMAGE) {
+                    $image_value = $resource->getValue($attribute->getName());
+                    if ($attribute instanceof HandlesFileListInterface) {
+                        if (array_key_exists(0, $image_value)) {
+                            $image = $image_value[0]->toNative();
+                            $location = $image[$attribute->getFileLocationPropertyName()];
+
+                            if ($converjon_enabled) {
+                                $image_url = $this->url_generator->generateUrl(
+                                    $image_activity,
+                                    [ 'file' => $location ]
+                                );
+                                return array_replace($image_default_attributes, [ 'location' => $image_url ]);
+                            } else {
+                                $image_url = $this->url_generator->generateUrl(
+                                    'module.files.download',
+                                    [ 'resource' => $resource, 'file' => $location ]
+                                );
+                                return array_replace($image_default_attributes, [ 'location' => $image_url ]);
+                            }
+                        }
+                    } elseif (!empty($image_value)) {
+                        $image = $image_value->toNative();
+                        $location = $image[$attribute->getFileLocationPropertyName()];
 
                         if ($converjon_enabled) {
                             $image_url = $this->url_generator->generateUrl(
@@ -158,23 +176,6 @@ class HtmlEntityGlanceRenderer extends EntityRenderer
                             return array_replace($image_default_attributes, [ 'location' => $image_url ]);
                         }
                     }
-                } elseif (!empty($image_value)) {
-                    $image = $image_value->toNative();
-                    $location = $image[$image_attribute->getFileLocationPropertyName()];
-
-                    if ($converjon_enabled) {
-                        $image_url = $this->url_generator->generateUrl(
-                            $image_activity,
-                            [ 'file' => $location ]
-                        );
-                        return array_replace($image_default_attributes, [ 'location' => $image_url ]);
-                    } else {
-                        $image_url = $this->url_generator->generateUrl(
-                            'module.files.download',
-                            [ 'resource' => $resource, 'file' => $location ]
-                        );
-                        return array_replace($image_default_attributes, [ 'location' => $image_url ]);
-                    }
                 }
             }
         }
@@ -182,7 +183,7 @@ class HtmlEntityGlanceRenderer extends EntityRenderer
         return $image_default_attributes;
     }
 
-    protected function getGlanceTitle(EntityInterface $resource)
+    protected function getGlanceTitle(EntityInterface $resource, ViewTemplateInterface $view_template)
     {
         if ($this->hasOption('title')) {
             $title = $this->getOption('title');
@@ -195,16 +196,21 @@ class HtmlEntityGlanceRenderer extends EntityRenderer
         }
 
         // otherwise get first text attribute value
-        $text_attributes = $resource->getType()->getAttributes([], [ TextAttribute::class ])->toArray();
-        if (!empty($text_attributes)) {
-            $target_text_attribute = array_keys($text_attributes)[0];
-            return $resource->getValue($target_text_attribute);
+        $view_template_fields = $view_template->extractAllFields();
+        foreach ($view_template_fields as $field) {
+            $attribute_path = $field->getSetting('attribute_path');
+            if ($attribute_path) {
+                $attribute = AttributePath::getAttributeByPath($resource->getType(), $attribute_path);
+                if (in_array(get_class($attribute), [ TextAttribute::class ])) {
+                    return AttributeValuePath::getAttributeValueByPath($resource, $attribute_path);
+                }
+            }
         }
 
         return '';
     }
 
-    protected function getGlanceDescription(EntityInterface $resource)
+    protected function getGlanceDescription(EntityInterface $resource, ViewTemplateInterface $view_template)
     {
         if ($this->hasOption('description')) {
             $description = $this->getOption('description');
@@ -220,10 +226,15 @@ class HtmlEntityGlanceRenderer extends EntityRenderer
         }
 
         // otherwise get first textarea attribute value
-        $textarea_attributes = $resource->getType()->getAttributes([], [ TextareaAttribute::class ])->toArray();
-        if (!empty($textarea_attributes)) {
-            $target_textarea_attribute = array_keys($textarea_attributes)[0];
-            return $resource->getValue($target_textarea_attribute);
+        $view_template_fields = $view_template->extractAllFields();
+        foreach ($view_template_fields as $field) {
+            $attribute_path = $field->getSetting('attribute_path');
+            if ($attribute_path) {
+                $attribute = AttributePath::getAttributeByPath($resource->getType(), $attribute_path);
+                if (in_array(get_class($attribute), [ TextareaAttribute::class ])) {
+                    return AttributeValuePath::getAttributeValueByPath($resource, $attribute_path);
+                }
+            }
         }
 
         return '';
