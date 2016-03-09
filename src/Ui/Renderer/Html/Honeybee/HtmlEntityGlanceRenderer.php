@@ -36,6 +36,7 @@ class HtmlEntityGlanceRenderer extends EntityRenderer
         $params['is_embed_template'] = $this->getOption('is_embed_template', false);
         $params['has_parent_attribute'] = $parent_attribute !== null;
         $params['html_attributes'] = $this->getOption('html_attributes', []);
+        $params['image_disabled'] = $this->getOption('image_disabled', false);
         $params['resource'] = $resource->toNative();
         $params['is_new'] = !$resource->hasValue('identifier');
         $params['css'] = $this->getOption('css', '');
@@ -48,11 +49,13 @@ class HtmlEntityGlanceRenderer extends EntityRenderer
             $params['css'] .= $params['is_new'] ? ' hb-glance--empty' : null;
         } else {
             // get default values
-            $image = $this->getGlanceImage($resource);
+            if (!$params['image_disabled']) {
+                $image = $this->getGlanceImage($resource);
 
-            $params['image_width'] = $this->getOption('image_width', $image['width']);
-            $params['image_height'] = $this->getOption('image_height', $image['height']);
-            $params['image_url'] = $image['location'];
+                $params['image_width'] = $this->getOption('image_width', $image['width']);
+                $params['image_height'] = $this->getOption('image_height', $image['height']);
+                $params['image_url'] = $image['location'];
+            }
             $params['title'] = $this->getGlanceTitle($resource);
             $params['description'] = $this->getGlanceDescription($resource);
         }
