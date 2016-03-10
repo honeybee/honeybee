@@ -11,7 +11,7 @@ use Honeybee\Infrastructure\Security\Acl\AclService;
 
 class PermissionService extends Configurable implements PermissionServiceInterface
 {
-    const WORKFLOW_SCOPE_REGEXP = '/app\.workflow\.([\w_]+)\.[\w_]/';
+    const WORKFLOW_SCOPE_REGEXP = '/(.*)\.resource\.workflow\./';
 
     protected $activity_service;
 
@@ -86,7 +86,6 @@ class PermissionService extends Configurable implements PermissionServiceInterfa
     {
         $container_permissions = new PermissionList();
         $is_workflow_scope = preg_match(self::WORKFLOW_SCOPE_REGEXP, $container->getScope(), $matches);
-
         foreach ($container->getActivityMap() as $activity) {
             $permission_data = [ 'name' => $activity->getName(), 'access_scope' => $container->getScope() ];
             if ($is_workflow_scope) {
@@ -172,22 +171,19 @@ class PermissionService extends Configurable implements PermissionServiceInterfa
                     break;
 
                 case 'activity':
-                    $mapped_permissions = $this->evaluateActivityRule($acl_rule);
+                    $affected_permissions->append($this->evaluateActivityRule($acl_rule));
                     break;
 
                 case 'plugin':
-                    $mapped_permissions = $this->evaluateWorkflowRule($acl_rule);
+                    $affected_permissions->append($this->evaluateWorkflowRule($acl_rule));
                     break;
 
                 case 'attribute':
-                    $mapped_permissions = $this->evaluateAttributeRule($acl_rule);
+                    $affected_permissions->append($this->evaluateAttributeRule($acl_rule));
                     break;
 
                 default:
                     throw new RuntimeError("Invalid credential type given: " . $acl_rule['type']);
-            }
-            foreach ($mapped_permissions as $mapped_permission) {
-                $affected_permissions->addItem($mapped_permission);
             }
         }
 
@@ -204,7 +200,7 @@ class PermissionService extends Configurable implements PermissionServiceInterfa
 
         $rule_permissions = new PermissionList();
         foreach ($scope_permissions as $permission) {
-            $permission_data = $scope_permission->toArray();
+            $permission_data = $permission->toArray();
             $permission_data['access_type'] = $rule['access'];
             $permission_data['expression'] = $rule['expression'];
             $rule_permissions->addItem(new Permission($permission_data));
@@ -251,7 +247,6 @@ class PermissionService extends Configurable implements PermissionServiceInterfa
             // @todo log/exception: configured permission scope does not exist.
             return false;
         }
-
         $rule_permissions = new PermissionList();
         foreach ($scope_permissions as $scope_permission) {
             if ($scope_permission->getType() === 'activity'

@@ -65,16 +65,18 @@ class NavigationService extends Object implements NavigationServiceInterface
 
             foreach ($navigation_group_config['items'] as $navigation_item_config) {
                 $container = $this->activity_service->getContainer($navigation_item_config['scope']);
-                $activity = $container->getActivityByName($navigation_item_config['activity']);
-                if ($activity) {
-                    $navigation_item_list->addItem(new NavigationItem($activity));
+                $activity_name = $navigation_item_config['activity'];
+                $activity_map = $container->getActivityMap();
+                if ($activity_map->hasKey($activity_name)) {
+                    $navigation_item_list->addItem(new NavigationItem($container->getActivityByName($activity_name)));
                 }
             }
 
-            $group_settings = $navigation_group_config->get('settings')->toArray();
-
-            $navigation_group = new NavigationGroup($group_name, $navigation_item_list, $group_settings);
-            $navigation_group_map->setItem($group_name, $navigation_group);
+            if (!$navigation_item_list->isEmpty()) {
+                $group_settings = $navigation_group_config->get('settings')->toArray();
+                $navigation_group = new NavigationGroup($group_name, $navigation_item_list, $group_settings);
+                $navigation_group_map->setItem($group_name, $navigation_group);
+            }
         }
 
         $this->navigation_map->setItem($navigation_name, new Navigation($navigation_name, $navigation_group_map));
