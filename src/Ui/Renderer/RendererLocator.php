@@ -37,8 +37,8 @@ class RendererLocator implements RendererLocatorInterface
      */
     public function locateRendererFor($subject, ConfigInterface $renderer_config = null)
     {
-        if (!empty($renderer_config) && $renderer_config->has('renderer')) {
-            $implementor = $renderer_config->get('renderer', '');
+        if (!empty($renderer_config) && $renderer_config->has('implementor')) {
+            $implementor = $renderer_config->get('implementor', '');
             if (!empty($renderer_config) && $renderer_config->get('logging_enabled', false) === true) {
                 $this->logger->debug(
                     sprintf(
