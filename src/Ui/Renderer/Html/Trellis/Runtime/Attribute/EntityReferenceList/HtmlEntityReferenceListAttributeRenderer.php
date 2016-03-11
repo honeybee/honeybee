@@ -86,7 +86,8 @@ class HtmlEntityReferenceListAttributeRenderer extends HtmlEmbeddedEntityListAtt
                     [
                         'module' => $referenced_type,
                         'display_fields' => implode(',', $display_fields),
-                        'search' => sprintf('suggest:%s=', $suggest_fieldname)
+                        'search' => sprintf('suggest:%s={QUERY}', $suggest_fieldname),
+                        'filter' => [ 'language' => $resource->getLanguage() ]
                     ],
                     [ 'relative' => true ]
                 )
