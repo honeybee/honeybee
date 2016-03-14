@@ -6,6 +6,9 @@ use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Event\Bus\EventBusInterface;
 use Honeybee\Infrastructure\Event\EventInterface;
 use Honeybee\Infrastructure\Job\Job;
+use Honeybee\Infrastructure\Job\Strategy\JobStrategy;
+use Honeybee\Infrastructure\Config\Settings;
+use Honeybee\Infrastructure\Config\SettingsInterface;
 
 class ExecuteEventHandlersJob extends Job
 {
@@ -20,11 +23,21 @@ class ExecuteEventHandlersJob extends Job
      */
     protected $event_bus;
 
-    public function __construct(EventBusInterface $event_bus, array $state)
-    {
+    protected $strategy;
+
+    protected $settings;
+
+    public function __construct(
+        EventBusInterface $event_bus,
+        JobStrategy $strategy,
+        array $state,
+        SettingsInterface $settings = null
+    ) {
         parent::__construct($state);
 
         $this->event_bus = $event_bus;
+        $this->strategy = $strategy;
+        $this->settings = $settings ?: new Settings;
     }
 
     public function run(array $parameters = [])
@@ -42,12 +55,12 @@ class ExecuteEventHandlersJob extends Job
 
     public function hasFailed()
     {
-        return $this->getStrategy()->getFailureStrategy()->hasFailed($this);
+        return $this->strategy->hasFailed($this);
     }
 
-    public function getInterval()
+    public function getRetryInterval()
     {
-        return $this->getStrategy()->getRetryStrategy()->getInterval($this);
+        return $this->strategy->getRetryInterval($this);
     }
 
     public function getEvent()
@@ -55,12 +68,9 @@ class ExecuteEventHandlersJob extends Job
         return $this->event;
     }
 
-    protected function getStrategy()
+    public function getSettings()
     {
-        return $this->event_bus
-            ->getSubscriptions($this->channel)
-            ->getItem($this->subscription_index)
-            ->getEventStrategy();
+        return $this->settings;
     }
 
     protected function setEvent($event_state)

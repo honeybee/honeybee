@@ -46,6 +46,7 @@ class Worker implements WorkerInterface
         $queue_name = $this->config->get('queue');
         $wait_exchange_name = $this->config->get('wait_exchange');
         $wait_queue_name = $this->config->get('wait_queue');
+        $job = $this->config->get('job');
 
         if (!$exchange_name) {
             throw new RuntimeError("Missing required 'exchange' config setting.");
@@ -58,6 +59,9 @@ class Worker implements WorkerInterface
         }
         if (!$wait_queue_name) {
             throw new RuntimeError("Missing required 'wait_queue' config setting.");
+        }
+        if (!$job) {
+            throw new RuntimeError("Missing required 'job' config setting.");
         }
     }
 
@@ -95,14 +99,15 @@ class Worker implements WorkerInterface
             $channel = $delivery_info['channel'];
             $delivery_tag = $delivery_info['delivery_tag'];
             $job_state = JsonToolkit::parse($job_message->body);
-            $job = $this->job_service->createJob($job_state);
+            $job = $this->job_service->createJob($this->config->get('job'), $job_state);
             $job->run();
         } catch (Exception $error) {
-            if (!$job->hasFailed()) {
+            $retry_interval = $job->getRetryInterval();
+            if (!$job->hasFailed() && $retry_interval) {
                 $this->job_service->retryJob(
                     $job_state,
                     new Settings([
-                        'retry_interval' => $job->getInterval() * 1000, //interval in milliseconds
+                        'retry_interval' => $retry_interval * 1000, //interval in milliseconds
                         'wait_exchange' => $this->config->get('wait_exchange'),
                         'routing_key' => $delivery_info['routing_key']
                     ])
@@ -110,11 +115,11 @@ class Worker implements WorkerInterface
             } else {
                 $this->job_service->failJob(
                     $job_state,
-                    $error,
                     new Settings([
                         'exchange' => $delivery_info['exchange'],
                         'routing_key' => $delivery_info['routing_key']
-                    ])
+                    ]),
+                    $error
                 );
             }
         }

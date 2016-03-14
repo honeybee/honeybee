@@ -5,7 +5,6 @@ namespace Honeybee\Infrastructure\Event\Bus\Transport;
 use Honeybee\Infrastructure\Event\EventInterface;
 use Honeybee\Infrastructure\Config\Settings;
 use Honeybee\Infrastructure\Config\SettingsInterface;
-use Honeybee\Infrastructure\Job\Bundle\ExecuteEventHandlersJob;
 use Honeybee\Infrastructure\Job\JobServiceInterface;
 
 class JobQueueTransport extends EventTransport
@@ -52,20 +51,24 @@ class JobQueueTransport extends EventTransport
         );
     }
 
-    public function send($channel_name, EventInterface $event, $subscription_index)
+    public function send($channel_name, EventInterface $event, $subscription_index, SettingsInterface $settings = null)
     {
-        $job_state = [
-            ExecuteEventHandlersJob::OBJECT_TYPE => ExecuteEventHandlersJob::CLASS,
-            'event' => $event,
-            'channel' => $channel_name,
-            'subscription_index' => $subscription_index
-        ];
+        $settings = $settings ?: new Settings;
+
+        $job = $this->job_service->createJob(
+            $settings->get('job'),
+            [
+                'event' => $event,
+                'channel' => $channel_name,
+                'subscription_index' => $subscription_index
+            ]
+        );
 
         $this->job_service->dispatch(
-            $this->job_service->createJob($job_state),
+            $job,
             new Settings([
                 'exchange' => $this->exchange,
-                'queue' => $channel_name,
+                'queue' => $job->getSettings()->get('queue'),
                 'routing_key' => $this->routing_key
             ])
         );

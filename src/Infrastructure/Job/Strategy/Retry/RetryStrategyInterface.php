@@ -1,6 +1,6 @@
 <?php
 
-namespace Honeybee\Infrastructure\Event\Bus\Strategy\Retry;
+namespace Honeybee\Infrastructure\Job\Strategy\Retry;
 
 use Honeybee\Infrastructure\Job\JobInterface;
 

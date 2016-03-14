@@ -3,6 +3,7 @@
 namespace Honeybee\Infrastructure\Event\Bus\Transport;
 
 use Honeybee\Infrastructure\Event\EventInterface;
+use Honeybee\Infrastructure\Config\SettingsInterface;
 use ZMQ;
 use ZMQContext;
 
@@ -25,7 +26,7 @@ class ZmqTransport extends EventTransport
         $this->channel = $channel;
     }
 
-    public function send($channel_name, EventInterface $event, $subscription_index)
+    public function send($channel_name, EventInterface $event, $subscription_index, SettingsInterface $settings = null)
     {
         $this->getSocket()->send(
             json_encode(

@@ -9,7 +9,6 @@ use Honeybee\Infrastructure\Config\ConfigInterface;
 use Honeybee\Infrastructure\Config\Settings;
 use Honeybee\Infrastructure\Config\SettingsInterface;
 use Honeybee\Infrastructure\DataAccess\Connector\RabbitMqConnector;
-use Honeybee\Infrastructure\Job\Bundle\ExecuteEventHandlersJob;
 use Honeybee\Infrastructure\Event\FailedJobEvent;
 use Honeybee\Infrastructure\Event\Bus\Transport\JobQueueTransport;
 use Honeybee\ServiceLocatorInterface;
@@ -18,9 +17,13 @@ use Psr\Log\LoggerInterface;
 
 class JobService implements JobServiceInterface
 {
+    const DEFAULT_JOB = 'honeybee.jobs.execute_handlers';
+
     protected $connector;
 
     protected $service_locator;
+
+    protected $job_factory;
 
     protected $config;
 
@@ -31,11 +34,13 @@ class JobService implements JobServiceInterface
     public function __construct(
         RabbitMqConnector $connector,
         ServiceLocatorInterface $service_locator,
+        JobFactory $job_factory,
         ConfigInterface $config,
         LoggerInterface $logger
     ) {
         $this->config = $config;
         $this->service_locator = $service_locator;
+        $this->job_factory = $job_factory;
         $this->connector = $connector;
         $this->logger = $logger;
     }
@@ -100,6 +105,9 @@ class JobService implements JobServiceInterface
 
     public function dispatch(JobInterface $job, SettingsInterface $settings = null)
     {
+        // the service is initialized by the transport so we don't know which channels are bound
+        // to the transport until the message comes in on that channel.
+        // @todo find a way to not have to initialize queues on every message dispatch.
         $this->initializeQueue($settings);
 
         $message_payload = json_encode($job->toArray());
@@ -142,11 +150,11 @@ class JobService implements JobServiceInterface
         $this->channel->basic_publish($message, $wait_exchange_name, $settings->get('routing_key'));
     }
 
-    public function failJob(array $job_state, Exception $error, SettingsInterface $settings)
+    public function failJob(array $job_state, SettingsInterface $settings, Exception $error)
     {
         $failed_job = $this->createJob(
+            self::DEFAULT_JOB,
             [
-                ExecuteEventHandlersJob::OBJECT_TYPE => ExecuteEventHandlersJob::CLASS,
                 'event' => new FailedJobEvent([
                     'failed_job_state' => $job_state,
                     'meta_data' => [
@@ -165,14 +173,9 @@ class JobService implements JobServiceInterface
         $this->channel->basic_publish($message, $exchange_name, $settings->get('routing_key'));
     }
 
-    public function createJob(array $job_state)
+    public function createJob($job_name, array $job_state)
     {
-        $job_class = $job_state['@type'];
-
-        if (!class_exists($job_class)) {
-            throw new RuntimeError("Unable to resolve job implementor: " . $job_class);
-        }
-
-        return $this->service_locator->createEntity($job_class, [ ':state' => $job_state ]);
+        $job_name = $job_name ?: self::DEFAULT_JOB;
+        return $this->job_factory->createJob($job_name, $job_state);
     }
 }

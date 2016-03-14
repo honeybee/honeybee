@@ -7,6 +7,7 @@ use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Event\Bus\Transport\EventTransportInterface;
 use Honeybee\Infrastructure\Event\EventHandlerList;
 use Honeybee\Infrastructure\Event\Bus\Strategy\EventStrategy;
+use Honeybee\Infrastructure\Config\SettingsInterface;
 
 class EventSubscription extends Object implements EventSubscriptionInterface
 {
@@ -18,6 +19,8 @@ class EventSubscription extends Object implements EventSubscriptionInterface
 
     protected $event_strategy;
 
+    protected $settings;
+
     protected $activated;
 
     public function __construct(
@@ -25,12 +28,14 @@ class EventSubscription extends Object implements EventSubscriptionInterface
         EventFilterList $event_filters,
         EventHandlerList $event_handlers,
         EventStrategy $event_strategy,
+        SettingsInterface $settings,
         $activated
     ) {
         $this->event_transport = $event_transport;
         $this->event_handlers = $event_handlers;
         $this->event_filters = $event_filters;
         $this->event_strategy = $event_strategy;
+        $this->settings = $settings;
         $this->activated = (bool)$activated;
     }
 
@@ -52,6 +57,11 @@ class EventSubscription extends Object implements EventSubscriptionInterface
     public function getEventStrategy()
     {
         return $this->event_strategy;
+    }
+
+    public function getSettings()
+    {
+        return $this->settings;
     }
 
     public function isActivated()

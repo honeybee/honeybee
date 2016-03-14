@@ -1,6 +1,6 @@
 <?php
 
-namespace Honeybee\Infrastructure\Event\Bus\Strategy\Failure;
+namespace Honeybee\Infrastructure\Job\Strategy\Failure;
 
 use DateInterval;
 use DateTimeImmutable;

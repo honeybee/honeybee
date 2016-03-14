@@ -1,6 +1,6 @@
 <?php
 
-namespace Honeybee\Infrastructure\Event\Bus\Strategy\Retry;
+namespace Honeybee\Infrastructure\Job\Strategy\Retry;
 
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Config\Settings;
@@ -13,7 +13,7 @@ class MultiplyInterval implements RetryStrategyInterface
 
     const DEFAULT_MULTIPLIER = 2;
 
-    const DEFAULT_MAX_INTERVAL = 0;
+    const DEFAULT_MAX_INTERVAL = 86400;
 
     protected $interval;
 

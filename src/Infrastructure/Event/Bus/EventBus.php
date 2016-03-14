@@ -77,7 +77,12 @@ class EventBus extends Object implements EventBusInterface
                 }
 
                 if ($is_active) {
-                    $subscription->getEventTransport()->send($channel_name, $event, $subscription_index);
+                    $subscription->getEventTransport()->send(
+                        $channel_name,
+                        $event,
+                        $subscription_index,
+                        $subscription->getSettings()
+                    );
                 }
                 $subscription_index++;
             }
