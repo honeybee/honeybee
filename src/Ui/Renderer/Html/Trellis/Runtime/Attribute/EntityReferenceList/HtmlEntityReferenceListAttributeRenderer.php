@@ -73,6 +73,7 @@ class HtmlEntityReferenceListAttributeRenderer extends HtmlEmbeddedEntityListAtt
                     [ 'relative' => true ]
                 );
             }
+            $ar_root = $resource->getRoot() ?: $resource;
             $suggest_options[$embedded_type->getPrefix()] = [
                 'display_fields' => $display_fields,
                 'suggest_field' => $suggest_fieldname,
@@ -87,7 +88,7 @@ class HtmlEntityReferenceListAttributeRenderer extends HtmlEmbeddedEntityListAtt
                         'module' => $referenced_type,
                         'display_fields' => implode(',', $display_fields),
                         'search' => sprintf('suggest:%s={QUERY}', $suggest_fieldname),
-                        'filter' => [ 'language' => $resource->getLanguage() ]
+                        'filter' => [ 'language' => $ar_root->getLanguage() ]
                     ],
                     [ 'relative' => true ]
                 )
