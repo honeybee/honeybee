@@ -105,13 +105,8 @@ class HtmlEmbeddedEntityListAttributeRenderer extends HtmlAttributeRenderer
         $default_settings = [
             'view_scope' => $view_scope,
             'group_parts' => $group_parts,
-            'is_embed_template' => $is_embed_template,
-            'expand_content_disabled' => $this->getOption('expand_items_content_disabled', false),
-            'expand_content_by_default' => $this->getOption('expand_items_content_by_default', false),
+            'is_embed_template' => $is_embed_template
         ];
-        if ($is_embed_template) {
-            $default_settings['expand_content_by_default'] = $this->getOption('expand_content_for_new_items', true);
-        }
 
         $renderer_config = $this->view_config_service->getRendererConfig(
             $view_scope,
@@ -125,7 +120,13 @@ class HtmlEmbeddedEntityListAttributeRenderer extends HtmlAttributeRenderer
             'readonly' => $this->isReadonly()
         ];
         if (static::RENDER_GLANCE) {
-            $renderer_settings['glance_config'] = $this->getGlanceRenderConfig($embedded_entity);
+            $additional_config = [];
+            if ($is_embed_template) {
+                $additional_config['expand_by_default'] = true;
+            }
+            $glance_config = $this->getGlanceRenderConfig($embedded_entity, $additional_config);
+
+            $renderer_settings['glance_config'] = $glance_config;
         }
 
         return $this->renderer_service->renderSubject(

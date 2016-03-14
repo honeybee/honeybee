@@ -18,23 +18,28 @@ class HtmlEntityRenderer extends EntityRenderer
         $params['css'] = $this->getOption('css', '');
         $params['trigger_id'] = $this->getOption('trigger_id', sprintf('%s-%s', $params['grouped_base_path'], rand()));
         $params['html_attributes'] = $this->getOption('html_attributes', []);
-        $params['expand_content_disabled'] = $this->getOption('expand_content_disabled', false);
-        $params['expand_content_by_default'] = $this->getOption('expand_content_by_default', false);
-        $params['rendered_glance_content'] = $glance_config->get('enabled', false)
-            ? $this->renderGlance($glance_config->toArray())
-            : '';
+        $params['collapsible'] = $glance_config->get('collapsible', true);
+        $params['expand_by_default'] = $glance_config->get('expand_by_default', false);
+        if ($glance_config->has('fixed_content')) {
+            $params['rendered_glance_content'] = $glance_config->get('fixed_content', false);
+        } else {
+            $params['rendered_glance_content'] = $glance_config->get('enabled', false)
+                ? $this->renderGlance($glance_config->toArray())
+                : '';
+        }
 
         if (empty($params['rendered_glance_content'])) {
             // expand if no clickable glance is rendered
-            $params['expand_content_by_default'] = $params['expand_content_disabled'] = true;
+            $params['expand_by_default'] = true;
+            $params['collapsible'] = false;
         } elseif ($params['has_parent_attribute']) {
             $params['css'] .= ' hb-embed-item--has_glance';
         }
 
-        if ($params['expand_content_by_default']) {
+        if ($params['expand_by_default']) {
             $params['css'] .= ' hb-embed-item--is_expanded';
         }
-        if (!$params['expand_content_disabled']) {
+        if ($params['collapsible']) {
             $params['css'] .= ' hb-embed-item--is_collapsible';
         }
 
