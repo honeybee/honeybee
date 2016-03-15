@@ -5,8 +5,9 @@ namespace Honeybee\Infrastructure\Job\Worker;
 use Exception;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Common\Util\JsonToolkit;
-use Honeybee\Infrastructure\Config\ConfigInterface;
+use Honeybee\Infrastructure\Job\JobService;
 use Honeybee\Infrastructure\Job\JobServiceInterface;
+use Honeybee\Infrastructure\Config\ConfigInterface;
 use Honeybee\Infrastructure\Config\Settings;
 
 class Worker implements WorkerInterface
@@ -44,8 +45,6 @@ class Worker implements WorkerInterface
     {
         $exchange_name = $this->config->get('exchange');
         $queue_name = $this->config->get('queue');
-        $wait_exchange_name = $this->config->get('wait_exchange');
-        $wait_queue_name = $this->config->get('wait_queue');
         $job = $this->config->get('job');
 
         if (!$exchange_name) {
@@ -53,12 +52,6 @@ class Worker implements WorkerInterface
         }
         if (!$queue_name) {
             throw new RuntimeError("Missing required 'queue' config setting.");
-        }
-        if (!$wait_exchange_name) {
-            throw new RuntimeError("Missing required 'wait_exchange' config setting.");
-        }
-        if (!$wait_queue_name) {
-            throw new RuntimeError("Missing required 'wait_queue' config setting.");
         }
         if (!$job) {
             throw new RuntimeError("Missing required 'job' config setting.");
@@ -69,21 +62,10 @@ class Worker implements WorkerInterface
     {
         $exchange_name = $this->config->get('exchange');
         $queue_name = $this->config->get('queue');
-        $wait_exchange_name = $this->config->get('wait_exchange');
-        $wait_queue_name = $this->config->get('wait_queue');
         $routing_key = $this->config->get('bindings')[0];
 
-        $this->job_service->initialize(
-            new Settings(
-                [
-                    'exchange' => $exchange_name,
-                    'queue' => $queue_name,
-                    'wait_exchange' => $wait_exchange_name,
-                    'wait_queue' => $wait_queue_name,
-                    'routing_key' => $routing_key
-                ]
-            )
-        );
+        $this->job_service->initialize($exchange_name);
+        $this->job_service->initializeQueue($exchange_name, $queue_name, $routing_key);
 
         $message_callback = function ($message) {
             $this->onJobScheduledForExecution($message);
@@ -99,28 +81,13 @@ class Worker implements WorkerInterface
             $channel = $delivery_info['channel'];
             $delivery_tag = $delivery_info['delivery_tag'];
             $job_state = JsonToolkit::parse($job_message->body);
-            $job = $this->job_service->createJob($this->config->get('job'), $job_state);
+            $job = $this->job_service->createJob($job_state, $this->config->get('job'));
             $job->run();
         } catch (Exception $error) {
-            $retry_interval = $job->getRetryInterval();
-            if (!$job->hasFailed() && $retry_interval) {
-                $this->job_service->retryJob(
-                    $job_state,
-                    new Settings([
-                        'retry_interval' => $retry_interval * 1000, //interval in milliseconds
-                        'wait_exchange' => $this->config->get('wait_exchange'),
-                        'routing_key' => $delivery_info['routing_key']
-                    ])
-                );
+            if ($job->canRetry()) {
+                $this->job_service->retry($job, $delivery_info['exchange'] . JobService::WAIT_SUFFIX);
             } else {
-                $this->job_service->failJob(
-                    $job_state,
-                    new Settings([
-                        'exchange' => $delivery_info['exchange'],
-                        'routing_key' => $delivery_info['routing_key']
-                    ]),
-                    $error
-                );
+                $this->job_service->fail($job, $delivery_info['exchange'], $error);
             }
         }
 

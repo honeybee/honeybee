@@ -58,6 +58,11 @@ class ExecuteEventHandlersJob extends Job
         return $this->strategy->hasFailed($this);
     }
 
+    public function canRetry()
+    {
+        return !$this->hasFailed() && $this->getRetryInterval();
+    }
+
     public function getRetryInterval()
     {
         return $this->strategy->getRetryInterval($this);

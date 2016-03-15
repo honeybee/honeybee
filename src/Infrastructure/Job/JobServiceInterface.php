@@ -6,5 +6,5 @@ use Honeybee\Infrastructure\Config\SettingsInterface;
 
 interface JobServiceInterface
 {
-    public function dispatch(JobInterface $job, SettingsInterface $settings = null);
+    public function dispatch(JobInterface $job, $exchange_name);
 }

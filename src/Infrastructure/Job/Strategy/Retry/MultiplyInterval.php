@@ -2,7 +2,6 @@
 
 namespace Honeybee\Infrastructure\Job\Strategy\Retry;
 
-use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Config\Settings;
 use Honeybee\Infrastructure\Config\SettingsInterface;
 use Honeybee\Infrastructure\Job\JobInterface;
@@ -25,6 +24,7 @@ class MultiplyInterval implements RetryStrategyInterface
     {
         $settings = $settings ?: new Settings;
 
+        //@todo support PHP time strings
         $this->interval = (int)$settings->get('interval', self::DEFAULT_INTERVAL);
         $this->multiplier = (int)$settings->get('multiplier', self::DEFAULT_MULTIPLIER);
         $this->max_interval = (int)$settings->get('max_interval', self::DEFAULT_MAX_INTERVAL);

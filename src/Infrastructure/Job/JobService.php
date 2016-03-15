@@ -6,8 +6,6 @@ use Closure;
 use Exception;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Config\ConfigInterface;
-use Honeybee\Infrastructure\Config\Settings;
-use Honeybee\Infrastructure\Config\SettingsInterface;
 use Honeybee\Infrastructure\DataAccess\Connector\RabbitMqConnector;
 use Honeybee\Infrastructure\Event\FailedJobEvent;
 use Honeybee\Infrastructure\Event\Bus\Transport\JobQueueTransport;
@@ -18,6 +16,18 @@ use Psr\Log\LoggerInterface;
 class JobService implements JobServiceInterface
 {
     const DEFAULT_JOB = 'honeybee.jobs.execute_handlers';
+
+    const DEFAULT_FAILURE_CHANNEL = 'honeybee.events.failed';
+
+    const WAIT_SUFFIX = '.waiting';
+
+    const UNROUTED_SUFFIX = '.unrouted';
+
+    const REPUB_SUFFIX = '.repub';
+
+    const QUEUE_SUFFIX = '.q';
+
+    const REPUB_INTERVAL = 30000; //30 seconds
 
     protected $connector;
 
@@ -45,82 +55,104 @@ class JobService implements JobServiceInterface
         $this->logger = $logger;
     }
 
-    public function initialize(SettingsInterface $settings = null)
+    public function initialize($exchange_name)
     {
-        $settings = $settings ?: new Settings;
-
-        $exchange_name = $settings->get('exchange', $this->config->get('exchange'));
         if (!$exchange_name) {
-            throw new RuntimeError('Missing required "exchange" setting for JobService initialize call.');
+            throw new RuntimeError('Invalid "exchange_name" for JobService initialize call.');
         }
 
-        $wait_exchange_name = $settings->get('wait_exchange', $this->config->get('wait_exchange'));
-        if (!$wait_exchange_name) {
-            throw new RuntimeError('Missing required "wait_exchange" setting for JobService initialize call.');
-        }
-
-        $wait_queue_name = $settings->get('wait_queue', $this->config->get('wait_queue'));
-        if (!$wait_queue_name) {
-            throw new RuntimeError('Missing required "wait_queue" setting for JobService initialize call.');
-        }
-
-        $routing_key = $settings->get('routing_key', $this->config->get('routing_key'));
-        if (!$routing_key) {
-            throw new RuntimeError('Missing required "routing_key" setting for JobService initialize call.');
-        }
+        $wait_exchange_name = $exchange_name . self::WAIT_SUFFIX;
+        $wait_queue_name = $wait_exchange_name . self::QUEUE_SUFFIX;
+        $unrouted_exchange_name = $exchange_name . self::UNROUTED_SUFFIX;
+        $unrouted_queue_name = $unrouted_exchange_name . self::QUEUE_SUFFIX;
+        $repub_exchange_name = $exchange_name . self::REPUB_SUFFIX;
+        $repub_queue_name = $repub_exchange_name . self::QUEUE_SUFFIX;
 
         $this->channel = $this->connector->getConnection()->channel();
-        $this->channel->exchange_declare($exchange_name, 'direct', false, true, false);
-        $this->channel->exchange_declare($wait_exchange_name, 'direct', false, true, false);
+        $this->channel->exchange_declare($unrouted_exchange_name, 'fanout', false, true, false, true); //internal
+        $this->channel->exchange_declare($repub_exchange_name, 'fanout', false, true, false, true); //internal
+        $this->channel->exchange_declare($wait_exchange_name, 'fanout', false, true, false);
+        $this->channel->exchange_declare($exchange_name, 'direct', false, true, false, false, false, [
+            'alternate-exchange' => [ 'S', $unrouted_exchange_name ]
+        ]);
         $this->channel->queue_declare($wait_queue_name, false, true, false, false, false, [
             'x-dead-letter-exchange' => [ 'S', $exchange_name ]
         ]);
-        $this->channel->queue_bind($wait_queue_name, $wait_exchange_name, $routing_key);
+        $this->channel->queue_bind($wait_queue_name, $wait_exchange_name);
+        $this->channel->queue_declare($unrouted_queue_name, false, true, false, false, false, [
+            'x-dead-letter-exchange' => [ 'S', $repub_exchange_name ],
+            'x-message-ttl' => [ 'I', self::REPUB_INTERVAL ]
+        ]);
+        $this->channel->queue_bind($unrouted_queue_name, $unrouted_exchange_name);
+        $this->channel->queue_declare($repub_queue_name, false, true, false, false);
+        $this->channel->queue_bind($repub_queue_name, $repub_exchange_name);
 
-        if ($settings->has('queue')) {
-            $this->initializeQueue($settings);
-        }
+        // the following hacky stuff is to create a shovel to republish unrouted messages back to
+        // the exchange. ideally we should move this to an admin setup procedure.
+        $config = $this->connector->getConfig();
+
+        $url = sprintf(
+            '%s://%s:15672/api/parameters/shovel/%%2f/%s.shovel',
+            $config->get('transport', 'http'),
+            $config->get('host'),
+            $repub_exchange_name
+        );
+
+        $body = [
+            'value' => [
+                'src-uri' => 'amqp://',
+                'src-queue' => $repub_queue_name,
+                'dest-uri' => 'amqp://',
+                'dest-exchange' => $exchange_name,
+                'add-forward-headers' => false,
+                'ack-mode' => 'on-confirm',
+                'delete-after' => 'never'
+            ]
+        ];
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [ 'content-type:application/json' ]);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($body));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 1);
+        curl_setopt($ch, CURLOPT_USERPWD, $config->get('user') . ':' . $config->get('password'));
+        curl_exec($ch);
+        curl_close($ch);
     }
 
-    protected function initializeQueue(SettingsInterface $settings)
+    public function initializeQueue($exchange_name, $queue_name, $routing_key)
     {
-        $queue_name = $settings->get('queue');
         if (!$queue_name) {
-            throw new RuntimeError('Missing required "queue" setting for JobService initializeQueue call.');
+            throw new RuntimeError('Invalid "queue" setting for JobService initializeQueue call.');
         }
 
-        $exchange_name = $settings->get('exchange');
         if (!$exchange_name) {
-            throw new RuntimeError('Missing required "exchange" setting for JobService initializeQueue call.');
+            throw new RuntimeError('Invalid "exchange" setting for JobService initializeQueue call.');
         }
 
-        $routing_key = $settings->get('routing_key');
         if (!$routing_key) {
-            throw new RuntimeError('Missing required "routing_key" setting for JobService initializeQueue call.');
+            throw new RuntimeError('Invalid "routing_key" setting for JobService initializeQueue call.');
         }
 
         $this->channel->queue_declare($queue_name, false, true, false, false);
         $this->channel->queue_bind($queue_name, $exchange_name, $routing_key);
     }
 
-    public function dispatch(JobInterface $job, SettingsInterface $settings = null)
+    public function dispatch(JobInterface $job, $exchange_name)
     {
-        // the service is initialized by the transport so we don't know which channels are bound
-        // to the transport until the message comes in on that channel.
-        // @todo find a way to not have to initialize queues on every message dispatch.
-        $this->initializeQueue($settings);
-
         $message_payload = json_encode($job->toArray());
         $message = new AMQPMessage($message_payload, [ 'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT ]);
 
-        $exchange_name = $settings->get('exchange', $this->config->get('exchange'));
-        $this->channel->basic_publish($message, $exchange_name, $settings->get('routing_key'));
+        $routing_key = $job->getSettings()->get('routing_key');
+        $this->channel->basic_publish($message, $exchange_name, $routing_key);
     }
 
     public function consume($queue_name, Closure $message_callback)
     {
         if (!$this->channel) {
-            throw new RuntimeError('Channel has not been initialized prior to consume.');
+            throw new RuntimeError('Channel has not been initialized prior to consumption.');
         }
 
         $this->channel->basic_qos(null, 1, null);
@@ -129,53 +161,51 @@ class JobService implements JobServiceInterface
         return $this->channel;
     }
 
-    public function retryJob(array $job_state, SettingsInterface $settings)
+    public function retry(JobInterface $job, $exchange_name)
     {
-        if (!$settings->has('retry_interval')) {
-            throw new RuntimeError('Retry interval has not been specified for job retry.');
-        }
-
+        $job_state = $job->toArray();
         $job_state['meta_data']['retries'] = isset($job_state['meta_data']['retries'])
             ? ++$job_state['meta_data']['retries'] : 1;
-        $message_payload = json_encode($job_state);
+
         $message = new AMQPMessage(
-            $message_payload,
+            json_encode($job_state),
             [
                 'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT,
-                'expiration' => $settings->get('retry_interval')
+                'expiration' => $job->getRetryInterval() * 1000
             ]
         );
 
-        $wait_exchange_name = $settings->get('wait_exchange', $this->config->get('wait_exchange'));
-        $this->channel->basic_publish($message, $wait_exchange_name, $settings->get('routing_key'));
+        $routing_key = $job->getSettings()->get('routing_key');
+        $this->channel->basic_publish($message, $exchange_name, $routing_key);
     }
 
-    public function failJob(array $job_state, SettingsInterface $settings, Exception $error)
+    public function fail(JobInterface $job, $exchange_name, Exception $error)
     {
         $failed_job = $this->createJob(
-            self::DEFAULT_JOB,
             [
                 'event' => new FailedJobEvent([
-                    'failed_job_state' => $job_state,
+                    'failed_job_state' => $job->toArray(),
                     'meta_data' => [
                         'error_message' => $error->getMessage(),
                         'error_trace' => $error->getTraceAsString()
                     ]
                 ]),
-                'channel' => JobQueueTransport::DEFAULT_FAILURE_CHANNEL,
-                'subscription_index' => 0
+                'channel' => self::DEFAULT_FAILURE_CHANNEL
             ]
         );
-        $message_payload = json_encode($failed_job->toArray());
-        $message = new AMQPMessage($message_payload, [ 'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT ]);
 
-        $exchange_name = $settings->get('exchange', $this->config->get('exchange'));
-        $this->channel->basic_publish($message, $exchange_name, $settings->get('routing_key'));
+        $message = new AMQPMessage(
+            json_encode($failed_job->toArray()),
+            [ 'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT ]
+        );
+
+        $routing_key = $job->getSettings()->get('routing_key');
+        $this->channel->basic_publish($message, $exchange_name, $routing_key);
     }
 
-    public function createJob($job_name, array $job_state)
+    public function createJob(array $job_state, $job_name = null)
     {
         $job_name = $job_name ?: self::DEFAULT_JOB;
-        return $this->job_factory->createJob($job_name, $job_state);
+        return $this->job_factory->create($job_name, $job_state);
     }
 }

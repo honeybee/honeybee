@@ -22,7 +22,7 @@ class JobFactory
         $this->config = $config;
     }
 
-    public function createJob($job_name, array $job_state)
+    public function create($job_name, array $job_state)
     {
         $job_config = $this->config->get($job_name);
 

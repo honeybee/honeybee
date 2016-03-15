@@ -34,7 +34,7 @@ class EventBus extends Object implements EventBusInterface
             );
         }
 
-        $subscription = $this->getSubscriptions($channel_name)->getItem($subscription_index);
+        $subscription = $this->getSubscriptions($channel_name)->getItem((int)$subscription_index);
         $is_active = false;
         if ($subscription->isActivated()) {
             foreach ($subscription->getEventFilters() as $filter) {
