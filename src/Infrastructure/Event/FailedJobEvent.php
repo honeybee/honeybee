@@ -3,50 +3,32 @@
 namespace Honeybee\Infrastructure\Event;
 
 use Assert\Assertion;
-use Trellis\Common\Object;
+use Ramsey\Uuid\Uuid;
 
 class FailedJobEvent extends Event
 {
-    protected $job_state;
+    protected $failed_job_state;
 
-    protected $delivery_info;
-
-    protected $message_headers;
-
-    public function getJobState()
+    public function __construct(array $state = [])
     {
-        return $this->job_state;
+        $state['uuid'] = Uuid::uuid4()->toString();
+
+        parent::__construct($state);
     }
 
-    public function getDeliveryInfo()
+    public function getFailedJobState()
     {
-        return $this->delivery_info;
-    }
-
-    public function getMessageHeaders()
-    {
-        return $this->message_headers;
+        return $this->failed_job_state;
     }
 
     public function getType()
     {
-        return $this->job_state['event']['@type'] . '.failed';
+        return $this->failed_job_state['event']['@type'] . '.failed';
     }
 
     protected function guardRequiredState()
     {
-        Assertion::isArray($this->job_state);
-        Assertion::isArray($this->delivery_info);
-        Assertion::isArray($this->message_headers);
-    }
-
-    public function __toString()
-    {
-        return sprintf(
-            "[Job State]\n%s\n[Delivery Info]\n%s\n[Message Headers]\n%s",
-            print_r($this->job_state, true),
-            print_r($this->delivery_info, true),
-            print_r($this->message_headers, true)
-        );
+        parent::guardRequiredState();
+        Assertion::isArray($this->failed_job_state);
     }
 }

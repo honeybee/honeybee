@@ -9,4 +9,6 @@ interface EventSubscriptionInterface
     public function getEventHandlers();
 
     public function getEventTransport();
+
+    public function getEventStrategy();
 }

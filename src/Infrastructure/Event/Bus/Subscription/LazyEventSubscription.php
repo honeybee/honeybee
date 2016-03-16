@@ -8,25 +8,28 @@ use Honeybee\Infrastructure\Event\Bus\Subscription\EventFilterList;
 use Honeybee\Infrastructure\Event\Bus\Transport\EventTransportInterface;
 use Honeybee\Infrastructure\Event\EventHandlerInterface;
 use Honeybee\Infrastructure\Event\EventHandlerList;
+use Honeybee\Infrastructure\Config\SettingsInterface;
 
 class LazyEventSubscription extends EventSubscription
 {
-    protected $events_handlers_callback;
+    protected $event_handlers_callback;
 
-    protected $events_filters_callback;
+    protected $event_filters_callback;
 
     protected $event_transport_callback;
 
     public function __construct(
-        Closure $events_handlers_callback,
-        Closure $events_filters_callback,
+        Closure $event_handlers_callback,
+        Closure $event_filters_callback,
         Closure $event_transport_callback,
+        SettingsInterface $settings,
         $activated
     ) {
         $this->event_transport_callback = $event_transport_callback;
-        $this->events_filters_callback = $events_filters_callback;
-        $this->events_handlers_callback = $events_handlers_callback;
-        $this->activated = $activated;
+        $this->event_filters_callback = $event_filters_callback;
+        $this->event_handlers_callback = $event_handlers_callback;
+        $this->settings = $settings;
+        $this->activated = (bool)$activated;
     }
 
     public function getEventHandlers()
@@ -55,7 +58,7 @@ class LazyEventSubscription extends EventSubscription
 
     protected function createEventHandlers()
     {
-        $create_function = $this->events_handlers_callback;
+        $create_function = $this->event_handlers_callback;
         $event_handlers = $create_function();
 
         if (!$event_handlers instanceof EventHandlerList) {
@@ -73,7 +76,7 @@ class LazyEventSubscription extends EventSubscription
 
     protected function createEventFilters()
     {
-        $create_function = $this->events_filters_callback;
+        $create_function = $this->event_filters_callback;
         $event_filters = $create_function();
 
         if (!$event_filters instanceof EventFilterList) {

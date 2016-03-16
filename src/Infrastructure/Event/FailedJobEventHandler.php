@@ -12,11 +12,13 @@ class FailedJobEventHandler extends EventHandler
             throw new RuntimeError(sprintf('Unexpected failed job event type "%s"', get_class($event)));
         }
 
+        //@todo improve trace output
         $this->logger->error(
-            "[{method}] The following message failed to be handled:\n{trace}",
+            "[{method}] The following message failed to be handled:\n[Job]\n{state}\n[Error]\n{error}",
             [
                 'method' => __METHOD__,
-                'trace' => (string)$event
+                'state' => print_r($event->getFailedJobState(), true),
+                'error' => print_r($event->getMetaData(), true)
             ]
         );
 

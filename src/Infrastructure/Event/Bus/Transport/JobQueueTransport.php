@@ -2,46 +2,45 @@
 
 namespace Honeybee\Infrastructure\Event\Bus\Transport;
 
+use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Event\EventInterface;
 use Honeybee\Infrastructure\Config\Settings;
-use Honeybee\Infrastructure\Job\Bundle\ExecuteEventHandlersJob;
+use Honeybee\Infrastructure\Config\SettingsInterface;
 use Honeybee\Infrastructure\Job\JobServiceInterface;
 
 class JobQueueTransport extends EventTransport
 {
-    const DEFAULT_MSG_ROUTE = 'default';
-
-    protected $exchange;
-
-    protected $msg_route;
+    const DEFAULT_EVENT_EXCHANGE = 'honeybee.domain.events';
 
     protected $job_service;
 
-    public function __construct($name, $exchange, JobServiceInterface $job_service, $msg_route = null)
+    protected $exchange_name;
+
+    public function __construct($name, JobServiceInterface $job_service, SettingsInterface $settings = null)
     {
         parent::__construct($name);
 
-        $this->exchange = $exchange;
-        $this->msg_route = $msg_route ?: self::DEFAULT_MSG_ROUTE;
+        $settings = $settings ?: new Settings;
+
+        $this->exchange_name = $settings->get('exchange', self::DEFAULT_EVENT_EXCHANGE);
+
         $this->job_service = $job_service;
+        $this->job_service->initialize($this->exchange_name);
     }
 
-    public function send($channel_name, EventInterface $event, $subscription_index)
+    public function send($channel_name, EventInterface $event, $subscription_index, SettingsInterface $settings = null)
     {
-        $job_state = [
-            ExecuteEventHandlersJob::OBJECT_TYPE => ExecuteEventHandlersJob::CLASS,
-            'event' => $event,
-            'channel' => $channel_name,
-            'subscription_index' => $subscription_index
-        ];
-        $this->job_service->dispatch(
-            $this->job_service->createJob($job_state),
-            new Settings(
-                [
-                    'routing_key' => $this->msg_route,
-                    'exchange' => $this->exchange
-                ]
-            )
+        $settings = $settings ?: new Settings;
+
+        $job = $this->job_service->createJob(
+            [
+                'event' => $event,
+                'channel' => $channel_name,
+                'subscription_index' => $subscription_index
+            ],
+            $settings->get('job')
         );
+
+        $this->job_service->dispatch($job, $this->exchange_name);
     }
 }

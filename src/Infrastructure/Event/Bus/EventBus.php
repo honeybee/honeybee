@@ -34,7 +34,7 @@ class EventBus extends Object implements EventBusInterface
             );
         }
 
-        $subscription = $this->getSubscriptions($channel_name)->getItem($subscription_index);
+        $subscription = $this->getSubscriptions($channel_name)->getItem((int)$subscription_index);
         $is_active = false;
         if ($subscription->isActivated()) {
             foreach ($subscription->getEventFilters() as $filter) {
@@ -77,7 +77,12 @@ class EventBus extends Object implements EventBusInterface
                 }
 
                 if ($is_active) {
-                    $subscription->getEventTransport()->send($channel_name, $event, $subscription_index);
+                    $subscription->getEventTransport()->send(
+                        $channel_name,
+                        $event,
+                        $subscription_index,
+                        $subscription->getSettings()
+                    );
                 }
                 $subscription_index++;
             }
