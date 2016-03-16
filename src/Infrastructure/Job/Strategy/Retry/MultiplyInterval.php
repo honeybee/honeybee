@@ -43,6 +43,6 @@ class MultiplyInterval implements RetryStrategyInterface
             }
         }
 
-        return $interval;
+        return $interval * 1000; //milliseconds
     }
 }

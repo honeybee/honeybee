@@ -124,16 +124,16 @@ class JobService implements JobServiceInterface
 
     public function initializeQueue($exchange_name, $queue_name, $routing_key)
     {
-        if (!$queue_name) {
-            throw new RuntimeError('Invalid "queue" setting for JobService initializeQueue call.');
+        if (!$exchange_name) {
+            throw new RuntimeError('Invalid "exchange_name" for JobService initializeQueue call.');
         }
 
-        if (!$exchange_name) {
-            throw new RuntimeError('Invalid "exchange" setting for JobService initializeQueue call.');
+        if (!$queue_name) {
+            throw new RuntimeError('Invalid "queue_name" for JobService initializeQueue call.');
         }
 
         if (!$routing_key) {
-            throw new RuntimeError('Invalid "routing_key" setting for JobService initializeQueue call.');
+            throw new RuntimeError('Invalid "routing_key" for JobService initializeQueue call.');
         }
 
         $this->channel->queue_declare($queue_name, false, true, false, false);
@@ -171,7 +171,7 @@ class JobService implements JobServiceInterface
             json_encode($job_state),
             [
                 'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT,
-                'expiration' => $job->getRetryInterval() * 1000
+                'expiration' => $job->getRetryInterval()
             ]
         );
 
@@ -207,5 +207,10 @@ class JobService implements JobServiceInterface
     {
         $job_name = $job_name ?: self::DEFAULT_JOB;
         return $this->job_factory->create($job_name, $job_state);
+    }
+
+    public function getJob($job_name)
+    {
+        return $this->job_factory->getConfig($job_name);
     }
 }

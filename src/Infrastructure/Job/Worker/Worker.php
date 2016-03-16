@@ -8,7 +8,6 @@ use Honeybee\Common\Util\JsonToolkit;
 use Honeybee\Infrastructure\Job\JobService;
 use Honeybee\Infrastructure\Job\JobServiceInterface;
 use Honeybee\Infrastructure\Config\ConfigInterface;
-use Honeybee\Infrastructure\Config\Settings;
 
 class Worker implements WorkerInterface
 {
@@ -44,15 +43,12 @@ class Worker implements WorkerInterface
     protected function validateSetup()
     {
         $exchange_name = $this->config->get('exchange');
-        $queue_name = $this->config->get('queue');
         $job = $this->config->get('job');
 
         if (!$exchange_name) {
             throw new RuntimeError("Missing required 'exchange' config setting.");
         }
-        if (!$queue_name) {
-            throw new RuntimeError("Missing required 'queue' config setting.");
-        }
+
         if (!$job) {
             throw new RuntimeError("Missing required 'job' config setting.");
         }
@@ -61,8 +57,10 @@ class Worker implements WorkerInterface
     protected function connectChannel()
     {
         $exchange_name = $this->config->get('exchange');
-        $queue_name = $this->config->get('queue');
-        $routing_key = $this->config->get('bindings')[0];
+        $job_name = $this->config->get('job');
+        $job_settings = $this->job_service->getJob($job_name)->get('settings');
+        $queue_name = $job_settings->get('queue');
+        $routing_key = $job_settings->get('routing_key');
 
         $this->job_service->initialize($exchange_name);
         $this->job_service->initializeQueue($exchange_name, $queue_name, $routing_key);

@@ -24,11 +24,7 @@ class JobFactory
 
     public function create($job_name, array $job_state)
     {
-        $job_config = $this->config->get($job_name);
-
-        if (!$job_config) {
-            throw new RuntimeError(sprintf('Configuration for job "%s" was not found.', $job_name));
-        }
+        $job_config = $this->getConfig($job_name);
 
         $job_state[Job::OBJECT_TYPE] = $job_config['class'];
         return $this->service_locator->createEntity(
@@ -39,6 +35,17 @@ class JobFactory
                 ':strategy' => $this->buildJobStrategy($job_config['strategy'])
             ]
         );
+    }
+
+    public function getConfig($job_name)
+    {
+        $job_config = $this->config->get($job_name);
+
+        if (!$job_config) {
+            throw new RuntimeError(sprintf('Configuration for job "%s" was not found.', $job_name));
+        }
+
+        return $job_config;
     }
 
     protected function buildJobStrategy(SettingsInterface $strategy_config)
