@@ -210,7 +210,7 @@ class JobService implements JobServiceInterface
         $strategy_config = $job_config['strategy'];
         $service_locator = $this->service_locator;
 
-        $strategy_callback = function(JobInterface $job) use($service_locator, $strategy_config) {
+        $strategy_callback = function (JobInterface $job) use ($service_locator, $strategy_config) {
             $strategy_implementor = $strategy_config['implementor'];
 
             $retry_strategy = $service_locator->createEntity(
