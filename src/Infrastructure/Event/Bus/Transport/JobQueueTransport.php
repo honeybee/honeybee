@@ -2,7 +2,6 @@
 
 namespace Honeybee\Infrastructure\Event\Bus\Transport;
 
-use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Event\EventInterface;
 use Honeybee\Infrastructure\Config\Settings;
 use Honeybee\Infrastructure\Config\SettingsInterface;

@@ -82,7 +82,7 @@ class Worker implements WorkerInterface
             $job = $this->job_service->createJob($job_state, $this->config->get('job'));
             $job->run();
         } catch (Exception $error) {
-            if ($job->canRetry()) {
+            if ($job->getStrategy()->canRetry()) {
                 $this->job_service->retry($job, $delivery_info['exchange'] . JobService::WAIT_SUFFIX);
             } else {
                 $this->job_service->fail($job, $delivery_info['exchange'], $error);

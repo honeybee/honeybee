@@ -4,7 +4,6 @@ namespace Honeybee\Infrastructure\Job\Strategy;
 
 use Honeybee\Infrastructure\Job\Strategy\Retry\RetryStrategyInterface;
 use Honeybee\Infrastructure\Job\Strategy\Failure\FailureStrategyInterface;
-use Honeybee\Infrastructure\Job\JobInterface;
 
 class JobStrategy
 {
@@ -20,13 +19,18 @@ class JobStrategy
         $this->failure_strategy = $failure_strategy;
     }
 
-    public function getRetryInterval(JobInterface $job)
+    public function getRetryInterval()
     {
-        return $this->retry_strategy->getInterval($job);
+        return $this->retry_strategy->getInterval();
     }
 
-    public function hasFailed(JobInterface $job)
+    public function hasFailed()
     {
-        return $this->failure_strategy->hasFailed($job);
+        return $this->failure_strategy->hasFailed();
+    }
+
+    public function canRetry()
+    {
+        return !$this->hasFailed() && $this->getRetryInterval();
     }
 }

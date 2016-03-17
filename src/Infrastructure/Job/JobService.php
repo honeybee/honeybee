@@ -172,7 +172,7 @@ class JobService implements JobServiceInterface
             json_encode($job_state),
             [
                 'delivery_mode' => AMQPMessage::DELIVERY_MODE_PERSISTENT,
-                'expiration' => $job->getRetryInterval()
+                'expiration' => $job->getStrategy()->getRetryInterval()
             ]
         );
 
@@ -207,15 +207,32 @@ class JobService implements JobServiceInterface
     public function createJob(array $job_state, $job_name = self::DEFAULT_JOB)
     {
         $job_config = $this->getJob($job_name);
+        $strategy_config = $job_config['strategy'];
+        $service_locator = $this->service_locator;
 
-        $job_state[Job::OBJECT_TYPE] = $job_config['class'];
-        //merge state
+        $strategy_callback = function(JobInterface $job) use($service_locator, $strategy_config) {
+            $strategy_implementor = $strategy_config['implementor'];
+
+            $retry_strategy = $service_locator->createEntity(
+                $strategy_config['retry']['implementor'],
+                [ ':job' => $job, ':settings' => $strategy_config['retry']['settings'] ]
+            );
+
+            $failure_strategy = $service_locator->createEntity(
+                $strategy_config['failure']['implementor'],
+                [ ':job' => $job, ':settings' => $strategy_config['failure']['settings'] ]
+            );
+
+            return new $strategy_implementor($retry_strategy, $failure_strategy);
+        };
+
         return $this->service_locator->createEntity(
             $job_config['class'],
             [
-                ':state' => $job_state,
-                ':settings' => $job_config['settings'],
-                ':strategy' => $this->buildJobStrategy($job_config['strategy'])
+                // job class cannot be overridden by state
+                ':state' => [ Job::OBJECT_TYPE => $job_config['class'] ] + $job_state,
+                ':strategy_callback' => $strategy_callback,
+                ':settings' => $job_config['settings']
             ]
         );
     }
@@ -234,22 +251,5 @@ class JobService implements JobServiceInterface
         }
 
         return $job_config;
-    }
-
-    protected function buildJobStrategy(SettingsInterface $strategy_config)
-    {
-        $strategy_implementor = $strategy_config['implementor'];
-
-        $retry_strategy = $this->service_locator->createEntity(
-            $strategy_config['retry']['implementor'],
-            [ ':settings' => $strategy_config['retry']['settings'] ]
-        );
-
-        $failure_strategy = $this->service_locator->createEntity(
-            $strategy_config['failure']['implementor'],
-            [ ':settings' => $strategy_config['failure']['settings'] ]
-        );
-
-        return new $strategy_implementor($retry_strategy, $failure_strategy);
     }
 }

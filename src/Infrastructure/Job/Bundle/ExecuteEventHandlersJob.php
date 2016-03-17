@@ -2,6 +2,7 @@
 
 namespace Honeybee\Infrastructure\Job\Bundle;
 
+use Closure;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Event\Bus\EventBusInterface;
 use Honeybee\Infrastructure\Event\EventInterface;
@@ -25,18 +26,20 @@ class ExecuteEventHandlersJob extends Job
 
     protected $strategy;
 
+    protected $strategy_callback;
+
     protected $settings;
 
     public function __construct(
-        EventBusInterface $event_bus,
-        JobStrategy $strategy,
         array $state,
+        EventBusInterface $event_bus,
+        Closure $strategy_callback,
         SettingsInterface $settings = null
     ) {
         parent::__construct($state);
 
         $this->event_bus = $event_bus;
-        $this->strategy = $strategy;
+        $this->strategy_callback = $strategy_callback;
         $this->settings = $settings ?: new Settings;
     }
 
@@ -46,26 +49,19 @@ class ExecuteEventHandlersJob extends Job
             throw new RuntimeError('Missing required channel parameter.');
         }
 
-        if ($this->hasFailed()) {
+        if ($this->getStrategy()->hasFailed()) {
             throw new RuntimeError('Event is no longer valid according to strategy.');
         }
 
         $this->event_bus->executeHandlers($this->channel, $this->event, $this->subscription_index);
     }
 
-    public function hasFailed()
+    public function getStrategy()
     {
-        return $this->strategy->hasFailed($this);
-    }
-
-    public function canRetry()
-    {
-        return !$this->hasFailed() && $this->getRetryInterval();
-    }
-
-    public function getRetryInterval()
-    {
-        return $this->strategy->getRetryInterval($this);
+        if (!$this->strategy) {
+            $this->strategy = $this->createStrategy();
+        }
+        return $this->strategy;
     }
 
     public function getEvent()
@@ -76,6 +72,24 @@ class ExecuteEventHandlersJob extends Job
     public function getSettings()
     {
         return $this->settings;
+    }
+
+    protected function createStrategy()
+    {
+        $create_function = $this->strategy_callback;
+        $strategy = $create_function($this);
+
+        if (!$strategy instanceof JobStrategy) {
+            throw new RuntimeError(
+                sprintf(
+                    "Invalid strategy type given: %s, expected instance of %s",
+                    get_class($strategy),
+                    JobStrategy::CLASS
+                )
+            );
+        }
+
+        return $strategy;
     }
 
     protected function setEvent($event_state)

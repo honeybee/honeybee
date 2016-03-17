@@ -2,20 +2,26 @@
 
 namespace Honeybee\Infrastructure\Job\Strategy\Retry;
 
-use Honeybee\Infrastructure\Job\Strategy\Retry\RetryStrategyInterface;
 use Honeybee\Infrastructure\Job\Strategy\Failure\FailureStrategyInterface;
 use Honeybee\Infrastructure\Job\JobInterface;
 
 class NoRetry implements RetryStrategyInterface, FailureStrategyInterface
 {
-    public function getInterval(JobInterface $job)
+    protected $job;
+
+    public function __construct(JobInterface $job)
+    {
+        $this->job = $job;
+    }
+
+    public function getInterval()
     {
         return false;
     }
 
-    public function hasFailed(JobInterface $job)
+    public function hasFailed()
     {
-        $meta_data = $job->getMetaData();
+        $meta_data = $this->job->getMetaData();
         return isset($meta_data['retries']);
     }
 }
