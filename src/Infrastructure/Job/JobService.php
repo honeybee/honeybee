@@ -6,6 +6,7 @@ use Closure;
 use Exception;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Config\ConfigInterface;
+use Honeybee\Infrastructure\Config\SettingsInterface;
 use Honeybee\Infrastructure\DataAccess\Connector\RabbitMqConnector;
 use Honeybee\Infrastructure\Event\FailedJobEvent;
 use Honeybee\Infrastructure\Event\Bus\Transport\JobQueueTransport;
@@ -33,7 +34,7 @@ class JobService implements JobServiceInterface
 
     protected $service_locator;
 
-    protected $job_factory;
+    protected $job_map;
 
     protected $config;
 
@@ -44,13 +45,13 @@ class JobService implements JobServiceInterface
     public function __construct(
         RabbitMqConnector $connector,
         ServiceLocatorInterface $service_locator,
-        JobFactory $job_factory,
+        JobMap $job_map,
         ConfigInterface $config,
         LoggerInterface $logger
     ) {
         $this->config = $config;
         $this->service_locator = $service_locator;
-        $this->job_factory = $job_factory;
+        $this->job_map = $job_map;
         $this->connector = $connector;
         $this->logger = $logger;
     }
@@ -203,14 +204,52 @@ class JobService implements JobServiceInterface
         $this->channel->basic_publish($message, $exchange_name, $routing_key);
     }
 
-    public function createJob(array $job_state, $job_name = null)
+    public function createJob(array $job_state, $job_name = self::DEFAULT_JOB)
     {
-        $job_name = $job_name ?: self::DEFAULT_JOB;
-        return $this->job_factory->create($job_name, $job_state);
+        $job_config = $this->getJob($job_name);
+
+        $job_state[Job::OBJECT_TYPE] = $job_config['class'];
+        //merge state
+        return $this->service_locator->createEntity(
+            $job_config['class'],
+            [
+                ':state' => $job_state,
+                ':settings' => $job_config['settings'],
+                ':strategy' => $this->buildJobStrategy($job_config['strategy'])
+            ]
+        );
+    }
+
+    public function getJobMap()
+    {
+        return $this->job_map;
     }
 
     public function getJob($job_name)
     {
-        return $this->job_factory->getConfig($job_name);
+        $job_config = $this->job_map->get($job_name);
+
+        if (!$job_config) {
+            throw new RuntimeError(sprintf('Configuration for job "%s" was not found.', $job_name));
+        }
+
+        return $job_config;
+    }
+
+    protected function buildJobStrategy(SettingsInterface $strategy_config)
+    {
+        $strategy_implementor = $strategy_config['implementor'];
+
+        $retry_strategy = $this->service_locator->createEntity(
+            $strategy_config['retry']['implementor'],
+            [ ':settings' => $strategy_config['retry']['settings'] ]
+        );
+
+        $failure_strategy = $this->service_locator->createEntity(
+            $strategy_config['failure']['implementor'],
+            [ ':settings' => $strategy_config['failure']['settings'] ]
+        );
+
+        return new $strategy_implementor($retry_strategy, $failure_strategy);
     }
 }

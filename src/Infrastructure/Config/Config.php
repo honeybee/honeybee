@@ -160,6 +160,6 @@ abstract class Config implements ConfigInterface
      */
     protected function getRequiredSettings()
     {
-        return array();
+        return [];
     }
 }
