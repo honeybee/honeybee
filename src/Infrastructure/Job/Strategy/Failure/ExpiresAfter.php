@@ -22,6 +22,10 @@ class ExpiresAfter implements FailureStrategyInterface
 
         $this->job = $job;
         $this->interval = $settings->get('interval');
+
+        if (!(new DateTimeImmutable('@0'))->add(DateInterval::createFromDateString($this->interval))->getTimestamp()) {
+            throw new RuntimeError('ExpiresAfter strategy "interval" setting should be a valid time string.');
+        }
     }
 
     public function hasFailed()

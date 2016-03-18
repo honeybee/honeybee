@@ -48,8 +48,8 @@ class MultiplyInterval implements RetryStrategyInterface
                 $interval = min(
                     $interval,
                     is_numeric($this->max_interval)
-                        ? $this->max_interval
-                        : $zero_date->add(DateInterval::createFromDateString($this->max_interval))->getTimestamp()
+                    ? $this->max_interval
+                    : $zero_date->add(DateInterval::createFromDateString($this->max_interval))->getTimestamp()
                 );
             }
         }
