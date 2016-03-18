@@ -38,7 +38,7 @@ class MultiplyInterval implements RetryStrategyInterface
 
         // assume settings are seconds if provided as integers
         $zero_date = new DateTimeImmutable('@0');
-        $interval = is_int($this->interval)
+        $interval = is_numeric($this->interval)
             ? $this->interval
             : $zero_date->add(DateInterval::createFromDateString($this->interval))->getTimestamp();
 
@@ -47,13 +47,13 @@ class MultiplyInterval implements RetryStrategyInterface
             if ($this->max_interval) {
                 $interval = min(
                     $interval,
-                    is_int($this->max_interval)
+                    is_numeric($this->max_interval)
                         ? $this->max_interval
                         : $zero_date->add(DateInterval::createFromDateString($this->max_interval))->getTimestamp()
                 );
             }
         }
 
-        return $interval * 1000; //milliseconds
+        return (int)($interval * 1000); //milliseconds
     }
 }
