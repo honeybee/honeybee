@@ -39,7 +39,6 @@ abstract class ElasticsearchStorageWriter extends ElasticsearchStorage implement
             $this->connector->getConnection()->get(array_merge($data, $this->getParameters('get')));
 
             $this->connector->getConnection()->delete(array_merge($data, $this->getParameters('delete')));
-
         } catch (Missing404Exception $error) {
             error_log(__METHOD__ . ' - ' . $error->getMessage());
         }
