@@ -27,7 +27,7 @@ class MultiplyInterval implements RetryStrategyInterface
     {
         $this->job = $job;
         $this->interval = $settings->get('interval', self::DEFAULT_INTERVAL);
-        $this->multiplier = $settings->get('multiplier', self::DEFAULT_MULTIPLIER);
+        $this->multiplier = (int)$settings->get('multiplier', self::DEFAULT_MULTIPLIER);
         $this->max_interval = $settings->get('max_interval', self::DEFAULT_MAX_INTERVAL);
     }
 
