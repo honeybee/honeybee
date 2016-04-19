@@ -9,17 +9,11 @@ use Trellis\Common\Object;
 
 abstract class Command extends Object implements CommandInterface
 {
-    /**
-     * @CommandBuilder::OPTIONAL
-     */
     protected $uuid;
 
-    /**
-     * @CommandBuilder::OPTIONAL
-     */
     protected $meta_data;
 
-    public function __construct(array $state = array())
+    public function __construct(array $state = [])
     {
         $this->meta_data = [];
         $this->uuid = Uuid::uuid4()->toString();
@@ -51,7 +45,7 @@ abstract class Command extends Object implements CommandInterface
             throw new RuntimeError(
                 sprintf(
                     'A concrete command class must be made up of at least four namespace parts: ' .
-                    '(vendor, package, type, event), in order to support auto-type generation.' .
+                    '(vendor, package, type, command), in order to support auto-type generation.' .
                     ' The given command-class %s only has %d parts.',
                     static::CLASS,
                     count($fqcn_parts)

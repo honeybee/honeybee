@@ -53,7 +53,7 @@ class AggregateRootTypeTest extends TestCase
                 'aggregate_root_type' => new AuthorType($this->getDefaultStateMachine()),
                 'expected_attribute_names' => array_merge(
                     $honeybee_default_attributes,
-                    [ 'firstname', 'lastname', 'blurb' ]
+                    [ 'firstname', 'lastname', 'blurb', 'products', 'books' ]
                 )
             ],
             [

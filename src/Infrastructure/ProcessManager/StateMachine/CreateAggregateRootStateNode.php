@@ -2,11 +2,16 @@
 
 namespace Honeybee\Infrastructure\ProcessManager\StateMachine;
 
+use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\ProcessManager\ProcessStateInterface;
+use Honeybee\Infrastructure\Command\CommandBuilderList;
 use Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\AddEmbeddedEntityCommand;
 use Trellis\Runtime\Attribute\EmbeddedEntityList\EmbeddedEntityListAttribute;
 use Trellis\Runtime\Attribute\EntityReferenceList\EntityReferenceListAttribute;
 use Workflux\StatefulSubjectInterface;
+use Honeybee\Model\Command\AggregateRootCommandBuilder;
+use Honeybee\Model\Command\EmbeddedEntityCommandBuilder;
+use Shrink0r\Monatic\Success;
 
 class CreateAggregateRootStateNode extends AggregateRootCommandStateNode
 {
@@ -33,87 +38,29 @@ class CreateAggregateRootStateNode extends AggregateRootCommandStateNode
 
     protected function createCommand(ProcessStateInterface $process_state)
     {
-        $command_class = $this->getCommandImplementor($process_state);
         $aggregate_root_type = $this->getAggregateRootType();
-        $command_payload = $this->getCommandPayload($process_state);
+        $payload = $this->getCommandPayload($process_state);
+        $command_class = $this->getCommandImplementor($process_state);
 
-        return new $command_class([
-            'aggregate_root_type' => get_class($aggregate_root_type),
-            'values' => $command_payload,
-            'embedded_entity_commands' => $this->buildEmbedCommandList($process_state, $command_payload),
-            'meta_data' => [
+        $result = (new AggregateRootCommandBuilder($aggregate_root_type, $command_class))
+            ->withValues($payload)
+            ->withMetaData([
                 'process_name' => $process_state->getProcessName(),
                 'process_uuid' => $process_state->getUuid()
-            ]
-        ]);
-    }
+            ])
+            ->build();
 
-    protected function buildEmbedCommandList(ProcessStateInterface $process_state, $command_payload = [])
-    {
-        return array_merge(
-            $this->buildReferenceCommands($process_state, $process_state->getPayload()),
-            $this->buildEmbedCommands($process_state, $command_payload)
-        );
-    }
-
-    protected function buildReferenceCommands(ProcessStateInterface $process_state, array $payload)
-    {
-        $buildCommand = function ($type, $attribute, $position, $cmd_payload) {
-            return new AddEmbeddedEntityCommand([
-                'embedded_entity_type' => $type,
-                'parent_attribute_name' => $attribute,
-                'position' => $position,
-                'values' => $cmd_payload
-            ]);
-        };
-
-        $reference_commands = [];
-        foreach ((array)$this->options->get('link_relations', []) as $attribute_name => $payload_key) {
-            $pos = 0;
-            if (!is_string($payload_key)) { // dealing with a params instance
-                foreach ((array)$payload_key as $reference_key) {
-                    $command_values = $payload[$reference_key][0];
-                    $reference_type = $command_values['@type'];
-                    unset($command_values['@type']);
-                    $reference_commands[] = $buildCommand($reference_type, $attribute_name, $pos++, $command_values);
-                }
-            } elseif (array_key_exists($payload_key, $payload)) {
-                $command_values = $payload[$payload_key][0];
-                $reference_type = $command_values['@type'];
-                unset($command_values['@type']);
-                $reference_commands[] = $buildCommand($reference_type, $attribute_name, $pos++, $command_values);
-            }
+        if ($result instanceof Success) {
+            return $result->get();
+        } else {
+            throw new RuntimeError(
+                sprintf(
+                    'Process "%s" failed to create command for type "%s" with errors: %s',
+                    $process_state->getProcessName(),
+                    $aggregate_root_type->getPrefix(),
+                    print_r($result->get(), true)
+                )
+            );
         }
-
-        return $reference_commands;
-    }
-
-    protected function buildEmbedCommands(ProcessStateInterface $process_state, array $payload)
-    {
-        $embed_attributes = $this->getAggregateRootType()->getAttributes()->filter(
-            function ($attribute) {
-                return $attribute instanceof EmbeddedEntityListAttribute
-                    && !$attribute instanceof EntityReferenceListAttribute;
-            }
-        );
-
-        $embed_commands = [];
-        foreach ($embed_attributes as $embed_attribute_name => $embed_attribute) {
-            if (!array_key_exists($embed_attribute_name, $payload)) {
-                continue;
-            }
-            foreach ($payload[$embed_attribute_name] as $pos => $embed_data) {
-                $embed_type = $embed_data['@type'];
-                unset($embed_data['@type']);
-                $embed_commands[] = new AddEmbeddedEntityCommand([
-                    'embedded_entity_type' => $embed_type,
-                    'parent_attribute_name' => $embed_attribute_name,
-                    'values' => $embed_data,
-                    'position' => $pos
-                ]);
-            }
-        }
-
-        return $embed_commands;
     }
 }

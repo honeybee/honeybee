@@ -10,7 +10,9 @@ use ReflectionClass;
 use ReflectionProperty;
 use Shrink0r\Monatic\Error;
 use Shrink0r\Monatic\Success;
+use Shrink0r\Monatic\Result;
 use Trellis\Common\Object;
+use Honeybee\Common\Util\ArrayToolkit;
 
 class CommandBuilder implements CommandBuilderInterface
 {
@@ -63,7 +65,7 @@ class CommandBuilder implements CommandBuilderInterface
         $errors = [];
         $sanitized_state = [];
 
-        foreach ($this->getCommandProperties($command_class) as $prop_name => $prop_info) {
+        foreach ($this->getCommandProperties($command_class) as $prop_name) {
             if (array_key_exists($prop_name, $command_state)) {
                 $prop_val = $command_state[$prop_name];
                 $result = $this->adoptPropertyValue($prop_name, $prop_val);
@@ -74,8 +76,6 @@ class CommandBuilder implements CommandBuilderInterface
                 } else {
                     throw new RuntimeError('Invalid result type given. Either Success or Error expected.');
                 }
-            } elseif ($prop_info['required']) {
-                $errors[$prop_name] = [ $prop_name, 'required' ];
             }
         }
 
@@ -91,18 +91,8 @@ class CommandBuilder implements CommandBuilderInterface
         $properties = [];
 
         foreach ($command_reflection->getProperties() as $property) {
-            $doc_block = $property->getDocComment();
-            $owning_class = $property->getDeclaringClass();
-            $ignore_prop = $is_optional = preg_match('/@CommandBuilder::IGNORE\n/', $doc_block) === 1;
-            $is_generic_object_prop = $owning_class->getName() === Object::CLASS;
-
-            if (!$is_generic_object_prop && !$ignore_prop) {
-                $properties[$property->getName()] = [
-                    'name' => $property->getName(),
-                    'required' =>  !preg_match('/@CommandBuilder::OPTIONAL\n/', $doc_block)
-                ];
-            }
-        };
+            $properties[] = $property->getName();
+        }
 
         return $properties;
     }

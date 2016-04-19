@@ -21,6 +21,7 @@ class PublicationType extends EntityType
         return array_merge(
             parent::getDefaultAttributes(),
             [
+                // keys required here because default attributes are not set into the attribute map properly
                 'year' => new IntegerAttribute('year', $this, [ 'mandatory' => true ]),
                 'description' => new TextAttribute('description', $this)
             ]

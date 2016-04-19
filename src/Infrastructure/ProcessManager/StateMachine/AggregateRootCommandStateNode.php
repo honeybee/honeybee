@@ -58,12 +58,21 @@ abstract class AggregateRootCommandStateNode extends State
     {
         $this->needs('payload_path');
 
-        $command_class = $this->getCommandImplementor();
         $payload = $process_state->getPayload();
         $payload_path = $this->options->get('payload_path');
         $jmes_path_runtime = new AstRuntime();
-
         $command_payload = $jmes_path_runtime($payload_path, $payload);
+
+        $link_relations = $this->options->get('link_relations', []);
+        foreach ($link_relations as $attribute_name => $payload_key) {
+            if (!is_string($payload_key)) {
+                foreach ((array)$payload_key as $attribute_name => $reference_key) {
+                    $command_payload[$attribute_name] = $payload[$reference_key];
+                }
+            } else {
+                $command_payload[$attribute_name] = $payload[$payload_key];
+            }
+        }
 
         return $command_payload;
     }
@@ -81,7 +90,7 @@ abstract class AggregateRootCommandStateNode extends State
     protected function needs($option_key)
     {
         if (!$this->options->has($option_key)) {
-            throw new RuntimeError(sprintf('Missing require option "%s"', $option_key));
+            throw new RuntimeError(sprintf('Missing required option "%s"', $option_key));
         }
 
         return $this;
