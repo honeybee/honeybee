@@ -1,22 +1,22 @@
 <?php
 
-namespace Honeybee\Tests\Model\Aggregate\Fixtures\Author\Embed;
+namespace Honeybee\Tests\Projection\Fixtures\Author\Embed;
 
-use Honeybee\Model\Aggregate\EmbeddedEntityType;
 use Trellis\Common\Options;
 use Trellis\Runtime\EntityTypeInterface;
 use Trellis\Runtime\Attribute\AttributeInterface;
 use Trellis\Runtime\Attribute\Text\TextAttribute as Text;
+use Honeybee\EntityType;
 
-class HighlightType extends EmbeddedEntityType
+class HighlightType extends EntityType
 {
     public function __construct(EntityTypeInterface $parent = null, AttributeInterface $parent_attribute = null)
     {
         parent::__construct(
             'Highlight',
             [
-                'title' => new Text('title', $this, [], $parent_attribute),
-                'description' => new Text('description', $this, [], $parent_attribute),
+                new Text('title', $this, [], $parent_attribute),
+                new Text('description', $this, [], $parent_attribute)
             ],
             new Options([]),
             $parent,
@@ -26,6 +26,6 @@ class HighlightType extends EmbeddedEntityType
 
     public static function getEntityImplementor()
     {
-        return '\\Honeybee\\Tests\\Model\\Aggregate\\Fixtures\\Author\\Embed\\Highlight';
+        return '\\Honeybee\\Tests\\Projection\\Fixtures\\Author\\Embed\\Highlight';
     }
 }

@@ -5,6 +5,7 @@ namespace Honeybee\Tests\Model\Command;
 use Honeybee\Model\Command\AggregateRootCommandBuilder;
 use Honeybee\Model\Command\EmbeddedEntityCommandBuilder;
 use Honeybee\Tests\Model\Aggregate\Fixtures\Author\AuthorType;
+use Honeybee\Tests\Projection\Fixtures\Author\AuthorType as AuthorProjectionType;
 use Honeybee\Tests\Model\Task\CreateAuthor\CreateAuthorCommand;
 use Honeybee\Tests\Model\Task\ModifyAuthor\ModifyAuthorCommand;
 use Honeybee\Tests\TestCase;
@@ -23,15 +24,19 @@ class AggregateRootCommandBuilderTest extends TestCase
         return include __DIR__ . '/Fixtures/create_commands.php';
     }
 
+    public function provideModifyCommands()
+    {
+        return include __DIR__ . '/Fixtures/modify_commands.php';
+    }
+
     /**
      * @dataProvider provideCreateCommands
      */
-    public function testBuildCreateCommand(array $payload, array $expected_commands)
+    public function testBuildCreateCommand(array $payload, array $expected_command)
     {
         $author_type = new AuthorType($this->getDefaultStateMachine());
-        $builder = new AggregateRootCommandBuilder($author_type, CreateAuthorCommand::CLASS);
-        $products_attribute = $author_type->getAttributes()->getItem('products');
 
+        $builder = new AggregateRootCommandBuilder($author_type, CreateAuthorCommand::CLASS);
         $build_result = $builder
             ->withValues($payload['author'])
             ->build();
@@ -40,14 +45,14 @@ class AggregateRootCommandBuilderTest extends TestCase
         $this->assertInstanceOf(Success::CLASS, $build_result);
         $result = $build_result->get();
         $this->assertInstanceOf(CreateAuthorCommand::CLASS, $result);
-        $this->assertArraySubset($expected_commands, $result->toArray());
+        $this->assertArraySubset($expected_command, $result->toArray());
     }
 
     public function testBuildCreateCommandWithInvalidValues()
     {
         $author_type = new AuthorType($this->getDefaultStateMachine());
-        $builder = new AggregateRootCommandBuilder($author_type, CreateAuthorCommand::CLASS);
 
+        $builder = new AggregateRootCommandBuilder($author_type, CreateAuthorCommand::CLASS);
         $build_result = $builder
             ->withValues([ 'firstname' => 123, 'lastname' => 456 ])
             ->build();
@@ -70,9 +75,8 @@ class AggregateRootCommandBuilderTest extends TestCase
     public function testBuildCreateCommandWithInvalidEmbeddedCommands()
     {
         $author_type = new AuthorType($this->getDefaultStateMachine());
-        $builder = new AggregateRootCommandBuilder($author_type, CreateAuthorCommand::CLASS);
-        $products_attribute = $author_type->getAttributes()->getItem('products');
 
+        $builder = new AggregateRootCommandBuilder($author_type, CreateAuthorCommand::CLASS);
         $build_result = $builder
             ->withValues([
                 'firstname' => 123,
@@ -122,45 +126,44 @@ class AggregateRootCommandBuilderTest extends TestCase
     public function testCreateCommandWithMissingValues()
     {
         $author_type = new AuthorType($this->getDefaultStateMachine());
+
         $builder = new AggregateRootCommandBuilder($author_type, CreateAuthorCommand::CLASS);
-
         $build_result = $builder->build();
-
-        $this->assertInstanceOf(Result::CLASS, $build_result);
-        $this->assertInstanceOf(Error::CLASS, $build_result);
     }
 
-    public function testBuildModifyCommand()
+    /**
+     * @dataProvider provideModifyCommands
+     */
+    public function testBuildModifyCommand(array $projection, array $payload, array $expected_command)
     {
         $author_type = new AuthorType($this->getDefaultStateMachine());
-        $builder = new AggregateRootCommandBuilder($author_type, ModifyAuthorCommand::CLASS);
+        $projection_type = new AuthorProjectionType($this->getDefaultStateMachine());
+        $projection = $projection_type->createEntity($projection);
 
+        $builder = new AggregateRootCommandBuilder($author_type, ModifyAuthorCommand::CLASS);
         $build_result = $builder
-            ->withAggregateRootIdentifier(self::AGGREGATE_ROOT_IDENTIFIER)
-            ->withKnownRevision(4)
-            ->withValues(['firstname' => 'Amitav', 'lastname' => 'Gosh' ])
+            ->withProjection($projection)
+            ->withValues($payload['author'])
             ->build();
 
         $this->assertInstanceOf(Result::CLASS, $build_result);
         $this->assertInstanceOf(Success::CLASS, $build_result);
-        $this->assertInstanceOf(ModifyAuthorCommand::CLASS, $build_result->get());
+        $result = $build_result->get();
+        $this->assertInstanceOf(ModifyAuthorCommand::CLASS, $result);
+        $this->assertArraySubset($expected_command, $result->toArray());
     }
 
     /**
      * @expectedException Assert\InvalidArgumentException
      */
-    public function testModifyCommandWithMissingRevision()
+    public function testModifyCommandWithMissingProjection()
     {
         $author_type = new AuthorType($this->getDefaultStateMachine());
-        $builder = new AggregateRootCommandBuilder($author_type, ModifyAuthorCommand::CLASS);
 
+        $builder = new AggregateRootCommandBuilder($author_type, ModifyAuthorCommand::CLASS);
         $build_result = $builder
-            ->withAggregateRootIdentifier(self::AGGREGATE_ROOT_IDENTIFIER)
             ->withValues([ 'firstname' => 'Amitav', 'lastname' => 'Gosh' ])
             ->build();
-
-        $this->assertInstanceOf(Result::CLASS, $build_result);
-        $this->assertInstanceOf(Error::CLASS, $build_result);
     }
 
     protected function getDefaultStateMachine()

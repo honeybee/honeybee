@@ -5,14 +5,10 @@ namespace Honeybee\Infrastructure\Command;
 use Assert\Assertion;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Common\Util\StringToolkit;
-use Ramsey\Uuid\Uuid;
 use ReflectionClass;
-use ReflectionProperty;
 use Shrink0r\Monatic\Error;
 use Shrink0r\Monatic\Success;
 use Shrink0r\Monatic\Result;
-use Trellis\Common\Object;
-use Honeybee\Common\Util\ArrayToolkit;
 
 class CommandBuilder implements CommandBuilderInterface
 {
@@ -26,6 +22,11 @@ class CommandBuilder implements CommandBuilderInterface
 
         $this->command_class = $command_class;
         $this->command_state = [];
+    }
+
+    public function getCommandClass()
+    {
+        return $this->command_class;
     }
 
     /**

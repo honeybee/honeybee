@@ -2,11 +2,18 @@
 
 namespace Honeybee\Model\Command;
 
+use Honeybee\EntityInterface;
+use Honeybee\Projection\Projection;
+use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Model\Aggregate\AggregateRootTypeInterface;
+use Honeybee\Model\Task\ModifyAggregateRoot\ModifyAggregateRootCommand;
 use Shrink0r\Monatic\Error;
+use Shrink0r\Monatic\Success;
 
 class AggregateRootCommandBuilder extends EmbeddedEntityCommandBuilder
 {
+    protected $projection;
+
     public function __construct(AggregateRootTypeInterface $aggregate_root_type, $command_class)
     {
         parent::__construct($aggregate_root_type, $command_class);
@@ -19,6 +26,28 @@ class AggregateRootCommandBuilder extends EmbeddedEntityCommandBuilder
         $result = parent::build();
         if ($result instanceof Error) {
             $result = Error::unit(self::flatten($result->get()));
+        }
+
+        return $result;
+    }
+
+    public function withProjection(Projection $projection)
+    {
+        $this->projection = $projection;
+        $this->command_state['aggregate_root_identifier'] = $projection->getIdentifier();
+        $this->command_state['known_revision'] = $projection->getRevision();
+        return $this;
+    }
+
+    /**
+     * @return Result
+     */
+    protected function validateValues(array $values)
+    {
+        $result = parent::validateValues($values);
+        if (isset($this->projection) && $result instanceof Success) {
+            $modified_values = $this->filterUnmodifiedValues($this->projection, $result->get());
+            $result = Success::unit($modified_values);
         }
 
         return $result;

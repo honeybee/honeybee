@@ -1,7 +1,20 @@
 <?php
 
 return [
-    // payload with empty no embeds or references
+    // empty payload
+    [
+      'payload' => [
+          'author' => []
+      ],
+      'expected_command' => [
+          '@type' => 'Honeybee\Tests\Model\Task\CreateAuthor\CreateAuthorCommand',
+          'values' => [],
+          'aggregate_root_type' => 'Honeybee\Tests\Model\Aggregate\Fixtures\Author\AuthorType',
+          'embedded_entity_commands' => [],
+          'meta_data' => []
+      ]
+    ],
+    // payload with no embeds or references
     [
         'payload' => [
             'author' => [
@@ -11,7 +24,7 @@ return [
                 'books' => []
             ]
         ],
-        'expected_commands' => [
+        'expected_command' => [
             '@type' => 'Honeybee\Tests\Model\Task\CreateAuthor\CreateAuthorCommand',
             'values' => [
                 'firstname' => 'Amitav',
@@ -31,13 +44,13 @@ return [
                 'products' => [
                     [
                         '@type' => 'highlight',
-                        'title' => 'ZAMM',
-                        'description' => 'The greatest book on philosophy ever written.'
+                        'title' => 'Purlitzer Prize',
+                        'description' => 'The greatest author ever.'
                     ]
                 ]
             ]
         ],
-        'expected_commands' => [
+        'expected_command' => [
             '@type' => 'Honeybee\Tests\Model\Task\CreateAuthor\CreateAuthorCommand',
             'values' => [
                 'firstname' => 'Amitav',
@@ -50,8 +63,8 @@ return [
                     'embedded_entity_type' => 'highlight',
                     'parent_attribute_name' => 'products',
                     'values' => [
-                        'title' => 'ZAMM',
-                        'description' => 'The greatest book on philosophy ever written.'
+                        'title' => 'Purlitzer Prize',
+                        'description' => 'The greatest author ever.'
                     ],
                     'embedded_entity_commands' => [],
                     'position' => 0,
@@ -71,7 +84,7 @@ return [
                     [
                         '@type' => 'highlight',
                         'title' => '',
-                        'description' => 'The greatest book on philosophy ever written.'
+                        'description' => 'The greatest author ever.'
                     ]
                 ],
                 'books' => [
@@ -86,7 +99,7 @@ return [
                 ]
             ]
         ],
-        'expected_commands' => [
+        'expected_command' => [
             '@type' => 'Honeybee\Tests\Model\Task\CreateAuthor\CreateAuthorCommand',
             'values' => [
                 'firstname' => 'Amitav',
@@ -100,7 +113,7 @@ return [
                     'parent_attribute_name' => 'products',
                     'values' => [
                         'title' => '',
-                        'description' => 'The greatest book on philosophy ever written.'
+                        'description' => 'The greatest author ever.'
                     ],
                     'embedded_entity_commands' => [],
                     'position' => 0,
@@ -150,7 +163,7 @@ return [
                 ]
             ]
         ],
-        'expected_commands' => [
+        'expected_command' => [
             '@type' => 'Honeybee\Tests\Model\Task\CreateAuthor\CreateAuthorCommand',
             'values' => [
                 'firstname' => 'Amitav',

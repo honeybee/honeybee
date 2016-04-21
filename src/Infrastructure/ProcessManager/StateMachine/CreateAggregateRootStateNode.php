@@ -3,14 +3,9 @@
 namespace Honeybee\Infrastructure\ProcessManager\StateMachine;
 
 use Honeybee\Common\Error\RuntimeError;
-use Honeybee\Infrastructure\ProcessManager\ProcessStateInterface;
-use Honeybee\Infrastructure\Command\CommandBuilderList;
-use Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\AddEmbeddedEntityCommand;
-use Trellis\Runtime\Attribute\EmbeddedEntityList\EmbeddedEntityListAttribute;
-use Trellis\Runtime\Attribute\EntityReferenceList\EntityReferenceListAttribute;
-use Workflux\StatefulSubjectInterface;
 use Honeybee\Model\Command\AggregateRootCommandBuilder;
-use Honeybee\Model\Command\EmbeddedEntityCommandBuilder;
+use Honeybee\Infrastructure\ProcessManager\ProcessStateInterface;
+use Workflux\StatefulSubjectInterface;
 use Shrink0r\Monatic\Success;
 
 class CreateAggregateRootStateNode extends AggregateRootCommandStateNode
@@ -55,10 +50,11 @@ class CreateAggregateRootStateNode extends AggregateRootCommandStateNode
         } else {
             throw new RuntimeError(
                 sprintf(
-                    'Process "%s" failed to create command for type "%s" with errors: %s',
+                    '[%s] Process "%s" failed to create command for type "%s" with errors: %s',
+                    __METHOD__,
                     $process_state->getProcessName(),
                     $aggregate_root_type->getPrefix(),
-                    print_r($result->get(), true)
+                    var_export($result->get(), true)
                 )
             );
         }
