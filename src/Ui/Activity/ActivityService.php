@@ -2,7 +2,6 @@
 
 namespace Honeybee\Ui\Activity;
 
-use AgaviContext;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Common\GenericScopeKey;
 use Honeybee\Common\ScopeKeyInterface;
@@ -10,10 +9,13 @@ use Honeybee\Model\Aggregate\AggregateRootTypeMap;
 use Honeybee\Ui\UrlGeneratorInterface;
 use QL\UriTemplate\UriTemplate;
 use Trellis\Common\Object;
+use Honeybee\EnvironmentInterface;
 
 class ActivityService extends Object implements ActivityServiceInterface
 {
     const WORKFLOW_SCOPE_PATTERN = '%s.%s';
+
+    protected $environment;
 
     protected $aggregate_root_type_map;
 
@@ -24,11 +26,13 @@ class ActivityService extends Object implements ActivityServiceInterface
     protected $is_initialized = false;
 
     public function __construct(
+        EnvironmentInterface $environment,
         WorkflowActivityService $workflow_activity_service,
         ActivityContainerMap $activity_container_map,
         AggregateRootTypeMap $aggregate_root_type_map,
         UrlGeneratorInterface $url_generator
     ) {
+        $this->environment = $environment;
         $this->activity_container_map = $activity_container_map;
         $this->workflow_activity_service = $workflow_activity_service;
         $this->aggregate_root_type_map = $aggregate_root_type_map;
@@ -87,7 +91,7 @@ class ActivityService extends Object implements ActivityServiceInterface
         }
 
         $activity_map = new ActivityMap();
-        $user = AgaviContext::getInstance()->getUser();
+        $user = $this->environment->getUser();
         foreach ($container->getActivityMap() as $activity_name => $activity) {
             if ($user->isAllowed($scope, $activity_name)) {
                 $activity_map->setItem($activity_name, $activity);
