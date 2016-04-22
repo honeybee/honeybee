@@ -37,9 +37,8 @@ class CommandBuilder implements CommandBuilderInterface
         $result = $this->sanitizeCommandState($this->command_class, $this->command_state);
 
         if ($result instanceof Success) {
-            return Success::unit(
-                new $this->command_class($result->get())
-            );
+            $command = new $this->command_class($result->get());
+            return Success::unit($command);
         }
 
         return $result;
@@ -51,8 +50,8 @@ class CommandBuilder implements CommandBuilderInterface
     public function __call($method, array $args)
     {
         if (1 === preg_match('/^with(\w+)/', $method, $matches) && count($args) === 1) {
-            $prop_name = StringToolkit::asSnakeCase($matches[1]);
-            $this->command_state[$prop_name] = $args[0];
+            $property_name = StringToolkit::asSnakeCase($matches[1]);
+            $this->command_state[$property_name] = $args[0];
         }
 
         return $this;
@@ -66,14 +65,14 @@ class CommandBuilder implements CommandBuilderInterface
         $errors = [];
         $sanitized_state = [];
 
-        foreach ($this->getCommandProperties($command_class) as $prop_name) {
-            if (array_key_exists($prop_name, $command_state)) {
-                $prop_val = $command_state[$prop_name];
-                $result = $this->adoptPropertyValue($prop_name, $prop_val);
+        foreach ($this->getCommandProperties($command_class) as $property_name) {
+            if (array_key_exists($property_name, $command_state)) {
+                $property_value = $command_state[$property_name];
+                $result = $this->adoptPropertyValue($property_name, $property_value);
                 if ($result instanceof Success) {
-                    $sanitized_state[$prop_name] = $result->get();
+                    $sanitized_state[$property_name] = $result->get();
                 } elseif ($result instanceof Error) {
-                    $errors[$prop_name] = $result->get();
+                    $errors[$property_name] = $result->get();
                 } else {
                     throw new RuntimeError('Invalid result type given. Either Success or Error expected.');
                 }
@@ -89,8 +88,8 @@ class CommandBuilder implements CommandBuilderInterface
     protected function getCommandProperties($command_class)
     {
         $command_reflection = new ReflectionClass($command_class);
-        $properties = [];
 
+        $properties = [];
         foreach ($command_reflection->getProperties() as $property) {
             $properties[] = $property->getName();
         }
@@ -104,9 +103,8 @@ class CommandBuilder implements CommandBuilderInterface
     protected function adoptPropertyValue($prop_name, $prop_value)
     {
         $validation_method = 'validate' . StringToolkit::asStudlyCaps($prop_name);
-        $validation_callable = [ $this, $validation_method ];
         if (method_exists($this, $validation_method)) {
-            return call_user_func($validation_callable, $prop_value);
+            return call_user_func([ $this, $validation_method ], $prop_value);
         }
 
         return Success::unit($prop_value);

@@ -2,11 +2,8 @@
 
 namespace Honeybee\Model\Command;
 
-use Honeybee\EntityInterface;
 use Honeybee\Projection\Projection;
-use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Model\Aggregate\AggregateRootTypeInterface;
-use Honeybee\Model\Task\ModifyAggregateRoot\ModifyAggregateRootCommand;
 use Shrink0r\Monatic\Error;
 use Shrink0r\Monatic\Success;
 
@@ -45,6 +42,7 @@ class AggregateRootCommandBuilder extends EmbeddedEntityCommandBuilder
     protected function validateValues(array $values)
     {
         $result = parent::validateValues($values);
+
         if (isset($this->projection) && $result instanceof Success) {
             $modified_values = $this->filterUnmodifiedValues($this->projection, $result->get());
             $result = Success::unit($modified_values);
