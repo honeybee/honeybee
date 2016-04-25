@@ -19,9 +19,8 @@ class PublisherType extends EntityType
         return array_merge(
             parent::getDefaultAttributes(),
             [
-                // keys required here because default attributes are not set into the attribute map properly
-                'name' => new Text('name', $this, [ 'mandatory' => true ]),
-                'description' => new Text('description', $this)
+                new Text('name', $this, [ 'mandatory' => true ]),
+                new Text('description', $this)
             ]
         );
     }

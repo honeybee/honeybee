@@ -52,7 +52,7 @@ abstract class EntityType extends BaseEntityType implements EntityTypeInterface,
     {
         return array_merge(
             parent::getDefaultAttributes(),
-            [ 'identifier' => new UuidAttribute('identifier', $this, [], $this->getParentAttribute()) ]
+            [ new UuidAttribute('identifier', $this, [], $this->getParentAttribute()) ]
         );
     }
 

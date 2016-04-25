@@ -21,10 +21,10 @@ class AuthorType extends EntityType
         return array_merge(
             parent::getDefaultAttributes(),
             [
-                'firstname' => new Text('firstname', $this, [ 'mandatory' => true ]),
-                'lastname' => new Text('lastname', $this, [ 'mandatory' => true ]),
-                'blurb' => new Text('blurb', $this, [ 'default_value' =>  'the grinch' ]),
-                'products' => new EmbeddedEntityListAttribute(
+                new Text('firstname', $this, [ 'mandatory' => true ]),
+                new Text('lastname', $this, [ 'mandatory' => true ]),
+                new Text('blurb', $this, [ 'default_value' =>  'the grinch' ]),
+                new EmbeddedEntityListAttribute(
                     'products',
                     $this,
                     [
@@ -34,7 +34,7 @@ class AuthorType extends EntityType
                         ]
                     ]
                 ),
-                'books' => new EntityReferenceListAttribute(
+                new EntityReferenceListAttribute(
                     'books',
                     $this,
                     [

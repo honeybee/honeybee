@@ -18,8 +18,8 @@ class PublisherType extends EntityType
         return array_merge(
             parent::getDefaultAttributes(),
             [
-                'name' => new Text('name', [ 'mandatory' => true ]),
-                'description' => new Text('description')
+                new Text('name', [ 'mandatory' => true ]),
+                new Text('description')
             ]
         );
     }

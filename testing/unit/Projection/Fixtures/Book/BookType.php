@@ -20,9 +20,9 @@ class BookType extends EntityType
         return array_merge(
             parent::getDefaultAttributes(),
             [
-                'title' => new Text('title', $this, [ 'mandatory' => true ]),
-                'description' => new Text('description'$this),
-                'paragraphs' => new EmbeddedEntityListAttribute(
+                new Text('title', $this, [ 'mandatory' => true ]),
+                new Text('description', $this),
+                new EmbeddedEntityListAttribute(
                     'paragraphs',
                     $this,
                     [ EmbeddedEntityListAttribute::OPTION_ENTITY_TYPES => [ ParagraphType::CLASS ] ]

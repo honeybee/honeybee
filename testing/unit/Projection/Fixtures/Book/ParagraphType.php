@@ -18,8 +18,8 @@ class ParagraphType extends ResourceType
     protected function getDefaultAttributes()
     {
         return [
-            'headline' => new Text('headline', $this, [ 'mandatory' => true ], $parent_attribute),
-            'content' => new Text('content', $this, [], $parent_attribute)
+            new Text('headline', $this, [ 'mandatory' => true ], $parent_attribute),
+            new Text('content', $this, [], $parent_attribute)
         ];
     }
 

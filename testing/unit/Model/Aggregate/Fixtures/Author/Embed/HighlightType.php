@@ -15,8 +15,8 @@ class HighlightType extends EmbeddedEntityType
         parent::__construct(
             'Highlight',
             [
-                'title' => new Text('title', $this, [], $parent_attribute),
-                'description' => new Text('description', $this, [], $parent_attribute),
+                new Text('title', $this, [], $parent_attribute),
+                new Text('description', $this, [], $parent_attribute),
             ],
             new Options([]),
             $parent,

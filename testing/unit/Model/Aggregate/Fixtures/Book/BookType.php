@@ -19,9 +19,8 @@ class BookType extends EntityType
         return array_merge(
             parent::getDefaultAttributes(),
             [
-                // keys required here because default attributes are not set into the attribute map properly
-                'title' => new Text('title', $this, [ 'mandatory' => true ]),
-                'description' => new Text('description', $this)
+                new Text('title', $this, [ 'mandatory' => true ]),
+                new Text('description', $this)
             ]
         );
     }
