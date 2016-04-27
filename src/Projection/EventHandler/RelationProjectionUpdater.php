@@ -115,7 +115,11 @@ class RelationProjectionUpdater extends EventHandler
             $filter_criteria_list->push(
                 new AttributeCriteria('identifier', new Equals('!' . $event->getAggregateRootIdentifier()))
             );
-            $filter_criteria_list->push($reference_filter_list);
+            if ($reference_filter_list->getSize() === 1) {
+                $filter_criteria_list->push($reference_filter_list->getFirst());
+            } else {
+                $filter_criteria_list->push($reference_filter_list);
+            }
             $query_result = $this->getQueryService()->find(
                 new Query(
                     new CriteriaList,
