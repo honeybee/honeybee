@@ -498,7 +498,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
     {
         $event_class = $command->getEventClass();
         $default_event_state = [
-            'meta_data' => $command->getMetaData(),
+            'metadata' => $command->getMetadata(),
             'uuid' => $command->getUuid(),
             'seq_number' => $this->getRevision() + 1,
             'aggregate_root_type' => $command->getAggregateRootType()

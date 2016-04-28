@@ -88,6 +88,7 @@ class ProjectionUpdater extends EventHandler
         $projection_data['revision'] = $event->getSeqNumber();
         $projection_data['created_at'] = $event->getDateTime();
         $projection_data['modified_at'] = $event->getDateTime();
+        $projection_data['metadata'] = $event->getMetaData();
 
         $new_projection = $this->getProjectionType($event)->createEntity($projection_data);
         $this->handleEmbeddedEntityEvents($new_projection, $event->getEmbeddedEntityEvents());
@@ -105,6 +106,7 @@ class ProjectionUpdater extends EventHandler
         }
         $updated_data['revision'] = $event->getSeqNumber();
         $updated_data['modified_at'] = $event->getDateTime();
+        $updated_data['metadata'] = array_merge($updated_data['metadata'], $event->getMetaData());
 
         $projection = $this->getProjectionType($event)->createEntity($updated_data);
 
@@ -120,6 +122,7 @@ class ProjectionUpdater extends EventHandler
         $updated_data = $this->loadProjection($event)->toArray();
         $updated_data['revision'] = $event->getSeqNumber();
         $updated_data['modified_at'] = $event->getDateTime();
+        $updated_data['metadata'] = array_merge($updated_data['metadata'], $event->getMetaData());
         $updated_data['workflow_state'] = $event->getWorkflowState();
         $workflow_parameters = $event->getWorkflowParameters();
         if ($workflow_parameters !== null) {
@@ -139,9 +142,11 @@ class ProjectionUpdater extends EventHandler
 
         $new_child_path = $parent_projection->getMaterializedPath() . '/' . $event->getParentNodeId();
         $child_data = $child_projection->toArray();
+        $child_data['revision'] = $event->getSeqNumber();
+        $child_data['modified_at'] = $event->getDateTime();
+        $child_data['metadata'] = array_merge($child_data['metadata'], $event->getMetaData());
         $child_data['parent_node_id'] = $event->getParentNodeId();
         $child_data['materialized_path'] = $new_child_path;
-        $child_data['revision'] = $event->getSeqNumber();
         $this->getStorageWriter($event)->write(
             $this->getProjectionType($event)->createEntity($child_data)
         );

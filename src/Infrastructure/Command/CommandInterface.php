@@ -8,5 +8,7 @@ interface CommandInterface
 
     public function getUuid();
 
-    public function getMetaData();
+    public function getMetadata();
+
+    public function withMetadata(Metadata $metadata);
 }

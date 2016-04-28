@@ -12,7 +12,7 @@ interface EventInterface
 
     public function getIsoDate();
 
-    public function getMetaData();
+    public function getMetadata();
 
     public function getType();
 }

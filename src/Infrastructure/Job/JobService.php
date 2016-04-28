@@ -9,6 +9,7 @@ use Honeybee\Infrastructure\Config\ConfigInterface;
 use Honeybee\Infrastructure\Config\SettingsInterface;
 use Honeybee\Infrastructure\DataAccess\Connector\RabbitMqConnector;
 use Honeybee\Infrastructure\Event\FailedJobEvent;
+use Honeybee\Infrastructure\Event\Bus\Channel\ChannelMap;
 use Honeybee\Infrastructure\Event\Bus\Transport\JobQueueTransport;
 use Honeybee\ServiceLocatorInterface;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -17,8 +18,6 @@ use Psr\Log\LoggerInterface;
 class JobService implements JobServiceInterface
 {
     const DEFAULT_JOB = 'honeybee.jobs.execute_handlers';
-
-    const DEFAULT_FAILURE_CHANNEL = 'honeybee.events.failed';
 
     const WAIT_SUFFIX = '.waiting';
 
@@ -165,8 +164,8 @@ class JobService implements JobServiceInterface
     public function retry(JobInterface $job, $exchange_name)
     {
         $job_state = $job->toArray();
-        $job_state['meta_data']['retries'] = isset($job_state['meta_data']['retries'])
-            ? ++$job_state['meta_data']['retries'] : 1;
+        $job_state['metadata']['retries'] = isset($job_state['metadata']['retries'])
+            ? ++$job_state['metadata']['retries'] : 1;
 
         $message = new AMQPMessage(
             json_encode($job_state),
@@ -186,12 +185,12 @@ class JobService implements JobServiceInterface
             [
                 'event' => new FailedJobEvent([
                     'failed_job_state' => $job->toArray(),
-                    'meta_data' => [
+                    'metadata' => [
                         'error_message' => $error->getMessage(),
                         'error_trace' => $error->getTraceAsString()
                     ]
                 ]),
-                'channel' => self::DEFAULT_FAILURE_CHANNEL
+                'channel' => ChannelMap::CHANNEL_FAILED
             ]
         );
 

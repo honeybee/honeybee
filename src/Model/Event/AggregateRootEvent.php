@@ -3,6 +3,7 @@
 namespace Honeybee\Model\Event;
 
 use Assert\Assertion;
+use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Common\Util\StringToolkit;
 use Honeybee\Infrastructure\Event\Event;
 
@@ -18,7 +19,7 @@ abstract class AggregateRootEvent extends Event implements AggregateRootEventInt
 
     public function __construct(array $state = [])
     {
-        $this->embedded_entity_events = new EmbeddedEntityEventList();
+        $this->embedded_entity_events = new EmbeddedEntityEventList;
 
         parent::__construct($state);
     }
@@ -48,7 +49,7 @@ abstract class AggregateRootEvent extends Event implements AggregateRootEventInt
         if ($embedded_entity_events instanceof EmbeddedEntityEventList) {
             $this->embedded_entity_events = $embedded_entity_events;
         } elseif (is_array($embedded_entity_events)) {
-            $this->embedded_entity_events = new EmbeddedEntityEventList();
+            $this->embedded_entity_events = new EmbeddedEntityEventList;
             foreach ($embedded_entity_events as $embedded_event_data) {
                 $event_class = $embedded_event_data[self::OBJECT_TYPE];
                 $this->embedded_entity_events->push(new $event_class($embedded_event_data));

@@ -2,7 +2,7 @@
 
 namespace Honeybee\Model\Command;
 
-use Honeybee\Projection\Projection;
+use Honeybee\Projection\ProjectionInterface;
 use Honeybee\Model\Aggregate\AggregateRootTypeInterface;
 use Shrink0r\Monatic\Error;
 use Shrink0r\Monatic\Success;
@@ -28,7 +28,7 @@ class AggregateRootCommandBuilder extends EmbeddedEntityCommandBuilder
         return $result;
     }
 
-    public function withProjection(Projection $projection)
+    public function withProjection(ProjectionInterface $projection)
     {
         $this->projection = $projection;
         $this->command_state['aggregate_root_identifier'] = $projection->getIdentifier();

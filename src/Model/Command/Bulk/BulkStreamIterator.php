@@ -35,17 +35,17 @@ class BulkStreamIterator implements Iterator
 
     public function next()
     {
-        $meta_data = $this->tryToReadMetaData();
+        $metadata = $this->tryToReadMetadata();
 
-        if ($meta_data instanceof BulkStreamError) {
-            $this->current_item = $meta_data;
+        if ($metadata instanceof BulkStreamError) {
+            $this->current_item = $metadata;
         } else {
             $payload = $this->tryToReadPayload();
 
             if ($payload instanceof BulkStreamError) {
                 $this->current_item = $payload;
             } else {
-                $this->current_item = new BulkOperation($meta_data, $payload);
+                $this->current_item = new BulkOperation($metadata, $payload);
                 $this->position++;
             }
         }
@@ -63,10 +63,10 @@ class BulkStreamIterator implements Iterator
         return $this->current_item instanceof BulkOperation;
     }
 
-    protected function tryToReadMetaData()
+    protected function tryToReadMetadata()
     {
-        $serialized_meta_data = fgets($this->file_pointer);
-        if (!$serialized_meta_data) {
+        $serialized_metadata = fgets($this->file_pointer);
+        if (!$serialized_metadata) {
             return new BulkStreamError(
                 BulkStreamError::EOF,
                 "End of file reached, no more data to read."
@@ -74,44 +74,44 @@ class BulkStreamIterator implements Iterator
         }
 
         try {
-            $meta_data = JsonToolkit::parse($serialized_meta_data);
+            $metadata = JsonToolkit::parse($serialized_metadata);
         } catch (ParseError $parse_error) {
             return new BulkStreamError(
-                BulkStreamError::INVALID_META_DATA,
-                "Failed to parse meta-data for the given bulk-operation. Reason: " . $parse_error->getMessage()
+                BulkStreamError::INVALID_METADATA,
+                "Failed to parse metadata for the given bulk-operation. Reason: " . $parse_error->getMessage()
             );
         }
 
         $required_keys = array('_type', '_identifier', '_command');
         $missing_keys = array();
         foreach ($required_keys as $required_key) {
-            if (!isset($meta_data[$required_key])) {
+            if (!isset($metadata[$required_key])) {
                 $missing_keys[] = $required_keys;
             }
         }
 
         if (count($missing_keys) > 0) {
             return new BulkStreamError(
-                BulkStreamError::INVALID_META_DATA,
+                BulkStreamError::INVALID_METADATA,
                 sprintf(
-                    "Missing expected key: %s within the meta-data of the given bulk-operation.",
+                    "Missing expected key: %s within the metadata of the given bulk-operation.",
                     $required_key
                 )
             );
         }
 
-        $command_implementor = $meta_data['_command'];
+        $command_implementor = $metadata['_command'];
         if (!class_exists($command_implementor)) {
             return new BulkStreamError(
-                BulkStreamError::INVALID_META_DATA,
+                BulkStreamError::INVALID_METADATA,
                 sprintf(
-                    "Unable to resolve command implementor %s, given within bulk meta-data.",
+                    "Unable to resolve command implementor %s, given within bulk metadata.",
                     $command_implementor
                 )
             );
         }
 
-        return new BulkMetaData($meta_data['_type'], $meta_data['_identifier'], $meta_data['_command']);
+        return new BulkMetadata($metadata['_type'], $metadata['_identifier'], $metadata['_command']);
     }
 
     protected function tryToReadPayload()
@@ -120,7 +120,7 @@ class BulkStreamIterator implements Iterator
         if (!$serialized_payload) {
             return new BulkStreamError(
                 BulkStreamError::INVALID_FORMAT,
-                "Reached EOF, but was expecting payload for current meta-data of the given bulk-operation."
+                "Reached EOF, but was expecting payload for current metadata of the given bulk-operation."
             );
         }
 

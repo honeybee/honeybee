@@ -52,7 +52,7 @@ class ModifyAggregateRootStateNode extends AggregateRootCommandStateNode
         $result = (new AggregateRootCommandBuilder($aggregate_root_type, $command_class))
             ->withProjection($projection)
             ->withValues($command_payload)
-            ->withMetaData([
+            ->withMetadata([
                 'process_name' => $process_state->getProcessName(),
                 'process_uuid' => $process_state->getUuid()
             ])

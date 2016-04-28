@@ -28,7 +28,7 @@ return [
             'aggregate_root_type' => 'Honeybee\Tests\Model\Aggregate\Fixtures\Author\AuthorType',
             'known_revision' => 1,
             'embedded_entity_commands' => [],
-            'meta_data' => []
+            'metadata' => []
         ]
     ],
     // payload with updated embed and compensation
@@ -92,10 +92,10 @@ return [
                     ],
                     'embedded_entity_commands' => [],
                     'position' => 1,
-                    'meta_data' => []
+                    'metadata' => []
                 ]
             ],
-            'meta_data' => []
+            'metadata' => []
         ]
     ],
     // payload with added, removed and updated references and embeds
@@ -181,7 +181,7 @@ return [
                     ],
                     'embedded_entity_commands' => [],
                     'position' => 0,
-                    'meta_data' => []
+                    'metadata' => []
                 ],
                 [
                     '@type' => $type_namespace_prefix . 'RemoveEmbeddedEntity\RemoveEmbeddedEntityCommand',
@@ -189,7 +189,7 @@ return [
                     'embedded_entity_type' => 'highlight',
                     'parent_attribute_name' => 'products',
                     'embedded_entity_commands' => [],
-                    'meta_data' => []
+                    'metadata' => []
                 ],
                 [
                     '@type' => $type_namespace_prefix . 'AddEmbeddedEntity\AddEmbeddedEntityCommand',
@@ -201,7 +201,7 @@ return [
                     ],
                     'embedded_entity_commands' => [],
                     'position' => 1,
-                    'meta_data' => []
+                    'metadata' => []
                 ],
                 [
                     '@type' => $type_namespace_prefix . 'ModifyEmbeddedEntity\ModifyEmbeddedEntityCommand',
@@ -211,7 +211,7 @@ return [
                     'values' => [],
                     'embedded_entity_commands' => [],
                     'position' => 0,
-                    'meta_data' => []
+                    'metadata' => []
                 ],
                 [
                     '@type' => $type_namespace_prefix . 'RemoveEmbeddedEntity\RemoveEmbeddedEntityCommand',
@@ -219,7 +219,7 @@ return [
                     'embedded_entity_type' => 'book',
                     'parent_attribute_name' => 'books',
                     'embedded_entity_commands' => [],
-                    'meta_data' => []
+                    'metadata' => []
                 ],
                 [
                     '@type' => $type_namespace_prefix . 'AddEmbeddedEntity\AddEmbeddedEntityCommand',
@@ -230,10 +230,10 @@ return [
                     ],
                     'embedded_entity_commands' => [],
                     'position' => 1,
-                    'meta_data' => []
+                    'metadata' => []
                 ]
             ],
-            'meta_data' => []
+            'metadata' => []
         ]
     ],
 ];

@@ -4,6 +4,7 @@ namespace Honeybee\Model\Event;
 
 use Assert\Assertion;
 use Trellis\Common\Object;
+use Honeybee\Common\Error\RuntimeError;
 
 abstract class EmbeddedEntityEvent extends Object implements
     EmbeddedEntityEventInterface,
@@ -21,7 +22,7 @@ abstract class EmbeddedEntityEvent extends Object implements
 
     public function __construct(array $state = [])
     {
-        $this->embedded_entity_events = new EmbeddedEntityEventList();
+        $this->embedded_entity_events = new EmbeddedEntityEventList;
 
         parent::__construct($state);
     }
@@ -56,7 +57,7 @@ abstract class EmbeddedEntityEvent extends Object implements
         if ($embedded_entity_events instanceof EmbeddedEntityEventList) {
             $this->embedded_entity_events = $embedded_entity_events;
         } elseif (is_array($embedded_entity_events)) {
-            $this->embedded_entity_events = new EmbeddedEntityEventList();
+            $this->embedded_entity_events = new EmbeddedEntityEventList;
             foreach ($embedded_entity_events as $embedded_entity_event) {
                 $event_class = $embedded_entity_event[self::OBJECT_TYPE];
                 $this->embedded_entity_events->push(new $event_class($embedded_entity_event));

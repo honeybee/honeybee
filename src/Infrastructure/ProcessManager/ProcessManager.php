@@ -97,9 +97,9 @@ class ProcessManager implements ProcessManagerInterface
 
     protected function loadProcessStateBy(EventInterface $event)
     {
-        $meta_data = Maybe::unit($event->getMetaData());
-        $process_uuid = $meta_data->process_uuid->get();
-        $process_name = $meta_data->process_name->get();
+        $metadata = Maybe::unit($event->getMetadata());
+        $process_uuid = $metadata->process_uuid->get();
+        $process_name = $metadata->process_name->get();
         $process_state_reader = $this->config->get('storage_reader');
         $process_state = null;
 
@@ -108,7 +108,7 @@ class ProcessManager implements ProcessManagerInterface
             if (!$process_state || $process_state->getProcessName() !== $process_name) {
                 throw new RuntimeError(
                     sprintf(
-                        'Given process name "%s" coming from event meta-data does not match the loaded one: "%s"',
+                        'Given process name "%s" coming from event metadata does not match the loaded one: "%s"',
                         $process_name,
                         $process_state->getProcessName()
                     )

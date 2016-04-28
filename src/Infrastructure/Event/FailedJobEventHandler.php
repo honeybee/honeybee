@@ -18,7 +18,7 @@ class FailedJobEventHandler extends EventHandler
             [
                 'method' => __METHOD__,
                 'state' => print_r($event->getFailedJobState(), true),
-                'error' => print_r($event->getMetaData(), true)
+                'error' => print_r($event->getMetadata(), true)
             ]
         );
 

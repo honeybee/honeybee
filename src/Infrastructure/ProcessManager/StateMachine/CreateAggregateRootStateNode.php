@@ -39,7 +39,7 @@ class CreateAggregateRootStateNode extends AggregateRootCommandStateNode
 
         $result = (new AggregateRootCommandBuilder($aggregate_root_type, $command_class))
             ->withValues($payload)
-            ->withMetaData([
+            ->withMetadata([
                 'process_name' => $process_state->getProcessName(),
                 'process_uuid' => $process_state->getUuid()
             ])

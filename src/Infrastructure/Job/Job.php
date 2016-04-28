@@ -9,11 +9,11 @@ abstract class Job extends Object implements JobInterface
 {
     protected $uuid;
 
-    protected $meta_data;
+    protected $metadata;
 
     public function __construct(array $state = [])
     {
-        $this->meta_data = [];
+        $this->metadata = [];
 
         parent::__construct($state);
 
@@ -27,8 +27,8 @@ abstract class Job extends Object implements JobInterface
         return $this->uuid;
     }
 
-    public function getMetaData()
+    public function getMetadata()
     {
-        return $this->meta_data;
+        return $this->metadata;
     }
 }

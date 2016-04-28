@@ -14,11 +14,11 @@ abstract class Event extends Object implements EventInterface
 
     protected $iso_date;
 
-    protected $meta_data;
+    protected $metadata;
 
     public function __construct(array $state = [])
     {
-        $this->meta_data = [];
+        $this->metadata = [];
         $this->iso_date = DateTimeImmutable::createFromFormat('U.u', sprintf('%.6F', microtime(true)))
             ->format(self::DATE_ISO8601_WITH_MICROS);
 
@@ -47,9 +47,9 @@ abstract class Event extends Object implements EventInterface
         return $this->iso_date;
     }
 
-    public function getMetaData()
+    public function getMetadata()
     {
-        return $this->meta_data;
+        return $this->metadata;
     }
 
     protected function guardRequiredState()
@@ -61,7 +61,7 @@ abstract class Event extends Object implements EventInterface
         Assertion::true($valid_date, 'given "iso_date": ' . print_r($valid_date, true));
 
         Assertion::uuid($this->uuid);
-        Assertion::isArray($this->meta_data);
+        Assertion::isArray($this->metadata);
     }
 
     public function __toString()

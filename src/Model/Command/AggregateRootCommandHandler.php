@@ -8,6 +8,7 @@ use Honeybee\Infrastructure\Command\CommandHandler;
 use Honeybee\Infrastructure\Command\CommandInterface;
 use Honeybee\Infrastructure\DataAccess\DataAccessServiceInterface;
 use Honeybee\Infrastructure\Event\Bus\EventBusInterface;
+use Honeybee\Infrastructure\Event\Bus\Channel\ChannelMap;
 use Honeybee\Infrastructure\Event\NoOpSignal;
 use Honeybee\Model\Aggregate\AggregateRootInterface;
 use Honeybee\Model\Aggregate\AggregateRootTypeInterface;
@@ -17,12 +18,6 @@ use Psr\Log\LoggerInterface;
 
 abstract class AggregateRootCommandHandler extends CommandHandler
 {
-    const CHANNEL_DOMAIN = 'honeybee.events.domain';
-
-    const CHANNEL_INFRA = 'honeybee.events.infrastructure';
-
-    const CHANNEL_FILES = 'honeybee.events.files';
-
     protected $aggregate_root_type;
 
     protected $event_bus;
@@ -54,17 +49,17 @@ abstract class AggregateRootCommandHandler extends CommandHandler
 
         if ($comitted_events->isEmpty()) {
             $this->event_bus->distribute(
-                self::CHANNEL_INFRA,
+                ChannelMap::CHANNEL_INFRA,
                 new NoOpSignal([
                     'command_data' => $command->toArray(),
-                    'meta_data' => $command->getMetaData()
+                    'metadata' => $command->getMetadata()
                 ])
             );
         } else {
             foreach ($comitted_events as $aggregate_root_id => $event_list) {
                 foreach ($event_list as $event) {
-                    $this->event_bus->distribute(self::CHANNEL_FILES, $event);
-                    $this->event_bus->distribute(self::CHANNEL_DOMAIN, $event);
+                    $this->event_bus->distribute(ChannelMap::CHANNEL_FILES, $event);
+                    $this->event_bus->distribute(ChannelMap::CHANNEL_DOMAIN, $event);
                 }
             }
         }

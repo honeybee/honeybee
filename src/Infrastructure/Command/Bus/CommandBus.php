@@ -7,17 +7,21 @@ use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Command\Bus\Subscription\CommandSubscriptionInterface;
 use Honeybee\Infrastructure\Command\Bus\Subscription\CommandSubscriptionMap;
 use Honeybee\Infrastructure\Command\CommandInterface;
+use Honeybee\Infrastructure\Command\CommandEnricher;
 use Psr\Log\LoggerInterface;
 
 class CommandBus extends Object implements CommandBusInterface
 {
     protected $subscriptions;
 
+    protected $command_enricher;
+
     protected $logger;
 
-    public function __construct(LoggerInterface $logger)
+    public function __construct(CommandEnricher $command_enricher, LoggerInterface $logger)
     {
-        $this->subscriptions = new CommandSubscriptionMap();
+        $this->subscriptions = new CommandSubscriptionMap;
+        $this->command_enricher = $command_enricher;
         $this->logger = $logger;
     }
 
@@ -46,14 +50,16 @@ class CommandBus extends Object implements CommandBusInterface
         $subscription = $this->subscriptions->getItem($command_type);
         $transport = $subscription->getCommandTransport();
 
-        return $transport->send($command);
+        $enriched_command = $this->command_enricher->enrich($command);
+
+        return $transport->send($enriched_command);
     }
 
     public function subscribe(CommandSubscriptionInterface $subscription)
     {
         $command_type = $subscription->getCommandType();
         if ($this->subscriptions->hasKey($command_type)) {
-            throw new RuntimeError("Already registered subscription for command-type: " . $command_type);
+            throw new RuntimeError('Already registered subscription for command-type: ' . $command_type);
         }
         $this->subscriptions->setItem($command_type, $subscription);
     }

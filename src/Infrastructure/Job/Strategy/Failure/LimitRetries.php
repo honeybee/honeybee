@@ -24,8 +24,8 @@ class LimitRetries implements FailureStrategyInterface
 
     public function hasFailed()
     {
-        $meta_data = $this->job->getMetaData();
-        $retries = isset($meta_data['retries']) ? $meta_data['retries'] : 0;
+        $metadata = $this->job->getMetadata();
+        $retries = isset($metadata['retries']) ? $metadata['retries'] : 0;
         return $retries >= $this->limit;
     }
 }

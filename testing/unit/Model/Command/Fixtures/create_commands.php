@@ -11,7 +11,7 @@ return [
           'values' => [],
           'aggregate_root_type' => 'Honeybee\Tests\Model\Aggregate\Fixtures\Author\AuthorType',
           'embedded_entity_commands' => [],
-          'meta_data' => []
+          'metadata' => []
       ]
     ],
     // payload with no embeds or references
@@ -32,7 +32,7 @@ return [
             ],
             'aggregate_root_type' => 'Honeybee\Tests\Model\Aggregate\Fixtures\Author\AuthorType',
             'embedded_entity_commands' => [],
-            'meta_data' => []
+            'metadata' => []
         ]
     ],
     // payload with embeds only
@@ -68,10 +68,10 @@ return [
                     ],
                     'embedded_entity_commands' => [],
                     'position' => 0,
-                    'meta_data' => []
+                    'metadata' => []
                 ]
             ],
-            'meta_data' => []
+            'metadata' => []
         ]
     ],
     // payload with embeds and references and empty values
@@ -117,7 +117,7 @@ return [
                     ],
                     'embedded_entity_commands' => [],
                     'position' => 0,
-                    'meta_data' => []
+                    'metadata' => []
                 ],
                 [
                     '@type' => 'Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\AddEmbeddedEntityCommand',
@@ -128,7 +128,7 @@ return [
                     'parent_attribute_name' => 'books',
                     'embedded_entity_commands' => [],
                     'position' => 0,
-                    'meta_data' => []
+                    'metadata' => []
                 ],
                 [
                     '@type' => 'Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\AddEmbeddedEntityCommand',
@@ -139,10 +139,10 @@ return [
                     'parent_attribute_name' => 'books',
                     'embedded_entity_commands' => [],
                     'position' => 1,
-                    'meta_data' => []
+                    'metadata' => []
                 ]
             ],
-            'meta_data' => []
+            'metadata' => []
         ]
     ],
     // payload with references only
@@ -180,7 +180,7 @@ return [
                     'parent_attribute_name' => 'books',
                     'embedded_entity_commands' => [],
                     'position' => 0,
-                    'meta_data' => []
+                    'metadata' => []
                 ],
                 [
                     '@type' => 'Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\AddEmbeddedEntityCommand',
@@ -191,10 +191,10 @@ return [
                     'parent_attribute_name' => 'books',
                     'embedded_entity_commands' => [],
                     'position' => 1,
-                    'meta_data' => []
+                    'metadata' => []
                 ]
             ],
-            'meta_data' => []
+            'metadata' => []
         ]
     ],
 ];

@@ -33,8 +33,8 @@ class MultiplyInterval implements RetryStrategyInterface
 
     public function getInterval()
     {
-        $meta_data = $this->job->getMetaData();
-        $retries = isset($meta_data['retries']) ? $meta_data['retries'] : 0;
+        $metadata = $this->job->getMetadata();
+        $retries = isset($metadata['retries']) ? $metadata['retries'] : 0;
 
         // assume settings are seconds if provided as integers
         $zero_date = new DateTimeImmutable('@0');

@@ -6,5 +6,5 @@ interface BulkOperationInterface
 {
     public function getPayload();
 
-    public function getMetaData();
+    public function getMetadata();
 }

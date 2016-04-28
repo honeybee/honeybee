@@ -6,7 +6,7 @@ use Trellis\Common\Object;
 
 class BulkStreamError extends Object
 {
-    const INVALID_META_DATA = 'invalid_meta_data';
+    const INVALID_METADATA = 'invalid_metadata';
 
     const INVALID_PAYLOAD = 'invalid_payload';
 

@@ -9,7 +9,6 @@ use Honeybee\Infrastructure\Command\CommandBuilderList;
 use Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\AddEmbeddedEntityCommand;
 use Honeybee\Model\Task\ModifyAggregateRoot\ModifyEmbeddedEntity\ModifyEmbeddedEntityCommand;
 use Honeybee\Model\Task\ModifyAggregateRoot\RemoveEmbeddedEntity\RemoveEmbeddedEntityCommand;
-use Trellis\Common\Collection\ArrayList;
 use Trellis\Runtime\Entity\EntityList;
 use Trellis\Runtime\Attribute\AttributeInterface;
 use Trellis\Runtime\Attribute\EmbeddedEntityList\EmbeddedEntityListAttribute;
@@ -28,7 +27,7 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
 
         $this->entity_type = $entity_type;
         $this->command_state['embedded_entity_type'] = $entity_type->getPrefix();
-        $this->command_state['embedded_entity_commands'] = new ArrayList;
+        $this->command_state['embedded_entity_commands'] = new EmbeddedEntityTypeCommandList;
     }
 
     /**
@@ -82,7 +81,7 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
             )->getFirst();
 
             if (!$affected_entity) {
-                $builder_list->addItem(
+                $builder_list->push(
                     (new self($embed_type, AddEmbeddedEntityCommand::CLASS))
                     ->withParentAttributeName($attribute_name)
                     ->withPosition($position)
@@ -95,7 +94,7 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
                 if (!empty($modified_values)
                     || $embedded_entity_list->getKey($affected_entity) != $position
                 ) {
-                    $builder_list->addItem(
+                    $builder_list->push(
                         (new self($embed_type, ModifyEmbeddedEntityCommand::CLASS))
                         ->withParentAttributeName($attribute_name)
                         ->withEmbeddedEntityIdentifier($affected_entity->getIdentifier())
@@ -130,7 +129,7 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
                     $builder_list->splice($command_key);
                 } else {
                     // the projection entity was not found in the payload so we can prepare removal
-                    $builder_list->addItem(
+                    $builder_list->push(
                         (new self($embedded_entity->getType(), RemoveEmbeddedEntityCommand::CLASS))
                         ->withParentAttributeName($attribute_name)
                         ->withEmbeddedEntityIdentifier($embedded_entity->getIdentifier())
@@ -183,14 +182,6 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
         }
 
         return empty($errors) ? Success::unit($sanitized_values) : Error::unit($errors);
-    }
-
-    /**
-     * @return Result
-     */
-    protected function validateEmbeddedEntityCommands(ArrayList $commands)
-    {
-        return Success::unit($commands->getItems());
     }
 
     /**

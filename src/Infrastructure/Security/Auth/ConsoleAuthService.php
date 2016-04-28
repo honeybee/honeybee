@@ -37,14 +37,17 @@ class ConsoleAuthService implements AuthServiceInterface
         if (isset($role_map[$system_username])) {
             return new AuthResponse(
                 AuthResponse::STATE_AUTHORIZED,
-                "authenticaton success",
-                [ 'acl_role' => $role_map[$system_username] ]
+                'authenticaton success',
+                [
+                    'login' => $system_username,
+                    'acl_role' => $role_map[$system_username]
+                ]
             );
         }
 
         return new AuthResponse(
             AuthResponse::STATE_UNAUTHORIZED,
-            "authentication failed",
+            'authentication failed',
             [],
             [ 'Unable to map system user to honeybee role.' ]
         );

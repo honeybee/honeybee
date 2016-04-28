@@ -2,7 +2,7 @@
 
 namespace Honeybee\Model\Command\Bulk;
 
-interface BulkMetaDataInterface
+interface BulkMetadataInterface
 {
     public function getType();
 

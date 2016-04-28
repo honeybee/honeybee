@@ -6,13 +6,13 @@ use Trellis\Common\Object;
 
 class BulkOperation extends Object implements BulkOperationInterface
 {
-    protected $meta_data;
+    protected $metadata;
 
     protected $payload;
 
-    public function __construct(BulkMetaData $meta_data, $payload)
+    public function __construct(BulkMetadata $metadata, $payload)
     {
-        $this->meta_data = $meta_data;
+        $this->metadata = $metadata;
         $this->payload = $payload;
     }
 
@@ -21,8 +21,8 @@ class BulkOperation extends Object implements BulkOperationInterface
         return $this->payload;
     }
 
-    public function getMetaData()
+    public function getMetadata()
     {
-        return $this->meta_data;
+        return $this->metadata;
     }
 }
