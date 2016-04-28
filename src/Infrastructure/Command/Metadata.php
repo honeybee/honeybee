@@ -3,16 +3,8 @@
 namespace Honeybee\Infrastructure\Command;
 
 use Trellis\Common\Collection\Map;
-use Honeybee\Common\Error\RuntimeError;
+use Trellis\Common\Collection\UniqueKeyInterface;
 
-class Metadata extends Map
+class Metadata extends Map implements UniqueKeyInterface
 {
-    public function offsetSet($offset, $value)
-    {
-        if (true === array_key_exists($offset, $this->items)) {
-            throw new RuntimeError(sprintf('Offset "%s" is already set and cannot be overridden.', $offset));
-        }
-
-        parent::offsetSet($offset, $value);
-    }
 }

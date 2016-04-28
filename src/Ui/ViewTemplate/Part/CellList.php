@@ -3,9 +3,9 @@
 namespace Honeybee\Ui\ViewTemplate\Part;
 
 use Trellis\Common\Collection\TypedList;
-use Trellis\Common\Collection\UniqueCollectionInterface;
+use Trellis\Common\Collection\UniqueValueInterface;
 
-class CellList extends TypedList implements UniqueCollectionInterface
+class CellList extends TypedList implements UniqueValueInterface
 {
     protected function getItemImplementor()
     {

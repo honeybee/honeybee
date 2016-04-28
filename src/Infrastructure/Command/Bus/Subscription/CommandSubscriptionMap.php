@@ -2,10 +2,10 @@
 
 namespace Honeybee\Infrastructure\Command\Bus\Subscription;
 
-use Trellis\Common\Collection\UniqueCollectionInterface;
+use Trellis\Common\Collection\UniqueValueInterface;
 use Trellis\Common\Collection\TypedMap;
 
-class CommandSubscriptionMap extends TypedMap implements UniqueCollectionInterface
+class CommandSubscriptionMap extends TypedMap implements UniqueValueInterface
 {
     protected function getItemImplementor()
     {

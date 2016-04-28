@@ -15,7 +15,7 @@ class MetadataTest extends TestCase
     }
 
     /**
-     * @expectedException Honeybee\Common\Error\RuntimeError
+     * @expectedException Trellis\Common\Error\RuntimeException
      */
     public function testAppendWithKeyCollision()
     {
@@ -27,7 +27,7 @@ class MetadataTest extends TestCase
     }
 
     /**
-     * @expectedException Honeybee\Common\Error\RuntimeError
+     * @expectedException Trellis\Common\Error\RuntimeException
      */
     public function testSetItemWithKeyCollision()
     {

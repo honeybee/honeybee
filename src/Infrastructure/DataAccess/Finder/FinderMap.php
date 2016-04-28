@@ -3,9 +3,9 @@
 namespace Honeybee\Infrastructure\DataAccess\Finder;
 
 use Trellis\Common\Collection\TypedMap;
-use Trellis\Common\Collection\UniqueCollectionInterface;
+use Trellis\Common\Collection\UniqueValueInterface;
 
-class FinderMap extends TypedMap implements UniqueCollectionInterface
+class FinderMap extends TypedMap implements UniqueValueInterface
 {
     protected function getItemImplementor()
     {

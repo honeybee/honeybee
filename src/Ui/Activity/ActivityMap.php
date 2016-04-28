@@ -2,10 +2,10 @@
 
 namespace Honeybee\Ui\Activity;
 
-use Trellis\Common\Collection\UniqueCollectionInterface;
+use Trellis\Common\Collection\UniqueValueInterface;
 use Trellis\Common\Collection\TypedMap;
 
-class ActivityMap extends TypedMap implements UniqueCollectionInterface
+class ActivityMap extends TypedMap implements UniqueValueInterface
 {
     public function filterByUrlParameter($name, $value)
     {

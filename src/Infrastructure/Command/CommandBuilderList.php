@@ -3,7 +3,7 @@
 namespace Honeybee\Infrastructure\Command;
 
 use Trellis\Common\Collection\TypedList;
-use Trellis\Common\Collection\UniqueCollectionInterface;
+use Trellis\Common\Collection\UniqueValueInterface;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\AddEmbeddedEntityCommand;
 use Honeybee\Model\Task\ModifyAggregateRoot\ModifyEmbeddedEntity\ModifyEmbeddedEntityCommand;
@@ -11,7 +11,7 @@ use Honeybee\Model\Task\ModifyAggregateRoot\RemoveEmbeddedEntity\RemoveEmbeddedE
 use Shrink0r\Monatic\Success;
 use Shrink0r\Monatic\Error;
 
-class CommandBuilderList extends TypedList implements UniqueCollectionInterface
+class CommandBuilderList extends TypedList implements UniqueValueInterface
 {
     protected function getItemImplementor()
     {

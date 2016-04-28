@@ -4,9 +4,9 @@ namespace Honeybee\Ui\ViewTemplate\Part;
 
 use Honeybee\Common\Error\RuntimeError;
 use Trellis\Common\Collection\TypedList;
-use Trellis\Common\Collection\UniqueCollectionInterface;
+use Trellis\Common\Collection\UniqueValueInterface;
 
-class NamedItemList extends TypedList implements UniqueCollectionInterface
+class NamedItemList extends TypedList implements UniqueValueInterface
 {
     protected function getItemImplementor()
     {

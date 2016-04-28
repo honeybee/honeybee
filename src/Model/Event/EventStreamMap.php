@@ -2,10 +2,10 @@
 
 namespace Honeybee\Model\Event;
 
-use Trellis\Common\Collection\UniqueCollectionInterface;
+use Trellis\Common\Collection\UniqueValueInterface;
 use Trellis\Common\Collection\TypedMap;
 
-class EventStreamMap extends TypedMap implements UniqueCollectionInterface
+class EventStreamMap extends TypedMap implements UniqueValueInterface
 {
     protected function getItemImplementor()
     {

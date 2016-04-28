@@ -4,9 +4,9 @@ namespace Honeybee\Infrastructure\DataAccess\Query;
 
 use Honeybee\Projection\ProjectionTypeInterface;
 use Trellis\Common\Collection\TypedMap;
-use Trellis\Common\Collection\UniqueCollectionInterface;
+use Trellis\Common\Collection\UniqueValueInterface;
 
-class QueryServiceMap extends TypedMap implements UniqueCollectionInterface
+class QueryServiceMap extends TypedMap implements UniqueValueInterface
 {
     public function getByProjectionType(ProjectionTypeInterface $projection_type)
     {

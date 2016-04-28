@@ -3,9 +3,9 @@
 namespace Honeybee\Infrastructure\Command;
 
 use Trellis\Common\Collection\TypedList;
-use Trellis\Common\Collection\UniqueCollectionInterface;
+use Trellis\Common\Collection\UniqueValueInterface;
 
-class CommandEnricher extends TypedList implements UniqueCollectionInterface, CommandEnricherInterface
+class CommandEnricher extends TypedList implements UniqueValueInterface, CommandEnricherInterface
 {
     public function enrich(CommandInterface $command)
     {

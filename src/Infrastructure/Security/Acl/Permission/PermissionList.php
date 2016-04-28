@@ -3,9 +3,9 @@
 namespace Honeybee\Infrastructure\Security\Acl\Permission;
 
 use Trellis\Common\Collection\TypedList;
-use Trellis\Common\Collection\UniqueCollectionInterface;
+use Trellis\Common\Collection\UniqueValueInterface;
 
-class PermissionList extends TypedList implements UniqueCollectionInterface
+class PermissionList extends TypedList implements UniqueValueInterface
 {
     protected function getItemImplementor()
     {

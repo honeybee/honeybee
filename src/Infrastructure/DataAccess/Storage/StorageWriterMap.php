@@ -4,9 +4,9 @@ namespace Honeybee\Infrastructure\DataAccess\Storage;
 
 use Honeybee\Common\Error\RuntimeError;
 use Trellis\Common\Collection\TypedMap;
-use Trellis\Common\Collection\UniqueCollectionInterface;
+use Trellis\Common\Collection\UniqueValueInterface;
 
-class StorageWriterMap extends TypedMap implements UniqueCollectionInterface
+class StorageWriterMap extends TypedMap implements UniqueValueInterface
 {
     public function getByEntityType($entity_type_prefix)
     {

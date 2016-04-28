@@ -3,9 +3,9 @@
 namespace Honeybee\Infrastructure\Command;
 
 use Trellis\Common\Collection\TypedMap;
-use Trellis\Common\Collection\UniqueCollectionInterface;
+use Trellis\Common\Collection\UniqueValueInterface;
 
-class CommandMap extends TypedMap implements UniqueCollectionInterface
+class CommandMap extends TypedMap implements UniqueValueInterface
 {
     protected function getItemImplementor()
     {

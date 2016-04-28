@@ -3,9 +3,9 @@
 namespace Honeybee\Ui\ViewTemplate;
 
 use Trellis\Common\Collection\TypedMap;
-use Trellis\Common\Collection\UniqueCollectionInterface;
+use Trellis\Common\Collection\UniqueValueInterface;
 
-class ViewTemplatesContainerMap extends TypedMap implements UniqueCollectionInterface
+class ViewTemplatesContainerMap extends TypedMap implements UniqueValueInterface
 {
     protected function getItemImplementor()
     {

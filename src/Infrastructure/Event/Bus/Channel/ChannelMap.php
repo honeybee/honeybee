@@ -3,9 +3,9 @@
 namespace Honeybee\Infrastructure\Event\Bus\Channel;
 
 use Trellis\Common\Collection\TypedMap;
-use Trellis\Common\Collection\UniqueCollectionInterface;
+use Trellis\Common\Collection\UniqueValueInterface;
 
-class ChannelMap extends TypedMap implements UniqueCollectionInterface
+class ChannelMap extends TypedMap implements UniqueValueInterface
 {
     const CHANNEL_DOMAIN = 'honeybee.events.domain';
 
