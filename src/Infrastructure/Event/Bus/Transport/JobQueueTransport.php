@@ -15,14 +15,11 @@ class JobQueueTransport extends EventTransport
 
     protected $exchange_name;
 
-    public function __construct($name, JobServiceInterface $job_service, SettingsInterface $settings = null)
+    public function __construct($name, JobServiceInterface $job_service, $exchange = null)
     {
         parent::__construct($name);
 
-        $settings = $settings ?: new Settings;
-
-        $this->exchange_name = $settings->get('exchange', self::DEFAULT_EVENT_EXCHANGE);
-
+        $this->exchange_name = $exchange ?: self::DEFAULT_EVENT_EXCHANGE;
         $this->job_service = $job_service;
         $this->job_service->initialize($this->exchange_name);
     }
