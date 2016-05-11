@@ -74,12 +74,13 @@ class Worker implements WorkerInterface
 
     protected function onJobScheduledForExecution($job_message)
     {
+        $delivery_info = $job_message->delivery_info;
+        $channel = $delivery_info['channel'];
+        $delivery_tag = $delivery_info['delivery_tag'];
+        $job_state = JsonToolkit::parse($job_message->body);
+        $job = $this->job_service->createJob($job_state, $this->config->get('job'));
+
         try {
-            $delivery_info = $job_message->delivery_info;
-            $channel = $delivery_info['channel'];
-            $delivery_tag = $delivery_info['delivery_tag'];
-            $job_state = JsonToolkit::parse($job_message->body);
-            $job = $this->job_service->createJob($job_state, $this->config->get('job'));
             $job->run();
         } catch (Exception $error) {
             if ($job->getStrategy()->canRetry()) {
