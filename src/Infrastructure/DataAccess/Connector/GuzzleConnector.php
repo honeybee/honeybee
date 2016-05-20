@@ -41,14 +41,13 @@ class GuzzleConnector extends Connector
         }
 
         if ($this->config->has('default_options')) {
-            $request_options = array_merge($request_options, (array)$this->config->get('default_options', []));
+            $request_options = array_merge($request_options, (array)$this->config->get('default_options')->toArray());
         }
 
         $client_options = [];
         if (!empty($request_options)) {
             $client_options['request.options'] = $request_options;
         }
-
         return new Client($base_uri, $client_options);
     }
 
