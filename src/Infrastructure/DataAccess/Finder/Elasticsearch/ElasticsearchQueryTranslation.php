@@ -149,13 +149,16 @@ class ElasticsearchQueryTranslation implements QueryTranslationInterface
         $attribute_path = $criteria->getAttributePath();
 
         if (is_array($attribute_value)) {
-            return [ 'terms' => [ $attribute_path => $attribute_value ] ];
+            $filter = [ 'terms' => [ $attribute_path => $attribute_value ] ];;
+            if ($criteria->getComparison()->isInverted()) {
+                return [ 'not' => $filter ];
+            }
+            return $filter;
         }
 
-        if (strpos($attribute_value, '!') === 0) {
+        if ($criteria->getComparison()->isInverted() || strpos($attribute_value, '!') === 0) {
             $negate_filter = true;
         }
-
         if ($attribute_value === self::QUERY_FOR_EMPTY) {
             $attr_filter = $this->buildMissingFilter($criteria);
         } else {

@@ -18,10 +18,13 @@ class Comparison
 
     protected $comparand;
 
-    public function __construct($comparator, $comparand)
+    protected $inverted;
+
+    public function __construct($comparator, $comparand, $inverted = false)
     {
         $this->comparator = $comparator;
         $this->comparand = $comparand;
+        $this->inverted = $inverted;
     }
 
     public function getComparator()
@@ -34,8 +37,18 @@ class Comparison
         return $this->comparand;
     }
 
+    public function isInverted()
+    {
+        return $this->inverted;
+    }
+
     public function __toString()
     {
-        return strtoupper($this->comparator) . ' ' . $this->comparand;
+        $string = strtoupper($this->comparator) . ' ' . $this->comparand;
+        if ($this->inverted) {
+            $string = 'not ' . $string;
+        }
+
+        return $string;
     }
 }
