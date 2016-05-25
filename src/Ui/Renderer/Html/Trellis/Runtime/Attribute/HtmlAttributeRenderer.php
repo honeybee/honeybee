@@ -88,6 +88,6 @@ class HtmlAttributeRenderer extends AttributeRenderer
 
     protected function getWidgetImplementor()
     {
-        return null;
+        return $this->getOption('widget', null);
     }
 }
