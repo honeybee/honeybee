@@ -26,6 +26,6 @@ class HighlightType extends EmbeddedEntityType
 
     public static function getEntityImplementor()
     {
-        return '\\Honeybee\\Tests\\Model\\Aggregate\\Fixtures\\Author\\Embed\\Highlight';
+        return Highlight::CLASS;
     }
 }

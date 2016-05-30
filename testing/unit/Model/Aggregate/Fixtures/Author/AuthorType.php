@@ -29,7 +29,6 @@ class AuthorType extends EntityType
                     'products',
                     $this,
                     [
-                        'inline_mode' => true,
                         'entity_types' => [
                             '\\Honeybee\\Tests\\Model\\Aggregate\\Fixtures\\Author\\Embed\\HighlightType',
                         ]
@@ -39,7 +38,6 @@ class AuthorType extends EntityType
                     'books',
                     $this,
                     [
-                        'inline_mode' => true,
                         'entity_types' => [
                             '\\Honeybee\\Tests\\Model\\Aggregate\\Fixtures\\Author\\Reference\\BookType',
                         ]

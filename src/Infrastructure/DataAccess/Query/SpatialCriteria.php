@@ -2,9 +2,10 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Query;
 
+use Trellis\Common\Object;
 use Honeybee\Infrastructure\DataAccess\Query\Geometry\PositionInterface;
 
-class SpatialCriteria implements CriteriaInterface
+class SpatialCriteria extends Object implements CriteriaInterface
 {
     protected $attribute_path;
 

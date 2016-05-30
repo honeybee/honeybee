@@ -27,6 +27,6 @@ class BookType extends ReferencedEntityType
 
     public static function getEntityImplementor()
     {
-        return '\\Honeybee\\Tests\\Model\\Aggregate\\Fixtures\\Author\\Reference\\Book';
+        return Book::CLASS;
     }
 }

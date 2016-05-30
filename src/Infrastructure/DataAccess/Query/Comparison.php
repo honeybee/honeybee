@@ -2,7 +2,9 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Query;
 
-class Comparison
+use Trellis\Common\Object;
+
+class Comparison extends Object
 {
     const EQUALS = 'eq';
 

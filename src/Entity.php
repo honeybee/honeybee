@@ -61,6 +61,11 @@ abstract class Entity extends BaseEntity implements ResourceInterface, ScopeKeyI
         return implode(self::SCOPE_KEY_SEPARATOR, $scope_key_pieces);
     }
 
+    public function createMirrorFrom(EntityInterface $entity)
+    {
+        return $this->getType()->createMirroredEntity($entity, $this);
+    }
+
     public function __toString()
     {
         return $this->getIdentifier();

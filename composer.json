@@ -69,7 +69,7 @@
         "phpmd/phpmd": "^2.3",
         "sebastian/phpcpd": "~2.0.2",
         "squizlabs/php_codesniffer": "^2.3.3",
-        "mockery/mockery": "^0.9.4",
+        "mockery/mockery": "dev-master",
         "satooshi/php-coveralls": "~0.6.1",
         "sami/sami": "^3.0.8"
     },

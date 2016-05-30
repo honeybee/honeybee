@@ -49,14 +49,14 @@ class ProcessManager implements ProcessManagerInterface
 
     public function hasCompleted(ProcessStateInterface $process_state)
     {
-        $process = $this->process_map->getByName($process_state->getProcessName());
+        $process = $this->process_map->getItem($process_state->getProcessName());
 
         return $process->hasFinished($process_state);
     }
 
     public function beginProcess(ProcessStateInterface $process_state, EventInterface $event = null)
     {
-        $process = $this->process_map->getByName($process_state->getProcessName());
+        $process = $this->process_map->getItem($process_state->getProcessName());
         if ($process->hasStarted($process_state)) {
             throw new RuntimeError('Process has already started and may not not be started again.');
         }
@@ -71,12 +71,12 @@ class ProcessManager implements ProcessManagerInterface
             throw new RuntimeError('Unable to find process for given event: ' . $event->getType());
         }
 
-        return $this->runProcess($process_state, $event);;
+        return $this->runProcess($process_state, $event);
     }
 
     protected function runProcess(ProcessStateInterface $process_state, EventInterface $event = null)
     {
-        $process = $this->process_map->getByName($process_state->getProcessName());
+        $process = $this->process_map->getItem($process_state->getProcessName());
         if (!$process->hasFinished($process_state)) {
             $commands = $process->proceed($process_state, $event);
             $this->persistProcessState($process_state);
@@ -126,7 +126,9 @@ class ProcessManager implements ProcessManagerInterface
 
     protected function readProcessState($process_uuid)
     {
-        if (!($cached_state = $this->data_access_service->readFrom($this->config->get('cache_reader'), $process_uuid))) {
+        $cached_state = $this->data_access_service->readFrom($this->config->get('cache_reader'), $process_uuid);
+
+        if (!$cached_state) {
             $process_state = $this->data_access_service->readFrom($this->config->get('storage_reader'), $process_uuid);
         } else {
             $process_state = $cached_state;

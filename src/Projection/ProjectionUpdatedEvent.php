@@ -3,21 +3,21 @@
 namespace Honeybee\Projection;
 
 use Assert\Assertion;
+use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Common\Util\StringToolkit;
 use Honeybee\Infrastructure\Event\Event;
-use Honeybee\Model\Event\AggregateRootEventInterface;
 
 class ProjectionUpdatedEvent extends Event
 {
-    protected $source_event_data;
+    protected $projection_identifier;
 
     protected $projection_type;
 
-    protected $projection_data;
+    protected $data;
 
-    public function getSourceEventData()
+    public function getProjectionIdentifier()
     {
-        return $this->source_event_data;
+        return $this->projection_identifier;
     }
 
     public function getProjectionType()
@@ -25,19 +25,32 @@ class ProjectionUpdatedEvent extends Event
         return $this->projection_type;
     }
 
-    public function getProjectionData()
+    public function getData()
     {
-        return $this->projection_data;
+        return $this->data;
     }
 
     public function getType()
     {
-        return sprintf('%s.resource_updated', $this->getProjectionType()->getPrefix());
-    }
+        $fqcn_parts = explode('\\', $this->projection_type);
+        if (count($fqcn_parts) < 3) {
+            throw new RuntimeError(
+                sprintf(
+                    'A concrete projection class must be made up of at least three namespace parts: ' .
+                    '(vendor, package, type, event), in order to support auto-type generation.' .
+                    ' The given class %s only has %d parts.',
+                    $this->projection_type,
+                    count($fqcn_parts)
+                )
+            );
+        }
+        $vendor = strtolower(array_shift($fqcn_parts));
+        $package = StringToolkit::asSnakeCase(array_shift($fqcn_parts));
+        $type = StringToolkit::asSnakeCase(array_shift($fqcn_parts));
+        $event_parts = explode('\\', static::CLASS);
+        $event = str_replace('_event', '', StringToolkit::asSnakeCase(array_pop($event_parts)));
 
-    protected function setSourceEventData(array $source_event_data)
-    {
-        $this->source_event_data = $source_event_data;
+        return sprintf('%s.%s.%s.%s', $vendor, $package, $type, $event);
     }
 
     protected function guardRequiredState()
@@ -45,7 +58,10 @@ class ProjectionUpdatedEvent extends Event
         parent::guardRequiredState();
 
         Assertion::string($this->projection_type);
-        Assertion::isArray($this->source_event_data);
-        Assertion::isArray($this->projection_data);
+        Assertion::isArray($this->data);
+        Assertion::regex(
+            $this->projection_identifier,
+            '/[\w\.\-_]{1,128}\-\w{8}\-\w{4}\-\w{4}\-\w{4}\-\w{12}\-\w{2}_\w{2}\-\d+/'
+        );
     }
 }

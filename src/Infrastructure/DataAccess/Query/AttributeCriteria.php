@@ -2,7 +2,9 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Query;
 
-class AttributeCriteria implements CriteriaInterface
+use Trellis\Common\Object;
+
+class AttributeCriteria extends Object implements CriteriaInterface
 {
     protected $attribute_path;
 
