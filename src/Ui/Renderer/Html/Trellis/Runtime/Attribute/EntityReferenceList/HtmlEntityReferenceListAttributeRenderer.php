@@ -54,7 +54,7 @@ class HtmlEntityReferenceListAttributeRenderer extends HtmlEmbeddedEntityListAtt
 
         foreach ($this->attribute->getEmbeddedEntityTypeMap() as $embedded_type) {
             $display_fields = $this->fetchDisplayFields($embedded_type);
-            $suggest_fieldname = $this->getSuggestFieldname($embedded_type, reset($display_fields));
+            $suggest_fieldname = $this->getSuggestFieldname($embedded_type);
             if (!in_array($suggest_fieldname, $display_fields)) {
                 array_unshift($display_fields, $suggest_fieldname);
             }
@@ -127,7 +127,7 @@ class HtmlEntityReferenceListAttributeRenderer extends HtmlEmbeddedEntityListAtt
         return $display_fields;
     }
 
-    protected function getSuggestFieldname(EntityTypeInterface $embedded_type, $default_fieldname)
+    protected function getSuggestFieldname(EntityTypeInterface $embedded_type)
     {
         $type_prefix = $embedded_type->getPrefix();
         $suggest_field_option = $type_prefix . '.suggest_attribute';
@@ -144,7 +144,10 @@ class HtmlEntityReferenceListAttributeRenderer extends HtmlEmbeddedEntityListAtt
                 );
             }
         } else {
-            $suggest_fieldname = $default_fieldname;
+            throw new RuntimeError(
+                'Missing the option named "suggest_attribute". ' .
+                'This option is required when rendering reference attributes.'
+            );
         }
 
         return $suggest_fieldname;
