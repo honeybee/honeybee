@@ -7,16 +7,16 @@ use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Model\Aggregate\AggregateRootTypeInterface;
 use Honeybee\Model\Event\AggregateRootEventList;
 use Honeybee\Model\Task\CreateAggregateRoot\AggregateRootCreatedEvent;
-use Honeybee\Tests\Model\Aggregate\Fixtures\Author\AuthorType;
-use Honeybee\Tests\Model\Aggregate\Fixtures\Book\BookType;
-use Honeybee\Tests\Model\Aggregate\Fixtures\Publication\PublicationType;
-use Honeybee\Tests\Model\Aggregate\Fixtures\Publisher\PublisherType;
-use Honeybee\Tests\Model\Task\CreateAuthor\AuthorCreatedEvent;
-use Honeybee\Tests\Model\Task\CreateAuthor\CreateAuthorCommand;
-use Honeybee\Tests\Model\Task\ModifyAuthor\AuthorModifiedEvent;
-use Honeybee\Tests\Model\Task\ModifyAuthor\ModifyAuthorCommand;
-use Honeybee\Tests\Model\Task\ProceedAuthorWorkflow\AuthorWorkflowProceededEvent;
-use Honeybee\Tests\Model\Task\ProceedAuthorWorkflow\ProceedAuthorWorkflowCommand;
+use Honeybee\Tests\Fixture\BookSchema\Model\Author\AuthorType;
+use Honeybee\Tests\Fixture\BookSchema\Model\Book\BookType;
+use Honeybee\Tests\Fixture\BookSchema\Model\Publication\PublicationType;
+use Honeybee\Tests\Fixture\BookSchema\Model\Publisher\PublisherType;
+use Honeybee\Tests\Fixture\BookSchema\Task\CreateAuthor\AuthorCreatedEvent;
+use Honeybee\Tests\Fixture\BookSchema\Task\CreateAuthor\CreateAuthorCommand;
+use Honeybee\Tests\Fixture\BookSchema\Task\ModifyAuthor\AuthorModifiedEvent;
+use Honeybee\Tests\Fixture\BookSchema\Task\ModifyAuthor\ModifyAuthorCommand;
+use Honeybee\Tests\Fixture\BookSchema\Task\ProceedAuthorWorkflow\AuthorWorkflowProceededEvent;
+use Honeybee\Tests\Fixture\BookSchema\Task\ProceedAuthorWorkflow\ProceedAuthorWorkflowCommand;
 use Honeybee\Tests\TestCase;
 use Workflux\Builder\XmlStateMachineBuilder;
 use Workflux\Error\Error as WorkfluxError;
@@ -36,6 +36,7 @@ class AggregateRootTest extends TestCase
 
     public function setUp()
     {
+        // @todo mock the state machine instead of loading from a file
         $this->aggregate_root_type = new AuthorType($this->getDefaultStateMachine());
     }
 
@@ -512,7 +513,7 @@ class AggregateRootTest extends TestCase
 
     protected function getDefaultStateMachine()
     {
-        $workflows_file_path = __DIR__ . '/Fixtures/workflows.xml';
+        $workflows_file_path = __DIR__ . '/../../Fixture/BookSchema/Model/workflows.xml';
         $workflow_builder = new XmlStateMachineBuilder(
             [
                 'name' => 'author_workflow_default',

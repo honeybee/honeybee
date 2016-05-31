@@ -3,9 +3,8 @@
 namespace Honeybee\Projection;
 
 use Trellis\Runtime\Entity\EntityReferenceInterface;
-use Honeybee\Entity;
 
-abstract class ReferencedEntity extends Entity implements EntityReferenceInterface
+abstract class ReferencedEntity extends EmbeddedEntity implements EntityReferenceInterface
 {
     public function getReferencedIdentifier()
     {

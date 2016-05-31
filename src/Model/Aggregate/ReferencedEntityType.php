@@ -7,6 +7,7 @@ use Trellis\Common\OptionsInterface;
 use Trellis\Runtime\EntityTypeInterface;
 use Trellis\Runtime\Attribute\AttributeInterface;
 use Trellis\Runtime\Attribute\Text\TextAttribute;
+use Trellis\Runtime\Attribute\AttributeMap;
 
 // @todo we might want to inherit from Honeybee\Entity here, instead of EmbeddedEntityType
 abstract class ReferencedEntityType extends EmbeddedEntityType implements ReferencedEntityTypeInterface
@@ -49,16 +50,11 @@ abstract class ReferencedEntityType extends EmbeddedEntityType implements Refere
 
     public function getDefaultAttributes()
     {
-        return array_merge(
-            parent::getDefaultAttributes(),
-            [
-                'referenced_identifier' => new TextAttribute(
-                    'referenced_identifier',
-                    $this,
-                    [],
-                    $this->getParentAttribute()
-                )
-            ]
-        );
+        $default_attributes = [
+            new TextAttribute('referenced_identifier', $this, [], $this->getParentAttribute())
+        ];
+
+        $default_attributes_map = new AttributeMap($default_attributes);
+        return parent::getDefaultAttributes()->append($default_attributes_map);
     }
 }

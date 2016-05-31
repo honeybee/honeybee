@@ -2,7 +2,6 @@
 
 namespace Honeybee\Projection;
 
-use Honeybee\EntityType;
 use Honeybee\Common\Util\StringToolkit;
 use Trellis\Runtime\Attribute\Integer\IntegerAttribute;
 use Trellis\Runtime\Attribute\KeyValueList\KeyValueListAttribute;
@@ -10,6 +9,7 @@ use Trellis\Runtime\Attribute\Text\TextAttribute;
 use Trellis\Runtime\Attribute\Timestamp\TimestampAttribute;
 use Trellis\Runtime\Attribute\Uuid\UuidAttribute;
 use Trellis\Runtime\Entity\EntityInterface;
+use Trellis\Runtime\Attribute\AttributeMap;
 
 abstract class ProjectionType extends EntityType implements ProjectionTypeInterface
 {
@@ -52,32 +52,30 @@ abstract class ProjectionType extends EntityType implements ProjectionTypeInterf
     /**
      * Returns the default attributes that are initially added to a aggregate_root_type upon creation.
      *
-     * @return array A list of AttributeInterface implementations.
+     * @return AttributeMap A map of AttributeInterface implementations.
      */
     public function getDefaultAttributes()
     {
-        $attributes = array_merge(
-            parent::getDefaultAttributes(),
-            [
-                new TextAttribute('identifier', $this),
-                new IntegerAttribute('revision', $this, [ 'default_value' => 0 ]),
-                new UuidAttribute('uuid', $this),
-                new IntegerAttribute('short_id', $this),
-                new TextAttribute('language', $this, [ 'default_value' => 'de_DE' ]),
-                new IntegerAttribute('version', $this, [ 'default_value' => 1 ]),
-                new TimestampAttribute('created_at', $this, [ 'default_value' => 'now' ]),
-                new TimestampAttribute('modified_at', $this, [ 'default_value' => 'now' ]),
-                new TextAttribute('workflow_state', $this),
-                new KeyValueListAttribute('workflow_parameters', $this),
-                new KeyValueListAttribute('metadata', $this)
-            ]
-        );
+        $default_attributes = [
+            new TextAttribute('identifier', $this),
+            new IntegerAttribute('revision', $this, [ 'default_value' => 0 ]),
+            new UuidAttribute('uuid', $this),
+            new IntegerAttribute('short_id', $this),
+            new TextAttribute('language', $this, [ 'default_value' => 'de_DE' ]),
+            new IntegerAttribute('version', $this, [ 'default_value' => 1 ]),
+            new TimestampAttribute('created_at', $this, [ 'default_value' => 'now' ]),
+            new TimestampAttribute('modified_at', $this, [ 'default_value' => 'now' ]),
+            new TextAttribute('workflow_state', $this),
+            new KeyValueListAttribute('workflow_parameters', $this),
+            new KeyValueListAttribute('metadata', $this)
+        ];
 
         if ($this->isHierarchical()) {
-            $attributes[] = new TextAttribute('parent_node_id', $this);
-            $attributes[] = new TextAttribute('materialized_path', $this);
+            $default_attributes[] = new TextAttribute('parent_node_id', $this);
+            $default_attributes[] = new TextAttribute('materialized_path', $this);
         }
 
-        return $attributes;
+        $default_attributes_map = new AttributeMap($default_attributes);
+        return parent::getDefaultAttributes()->append($default_attributes_map);
     }
 }

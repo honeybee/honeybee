@@ -476,12 +476,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/honeybee/trellis.git",
-                "reference": "e427cc14d7cfa7a06950e95a2fd4f2a65b6a6b1e"
+                "reference": "7b6654d8250f7ec991d739522204db3b927480e1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/honeybee/trellis/zipball/e427cc14d7cfa7a06950e95a2fd4f2a65b6a6b1e",
-                "reference": "e427cc14d7cfa7a06950e95a2fd4f2a65b6a6b1e",
+                "url": "https://api.github.com/repos/honeybee/trellis/zipball/7b6654d8250f7ec991d739522204db3b927480e1",
+                "reference": "7b6654d8250f7ec991d739522204db3b927480e1",
                 "shasum": ""
             },
             "require": {
@@ -537,7 +537,7 @@
                 "entity",
                 "validation"
             ],
-            "time": "2016-05-27 16:02:54"
+            "time": "2016-05-31 14:06:56"
         },
         {
             "name": "league/flysystem",
@@ -1732,16 +1732,16 @@
     "packages-dev": [
         {
             "name": "blackfire/php-sdk",
-            "version": "v1.5.14",
+            "version": "v1.5.15",
             "source": {
                 "type": "git",
                 "url": "https://github.com/blackfireio/php-sdk.git",
-                "reference": "efb2a0403a8b9bbbc4499020236af231094d3bc2"
+                "reference": "ace7dd0030332f5c5c7aeecd324efcc6cae9f109"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/blackfireio/php-sdk/zipball/efb2a0403a8b9bbbc4499020236af231094d3bc2",
-                "reference": "efb2a0403a8b9bbbc4499020236af231094d3bc2",
+                "url": "https://api.github.com/repos/blackfireio/php-sdk/zipball/ace7dd0030332f5c5c7aeecd324efcc6cae9f109",
+                "reference": "ace7dd0030332f5c5c7aeecd324efcc6cae9f109",
                 "shasum": ""
             },
             "require": {
@@ -1783,7 +1783,7 @@
                 "uprofiler",
                 "xhprof"
             ],
-            "time": "2016-05-18 16:16:33"
+            "time": "2016-05-30 14:34:04"
         },
         {
             "name": "composer/ca-bundle",
@@ -2687,16 +2687,16 @@
         },
         {
             "name": "sami/sami",
-            "version": "v3.2.1",
+            "version": "v3.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfPHP/Sami.git",
-                "reference": "3a46b98e2fa4d4819018e3767ba6346bfed92957"
+                "reference": "0d63f25ad740bffa3dde5278d4856578b4324ca9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfPHP/Sami/zipball/3a46b98e2fa4d4819018e3767ba6346bfed92957",
-                "reference": "3a46b98e2fa4d4819018e3767ba6346bfed92957",
+                "url": "https://api.github.com/repos/FriendsOfPHP/Sami/zipball/0d63f25ad740bffa3dde5278d4856578b4324ca9",
+                "reference": "0d63f25ad740bffa3dde5278d4856578b4324ca9",
                 "shasum": ""
             },
             "require": {
@@ -2742,7 +2742,7 @@
             "keywords": [
                 "phpdoc"
             ],
-            "time": "2016-01-22 07:52:40"
+            "time": "2016-05-12 12:36:36"
         },
         {
             "name": "satooshi/php-coveralls",
@@ -3416,16 +3416,16 @@
         },
         {
             "name": "squizlabs/php_codesniffer",
-            "version": "2.6.0",
+            "version": "2.6.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/squizlabs/PHP_CodeSniffer.git",
-                "reference": "1bcdf03b068a530ac1962ce671dead356eeba43b"
+                "reference": "fb72ed32f8418db5e7770be1653e62e0d6f5dd3d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/1bcdf03b068a530ac1962ce671dead356eeba43b",
-                "reference": "1bcdf03b068a530ac1962ce671dead356eeba43b",
+                "url": "https://api.github.com/repos/squizlabs/PHP_CodeSniffer/zipball/fb72ed32f8418db5e7770be1653e62e0d6f5dd3d",
+                "reference": "fb72ed32f8418db5e7770be1653e62e0d6f5dd3d",
                 "shasum": ""
             },
             "require": {
@@ -3490,7 +3490,7 @@
                 "phpcs",
                 "standards"
             ],
-            "time": "2016-04-03 22:58:34"
+            "time": "2016-05-30 22:24:32"
         },
         {
             "name": "symfony/config",

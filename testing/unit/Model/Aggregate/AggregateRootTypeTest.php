@@ -4,17 +4,18 @@ namespace Honeybee\Tests\Model\Aggregate;
 
 use Honeybee\Tests\TestCase;
 use Honeybee\Model\Aggregate\AggregateRootTypeInterface;
-use Honeybee\Tests\Model\Aggregate\Fixtures\Book\BookType;
-use Honeybee\Tests\Model\Aggregate\Fixtures\Publication\PublicationType;
-use Honeybee\Tests\Model\Aggregate\Fixtures\Author\Author;
-use Honeybee\Tests\Model\Aggregate\Fixtures\Author\AuthorType;
-use Honeybee\Tests\Model\Aggregate\Fixtures\Publisher\PublisherType;
-use Workflux\Builder\XmlStateMachineBuilder;
+use Honeybee\Tests\Fixture\BookSchema\Model\Book\BookType;
+use Honeybee\Tests\Fixture\BookSchema\Model\Publication\PublicationType;
+use Honeybee\Tests\Fixture\BookSchema\Model\Author\Author;
+use Honeybee\Tests\Fixture\BookSchema\Model\Author\AuthorType;
+use Honeybee\Tests\Fixture\BookSchema\Model\Publisher\PublisherType;
+use Workflux\StateMachine\StateMachineInterface;
+use Mockery;
 
 class AggregateRootTypeTest extends TestCase
 {
     /**
-     * @dataProvider provideDefaultAttributeFixtures
+     * @dataProvider provideDefaultAttributeFixture
      */
     public function testGetAttributes(AggregateRootTypeInterface $aggregate_root_type, array $expected_attribute_names)
     {
@@ -25,7 +26,8 @@ class AggregateRootTypeTest extends TestCase
 
     public function testAggregateRootCreation()
     {
-        $aggregate_root_type = new AuthorType($this->getDefaultStateMachine());
+        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
+        $aggregate_root_type = new AuthorType($state_machine);
 
         $aggregate_root = $aggregate_root_type->createEntity();
 
@@ -33,8 +35,10 @@ class AggregateRootTypeTest extends TestCase
         $this->assertTrue($aggregate_root->isValid());
     }
 
-    public function provideDefaultAttributeFixtures()
+    public function provideDefaultAttributeFixture()
     {
+        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
+
         $honeybee_default_attributes = [
             'identifier',
             'revision',
@@ -50,46 +54,33 @@ class AggregateRootTypeTest extends TestCase
 
         return [
             [
-                'aggregate_root_type' => new AuthorType($this->getDefaultStateMachine()),
+                'aggregate_root_type' => new AuthorType($state_machine),
                 'expected_attribute_names' => array_merge(
                     $honeybee_default_attributes,
                     [ 'firstname', 'lastname', 'blurb', 'products', 'books' ]
                 )
             ],
             [
-                'aggregate_root_type' => new BookType($this->getDefaultStateMachine()),
+                'aggregate_root_type' => new BookType($state_machine),
                 'expected_attribute_names' => array_merge(
                     $honeybee_default_attributes,
                     [ 'title', 'description' ]
                 )
             ],
             [
-                'aggregate_root_type' => new PublisherType($this->getDefaultStateMachine()),
+                'aggregate_root_type' => new PublisherType($state_machine),
                 'expected_attribute_names' => array_merge(
                     $honeybee_default_attributes,
                     [ 'name', 'description' ]
                 )
             ],
             [
-                'aggregate_root_type' => new PublicationType($this->getDefaultStateMachine()),
+                'aggregate_root_type' => new PublicationType($state_machine),
                 'expected_attribute_names' => array_merge(
                     $honeybee_default_attributes,
                     [ 'year', 'description' ]
                 )
             ]
         ];
-    }
-
-    protected function getDefaultStateMachine()
-    {
-        $workflows_file_path = __DIR__ . '/Fixtures/workflows.xml';
-        $workflow_builder = new XmlStateMachineBuilder(
-            [
-                'name' => 'author_workflow_default',
-                'state_machine_definition' => $workflows_file_path
-            ]
-        );
-
-        return $workflow_builder->build();
     }
 }

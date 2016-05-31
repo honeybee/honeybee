@@ -10,7 +10,7 @@ use Honeybee\Tests\TestCase;
 class ElasticsearchQueryTranslationTest extends TestCase
 {
     /**
-     * @dataProvider provideQueryFixtures
+     * @dataProvider provideQueryFixture
      */
     public function testTranslate(QueryInterface $query, array $expected_es_query)
     {
@@ -21,9 +21,9 @@ class ElasticsearchQueryTranslationTest extends TestCase
         $this->assertEquals($expected_es_query, $es_query);
     }
 
-    public function provideQueryFixtures()
+    public function provideQueryFixture()
     {
-        return include __DIR__ . '/Fixtures/query_translations.php';
+        return include __DIR__ . '/Fixture/query_translations.php';
     }
 
     protected function getQueryTranslationConfig()

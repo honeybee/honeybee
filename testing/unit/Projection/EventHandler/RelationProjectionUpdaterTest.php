@@ -16,12 +16,12 @@ use Honeybee\Infrastructure\DataAccess\Storage\StorageWriterMap;
 use Honeybee\Infrastructure\DataAccess\Storage\Elasticsearch\Projection\ProjectionWriter;
 use Honeybee\Infrastructure\DataAccess\Query\QueryServiceInterface;
 use Honeybee\Infrastructure\Event\Bus\EventBus;
-use Honeybee\Tests\Fixtures\GameSchema\Projection\Game\GameType;
-use Honeybee\Tests\Fixtures\GameSchema\Projection\Player\PlayerType;
-use Honeybee\Tests\Fixtures\GameSchema\Projection\Team\TeamType;
+use Honeybee\Tests\Fixture\GameSchema\Projection\Game\GameType;
+use Honeybee\Tests\Fixture\GameSchema\Projection\Player\PlayerType;
+use Honeybee\Tests\Fixture\GameSchema\Projection\Team\TeamType;
 use Workflux\StateMachine\StateMachineInterface;
 use Psr\Log\NullLogger;
-use Mockery as M;
+use Mockery;
 
 class RelationProjectionUpdaterTest extends TestCase
 {
@@ -31,7 +31,7 @@ class RelationProjectionUpdaterTest extends TestCase
 
     public function setUp()
     {
-        $state_machine =  M::mock(StateMachineInterface::CLASS);
+        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
 
         $game_type = new GameType($state_machine);
         $player_type = new PlayerType($state_machine);
@@ -58,15 +58,15 @@ class RelationProjectionUpdaterTest extends TestCase
         }
 
         // prepare mock query responses
-        $mock_query_service = M::mock(QueryServiceInterface::CLASS);
-        $mock_query_service_map = M::mock(QueryServiceMap::CLASS);
-        $mock_finder_result = M::mock(FinderResult::CLASS);
+        $mock_query_service = Mockery::mock(QueryServiceInterface::CLASS);
+        $mock_query_service_map = Mockery::mock(QueryServiceMap::CLASS);
+        $mock_finder_result = Mockery::mock(FinderResult::CLASS);
         $mock_finder_result->shouldReceive('getResults')->once()->withNoArgs()->andReturn($related_projections);
         $service_name = $projection_type_prefix . '::query_service';
         $mock_query_service_map->shouldReceive('getItem')->once()->with($service_name)->andReturn($mock_query_service);
         $mock_query_service->shouldReceive('find')
             ->once()
-            ->with(M::on(
+            ->with(Mockery::on(
                 function (QueryInterface $search_query) use ($query) {
                     $this->assertEquals($query, $search_query->toArray());
                     return true;
@@ -75,9 +75,9 @@ class RelationProjectionUpdaterTest extends TestCase
             ->andReturn($mock_finder_result);
 
         // prepare storage writer and event bus expectations
-        $mock_event_bus = M::mock(EventBus::CLASS);
-        $mock_storage_writer = M::mock(ProjectionWriter::CLASS);
-        $mock_storage_writer_map = M::mock(StorageWriterMap::CLASS);
+        $mock_event_bus = Mockery::mock(EventBus::CLASS);
+        $mock_storage_writer = Mockery::mock(ProjectionWriter::CLASS);
+        $mock_storage_writer_map = Mockery::mock(StorageWriterMap::CLASS);
         if (!empty($expectations) && $expectations !== $projections) {
             $store_name = $projection_type_prefix . '::projection.standard::view_store::writer';
             $mock_storage_writer_map->shouldReceive('getItem')
@@ -88,7 +88,7 @@ class RelationProjectionUpdaterTest extends TestCase
             foreach ($expectations as $expectation) {
                 $mock_storage_writer->shouldReceive('write')
                     ->once()
-                    ->with(M::on(
+                    ->with(Mockery::on(
                         function (ProjectionInterface $projection) use ($expectation) {
                             $this->assertEquals($expectation, $projection->toArray());
                             return true;
@@ -98,7 +98,7 @@ class RelationProjectionUpdaterTest extends TestCase
 
                 $mock_event_bus->shouldReceive('distribute')
                     ->once()
-                    ->with('honeybee.events.infrastructure', M::on(
+                    ->with('honeybee.events.infrastructure', Mockery::on(
                         function (ProjectionUpdatedEvent $update_event) use ($expectation) {
                             $this->assertEquals($expectation['identifier'], $update_event->getProjectionIdentifier());
                             $this->assertEquals($expectation['@type'] . 'Type', $update_event->getProjectionType());
@@ -136,7 +136,7 @@ class RelationProjectionUpdaterTest extends TestCase
     public function provideTestEvents()
     {
         $tests = [];
-        foreach (glob(__DIR__ . '/data/relation_projection_updater*.php') as $filename) {
+        foreach (glob(__DIR__ . '/Fixture/relation_projection_updater*.php') as $filename) {
             $tests[] = include $filename;
         }
         return $tests;

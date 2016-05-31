@@ -2,13 +2,14 @@
 
 namespace Honeybee\Tests\Projection;
 
-use Honeybee\Tests\Projection\Fixtures\Author\AuthorType;
+use Honeybee\Tests\Fixture\BookSchema\Projection\Author\AuthorType;
 use Honeybee\Tests\TestCase;
-use Workflux\Builder\XmlStateMachineBuilder;
+use Workflux\StateMachine\StateMachineInterface;
+use Mockery;
 
 class ProjectionTest extends TestCase
 {
-    protected $resource_type = AuthorType::CLASS;
+    protected $projection_type = AuthorType::CLASS;
 
     protected $data = [
         'firstname' => 'Mark',
@@ -17,40 +18,28 @@ class ProjectionTest extends TestCase
 
     public function setUp()
     {
-        $resource_type = new $this->resource_type($this->getDefaultStateMachine());
-        $this->resource = $resource_type->createEntity($this->data);
+        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
+        $projection_type = new $this->projection_type($state_machine);
+        $this->projection = $projection_type->createEntity($this->data);
     }
 
     public function testInterface()
     {
-        $this->assertEquals('Mark', $this->resource->getFirstname());
-        $this->assertEquals('Twain', $this->resource->getLastname());
-        $this->assertNotEmpty($this->resource->getCreatedAt());
-        $this->assertNotEmpty($this->resource->getModifiedAt());
-        $this->assertEquals('honeybee-cmf.projection_fixtures.author-0', $this->resource->getShortIdentifier());
-        $this->assertNull($this->resource->getUuid());
+        $this->assertEquals('Mark', $this->projection->getFirstname());
+        $this->assertEquals('Twain', $this->projection->getLastname());
+        $this->assertNotEmpty($this->projection->getCreatedAt());
+        $this->assertNotEmpty($this->projection->getModifiedAt());
+        $this->assertEquals('honeybee-cmf.projection_fixtures.author-0', $this->projection->getShortIdentifier());
+        $this->assertNull($this->projection->getUuid());
         // UUID self-generated
-        $this->assertNull($this->resource->getUuid());
-        $this->assertEquals(0, $this->resource->getRevision());
-        $this->assertEquals('de_DE', $this->resource->getLanguage());
-        $this->assertEquals(0, $this->resource->getShortId());
-        $this->assertEmpty($this->resource->getWorkflowState());
-        $this->assertInternalType('array', $this->resource->getWorkflowParameters());
-        $this->assertEmpty($this->resource->getWorkflowParameters());
-        $this->assertInternalType('string', $this->resource->__toString());
-        $this->assertEquals($this->resource->getIdentifier(), $this->resource->__toString());
-    }
-
-    protected function getDefaultStateMachine()
-    {
-        $workflows_file_path = __DIR__ . '/Fixtures/workflows.xml';
-        $workflow_builder = new XmlStateMachineBuilder(
-            [
-                'name' => 'author_workflow_default',
-                'state_machine_definition' => $workflows_file_path
-            ]
-        );
-
-        return $workflow_builder->build();
+        $this->assertNull($this->projection->getUuid());
+        $this->assertEquals(0, $this->projection->getRevision());
+        $this->assertEquals('de_DE', $this->projection->getLanguage());
+        $this->assertEquals(0, $this->projection->getShortId());
+        $this->assertEmpty($this->projection->getWorkflowState());
+        $this->assertInternalType('array', $this->projection->getWorkflowParameters());
+        $this->assertEmpty($this->projection->getWorkflowParameters());
+        $this->assertInternalType('string', $this->projection->__toString());
+        $this->assertEquals($this->projection->getIdentifier(), $this->projection->__toString());
     }
 }

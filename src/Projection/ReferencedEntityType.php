@@ -3,15 +3,14 @@
 namespace Honeybee\Projection;
 
 use Trellis\Common\OptionsInterface;
-use Trellis\Runtime\Attribute\AttributeInterface;
-use Trellis\Runtime\Attribute\Attribute;
-use Trellis\Runtime\Attribute\Text\TextAttribute;
-use Trellis\Runtime\Attribute\Timestamp\TimestampAttribute;
 use Trellis\Runtime\EntityTypeInterface;
 use Trellis\Runtime\ReferencedEntityTypeInterface;
-use Honeybee\EntityType;
+use Trellis\Runtime\Attribute\AttributeMap;
+use Trellis\Runtime\Attribute\AttributeInterface;
+use Trellis\Runtime\Attribute\Text\TextAttribute;
+use Trellis\Runtime\Attribute\Timestamp\TimestampAttribute;
 
-abstract class ReferencedEntityType extends EntityType implements ReferencedEntityTypeInterface
+abstract class ReferencedEntityType extends EmbeddedEntityType implements ReferencedEntityTypeInterface
 {
     const OPTION_IDENTIFYING_ATTRIBUTE_NAME = 'identifying_attribute';
 
@@ -51,16 +50,11 @@ abstract class ReferencedEntityType extends EntityType implements ReferencedEnti
 
     public function getDefaultAttributes()
     {
-        return array_merge(
-            parent::getDefaultAttributes(),
-            [
-                'referenced_identifier' => new TextAttribute(
-                    'referenced_identifier',
-                    $this,
-                    [],
-                    $this->getParentAttribute()
-                )
-            ]
-        );
+        $default_attributes = [
+            new TextAttribute('referenced_identifier', $this, [], $this->getParentAttribute())
+        ];
+
+        $default_attributes_map = new AttributeMap($default_attributes);
+        return parent::getDefaultAttributes()->append($default_attributes_map);
     }
 }

@@ -2,7 +2,6 @@
 
 namespace Honeybee\Projection;
 
-use Honeybee\Entity;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Common\ScopeKeyInterface;
 

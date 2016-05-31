@@ -14,7 +14,7 @@ class LocalConnectorTest extends ConnectorInterfaceTest
     {
         if (!$config->has('directory')) {
             $settings = $config->toArray();
-            $settings['directory'] = __DIR__ . '/Fixtures';
+            $settings['directory'] = __DIR__ . '/Fixture';
             $config = new ArrayConfig($settings);
         }
 
@@ -23,7 +23,7 @@ class LocalConnectorTest extends ConnectorInterfaceTest
 
     public function testCanReadFromLocalFilesystem()
     {
-        $connector = $this->getConnector('local', new ArrayConfig(['directory' => __DIR__ . '/Fixtures']));
+        $connector = $this->getConnector('local', new ArrayConfig(['directory' => __DIR__ . '/Fixture']));
         $filesystem = $connector->getConnection();
         $this->assertInstanceOf('League\Flysystem\FilesystemInterface', $filesystem);
         $this->assertTrue($filesystem->has('test'), 'Local file should be found');

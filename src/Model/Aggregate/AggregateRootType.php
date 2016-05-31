@@ -2,6 +2,7 @@
 
 namespace Honeybee\Model\Aggregate;
 
+use Trellis\Runtime\Attribute\AttributeMap;
 use Trellis\Runtime\Attribute\EmbeddedEntityList\EmbeddedEntityListAttribute;
 use Trellis\Runtime\Attribute\Integer\IntegerAttribute;
 use Trellis\Runtime\Attribute\KeyValueList\KeyValueListAttribute;
@@ -12,8 +13,6 @@ use Trellis\Runtime\Entity\EntityInterface;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Common\ScopeKeyInterface;
 use Honeybee\Common\Util\StringToolkit;
-use Honeybee\EntityType;
-use Workflux\StateMachine\StateMachineInterface;
 
 abstract class AggregateRootType extends EntityType implements AggregateRootTypeInterface
 {
@@ -79,26 +78,24 @@ abstract class AggregateRootType extends EntityType implements AggregateRootType
      */
     public function getDefaultAttributes()
     {
-        $attributes = array_merge(
-            parent::getDefaultAttributes(),
-            [
-                new TextAttribute('identifier', $this),
-                new IntegerAttribute('revision', $this, [ 'default_value' => 0 ]),
-                new UuidAttribute('uuid', $this, [ 'default_value' => 'auto_gen' ]),
-                new IntegerAttribute('short_id', $this),
-                new TextAttribute('language', $this, [ 'default_value' => 'de_DE' ]),
-                new IntegerAttribute('version', $this, [ 'default_value' => 1 ]),
-                new TimestampAttribute('created_at', $this, [ 'default_value' => 'now' ]),
-                new TimestampAttribute('modified_at', $this, [ 'default_value' => 'now' ]),
-                new TextAttribute('workflow_state', $this),
-                new KeyValueListAttribute('workflow_parameters', $this)
-            ]
-        );
+        $default_attributes = [
+            new TextAttribute('identifier', $this),
+            new IntegerAttribute('revision', $this, [ 'default_value' => 0 ]),
+            new UuidAttribute('uuid', $this, [ 'default_value' => 'auto_gen' ]),
+            new IntegerAttribute('short_id', $this),
+            new TextAttribute('language', $this, [ 'default_value' => 'de_DE' ]),
+            new IntegerAttribute('version', $this, [ 'default_value' => 1 ]),
+            new TimestampAttribute('created_at', $this, [ 'default_value' => 'now' ]),
+            new TimestampAttribute('modified_at', $this, [ 'default_value' => 'now' ]),
+            new TextAttribute('workflow_state', $this),
+            new KeyValueListAttribute('workflow_parameters', $this)
+        ];
 
         if ($this->isHierarchical()) {
-            $attributes[] = new TextAttribute('parent_node_id', $this);
+            $default_attributes[] = new TextAttribute('parent_node_id', $this);
         }
 
-        return $attributes;
+        $default_attributes_map = new AttributeMap($default_attributes);
+        return parent::getDefaultAttributes()->append($default_attributes_map);
     }
 }

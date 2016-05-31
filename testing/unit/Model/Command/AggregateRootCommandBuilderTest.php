@@ -4,16 +4,17 @@ namespace Honeybee\Tests\Model\Command;
 
 use Honeybee\Model\Command\AggregateRootCommandBuilder;
 use Honeybee\Model\Command\EmbeddedEntityCommandBuilder;
-use Honeybee\Tests\Model\Aggregate\Fixtures\Author\AuthorType;
-use Honeybee\Tests\Projection\Fixtures\Author\AuthorType as AuthorProjectionType;
-use Honeybee\Tests\Model\Task\CreateAuthor\CreateAuthorCommand;
-use Honeybee\Tests\Model\Task\ModifyAuthor\ModifyAuthorCommand;
+use Honeybee\Tests\Fixture\BookSchema\Model\Author\AuthorType;
+use Honeybee\Tests\Fixture\BookSchema\Projection\Author\AuthorType  as AuthorProjectionType;
+use Honeybee\Tests\Fixture\BookSchema\Task\CreateAuthor\CreateAuthorCommand;
+use Honeybee\Tests\Fixture\BookSchema\Task\ModifyAuthor\ModifyAuthorCommand;
 use Honeybee\Tests\TestCase;
 use Shrink0r\Monatic\Result;
 use Shrink0r\Monatic\Success;
 use Shrink0r\Monatic\Error;
 use Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\AddEmbeddedEntityCommand;
-use Workflux\Builder\XmlStateMachineBuilder;
+use Workflux\StateMachine\StateMachineInterface;
+use Mockery;
 
 class AggregateRootCommandBuilderTest extends TestCase
 {
@@ -21,12 +22,12 @@ class AggregateRootCommandBuilderTest extends TestCase
 
     public function provideCreateCommands()
     {
-        return include __DIR__ . '/Fixtures/create_commands.php';
+        return include __DIR__ . '/Fixture/create_commands.php';
     }
 
     public function provideModifyCommands()
     {
-        return include __DIR__ . '/Fixtures/modify_commands.php';
+        return include __DIR__ . '/Fixture/modify_commands.php';
     }
 
     /**
@@ -34,7 +35,8 @@ class AggregateRootCommandBuilderTest extends TestCase
      */
     public function testBuildCreateCommand(array $payload, array $expected_command)
     {
-        $author_type = new AuthorType($this->getDefaultStateMachine());
+        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
+        $author_type = new AuthorType($state_machine);
 
         $builder = new AggregateRootCommandBuilder($author_type, CreateAuthorCommand::CLASS);
         $build_result = $builder
@@ -50,7 +52,8 @@ class AggregateRootCommandBuilderTest extends TestCase
 
     public function testBuildCreateCommandWithInvalidValues()
     {
-        $author_type = new AuthorType($this->getDefaultStateMachine());
+        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
+        $author_type = new AuthorType($state_machine);
 
         $builder = new AggregateRootCommandBuilder($author_type, CreateAuthorCommand::CLASS);
         $build_result = $builder
@@ -74,7 +77,8 @@ class AggregateRootCommandBuilderTest extends TestCase
 
     public function testBuildCreateCommandWithInvalidEmbeddedCommands()
     {
-        $author_type = new AuthorType($this->getDefaultStateMachine());
+        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
+        $author_type = new AuthorType($state_machine);
 
         $builder = new AggregateRootCommandBuilder($author_type, CreateAuthorCommand::CLASS);
         $build_result = $builder
@@ -125,7 +129,8 @@ class AggregateRootCommandBuilderTest extends TestCase
      */
     public function testCreateCommandWithMissingValues()
     {
-        $author_type = new AuthorType($this->getDefaultStateMachine());
+        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
+        $author_type = new AuthorType($state_machine);
 
         $builder = new AggregateRootCommandBuilder($author_type, CreateAuthorCommand::CLASS);
         $build_result = $builder->build();
@@ -136,8 +141,9 @@ class AggregateRootCommandBuilderTest extends TestCase
      */
     public function testBuildModifyCommand(array $projection, array $payload, array $expected_command)
     {
-        $author_type = new AuthorType($this->getDefaultStateMachine());
-        $projection_type = new AuthorProjectionType($this->getDefaultStateMachine());
+        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
+        $author_type = new AuthorType($state_machine);
+        $projection_type = new AuthorProjectionType($state_machine);
         $projection = $projection_type->createEntity($projection);
 
         $builder = new AggregateRootCommandBuilder($author_type, ModifyAuthorCommand::CLASS);
@@ -158,20 +164,12 @@ class AggregateRootCommandBuilderTest extends TestCase
      */
     public function testModifyCommandWithMissingProjection()
     {
-        $author_type = new AuthorType($this->getDefaultStateMachine());
+        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
+        $author_type = new AuthorType($state_machine);
 
         $builder = new AggregateRootCommandBuilder($author_type, ModifyAuthorCommand::CLASS);
         $build_result = $builder
             ->withValues([ 'firstname' => 'Amitav', 'lastname' => 'Gosh' ])
             ->build();
-    }
-
-    protected function getDefaultStateMachine()
-    {
-        $workflows_file_path = dirname(__DIR__) . '/Aggregate/Fixtures/workflows.xml';
-        $builder = new XmlStateMachineBuilder(
-            [ 'name' => 'author_workflow_default', 'state_machine_definition' => $workflows_file_path ]
-        );
-        return $builder->build();
     }
 }
