@@ -3,10 +3,8 @@
 namespace Honeybee\Infrastructure\DataAccess\Storage\CouchDb;
 
 use Honeybee\Infrastructure\DataAccess\Storage\Storage;
-use Honeybee\Infrastructure\DataAccess\Storage\IStorageKey;
 use Honeybee\Common\Error\RuntimeError;
-use Guzzle\Common\Exception\GuzzleException;
-use Psr\Log\LoggerInterface;
+use GuzzleHttp\Exception\GuzzleException;
 
 abstract class CouchDbStorage extends Storage
 {
@@ -39,9 +37,10 @@ abstract class CouchDbStorage extends Storage
             $client = $this->connector->getConnection();
             $request_path = $this->buildRequestUrl($identifier, $body);
             if ($method === self::METHOD_GET) {
-                $request = $client->get($request_path, [], $options);
+                $request = $client->get($request_path, $options);
             } else {
-                $request = $client->$method($request_path, [], json_encode($body), $options);
+                $options['body'] = json_encode($body);
+                $request = $client->$method($request_path, $options);
             }
         } catch (GuzzleException $guzzle_error) {
             throw new RuntimeError(

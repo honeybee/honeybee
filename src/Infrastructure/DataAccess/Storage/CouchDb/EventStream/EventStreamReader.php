@@ -2,7 +2,7 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Storage\CouchDb\EventStream;
 
-use Guzzle\Http\Exception\BadResponseException;
+use GuzzleHttp\Exception\BadResponseException;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Model\Event\AggregateRootEventList;
 use Honeybee\Model\Event\EventStream;
@@ -43,7 +43,8 @@ class EventStreamReader extends CouchDbStorage implements StorageReaderInterface
                 $this->config->get('design_doc'),
                 $this->config->get('view_name', 'event_stream')
             );
-            $result_data = $this->buildRequestFor($view_path, self::METHOD_GET, [], $view_params)->send()->json();
+            $response = $this->buildRequestFor($view_path, self::METHOD_GET, [], $view_params)->send();
+            $result_data = json_decode($response->getBody(), true);
         } catch (BadResponseException $error) {
             if ($error->getResponse()->getStatusCode() === 404) {
                 return null;
@@ -81,7 +82,7 @@ class EventStreamReader extends CouchDbStorage implements StorageReaderInterface
 
     protected function createEventStream($identifier, array $event_stream_data)
     {
-        $events = new AggregateRootEventList();
+        $events = new AggregateRootEventList;
         foreach ($event_stream_data as $event_data) {
             $event_data = $event_data['doc'];
             if (!isset($event_data[self::OBJECT_TYPE])) {
@@ -107,12 +108,13 @@ class EventStreamReader extends CouchDbStorage implements StorageReaderInterface
             'reduce' => 'true'
         ];
 
-        $result_data = $this->buildRequestFor(
+        $response = $this->buildRequestFor(
             sprintf('/_design/default_views/_view/%s', $this->config->get('view_name')),
             self::METHOD_GET,
             [],
             $request_params
-        )->send()->json();
+        )->send();
+        $result_data = json_decode($response->getBody(), true);
 
         foreach ($result_data['rows'] as $row) {
             $event_stream_keys[$row['key'][0]] = $row['value'];

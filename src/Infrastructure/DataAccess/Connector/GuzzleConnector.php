@@ -3,7 +3,7 @@
 namespace Honeybee\Infrastructure\DataAccess\Connector;
 
 use Honeybee\Common\Error\RuntimeError;
-use Guzzle\Http\Client;
+use GuzzleHttp\Client;
 use Exception;
 
 class GuzzleConnector extends Connector
@@ -23,7 +23,7 @@ class GuzzleConnector extends Connector
             );
         }
 
-        $request_options = [];
+        $client_options = [ 'base_uri' => $base_uri ];
 
         if ($this->config->has('auth')) {
             $auth = $this->config->get('auth');
@@ -33,22 +33,18 @@ class GuzzleConnector extends Connector
             if (!isset($auth['password'])) {
                 throw new RuntimeError('Missing required "password" setting within given auth config.');
             }
-            $request_options['auth'] = [ $auth['username'], $auth['password'], $auth['type'] ?: 'basic' ];
+            $client_options['auth'] = [ $auth['username'], $auth['password'], $auth['type'] ?: 'basic' ];
         }
 
         if ($this->config->has('default_headers')) {
-            $request_options['headers'] = (array)$this->config->get('default_headers');
+            $client_options['headers'] = (array)$this->config->get('default_headers');
         }
 
         if ($this->config->has('default_options')) {
-            $request_options = array_merge($request_options, (array)$this->config->get('default_options')->toArray());
+            $client_options = array_merge($client_options, (array)$this->config->get('default_options')->toArray());
         }
 
-        $client_options = [];
-        if (!empty($request_options)) {
-            $client_options['request.options'] = $request_options;
-        }
-        return new Client($base_uri, $client_options);
+        return new Client($client_options);
     }
 
     /**
@@ -68,13 +64,18 @@ class GuzzleConnector extends Connector
 
         $path = $this->config->get('status_test');
         try {
+            $client_info = $this->config->get('status_verbose', true)
+                ? [] // @todo collect info using http://docs.guzzlephp.org/en/latest/request-options.html?#on-stats
+                : [];
+
             $response = $this->getConnection()->get($path)->send();
-            if ($response->isSuccessful()) {
+
+            if ($status_code >= 200 && $status_code < 300) {
                 $info = [
-                    'message' => 'GET succeeded: ' . $path,
+                    'message' => 'GET succeeded: ' . $path
                 ];
-                if ($this->config->get('status_verbose', true)) {
-                    $info['curl_info'] = $response->getInfo();
+                if (!empty($client_info)) {
+                    $info['client_info'] = $client_info;
                 }
                 return Status::working($this, $info);
             }
@@ -83,8 +84,8 @@ class GuzzleConnector extends Connector
                 $this,
                 [
                     'message' => 'GET failed: ' . $path,
-                    'headers' => $response->getRawHeaders(),
-                    'curl_info' => $response->getInfo()
+                    'headers' => $response->getHeaders(),
+                    'client_info' => $client_info
                 ]
             );
         } catch (Exception $e) {

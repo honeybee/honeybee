@@ -50,7 +50,6 @@
         "shrink0r/workflux": "master@dev",
         "shrink0r/monatic": "master@dev",
         "elasticsearch/elasticsearch": "~2.0",
-        "guzzle/guzzle": "3.9.*",
         "league/flysystem": "~1.0",
         "michelf/php-markdown": "~1.4",
         "mtdowling/jmespath.php": "~2.0",
@@ -70,7 +69,7 @@
         "sebastian/phpcpd": "~2.0.2",
         "squizlabs/php_codesniffer": "^2.3.3",
         "mockery/mockery": "dev-master",
-        "satooshi/php-coveralls": "~0.6.1",
+        "satooshi/php-coveralls": "dev-master",
         "sami/sami": "^3.0.8"
     },
 
@@ -97,4 +96,3 @@
         "validate-deps": "composer validate --with-dependencies --strict"
     }
 }
-

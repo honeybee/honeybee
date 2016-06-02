@@ -4,7 +4,7 @@ namespace Honeybee\Infrastructure\Migration;
 
 use Honeybee\Infrastructure\DataAccess\Connector\ConnectableInterface;
 use Honeybee\Common\Error\RuntimeError;
-use Guzzle\Http\Exception\ClientErrorResponseException;
+use GuzzleHttp\Exception\BadResponseException;
 
 abstract class CouchDbMigration extends Migration
 {
@@ -36,11 +36,11 @@ abstract class CouchDbMigration extends Migration
                     'Failed to create couchdb database %s. Received status %s along with this data: %s',
                     $database_name,
                     $response->getStatusCode(),
-                    print_r($response->json(), true)
+                    print_r(json_decode($response->getBody(), true), true)
                 );
             }
-        } catch (ClientErrorResponseException $error) {
-            $error_data = $error->getResponse()->json();
+        } catch (BadResponseException $error) {
+            $error_data = json_decode($error->getResponse()->getBody(), true);
             throw new RuntimeError("Failed to create couchdb database. Reason: " . $error_data['reason']);
         }
 
@@ -60,7 +60,7 @@ abstract class CouchDbMigration extends Migration
                     'Failed to delete couchdb database %s. Received status %s along with this data: %s',
                     $database_name,
                     $response->getStatusCode(),
-                    print_r($response->json(), true)
+                    print_r(json_decode($response->getBody(), true), true)
                 );
             }
         }
@@ -100,9 +100,10 @@ abstract class CouchDbMigration extends Migration
         $document_path = sprintf('/%s/_design/%s', $database_name, urlencode($this->getDesignDocName()));
 
         try {
-            $design_doc = $client->get($document_path)->send()->json();
-        } catch (ClientErrorResponseException $error) {
-            $error_data = $error->getResponse()->json();
+            $response = $client->get($document_path)->send();
+            $design_doc = json_decode($response->getBody(), true);
+        } catch (BadResponseException $error) {
+            $error_data = json_decode($error->getResponse()->getBody(), true);
             if ($error_data['error'] === 'not_found') {
                 $design_doc = [];
             } else {
@@ -117,8 +118,9 @@ abstract class CouchDbMigration extends Migration
             } else {
                 $payload = [ 'language' => 'javascript', 'views' => $views ];
             }
-            $client->put($document_path, [], json_encode($payload))->send();
-        } catch (ClientErrorResponseException $error) {
+            $client->put($document_path, [ 'body' => json_encode($payload) ])->send();
+        } catch (BadResponseException $error) {
+            $error_data = json_decode($error->getResponse()->getBody(), true);
             throw new RuntimeError("Failed to create/update couchdb design-doc. Reason: " . $error_data['reason']);
         }
     }
@@ -130,10 +132,11 @@ abstract class CouchDbMigration extends Migration
         $document_path = sprintf('/%s/_design/%s', $database_name, urlencode($this->getDesignDocName()));
 
         try {
-            $cur_document = $client->get($document_path)->send()->json();
-            $client->delete(sprintf('%s?rev=%s', $document_path, $cur_document['_rev']))->send()->json();
-        } catch (ClientErrorResponseException $error) {
-            $error_data = $error->getResponse()->json();
+            $response = $client->get($document_path)->send();
+            $cur_document = json_decode($response->getBody(), true);
+            $client->delete(sprintf('%s?rev=%s', $document_path, $cur_document['_rev']))->send();
+        } catch (BadResponseException $error) {
+            $error_data = json_decode($error->getResponse()->getBody(), true);
             if ($error_data['error'] !== 'not_found') {
                 throw new RuntimeError("Failed to delete couchdb design-doc. Reason: " . $error_data['reason']);
             }
@@ -147,8 +150,8 @@ abstract class CouchDbMigration extends Migration
             $client = $this->getConnection($migration_target);
 
             return $client->get('/' . $database_name)->send()->getStatusCode() === 200;
-        } catch (ClientErrorResponseException $error) {
-            $error_data = $error->getResponse()->json();
+        } catch (BadResponseException $error) {
+            $error_data = json_decode($error->getResponse()->getBody(), true);
             if ($error_data['error'] === 'not_found') {
                 return false;
             }

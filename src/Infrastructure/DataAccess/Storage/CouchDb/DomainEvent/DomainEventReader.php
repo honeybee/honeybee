@@ -2,12 +2,13 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Storage\CouchDb\DomainEvent;
 
+use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\DataAccess\Storage\StorageReaderInterface;
 use Honeybee\Infrastructure\Config\SettingsInterface;
 use Honeybee\Infrastructure\DataAccess\Storage\StorageReaderIterator;
 use Honeybee\Infrastructure\DataAccess\Storage\CouchDb\CouchDbStorage;
 use Honeybee\Model\Event\AggregateRootEventList;
-use Guzzle\Http\Exception\BadResponseException;
+use GuzzleHttp\Exception\BadResponseException;
 
 class DomainEventReader extends CouchDbStorage implements StorageReaderInterface
 {
@@ -17,7 +18,8 @@ class DomainEventReader extends CouchDbStorage implements StorageReaderInterface
     {
         try {
             $path = sprintf('/%s', $identifier);
-            $result_data = $this->buildRequestFor($path, self::METHOD_GET)->send()->json();
+            $response = $this->buildRequestFor($path, self::METHOD_GET)->send();
+            $result_data = json_decode($response->getBody(), true);
         } catch (BadResponseException $error) {
             if ($error->getResponse()->getStatusCode() === 404) {
                 return null;
@@ -57,7 +59,8 @@ class DomainEventReader extends CouchDbStorage implements StorageReaderInterface
             $this->config->get('design_doc'),
             $this->config->get('view_name', 'events_by_timestamp')
         );
-        $result_data = $this->buildRequestFor($view_path, self::METHOD_GET, [], $view_params)->send()->json();
+        $response = $this->buildRequestFor($view_path, self::METHOD_GET, [], $view_params)->send();
+        $result_data = json_decode($response->getBody(), true);
 
         $events = [];
         foreach ($result_data['rows'] as $event_data) {
@@ -76,7 +79,7 @@ class DomainEventReader extends CouchDbStorage implements StorageReaderInterface
     protected function createDomainEvent(array $event_data)
     {
         if (!isset($event_data[self::OBJECT_TYPE])) {
-            throw new RuntimeException("Missing type key within event data.");
+            throw new RuntimeError('Missing type key within event data.');
         }
 
         return new $event_data[self::OBJECT_TYPE]($event_data);
