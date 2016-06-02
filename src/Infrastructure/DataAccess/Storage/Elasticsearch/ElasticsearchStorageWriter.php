@@ -4,7 +4,6 @@ namespace Honeybee\Infrastructure\DataAccess\Storage\Elasticsearch;
 
 use Honeybee\Infrastructure\Config\SettingsInterface;
 use Honeybee\Infrastructure\DataAccess\Storage\StorageWriterInterface;
-use Honeybee\Infrastructure\DataAccess\Storage\IStorageKey;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 
 abstract class ElasticsearchStorageWriter extends ElasticsearchStorage implements StorageWriterInterface
@@ -27,7 +26,7 @@ abstract class ElasticsearchStorageWriter extends ElasticsearchStorage implement
             // @todo atm deleting a document when the index does not exists triggers the index to be created.
             // this is a baad sideeffect caused by the elasticsearch-php lib atm.
             // remove this code as soon as the behaviour is fixed.
-            // @link https://github.com/elastic/elasticsearch/issues/5809 This is an active ES issue
+            // @link https://github.com/elastic/elasticsearch/issues/15451
 
             $data = [
                 'index' => $this->getIndex(),
