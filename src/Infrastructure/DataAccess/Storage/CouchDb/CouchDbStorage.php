@@ -36,7 +36,7 @@ abstract class CouchDbStorage extends Storage
             if (empty($body)) {
                 $request = new Request($method, $request_path);
             } else {
-                $request = new Request($method, $request_path, [ 'application/json' ] , json_encode($body));
+                $request = new Request($method, $request_path, [ 'application/json' ], json_encode($body));
             }
         } catch (GuzzleException $guzzle_error) {
             throw new RuntimeError(
