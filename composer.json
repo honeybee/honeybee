@@ -49,7 +49,7 @@
         "honeybee/trellis": "master@dev",
         "shrink0r/workflux": "master@dev",
         "shrink0r/monatic": "master@dev",
-        "elasticsearch/elasticsearch": "~1.4",
+        "elasticsearch/elasticsearch": "~2.0",
         "guzzle/guzzle": "3.9.*",
         "league/flysystem": "~1.0",
         "michelf/php-markdown": "~1.4",

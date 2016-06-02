@@ -84,7 +84,7 @@ abstract class ElasticsearchMigration extends Migration
 
         if (count($aliases) > 1) {
             throw new RuntimeError(sprintf(
-                "Aborting reindexing because there is more than one index mapped to the alias: %s",
+                'Aborting reindexing because there is more than one index mapped to the alias: %s',
                 $index_name
             ));
         }
@@ -146,7 +146,7 @@ abstract class ElasticsearchMigration extends Migration
         $new_count = $client->count([ 'index' => $new_index ])['count'];
         if ($total_docs != $new_count) {
             throw new RuntimeError(sprintf(
-                "Aborting migration because document count of %s after reindexing does not match expected count of %s",
+                'Aborting migration because document count of %s after reindexing does not match expected count of %s',
                 $new_count,
                 $total_docs
             ));
@@ -165,7 +165,7 @@ abstract class ElasticsearchMigration extends Migration
         $index_api = $this->getConnection($migration_target)->indices();
         foreach ($templates as $template_name => $template_file) {
             if (!is_readable($template_file)) {
-                throw new RuntimeError(sprintf("Unable to read index template at: %s", $template_file));
+                throw new RuntimeError(sprintf('Unable to read index template at: %s', $template_file));
             }
             $template = JsonToolkit::parse(file_get_contents($template_file));
             $index_api->putTemplate([ 'name' => $template_name, 'body' => $template]);
@@ -177,7 +177,7 @@ abstract class ElasticsearchMigration extends Migration
         $settings_json_file = $this->getIndexSettingsPath($migration_target);
 
         if (!is_readable($settings_json_file)) {
-            throw new RuntimeError(sprintf("Unable to read settings for index at: %s", $settings_json_file));
+            throw new RuntimeError(sprintf('Unable to read settings for index at: %s', $settings_json_file));
         }
         $index_settings['body'] = JsonToolkit::parse(file_get_contents($settings_json_file));
         $index_name = $this->getIndexName($migration_target);
@@ -226,7 +226,7 @@ abstract class ElasticsearchMigration extends Migration
 
         foreach ($paths as $type_name => $mapping_file) {
             if (!is_readable($mapping_file)) {
-                throw new RuntimeError(sprintf("Unable to read type-mapping at: %s", $mapping_file));
+                throw new RuntimeError(sprintf('Unable to read type-mapping at: %s', $mapping_file));
             }
             $mappings[$type_name] = JsonToolkit::parse(file_get_contents($mapping_file));
         }
