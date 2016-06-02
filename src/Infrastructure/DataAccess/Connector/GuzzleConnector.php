@@ -25,6 +25,10 @@ class GuzzleConnector extends Connector
 
         $client_options = [ 'base_uri' => $base_uri ];
 
+        if ($this->config->get('debug', false)) {
+            $client_options['debug'] = true;
+        }
+
         if ($this->config->has('auth')) {
             $auth = $this->config->get('auth');
             if (!isset($auth['username'])) {
@@ -64,18 +68,18 @@ class GuzzleConnector extends Connector
 
         $path = $this->config->get('status_test');
         try {
-            $client_info = $this->config->get('status_verbose', true)
+            $info = $this->config->get('status_verbose', true)
                 ? [] // @todo collect info using http://docs.guzzlephp.org/en/latest/request-options.html?#on-stats
                 : [];
 
-            $response = $this->getConnection()->get($path)->send();
+            $response = $this->getConnection()->get($path);
 
             if ($status_code >= 200 && $status_code < 300) {
                 $info = [
                     'message' => 'GET succeeded: ' . $path
                 ];
-                if (!empty($client_info)) {
-                    $info['client_info'] = $client_info;
+                if (!empty($info)) {
+                    $info['info'] = $info;
                 }
                 return Status::working($this, $info);
             }
@@ -85,7 +89,7 @@ class GuzzleConnector extends Connector
                 [
                     'message' => 'GET failed: ' . $path,
                     'headers' => $response->getHeaders(),
-                    'client_info' => $client_info
+                    'info' => $info
                 ]
             );
         } catch (Exception $e) {

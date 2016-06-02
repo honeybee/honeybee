@@ -2,7 +2,7 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Storage\CouchDb\EventStream;
 
-use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\Exception\RequestException;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Model\Event\AggregateRootEventList;
 use Honeybee\Model\Event\EventStream;
@@ -43,9 +43,9 @@ class EventStreamReader extends CouchDbStorage implements StorageReaderInterface
                 $this->config->get('design_doc'),
                 $this->config->get('view_name', 'event_stream')
             );
-            $response = $this->buildRequestFor($view_path, self::METHOD_GET, [], $view_params)->send();
+            $response = $this->request($view_path, self::METHOD_GET, [], $view_params);
             $result_data = json_decode($response->getBody(), true);
-        } catch (BadResponseException $error) {
+        } catch (RequestException $error) {
             if ($error->getResponse()->getStatusCode() === 404) {
                 return null;
             } else {
@@ -108,12 +108,12 @@ class EventStreamReader extends CouchDbStorage implements StorageReaderInterface
             'reduce' => 'true'
         ];
 
-        $response = $this->buildRequestFor(
+        $response = $this->request(
             sprintf('/_design/default_views/_view/%s', $this->config->get('view_name')),
             self::METHOD_GET,
             [],
             $request_params
-        )->send();
+        );
         $result_data = json_decode($response->getBody(), true);
 
         foreach ($result_data['rows'] as $row) {

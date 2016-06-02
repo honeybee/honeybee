@@ -4,7 +4,7 @@ namespace Honeybee\Infrastructure\Migration;
 
 use Honeybee\Infrastructure\DataAccess\Connector\ConnectableInterface;
 use Honeybee\Common\Error\RuntimeError;
-use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\Exception\RequestException;
 
 abstract class CouchDbMigration extends Migration
 {
@@ -30,7 +30,7 @@ abstract class CouchDbMigration extends Migration
         try {
             $client = $this->getConnection($migration_target);
             $database_name = $this->getDatabaseName($migration_target);
-            $response = $client->put('/' . $database_name)->send();
+            $response = $client->put('/' . $database_name);
             if ($response->getStatusCode() !== 201) {
                 throw new RuntimeError(
                     'Failed to create couchdb database %s. Received status %s along with this data: %s',
@@ -39,7 +39,7 @@ abstract class CouchDbMigration extends Migration
                     print_r(json_decode($response->getBody(), true), true)
                 );
             }
-        } catch (BadResponseException $error) {
+        } catch (RequestException $error) {
             $error_data = json_decode($error->getResponse()->getBody(), true);
             throw new RuntimeError("Failed to create couchdb database. Reason: " . $error_data['reason']);
         }
@@ -54,7 +54,7 @@ abstract class CouchDbMigration extends Migration
         if ($this->databaseExists($migration_target)) {
             $client = $this->getConnection($migration_target);
             $database_name = $this->getDatabaseName($migration_target);
-            $response = $client->delete('/' . $database_name)->send();
+            $response = $client->delete('/' . $database_name);
             if ($response->getStatusCode() !== 200) {
                 throw new RuntimeError(
                     'Failed to delete couchdb database %s. Received status %s along with this data: %s',
@@ -100,9 +100,9 @@ abstract class CouchDbMigration extends Migration
         $document_path = sprintf('/%s/_design/%s', $database_name, urlencode($this->getDesignDocName()));
 
         try {
-            $response = $client->get($document_path)->send();
+            $response = $client->get($document_path);
             $design_doc = json_decode($response->getBody(), true);
-        } catch (BadResponseException $error) {
+        } catch (RequestException $error) {
             $error_data = json_decode($error->getResponse()->getBody(), true);
             if ($error_data['error'] === 'not_found') {
                 $design_doc = [];
@@ -118,8 +118,8 @@ abstract class CouchDbMigration extends Migration
             } else {
                 $payload = [ 'language' => 'javascript', 'views' => $views ];
             }
-            $client->put($document_path, [ 'body' => json_encode($payload) ])->send();
-        } catch (BadResponseException $error) {
+            $client->put($document_path, [ 'body' => json_encode($payload) ]);
+        } catch (RequestException $error) {
             $error_data = json_decode($error->getResponse()->getBody(), true);
             throw new RuntimeError("Failed to create/update couchdb design-doc. Reason: " . $error_data['reason']);
         }
@@ -132,10 +132,10 @@ abstract class CouchDbMigration extends Migration
         $document_path = sprintf('/%s/_design/%s', $database_name, urlencode($this->getDesignDocName()));
 
         try {
-            $response = $client->get($document_path)->send();
+            $response = $client->get($document_path);
             $cur_document = json_decode($response->getBody(), true);
-            $client->delete(sprintf('%s?rev=%s', $document_path, $cur_document['_rev']))->send();
-        } catch (BadResponseException $error) {
+            $client->delete(sprintf('%s?rev=%s', $document_path, $cur_document['_rev']));
+        } catch (RequestException $error) {
             $error_data = json_decode($error->getResponse()->getBody(), true);
             if ($error_data['error'] !== 'not_found') {
                 throw new RuntimeError("Failed to delete couchdb design-doc. Reason: " . $error_data['reason']);
@@ -149,8 +149,9 @@ abstract class CouchDbMigration extends Migration
             $database_name = $this->getDatabaseName($migration_target);
             $client = $this->getConnection($migration_target);
 
-            return $client->get('/' . $database_name)->send()->getStatusCode() === 200;
-        } catch (BadResponseException $error) {
+            $response = $client->get('/' . $database_name);
+            return $response->getStatusCode() === 200;
+        } catch (RequestException $error) {
             $error_data = json_decode($error->getResponse()->getBody(), true);
             if ($error_data['error'] === 'not_found') {
                 return false;

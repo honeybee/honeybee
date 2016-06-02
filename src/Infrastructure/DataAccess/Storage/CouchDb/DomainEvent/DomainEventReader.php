@@ -8,7 +8,7 @@ use Honeybee\Infrastructure\Config\SettingsInterface;
 use Honeybee\Infrastructure\DataAccess\Storage\StorageReaderIterator;
 use Honeybee\Infrastructure\DataAccess\Storage\CouchDb\CouchDbStorage;
 use Honeybee\Model\Event\AggregateRootEventList;
-use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\Exception\RequestException;
 
 class DomainEventReader extends CouchDbStorage implements StorageReaderInterface
 {
@@ -18,9 +18,9 @@ class DomainEventReader extends CouchDbStorage implements StorageReaderInterface
     {
         try {
             $path = sprintf('/%s', $identifier);
-            $response = $this->buildRequestFor($path, self::METHOD_GET)->send();
+            $response = $this->request($path, self::METHOD_GET);
             $result_data = json_decode($response->getBody(), true);
-        } catch (BadResponseException $error) {
+        } catch (RequestException $error) {
             if ($error->getResponse()->getStatusCode() === 404) {
                 return null;
             } else {
@@ -59,7 +59,7 @@ class DomainEventReader extends CouchDbStorage implements StorageReaderInterface
             $this->config->get('design_doc'),
             $this->config->get('view_name', 'events_by_timestamp')
         );
-        $response = $this->buildRequestFor($view_path, self::METHOD_GET, [], $view_params)->send();
+        $response = $this->request($view_path, self::METHOD_GET, [], $view_params);
         $result_data = json_decode($response->getBody(), true);
 
         $events = [];

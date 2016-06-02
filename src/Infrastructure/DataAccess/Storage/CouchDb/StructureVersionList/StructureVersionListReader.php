@@ -9,7 +9,7 @@ use Honeybee\Infrastructure\DataAccess\Storage\CouchDb\CouchDbStorage;
 use Honeybee\Infrastructure\Migration\StructureVersionList;
 use Honeybee\Infrastructure\Migration\StructureVersion;
 use Honeybee\Model\UnitOfWork\EventStream;
-use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\Exception\RequestException;
 
 class StructureVersionListReader extends CouchDbStorage implements StorageReaderInterface
 {
@@ -36,12 +36,7 @@ class StructureVersionListReader extends CouchDbStorage implements StorageReader
             $request_params['skip'] = 1;
         }
 
-        $response = $this->buildRequestFor(
-            '_all_docs',
-            self::METHOD_GET,
-            [],
-            $request_params
-        )->send();
+        $response = $this->request('_all_docs', self::METHOD_GET, [], $request_params);
         $result_data = json_decode($response->getBody(), true);
 
         foreach ($result_data['rows'] as $row) {
@@ -61,9 +56,9 @@ class StructureVersionListReader extends CouchDbStorage implements StorageReader
     public function read($identifier, SettingsInterface $settings = null)
     {
         try {
-            $response = $this->buildRequestFor($identifier, self::METHOD_GET)->send();
+            $response = $this->request($identifier, self::METHOD_GET);
             $result_data = json_decode($response->getBody(), true);
-        } catch (BadResponseException $error) {
+        } catch (RequestException $error) {
             if ($error->getResponse()->getStatusCode() === 404) {
                 return null;
             } else {

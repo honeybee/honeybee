@@ -7,7 +7,7 @@ use Honeybee\Infrastructure\Config\SettingsInterface;
 use Honeybee\Infrastructure\DataAccess\Storage\CouchDb\CouchDbStorage;
 use Honeybee\Infrastructure\DataAccess\Storage\StorageWriterInterface;
 use Honeybee\Infrastructure\Migration\StructureVersionList;
-use GuzzleHttp\Exception\BadResponseException;
+use GuzzleHttp\Exception\RequestException;
 
 class StructureVersionListWriter extends CouchDbStorage implements StorageWriterInterface
 {
@@ -26,39 +26,33 @@ class StructureVersionListWriter extends CouchDbStorage implements StorageWriter
 
         try {
             // @todo use head method to get current revision?
-            $response = $this->buildRequestFor($data['identifier'], self::METHOD_GET)->send();
+            $response = $this->request($data['identifier'], self::METHOD_GET);
             $structure_version = json_decode($response->getBody(), true);
             $data['revision'] = $structure_version['_rev'];
-        } catch (BadResponseException $error) {
+        } catch (RequestException $error) {
             error_log(__METHOD__ . ' - ' . $error->getMessage());
         }
 
         try {
-            $response = $this->buildRequestFor(
-                $data['identifier'],
-                self::METHOD_PUT,
-                $data
-            )->send();
+            $response = $this->request($data['identifier'], self::METHOD_PUT, $data);
             $response_data = json_decode($response->getBody(), true);
-        } catch (BadResponseException $error) {
+        } catch (RequestException $error) {
             error_log(__METHOD__ . ' - ' . $error->getMessage());
         }
 
         if (!isset($response_data['ok']) || !isset($response_data['rev'])) {
-            throw new RuntimeError("Failed to write data.");
+            throw new RuntimeError('Failed to write data.');
         }
     }
 
     public function delete($identifier, SettingsInterface $settings = null)
     {
         try {
-            $response = $this->buildRequestFor($identifier, self::METHOD_GET)->send();
+            $response = $this->request($identifier, self::METHOD_GET);
             $structure_version = json_decode($response->getBody(), true);
-            $this->buildRequestFor(
-                sprintf('%s?rev=%s', $identifier, $structure_version['_rev']),
-                self::METHOD_DELETE
-            )->send();
-        } catch (BadResponseException $error) {
+            $data['revision'] = $structure_version['_rev'];
+            $this->request($identifier, self::METHOD_DELETE, [], $data);
+        } catch (RequestException $error) {
             error_log(__METHOD__ . ' - ' . $error->getMessage());
         }
     }

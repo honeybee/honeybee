@@ -24,7 +24,7 @@ class EventStreamAppender extends CouchDbStorage implements StorageWriterInterfa
 
         $data = $domain_event->toArray();
         $identifier = sprintf('%s-%s', $domain_event->getAggregateRootIdentifier(), $domain_event->getSeqNumber());
-        $response = $this->buildRequestFor($identifier, self::METHOD_PUT, $data)->send();
+        $response = $this->request($identifier, self::METHOD_PUT, $data);
         $response_data = json_decode($response->getBody(), true);
 
         if (!isset($response_data['ok']) || !isset($response_data['rev'])) {

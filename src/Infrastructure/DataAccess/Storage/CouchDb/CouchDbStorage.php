@@ -5,6 +5,7 @@ namespace Honeybee\Infrastructure\DataAccess\Storage\CouchDb;
 use Honeybee\Infrastructure\DataAccess\Storage\Storage;
 use Honeybee\Common\Error\RuntimeError;
 use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Psr7\Request;
 
 abstract class CouchDbStorage extends Storage
 {
@@ -16,7 +17,7 @@ abstract class CouchDbStorage extends Storage
 
     const METHOD_DELETE = 'delete';
 
-    protected function buildRequestFor($identifier, $method, array $body = array(), array $params = array())
+    protected function request($identifier, $method, array $body = [], array $params = [])
     {
         $allowed_methods = [ self::METHOD_GET, self::METHOD_POST, self::METHOD_PUT, self::METHOD_DELETE ];
         if (!in_array($method, $allowed_methods)) {
@@ -25,44 +26,38 @@ abstract class CouchDbStorage extends Storage
             );
         }
 
-        $options = [];
-        if (!empty($params)) {
-            $options['query'] = $params;
-        }
-        if ($this->config->get('debug', false)) {
-            $options['debug'] = true;
+        if (isset($body['revision'])) {
+            $params['rev'] = $body['revision'];
         }
 
         try {
             $client = $this->connector->getConnection();
-            $request_path = $this->buildRequestUrl($identifier, $body);
-            if ($method === self::METHOD_GET) {
-                $request = $client->get($request_path, $options);
+            $request_path = $this->buildRequestUrl($identifier, $params);
+            if (empty($body)) {
+                $request = new Request($method, $request_path);
             } else {
-                $options['body'] = json_encode($body);
-                $request = $client->$method($request_path, $options);
+                $request = new Request($method, $request_path, [ 'application/json' ] , json_encode($body));
             }
         } catch (GuzzleException $guzzle_error) {
             throw new RuntimeError(
-                sprintf("Failed to %s build request: %s", $method, $guzzle_error),
+                sprintf('Failed to %s build request: %s', $method, $guzzle_error),
                 0,
                 $guzzle_error
             );
         }
 
-        return $request;
+        return $client->send($request);
     }
 
     protected function buildRequestUrl($identifier, array $params = [])
     {
-        $request_path = '/' . $this->getDatabase() . '/';
-        $request_path .= $identifier;
+        $request_path = '/' . $this->getDatabase() . '/' . $identifier;
 
-        if (isset($params['revision'])) {
-            $request_path .= '?rev=' . $params['revision'];
+        if (!empty($params)) {
+            $request_path .= '?' . http_build_query($params);
         }
 
-        return $request_path;
+        return str_replace('//', '/', $request_path);
     }
 
     protected function getDatabase()
