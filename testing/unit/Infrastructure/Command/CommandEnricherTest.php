@@ -23,7 +23,7 @@ class CommandEnricherTest extends TestCase
     {
         $metadata = [ 'test' => 'value' ];
 
-        $enricher = $this->getMock(MetadataEnricherInterface::CLASS, [ 'enrich' ]);
+        $enricher = $this->createMock(MetadataEnricherInterface::CLASS, [ 'enrich' ]);
         $enricher->expects($this->once())
             ->method('enrich')
             ->with($this->equalTo(new Metadata($metadata)));

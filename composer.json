@@ -53,24 +53,24 @@
         "league/flysystem": "~1.0",
         "michelf/php-markdown": "~1.4",
         "mtdowling/jmespath.php": "~2.0",
-        "psr/log": "~1.0.0",
+        "psr/log": "~1.0",
         "ql/uri-template": "~1.0",
-        "rdlowrey/auryn": "1.4.*",
-        "swiftmailer/swiftmailer": "5.4.*",
+        "rdlowrey/auryn": "~1.4",
+        "swiftmailer/swiftmailer": "~5.4",
         "symfony/expression-language": "~2.7",
         "symfony/filesystem": "~2.7",
         "twig/twig": "~1.23",
-        "zendframework/zend-permissions-acl": "2.5.*"
+        "zendframework/zend-permissions-acl": "~2.5"
     },
 
     "require-dev": {
         "phpunit/phpunit": "^5.0.5",
         "phpmd/phpmd": "^2.3",
-        "sebastian/phpcpd": "~2.0.2",
-        "squizlabs/php_codesniffer": "^2.3.3",
+        "sebastian/phpcpd": "^2.0",
+        "squizlabs/php_codesniffer": "^2.3",
         "mockery/mockery": "master@dev",
         "satooshi/php-coveralls": "master@dev",
-        "sami/sami": "~3.2"
+        "sami/sami": "^3.2"
     },
 
     "suggest": {
