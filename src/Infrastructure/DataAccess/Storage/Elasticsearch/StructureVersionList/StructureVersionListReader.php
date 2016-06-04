@@ -2,14 +2,15 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Storage\Elasticsearch\StructureVersionList;
 
-use Honeybee\Infrastructure\DataAccess\Storage\Elasticsearch\ElasticsearchStorage;
-use Honeybee\Infrastructure\Migration\StructureVersionList;
-use Honeybee\Infrastructure\Migration\StructureVersion;
+use Elasticsearch\Common\Exceptions\ElasticsearchException;
+use Elasticsearch\Common\Exceptions\Missing404Exception;
+use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Config\SettingsInterface;
+use Honeybee\Infrastructure\DataAccess\Storage\Elasticsearch\ElasticsearchStorage;
 use Honeybee\Infrastructure\DataAccess\Storage\StorageReaderInterface;
 use Honeybee\Infrastructure\DataAccess\Storage\StorageReaderIterator;
-use Honeybee\Common\Error\RuntimeError;
-use Elasticsearch\Common\Exceptions\Missing404Exception;
+use Honeybee\Infrastructure\Migration\StructureVersion;
+use Honeybee\Infrastructure\Migration\StructureVersionList;
 
 class StructureVersionListReader extends ElasticsearchStorage implements StorageReaderInterface
 {
@@ -61,7 +62,7 @@ class StructureVersionListReader extends ElasticsearchStorage implements Storage
                     'id' => $identifier
                 ]
             );
-        } catch (Missing404Exception $missing_error) {
+        } catch (ElasticsearchException $missing_error) {
             return null;
         }
 
