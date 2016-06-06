@@ -1,6 +1,6 @@
 <?php
 
-namespace Honeybee\Tests\Infrastructure\Asset;
+namespace Honeybee\Tests\Infrastructure\Filesystem;
 
 use Honeybee\Tests\TestCase;
 use Honeybee\Tests\Fixture\BookSchema\Model\Author\AuthorType;

@@ -12,7 +12,7 @@ class CommandEnricher extends TypedList implements UniqueValueInterface, Command
         $metadata = new Metadata($command->getMetadata());
 
         foreach ($this->items as $metadata_enricher) {
-            $metadata_enricher->enrich($metadata);
+            $metadata = $metadata_enricher->enrich($metadata);
         }
 
         return $command->withMetadata($metadata);

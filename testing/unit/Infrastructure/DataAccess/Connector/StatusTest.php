@@ -2,7 +2,6 @@
 
 namespace Honeybee\Tests\Infrastructure\DataAccess\Connector;
 
-use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Config\ArrayConfig;
 use Honeybee\Infrastructure\DataAccess\Connector\Status;
 use Honeybee\Tests\TestCase;
@@ -16,17 +15,21 @@ class StatusTest extends TestCase
         $this->assertSame('working=WORKING', (string)$status);
     }
 
+    /**
+     * @expectedException Honeybee\Common\Error\RuntimeError
+     */
     public function testCreationThrowsOnInvalidStatusString()
     {
         $connector = new TestConnector('working', new ArrayConfig([]));
-        $this->setExpectedException(RuntimeError::CLASS);
         new Status($connector, 'none of WORKING, FAILING or UNKNOWN');
     }
 
+    /**
+     * @expectedException Honeybee\Common\Error\RuntimeError
+     */
     public function testCreationThrowsOnNonStringStatus()
     {
         $connector = new TestConnector('working', new ArrayConfig([]));
-        $this->setExpectedException(RuntimeError::CLASS);
         new Status($connector, []);
     }
 

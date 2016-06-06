@@ -5,8 +5,9 @@ namespace Honeybee\Tests\Projection\EventHandler;
 use Honeybee\Tests\TestCase;
 use Honeybee\Model\Aggregate\AggregateRootTypeMap;
 use Honeybee\Model\Event\EmbeddedEntityEventList;
-use Honeybee\Projection\ProjectionTypeMap;
 use Honeybee\Projection\ProjectionInterface;
+use Honeybee\Projection\ProjectionMap;
+use Honeybee\Projection\ProjectionTypeMap;
 use Honeybee\Projection\ProjectionUpdatedEvent;
 use Honeybee\Projection\EventHandler\ProjectionUpdater;
 use Honeybee\Infrastructure\Config\ArrayConfig;
@@ -240,7 +241,9 @@ class ProjectionUpdaterTest extends TestCase
         );
 
         $event = $this->buildEvent($event_state);
-        $projection_updater->handleEvent($event);
+        $projection = $projection_updater->handleEvent($event);
+
+        $this->assertInstanceOf(ProjectionInterface::CLASS, $projection);
     }
 
     // ------------------------ expectation helpers ------------------------
@@ -274,16 +277,14 @@ class ProjectionUpdaterTest extends TestCase
 
     protected function addExpectationsToStorageWriter(ProjectionWriter $mock_storage_writer, array $expectations)
     {
-        foreach ($expectations as $expectation) {
-            $mock_storage_writer->shouldReceive('write')
+        $mock_storage_writer->shouldReceive('writeMany')
             ->once()
             ->with(Mockery::on(
-                function (ProjectionInterface $projection) use ($expectation) {
-                    $this->assertEquals($expectation, $projection->toArray());
+                function (ProjectionMap $projection_map) use ($expectations) {
+                    $this->assertEquals($expectations, array_values($projection_map->toArray()));
                     return true;
                 }
             ));
-        }
     }
 
     protected function addExpectationsToEventBus(EventBusInterface $mock_event_bus, array $expectations)

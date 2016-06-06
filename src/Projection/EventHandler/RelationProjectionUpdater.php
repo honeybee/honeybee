@@ -15,14 +15,14 @@ use Honeybee\Infrastructure\Event\EventHandler;
 use Honeybee\Infrastructure\Event\EventInterface;
 use Honeybee\Infrastructure\Event\Bus\EventBusInterface;
 use Honeybee\Infrastructure\Event\Bus\Channel\ChannelMap;
-use Honeybee\Projection\ProjectionTypeMap;
 use Honeybee\Projection\ProjectionInterface;
+use Honeybee\Projection\ProjectionMap;
+use Honeybee\Projection\ProjectionTypeMap;
 use Honeybee\Projection\ProjectionUpdatedEvent;
-use Trellis\Runtime\Attribute\EmbeddedEntityList\EmbeddedEntityListAttribute;
-use Trellis\Runtime\Entity\EntityList;
-use Trellis\Runtime\Entity\EntityReferenceInterface;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
+use Trellis\Runtime\Attribute\EmbeddedEntityList\EmbeddedEntityListAttribute;
+use Trellis\Runtime\Entity\EntityReferenceInterface;
 
 class RelationProjectionUpdater extends EventHandler
 {
@@ -71,8 +71,10 @@ class RelationProjectionUpdater extends EventHandler
         return $updated_relatives;
     }
 
-    protected function updateAffectedRelatives(EntityList $affected_relatives, ProjectionInterface $source_projection)
-    {
+    protected function updateAffectedRelatives(
+        ProjectionMap $affected_relatives,
+        ProjectionInterface $source_projection
+    ) {
         $referenced_identifier = $source_projection->getIdentifier();
         $updated_relatives = [];
         foreach ($affected_relatives as $affected_relative) {
@@ -117,27 +119,31 @@ class RelationProjectionUpdater extends EventHandler
             $updated_relatives[] = $updated_relative;
         }
 
-        return new EntityList($updated_relatives);
+        return new ProjectionMap($updated_relatives);
     }
 
     // @todo investigate possible edge cases where circular dependencies cause endless updates
-    protected function storeUpdatedProjections(EntityList $affected_relatives, EntityList $updated_relatives)
+    protected function storeUpdatedProjections(ProjectionMap $affected_relatives, ProjectionMap $updated_relatives)
     {
-        foreach ($affected_relatives as $affected_relative) {
-            $updated_relative = $updated_relatives->getEntityByIdentifier($affected_relative->getIdentifier());
-            if ($affected_relative->toArray() !== $updated_relative->toArray()) {
-                // store updates and distribute events only for changed projections
-                $this->getStorageWriter()->write($updated_relative);
-                $update_event = new ProjectionUpdatedEvent(
-                    [
-                        'uuid' => Uuid::uuid4()->toString(),
-                        'projection_identifier' => $updated_relative->getIdentifier(),
-                        'projection_type' => get_class($updated_relative->getType()),
-                        'data' => $updated_relative->toArray()
-                    ]
-                );
-                $this->event_bus->distribute(ChannelMap::CHANNEL_INFRA, $update_event);
+        $modified_relatives = $updated_relatives->filter(
+            function (ProjectionInterface $projection) use ($affected_relatives) {
+                $identifier = $projection->getIdentifier();
+                return $projection->toArray() !== $affected_relatives->getItem($identifier)->toArray();
             }
+        );
+
+        // store updates and distribute events
+        $this->getStorageWriter()->writeMany($modified_relatives);
+        foreach ($modified_relatives as $identifier => $modified_relative) {
+            $update_event = new ProjectionUpdatedEvent(
+                [
+                    'uuid' => Uuid::uuid4()->toString(),
+                    'projection_identifier' => $identifier,
+                    'projection_type' => get_class($modified_relative->getType()),
+                    'data' => $modified_relative->toArray()
+                ]
+            );
+            $this->event_bus->distribute(ChannelMap::CHANNEL_INFRA, $update_event);
         }
     }
 
@@ -196,7 +202,7 @@ class RelationProjectionUpdater extends EventHandler
             }
         }
 
-        return new EntityList($affected_relatives);
+        return new ProjectionMap($affected_relatives);
     }
 
     protected function buildFieldFilterSpec(EmbeddedEntityListAttribute $embed_attribute)

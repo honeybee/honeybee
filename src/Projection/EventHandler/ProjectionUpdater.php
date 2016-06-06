@@ -6,11 +6,11 @@ use Honeybee\Common\Error\RuntimeError;
 use Honeybee\EntityTypeInterface;
 use Honeybee\Infrastructure\Config\ConfigInterface;
 use Honeybee\Infrastructure\DataAccess\DataAccessServiceInterface;
-use Honeybee\Infrastructure\DataAccess\Query\QueryServiceMap;
 use Honeybee\Infrastructure\DataAccess\Query\AttributeCriteria;
+use Honeybee\Infrastructure\DataAccess\Query\Comparison\Equals;
 use Honeybee\Infrastructure\DataAccess\Query\CriteriaList;
 use Honeybee\Infrastructure\DataAccess\Query\Query;
-use Honeybee\Infrastructure\DataAccess\Query\Comparison\Equals;
+use Honeybee\Infrastructure\DataAccess\Query\QueryServiceMap;
 use Honeybee\Infrastructure\Event\EventHandler;
 use Honeybee\Infrastructure\Event\EventInterface;
 use Honeybee\Infrastructure\Event\Bus\EventBusInterface;
@@ -26,16 +26,16 @@ use Honeybee\Model\Task\ModifyAggregateRoot\ModifyEmbeddedEntity\EmbeddedEntityM
 use Honeybee\Model\Task\ModifyAggregateRoot\RemoveEmbeddedEntity\EmbeddedEntityRemovedEvent;
 use Honeybee\Model\Task\MoveAggregateRootNode\AggregateRootNodeMovedEvent;
 use Honeybee\Model\Task\ProceedWorkflow\WorkflowProceededEvent;
+use Honeybee\Projection\ProjectionMap;
 use Honeybee\Projection\ProjectionTypeInterface;
 use Honeybee\Projection\ProjectionTypeMap;
 use Honeybee\Projection\ProjectionUpdatedEvent;
-use Trellis\Runtime\Attribute\AttributeInterface;
-use Trellis\Runtime\Entity\EntityInterface;
-use Trellis\Runtime\Entity\EntityList;
-use Trellis\Runtime\Entity\EntityReferenceInterface;
-use Trellis\Runtime\ReferencedEntityTypeInterface;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
+use Trellis\Runtime\Attribute\AttributeInterface;
+use Trellis\Runtime\Entity\EntityInterface;
+use Trellis\Runtime\Entity\EntityReferenceInterface;
+use Trellis\Runtime\ReferencedEntityTypeInterface;
 
 class ProjectionUpdater extends EventHandler
 {
@@ -71,12 +71,10 @@ class ProjectionUpdater extends EventHandler
     {
         $updated_projections = $this->invokeEventHandler($event, 'on');
 
-        // @todo diff check
         // store updates and distribute projection update events
-        $storage_writer = $this->getStorageWriter($event);
+        $this->getStorageWriter($event)->writeMany($updated_projections);
+
         foreach ($updated_projections as $updated_projection) {
-            // @todo introduce a writeMany method to the storageWriter to save requests
-            $storage_writer->write($updated_projection);
             $update_event = new ProjectionUpdatedEvent(
                 [
                     'uuid' => Uuid::uuid4()->toString(),
@@ -88,8 +86,7 @@ class ProjectionUpdater extends EventHandler
             $this->event_bus->distribute(ChannelMap::CHANNEL_INFRA, $update_event);
         }
 
-        // Could possible return multiple projections on AggregateRootNodeMoved
-        return $updated_projections->getFirst();
+        return $updated_projections->toList()->getFirst();
     }
 
     protected function onAggregateRootCreated(AggregateRootCreatedEvent $event)
@@ -104,7 +101,7 @@ class ProjectionUpdater extends EventHandler
         $new_projection = $this->getProjectionType($event)->createEntity($projection_data);
         $this->handleEmbeddedEntityEvents($new_projection, $event->getEmbeddedEntityEvents());
 
-        return new EntityList([ $new_projection ]);
+        return new ProjectionMap([ $new_projection ]);
     }
 
     protected function onAggregateRootModified(AggregateRootModifiedEvent $event)
@@ -122,7 +119,7 @@ class ProjectionUpdater extends EventHandler
 
         $this->handleEmbeddedEntityEvents($projection, $event->getEmbeddedEntityEvents());
 
-        return new EntityList([ $projection ]);
+        return new ProjectionMap([ $projection ]);
     }
 
     protected function onWorkflowProceeded(WorkflowProceededEvent $event)
@@ -139,7 +136,7 @@ class ProjectionUpdater extends EventHandler
 
         $projection = $this->getProjectionType($event)->createEntity($updated_data);
 
-        return new EntityList([ $projection ]);
+        return new ProjectionMap([ $projection ]);
     }
 
     protected function onAggregateRootNodeMoved(AggregateRootNodeMovedEvent $event)
@@ -197,7 +194,7 @@ class ProjectionUpdater extends EventHandler
             $updated_projections[] = $projection_type->createEntity($child_data);
         }
 
-        return new EntityList($updated_projections);
+        return new ProjectionMap($updated_projections);
     }
 
     protected function handleEmbeddedEntityEvents(EntityInterface $projection, EmbeddedEntityEventList $events)

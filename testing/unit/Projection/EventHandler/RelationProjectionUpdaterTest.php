@@ -2,12 +2,12 @@
 
 namespace Honeybee\Tests\Projection\EventHandler;
 
-use Honeybee\Tests\TestCase;
 use Honeybee\Model\Event\EmbeddedEntityEventList;
-use Honeybee\Projection\ProjectionTypeMap;
-use Honeybee\Projection\EventHandler\RelationProjectionUpdater;
 use Honeybee\Projection\ProjectionInterface;
+use Honeybee\Projection\ProjectionMap;
+use Honeybee\Projection\ProjectionTypeMap;
 use Honeybee\Projection\ProjectionUpdatedEvent;
+use Honeybee\Projection\EventHandler\RelationProjectionUpdater;
 use Honeybee\Infrastructure\Config\ArrayConfig;
 use Honeybee\Infrastructure\DataAccess\Query\QueryInterface;
 use Honeybee\Infrastructure\DataAccess\Query\QueryServiceMap;
@@ -16,12 +16,13 @@ use Honeybee\Infrastructure\DataAccess\Storage\StorageWriterMap;
 use Honeybee\Infrastructure\DataAccess\Storage\Elasticsearch\Projection\ProjectionWriter;
 use Honeybee\Infrastructure\DataAccess\Query\QueryServiceInterface;
 use Honeybee\Infrastructure\Event\Bus\EventBus;
+use Honeybee\Tests\TestCase;
 use Honeybee\Tests\Fixture\GameSchema\Projection\Game\GameType;
 use Honeybee\Tests\Fixture\GameSchema\Projection\Player\PlayerType;
 use Honeybee\Tests\Fixture\GameSchema\Projection\Team\TeamType;
-use Workflux\StateMachine\StateMachineInterface;
-use Psr\Log\NullLogger;
 use Mockery;
+use Psr\Log\NullLogger;
+use Workflux\StateMachine\StateMachineInterface;
 
 class RelationProjectionUpdaterTest extends TestCase
 {
@@ -78,24 +79,22 @@ class RelationProjectionUpdaterTest extends TestCase
         $mock_event_bus = Mockery::mock(EventBus::CLASS);
         $mock_storage_writer = Mockery::mock(ProjectionWriter::CLASS);
         $mock_storage_writer_map = Mockery::mock(StorageWriterMap::CLASS);
-        if (!empty($expectations) && $expectations !== $projections) {
-            $store_name = $projection_type_prefix . '::projection.standard::view_store::writer';
-            $mock_storage_writer_map->shouldReceive('getItem')
-                ->times(count($expectations))
-                ->with($store_name)
-                ->andReturn($mock_storage_writer);
+        $mock_storage_writer_map->shouldReceive('getItem')
+            ->once()
+            ->with($projection_type_prefix . '::projection.standard::view_store::writer')
+            ->andReturn($mock_storage_writer);
+
+        if (!empty($expectations)) {
+            $mock_storage_writer->shouldReceive('writeMany')
+                ->once()
+                ->with(Mockery::on(
+                    function (ProjectionMap $projection_map) use ($expectations) {
+                        $this->assertEquals($expectations, array_values($projection_map->toArray()));
+                        return true;
+                    }
+                ));
 
             foreach ($expectations as $expectation) {
-                $mock_storage_writer->shouldReceive('write')
-                    ->once()
-                    ->with(Mockery::on(
-                        function (ProjectionInterface $projection) use ($expectation) {
-                            $this->assertEquals($expectation, $projection->toArray());
-                            return true;
-                        }
-                    ))
-                    ->andReturnNull();
-
                 $mock_event_bus->shouldReceive('distribute')
                     ->once()
                     ->with('honeybee.events.infrastructure', Mockery::on(
@@ -105,13 +104,18 @@ class RelationProjectionUpdaterTest extends TestCase
                             $this->assertEquals($expectation, $update_event->getData());
                             return true;
                         }
-                    ))
-                    ->andReturnNull();
+                    ));
             }
         } else {
-            $mock_storage_writer_map->shouldNotReceive('getItem');
-            $mock_storage_writer->shouldNotReceive('write');
             $mock_event_bus->shouldNotReceive('distribute');
+            $mock_storage_writer->shouldReceive('writeMany')
+                ->once()
+                ->with(Mockery::on(
+                    function (ProjectionMap $projection_map) {
+                        $this->assertCount(0, $projection_map);
+                        return true;
+                    }
+                ));
         }
 
         // prepare and test subject

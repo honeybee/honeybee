@@ -4,9 +4,9 @@ namespace Honeybee\Ui\Renderer\Html\Honeybee\Projection;
 
 use Honeybee\Ui\Renderer\EntityListRenderer;
 
-class HtmlProjectionCollectionRenderer extends EntityListRenderer
+class HtmlProjectionListRenderer extends EntityListRenderer
 {
-    const STATIC_TRANSLATION_PATH = "collection";
+    const STATIC_TRANSLATION_PATH = 'collection';
 
     protected function getTemplateParameters()
     {

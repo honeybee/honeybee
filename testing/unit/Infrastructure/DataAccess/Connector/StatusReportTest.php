@@ -2,7 +2,6 @@
 
 namespace Honeybee\Tests\Infrastructure\DataAccess\Connector;
 
-use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Config\ArrayConfig;
 use Honeybee\Infrastructure\DataAccess\Connector\ConnectorMap;
 use Honeybee\Infrastructure\DataAccess\Connector\Status;
@@ -19,15 +18,19 @@ class StatusReportTest extends TestCase
         $this->assertInstanceOf(StatusReport::CLASS, $report2);
     }
 
+    /**
+     * @expectedException Honeybee\Common\Error\RuntimeError
+     */
     public function testCreationThrowsOnUnknownStatus()
     {
-        $this->setExpectedException(RuntimeError::CLASS);
         new StatusReport('nonexistantstatus', [], []);
     }
 
+    /**
+     * @expectedException Honeybee\Common\Error\RuntimeError
+     */
     public function testCreationThrowsOnNonStringStatus()
     {
-        $this->setExpectedException(RuntimeError::CLASS);
         new StatusReport([], [], []);
     }
 

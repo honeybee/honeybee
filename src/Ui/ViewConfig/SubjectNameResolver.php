@@ -14,7 +14,7 @@ class SubjectNameResolver implements NameResolverInterface
      * Resolves a name for the given subject. That name may be used to
      * look up e.g. renderer configs or similar for that subject.
      *
-     * @example some Some\Foo\ProjectionCollection => 'resource_collection'
+     * @example some Some\Foo\ProjectionList => 'resource_collection'
      * @example some specific Honeybee\Entity => 'vendor.module.type_prefix'
      * @example some specific Honeybee\Ui\Activity\ActivityInterface => 'resource_collection.activity'
      *

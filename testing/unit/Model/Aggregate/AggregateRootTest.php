@@ -3,7 +3,6 @@
 namespace Honeybee\Tests\Model\Aggregate;
 
 use Assert\InvalidArgumentException;
-use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Model\Aggregate\AggregateRootTypeInterface;
 use Honeybee\Model\Event\AggregateRootEventList;
 use Honeybee\Model\Task\CreateAggregateRoot\AggregateRootCreatedEvent;
@@ -141,6 +140,8 @@ class AggregateRootTest extends TestCase
     /**
      * Expects an exception when trying to process a command without
      * having a CreatedEvent in the history.
+     *
+     * @expectedException Honeybee\Common\Error\RuntimeError
      */
     public function testModifyWithoutCreatedEvent()
     {
@@ -152,8 +153,6 @@ class AggregateRootTest extends TestCase
                 'values' => [ 'lastname' => 'Wahlberg' ]
             ]
         );
-
-        $this->setExpectedException(RuntimeError::CLASS);
 
         $aggregate_root->modify($modify_command);
     }
@@ -205,6 +204,7 @@ class AggregateRootTest extends TestCase
      * Expects a second reconstitution from a different event list to
      * generate a different aggregate-root, with no data related to the
      * first aggregate-root.
+     * @expectedException Honeybee\Common\Error\RuntimeError
      */
     public function testReconstituteFromEventListTwice()
     {
@@ -214,14 +214,14 @@ class AggregateRootTest extends TestCase
 
         $aggregate_root->reconstituteFrom($events_history);
 
-        $this->setExpectedException(RuntimeError::CLASS);
-
         $aggregate_root->reconstituteFrom($alternate_events_history);
     }
 
     /**
      * Expects an exception when trying to force a non valid sequence-number
      * into a manually created event.
+     *
+     * @expectedException Honeybee\Common\Error\RuntimeError
      */
     public function testReconstituteFromInvalidEventSequenceNumber()
     {
@@ -237,14 +237,14 @@ class AggregateRootTest extends TestCase
             ])
         );
 
-        $this->setExpectedException(RuntimeError::CLASS);
-
         $aggregate_root->reconstituteFrom($events_history);
     }
 
     /**
      * Expects an exception when trying to force a non valid known-revision
      * into a command.
+     *
+     * @expectedException Honeybee\Common\Error\RuntimeError
      */
     public function testReconstituteFromInvalidCommandKnownRevision()
     {
@@ -260,14 +260,14 @@ class AggregateRootTest extends TestCase
             ]
         );
 
-        $this->setExpectedException(RuntimeError::CLASS);
-
         $aggregate_root->modify($wrong_seq_number_command);
     }
 
     /**
      * Expects an exception when trying to reconstitute an aggregate-root
      * from an event list where the first event is not a CreatedEvent.
+     *
+     * @expectedException Honeybee\Common\Error\RuntimeError
      */
     public function testReconstituteFromEventListWithNoCreatedEvent()
     {
@@ -286,7 +286,6 @@ class AggregateRootTest extends TestCase
                 )
             ]
         );
-        $this->setExpectedException(RuntimeError::CLASS);
         $aggregate_root->reconstituteFrom($events_history);
     }
 
@@ -316,6 +315,9 @@ class AggregateRootTest extends TestCase
     /**
      * Expects an exception with a specific message, when trying to proceed
      * to a workflow state without having first created the aggregate-root.
+     *
+     * @expectedException Honeybee\Common\Error\RuntimeError
+     * @expectedExceptionMessage Invalid event history. No event has been previously applied.
      */
     public function testProceedWorkflowWithoutCreation()
     {
@@ -330,19 +332,14 @@ class AggregateRootTest extends TestCase
             ]
         );
 
-        $this->setExpectedException(
-            RuntimeError::CLASS,
-            sprintf(
-                'Invalid event history. No event has been previously applied. At least a %s should be applied.',
-                AggregateRootCreatedEvent::CLASS
-            )
-        );
         $aggregate_root->proceedWorkflow($workflow_command);
     }
 
     /**
      * Expects an exception when trying to proceed in the workflow providing
      * a not valid current state.
+     *
+     * @expectedException Honeybee\Common\Error\RuntimeError
      */
     public function testProceedWorkflowInvalidCurrentState()
     {
@@ -356,8 +353,6 @@ class AggregateRootTest extends TestCase
                 'event_name' => 'promote'
             ]
         );
-
-        $this->setExpectedException(RuntimeError::CLASS);
 
         $aggregate_root->proceedWorkflow($workflow_command);
     }

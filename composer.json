@@ -60,7 +60,8 @@
         "symfony/expression-language": "~2.7",
         "symfony/filesystem": "~2.7",
         "twig/twig": "~1.23",
-        "zendframework/zend-permissions-acl": "~2.5"
+        "zendframework/zend-permissions-acl": "~2.5",
+        "guzzlehttp/guzzle": "~6.2"
     },
 
     "require-dev": {

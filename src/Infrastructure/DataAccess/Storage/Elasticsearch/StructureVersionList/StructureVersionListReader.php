@@ -2,7 +2,6 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Storage\Elasticsearch\StructureVersionList;
 
-use Elasticsearch\Common\Exceptions\ElasticsearchException;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Config\SettingsInterface;
@@ -62,7 +61,7 @@ class StructureVersionListReader extends ElasticsearchStorage implements Storage
                     'id' => $identifier
                 ]
             );
-        } catch (ElasticsearchException $missing_error) {
+        } catch (Missing404Exception $error) {
             return null;
         }
 

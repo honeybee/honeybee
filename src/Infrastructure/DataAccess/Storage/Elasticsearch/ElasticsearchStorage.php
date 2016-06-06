@@ -2,8 +2,8 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Storage\Elasticsearch;
 
-use Honeybee\Infrastructure\DataAccess\Storage\Storage;
 use Honeybee\Infrastructure\Config\Settings;
+use Honeybee\Infrastructure\DataAccess\Storage\Storage;
 
 abstract class ElasticsearchStorage extends Storage
 {
@@ -23,6 +23,6 @@ abstract class ElasticsearchStorage extends Storage
 
     protected function getParameters($method)
     {
-        return (array)$this->config->get('parameters', new Settings())->get($method);
+        return (array)$this->config->get('parameters', new Settings)->get($method);
     }
 }

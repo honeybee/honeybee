@@ -2,6 +2,8 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Storage\Elasticsearch;
 
+use Honeybee\Common\Error\RuntimeError;
+use Honeybee\Infrastructure\Config\Settings;
 use Honeybee\Infrastructure\Config\SettingsInterface;
 use Honeybee\Infrastructure\DataAccess\Storage\StorageWriterInterface;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
@@ -20,24 +22,54 @@ abstract class ElasticsearchStorageWriter extends ElasticsearchStorage implement
         $this->connector->getConnection()->index(array_merge($data, $this->getParameters('index')));
     }
 
+    protected function writeBulk(array $documents, SettingsInterface $settings = null)
+    {
+        // @todo support bulk parameters and batching
+        $index = $this->getIndex();
+        $type = $this->getType();
+
+        $data = [];
+        foreach ($documents as $identifier => $document) {
+            $data['body'][] = [
+                'index' => [
+                    '_index' => $index,
+                    '_type' => $type,
+                    '_id' => $identifier
+                ]
+            ];
+            $data['body'][] = $document;
+        }
+
+        $this->connector->getConnection()->bulk($data);
+    }
+
     public function delete($identifier, SettingsInterface $settings = null)
     {
-        try {
-            // @todo atm deleting a document when the index does not exists triggers the index to be created.
-            // this is a baad sideeffect caused by the elasticsearch-php lib atm.
-            // remove this code as soon as the behaviour is fixed.
-            // @link https://github.com/elastic/elasticsearch/issues/15451
+        if (!is_string($identifier) || empty($identifier)) {
+            error_log(__METHOD__ . ' - Ignoring invalid identifier.');
+            return;
+        }
 
+        try {
             $data = [
                 'index' => $this->getIndex(),
                 'type' => $this->getType(),
                 'id' => $identifier
             ];
 
-            // Parameters not added to the get because we don't want to force any refresh on read
-            $this->connector->getConnection()->get(array_merge($data, $this->getParameters('get')));
+            /*
+             * @todo atm deleting a document when the index does not exists triggers the index to be created.
+             * this is a baad sideeffect in Elasticsearch. remove this code as soon as the behaviour is fixed.
+             * @link https://github.com/elastic/elasticsearch/issues/15451
+             */
 
-            $this->connector->getConnection()->delete(array_merge($data, $this->getParameters('delete')));
+            // override potential refresh on read
+            $connection = $this->connector->getConnection();
+            $get_parameters = $this->getParameters('get');
+            $get_parameters['refresh'] = false;
+            $connection->get(array_merge($data, $get_parameters));
+
+            $connection->delete(array_merge($data, $this->getParameters('delete')));
         } catch (Missing404Exception $error) {
             error_log(__METHOD__ . ' - ' . $error->getMessage());
         }
