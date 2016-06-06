@@ -2,9 +2,13 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Connector;
 
-use Honeybee\Common\Error\RuntimeError;
-use GuzzleHttp\Client;
 use Exception;
+use GuzzleHttp\Client;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\Psr7\Uri;
+use Honeybee\Common\Error\RuntimeError;
+use Psr\Http\Message\RequestInterface;
 
 class GuzzleConnector extends Connector
 {
@@ -46,6 +50,20 @@ class GuzzleConnector extends Connector
 
         if ($this->config->has('default_options')) {
             $client_options = array_merge($client_options, (array)$this->config->get('default_options')->toArray());
+        }
+
+        if ($this->config->has('default_query')) {
+            $handler = HandlerStack::create();
+            $handler->push(Middleware::mapRequest(
+                function (RequestInterface $request) {
+                    $uri = $request->getUri();
+                    foreach ((array)$this->config->get('default_query')->toArray() as $param => $value) {
+                        $uri = Uri::withQueryValue($uri, $param, $value);
+                    }
+                    return $request->withUri($uri);
+                }
+            ));
+            $client_options['handler'] = $handler;
         }
 
         return new Client($client_options);
