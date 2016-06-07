@@ -79,7 +79,7 @@ class ProjectionUpdater extends EventHandler
                 [
                     'uuid' => Uuid::uuid4()->toString(),
                     'projection_identifier' => $updated_projection->getIdentifier(),
-                    'projection_type' => get_class($updated_projection->getType()),
+                    'projection_type' => $updated_projection->getType()->getPrefix(),
                     'data' => $updated_projection->toArray()
                 ]
             );
@@ -351,8 +351,7 @@ class ProjectionUpdater extends EventHandler
 
     protected function getProjectionType(AggregateRootEventInterface $event)
     {
-        $ar_type = $this->aggregate_root_type_map->getByClassName($event->getAggregateRootType());
-        return $this->projection_type_map->getItem($ar_type->getPrefix());
+        return $this->projection_type_map->getItem($event->getAggregateRootType());
     }
 
     protected function getQueryService(ProjectionTypeInterface $projection_type)

@@ -3,16 +3,16 @@
 return [
     // empty payload
     [
-      'payload' => [
-          'author' => []
-      ],
-      'expected_command' => [
-          '@type' => 'Honeybee\Tests\Fixture\BookSchema\Task\CreateAuthor\CreateAuthorCommand',
-          'values' => [],
-          'aggregate_root_type' => 'Honeybee\Tests\Fixture\BookSchema\Model\Author\AuthorType',
-          'embedded_entity_commands' => [],
-          'metadata' => []
-      ]
+        'payload' => [
+            'author' => []
+        ],
+        'expected_command' => [
+            '@type' => 'Honeybee\Tests\Fixture\BookSchema\Task\CreateAuthor\CreateAuthorCommand',
+            'values' => [],
+            'aggregate_root_type' => 'honeybee-cmf.aggregate_fixtures.author',
+            'embedded_entity_commands' => [],
+            'metadata' => []
+        ]
     ],
     // payload with no embeds or references
     [
@@ -30,7 +30,7 @@ return [
                 'firstname' => 'Amitav',
                 'lastname' => 'Gosh'
             ],
-            'aggregate_root_type' => 'Honeybee\Tests\Fixture\BookSchema\Model\Author\AuthorType',
+            'aggregate_root_type' => 'honeybee-cmf.aggregate_fixtures.author',
             'embedded_entity_commands' => [],
             'metadata' => []
         ]
@@ -56,7 +56,7 @@ return [
                 'firstname' => 'Amitav',
                 'lastname' => 'Gosh'
             ],
-            'aggregate_root_type' => 'Honeybee\Tests\Fixture\BookSchema\Model\Author\AuthorType',
+            'aggregate_root_type' => 'honeybee-cmf.aggregate_fixtures.author',
             'embedded_entity_commands' => [
                 [
                     '@type' => 'Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\AddEmbeddedEntityCommand',
@@ -105,7 +105,7 @@ return [
                 'firstname' => 'Amitav',
                 'lastname' => ''
             ],
-            'aggregate_root_type' => 'Honeybee\Tests\Fixture\BookSchema\Model\Author\AuthorType',
+            'aggregate_root_type' => 'honeybee-cmf.aggregate_fixtures.author',
             'embedded_entity_commands' => [
                 [
                     '@type' => 'Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\AddEmbeddedEntityCommand',
@@ -169,7 +169,7 @@ return [
                 'firstname' => 'Amitav',
                 'lastname' => 'Gosh'
             ],
-            'aggregate_root_type' => 'Honeybee\Tests\Fixture\BookSchema\Model\Author\AuthorType',
+            'aggregate_root_type' => 'honeybee-cmf.aggregate_fixtures.author',
             'embedded_entity_commands' => [
                 [
                     '@type' => 'Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\AddEmbeddedEntityCommand',

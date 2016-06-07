@@ -15,7 +15,7 @@ class AggregateRootCommandBuilder extends EmbeddedEntityCommandBuilder
     {
         parent::__construct($aggregate_root_type, $command_class);
 
-        $this->command_state['aggregate_root_type'] = get_class($aggregate_root_type);
+        $this->command_state['aggregate_root_type'] = $aggregate_root_type->getPrefix();
     }
 
     public function build()

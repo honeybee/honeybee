@@ -66,6 +66,6 @@ abstract class Event extends Object implements EventInterface
 
     public function __toString()
     {
-        return static::CLASS . '@' . $this->getUuid();
+        return $this->getType() . '@' . $this->getUuid();
     }
 }

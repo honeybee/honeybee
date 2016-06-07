@@ -96,7 +96,11 @@ abstract class AggregateRootEvent extends Event implements AggregateRootEventInt
     {
         parent::guardRequiredState();
 
-        Assertion::classExists($this->aggregate_root_type);
+        Assertion::regex(
+            $this->aggregate_root_type,
+            // @todo improve regex to match double underscores/hyphens
+            '#^([a-z][a-z_-]+(?<![_-])\.){2}[a-z][a-z_-]+(?<![_-])$#'
+        );
         Assertion::integer($this->seq_number);
         Assertion::isInstanceOf($this->embedded_entity_events, EmbeddedEntityEventList::CLASS);
         Assertion::regex(

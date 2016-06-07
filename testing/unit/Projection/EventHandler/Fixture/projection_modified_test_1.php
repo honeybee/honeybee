@@ -10,7 +10,7 @@ return [
             'title' => 'Doom 3'
         ],
         'aggregate_root_identifier' => 'honeybee.fixtures.game-a7cec777-d932-4bbd-8156-261138d3fe39-de_DE-1',
-        'aggregate_root_type' => 'Honeybee\Tests\Fixture\GameSchema\Model\Game\GameType',
+        'aggregate_root_type' => 'honeybee-tests.game_schema.game',
         'embedded_entity_events' => [],
         'seq_number' => 3,
         'uuid' => 'a7cec777-d932-4bbd-8156-261138d3fe39',
@@ -18,7 +18,7 @@ return [
         'metadata' => []
     ],
     'subject' => [
-        '@type' => 'Honeybee\Tests\Fixture\GameSchema\Projection\Game\Game',
+        '@type' => 'honeybee-tests.game_schema.game',
         'identifier' => 'honeybee.fixtures.game-a7cec777-d932-4bbd-8156-261138d3fe39-de_DE-1',
         'revision' => 3,
         'uuid' => 'a7cec777-d932-4bbd-8156-261138d3fe39',
@@ -37,7 +37,7 @@ return [
     'projections' => [],
     'expectations' => [
         [
-            '@type' => 'Honeybee\Tests\Fixture\GameSchema\Projection\Game\Game',
+            '@type' => 'honeybee-tests.game_schema.game',
             'identifier' => 'honeybee.fixtures.game-a7cec777-d932-4bbd-8156-261138d3fe39-de_DE-1',
             'revision' => 3,
             'uuid' => 'a7cec777-d932-4bbd-8156-261138d3fe39',

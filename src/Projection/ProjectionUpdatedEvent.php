@@ -32,32 +32,20 @@ class ProjectionUpdatedEvent extends Event
 
     public function getType()
     {
-        $fqcn_parts = explode('\\', $this->projection_type);
-        if (count($fqcn_parts) < 3) {
-            throw new RuntimeError(
-                sprintf(
-                    'A concrete projection class must be made up of at least three namespace parts: ' .
-                    '(vendor, package, type, event), in order to support auto-type generation.' .
-                    ' The given class %s only has %d parts.',
-                    $this->projection_type,
-                    count($fqcn_parts)
-                )
-            );
-        }
-        $vendor = strtolower(array_shift($fqcn_parts));
-        $package = StringToolkit::asSnakeCase(array_shift($fqcn_parts));
-        $type = StringToolkit::asSnakeCase(array_shift($fqcn_parts));
         $event_parts = explode('\\', static::CLASS);
         $event = str_replace('_event', '', StringToolkit::asSnakeCase(array_pop($event_parts)));
-
-        return sprintf('%s.%s.%s.%s', $vendor, $package, $type, $event);
+        return sprintf('%s.%s', $this->projection_type, $event);
     }
 
     protected function guardRequiredState()
     {
         parent::guardRequiredState();
 
-        Assertion::string($this->projection_type);
+        Assertion::regex(
+            $this->projection_type,
+            // @todo improve regex to match double underscores/hyphens
+            '#^([a-z][a-z_-]+(?<![_-])\.){2}[a-z][a-z_-]+(?<![_-])$#'
+        );
         Assertion::isArray($this->data);
         Assertion::regex(
             $this->projection_identifier,

@@ -295,7 +295,7 @@ class ProjectionUpdaterTest extends TestCase
                 ->with('honeybee.events.infrastructure', Mockery::on(
                     function (ProjectionUpdatedEvent $event) use ($expectation) {
                         $this->assertEquals($expectation['identifier'], $event->getProjectionIdentifier());
-                        $this->assertEquals($expectation['@type'] . 'Type', $event->getProjectionType());
+                        $this->assertEquals($expectation['@type'], $event->getProjectionType());
                         $this->assertEquals($expectation, $event->getData());
                         return true;
                     }
@@ -355,6 +355,6 @@ class ProjectionUpdaterTest extends TestCase
 
     protected function createProjection(array $state)
     {
-        return $this->projection_type_map->getByEntityImplementor($state['@type'])->createEntity($state);
+        return $this->projection_type_map->getItem($state['@type'])->createEntity($state);
     }
 }

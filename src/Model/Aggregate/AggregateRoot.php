@@ -66,8 +66,8 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
         parent::__construct($aggregate_root_type, $data);
 
         $this->state_machine = $state_machine;
-        $this->history = new AggregateRootEventList();
-        $this->uncomitted_events_list = new AggregateRootEventList();
+        $this->history = new AggregateRootEventList;
+        $this->uncomitted_events_list = new AggregateRootEventList;
     }
 
     /**
@@ -367,19 +367,20 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
      */
     protected function createInitialData(CreateAggregateRootCommand $create_command)
     {
-        $create_data = $create_command->getValues();
-        $create_data['@type'] = get_class($this);
-
         $type = $this->getType();
+        $type_prefix = $type->getPrefix();
+
+        $create_data = $create_command->getValues();
+        $create_data[self::OBJECT_TYPE] = $type_prefix;
+
         $value_or_default = function ($key, $default) use ($create_data) {
             return isset($create_data[$key]) ? $create_data[$key] : $default;
         };
 
-        $type = $this->getType();
         $uuid = $value_or_default('uuid', $type->getAttribute('uuid')->getDefaultValue());
         $language = $value_or_default('language', $type->getAttribute('language')->getDefaultValue());
         $version = $value_or_default('version', 1);
-        $identifier = sprintf('%s-%s-%s-%s', $type->getPrefix(), $uuid, $language, $version);
+        $identifier = sprintf('%s-%s-%s-%s', $type_prefix, $uuid, $language, $version);
 
         $default_attributes = $type->getDefaultAttributes();
         $non_default_attributes = $type->getAttributes()->filter(

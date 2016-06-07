@@ -26,7 +26,7 @@ class ProjectionFinder extends ElasticsearchFinder
     {
         $source = $document_data['_source'];
         $event_type = isset($source[self::OBJECT_TYPE]) ? $source[self::OBJECT_TYPE] : false;
-        if (!$event_type || !class_exists($event_type, true)) {
+        if (!$event_type) {
             throw new RuntimeError("Invalid or corrupt type information within resource data.");
         }
         unset($source[self::OBJECT_TYPE]);

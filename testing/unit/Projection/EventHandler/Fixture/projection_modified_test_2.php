@@ -10,7 +10,7 @@ return [
             'title' => 'Quake 9'
         ],
         'aggregate_root_identifier' => 'honeybee.fixtures.game-a7cec777-d932-4bbd-8156-261138d3fe39-de_DE-1',
-        'aggregate_root_type' => 'Honeybee\Tests\Fixture\GameSchema\Model\Game\GameType',
+        'aggregate_root_type' => 'honeybee-tests.game_schema.game',
         'embedded_entity_events' => [
             [
                 '@type' => 'Honeybee\Model\Task\ModifyAggregateRoot\RemoveEmbeddedEntity\EmbeddedEntityRemovedEvent',
@@ -57,7 +57,7 @@ return [
         'metadata' => []
     ],
     'subject' => [
-        '@type' => 'Honeybee\Tests\Fixture\GameSchema\Projection\Game\Game',
+        '@type' => 'honeybee-tests.game_schema.game',
         'identifier' => 'honeybee.fixtures.game-a7cec777-d932-4bbd-8156-261138d3fe39-de_DE-1',
         'revision' => 3,
         'uuid' => 'a7cec777-d932-4bbd-8156-261138d3fe39',
@@ -91,7 +91,7 @@ return [
     ],
     'projections' => [
         [
-            '@type' => 'Honeybee\Tests\Fixture\GameSchema\Projection\Player\Player',
+            '@type' => 'honeybee-tests.game_schema.player',
             'identifier' => 'honeybee.fixtures.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
             'revision' => 1,
             'uuid' => 'a726301d-dbae-4fb6-91e9-a19188a17e71',
@@ -111,7 +111,7 @@ return [
     ],
     'expected' => [
         [
-            '@type' => 'Honeybee\Tests\Fixture\GameSchema\Projection\Game\Game',
+            '@type' => 'honeybee-tests.game_schema.game',
             'identifier' => 'honeybee.fixtures.game-a7cec777-d932-4bbd-8156-261138d3fe39-de_DE-1',
             'revision' => 3,
             'uuid' => 'a7cec777-d932-4bbd-8156-261138d3fe39',

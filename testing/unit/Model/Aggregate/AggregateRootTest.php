@@ -2,7 +2,6 @@
 
 namespace Honeybee\Tests\Model\Aggregate;
 
-use Assert\InvalidArgumentException;
 use Honeybee\Model\Aggregate\AggregateRootTypeInterface;
 use Honeybee\Model\Event\AggregateRootEventList;
 use Honeybee\Model\Task\CreateAggregateRoot\AggregateRootCreatedEvent;
@@ -18,7 +17,6 @@ use Honeybee\Tests\Fixture\BookSchema\Task\ProceedAuthorWorkflow\AuthorWorkflowP
 use Honeybee\Tests\Fixture\BookSchema\Task\ProceedAuthorWorkflow\ProceedAuthorWorkflowCommand;
 use Honeybee\Tests\TestCase;
 use Workflux\Builder\XmlStateMachineBuilder;
-use Workflux\Error\Error as WorkfluxError;
 
 class AggregateRootTest extends TestCase
 {
@@ -26,6 +24,8 @@ class AggregateRootTest extends TestCase
         'honeybee-cms.aggregate_fixtures.author-fa44c523-592f-404f-bcd5-00f04ff5ce61-de_DE-1';
 
     const AGGREGATE_ROOT_PREFIX = 'author';
+
+    const AGGREGATE_ROOT_TYPE = 'honeybee-cmf.aggregate_fixtures.author';
 
     const AGGREGATE_ROOT_UUID = 'fa44c523-592f-404f-bcd5-00f04ff5ce61';
 
@@ -53,6 +53,7 @@ class AggregateRootTest extends TestCase
 
         $create_command = new CreateAuthorCommand(
             [
+                'aggregate_root_type' => self::AGGREGATE_ROOT_TYPE,
                 'values' => [
                     'firstname' => 'Mark',
                     'lastname' => 'Twain'
@@ -70,6 +71,28 @@ class AggregateRootTest extends TestCase
     }
 
     /**
+     * The create command requires an aggregate root type to be specified
+     *
+     * @expectedException Assert\InvalidArgumentException
+     */
+    public function testCreateWithoutType()
+    {
+        $aggregate_root = $this->constructAggregateRoot();
+        $this->assertTrue($aggregate_root->isValid());
+
+        $create_command = new CreateAuthorCommand(
+            [
+                'values' => [
+                    'firstname' => 'Mark',
+                    'lastname' => 'Twain'
+                ]
+            ]
+        );
+
+        $aggregate_root->create($create_command);
+    }
+
+    /**
      * Expects a non-valid aggregate-root when trying to create it with
      * missing values for mandatory attributes.
      */
@@ -81,6 +104,7 @@ class AggregateRootTest extends TestCase
 
         $create_command = new CreateAuthorCommand(
             [
+                'aggregate_root_type' => self::AGGREGATE_ROOT_TYPE,
                 'values' => [
                     'firstname' => 'Mark'
                     // Value for the mandatory attribute 'lastname' is missing
@@ -107,6 +131,7 @@ class AggregateRootTest extends TestCase
 
         $modify_command = new ModifyAuthorCommand(
             [
+                'aggregate_root_type' => self::AGGREGATE_ROOT_TYPE,
                 'aggregate_root_identifier' => self::AGGREGATE_ROOT_IDENTIFIER,
                 'known_revision' => 1,
                 'values' => [ 'lastname' => 'Wahlberg' ]
@@ -121,15 +146,36 @@ class AggregateRootTest extends TestCase
     }
 
     /**
-     * Expects an exception when providing an aggregate-root-identifier that does
-     * not correspond to the aggregate-root which the command is processed upon.
+     * The modify command requires an aggregate root type to be specified
+     *
+     * @expectedException Assert\InvalidArgumentException
      */
-    public function testModifyWrongAggregateRootIdentifier()
+    public function testModifyWithoutType()
     {
-        $this->setExpectedException(InvalidArgumentException::CLASS);
+        $aggregate_root = $this->getCreatedAggregateRoot();
 
         $modify_command = new ModifyAuthorCommand(
             [
+                'aggregate_root_identifier' => self::AGGREGATE_ROOT_IDENTIFIER,
+                'known_revision' => 1,
+                'values' => [ 'lastname' => 'Wahlberg' ]
+            ]
+        );
+
+        $aggregate_root->create($modify_command);
+    }
+
+    /**
+     * Expects an exception when providing an aggregate-root-identifier that does
+     * not correspond to the aggregate-root which the command is processed upon.
+     *
+     * @expectedException Assert\InvalidArgumentException
+     */
+    public function testModifyInvalidAggregateRootIdentifier()
+    {
+        $modify_command = new ModifyAuthorCommand(
+            [
+                'aggregate_root_type' => self::AGGREGATE_ROOT_TYPE,
                 'aggregate_root_identifier' => 'invalid aggregate root identifier',
                 'known_revision' => 1,
                 'values' => [ 'lastname' => 'Wahlberg' ]
@@ -148,6 +194,7 @@ class AggregateRootTest extends TestCase
         $aggregate_root = $this->constructAggregateRoot();
         $modify_command = new ModifyAuthorCommand(
             [
+                'aggregate_root_type' => self::AGGREGATE_ROOT_TYPE,
                 'aggregate_root_identifier' => self::AGGREGATE_ROOT_IDENTIFIER,
                 'known_revision' => 1,
                 'values' => [ 'lastname' => 'Wahlberg' ]
@@ -168,6 +215,7 @@ class AggregateRootTest extends TestCase
 
         $new_command = new ModifyAuthorCommand(
             [
+                'aggregate_root_type' => self::AGGREGATE_ROOT_TYPE,
                 'aggregate_root_identifier' => self::AGGREGATE_ROOT_IDENTIFIER,
                 'known_revision' => 4,
                 'values' => [ 'firstname' => 'Samantha' ]
@@ -230,6 +278,7 @@ class AggregateRootTest extends TestCase
 
         $events_history->push(
             new AuthorModifiedEvent([
+                'aggregate_root_type' => self::AGGREGATE_ROOT_TYPE,
                 'aggregate_root_identifier' => self::AGGREGATE_ROOT_IDENTIFIER,
                 'uuid' => '9d3cefd9-f5f1-4a3f-ad2b-231a6d50eba7',
                 'seq_number' => 100,
@@ -254,6 +303,7 @@ class AggregateRootTest extends TestCase
 
         $wrong_seq_number_command = new ModifyAuthorCommand(
             [
+                'aggregate_root_type' => self::AGGREGATE_ROOT_TYPE,
                 'aggregate_root_identifier' => self::AGGREGATE_ROOT_IDENTIFIER,
                 'known_revision' => 100,
                 'values' => [ 'firstname' => 'Samantha' ]
@@ -276,6 +326,7 @@ class AggregateRootTest extends TestCase
             [
                 new AuthorModifiedEvent(
                     [
+                        'aggregate_root_type' => self::AGGREGATE_ROOT_TYPE,
                         'aggregate_root_identifier' => self::AGGREGATE_ROOT_IDENTIFIER,
                         'uuid' => '9d3cefd9-f5f1-4a3f-ad2b-8d146d50eba7',
                         'seq_number' => 1,
@@ -299,6 +350,7 @@ class AggregateRootTest extends TestCase
 
         $workflow_command = new ProceedAuthorWorkflowCommand(
             [
+                'aggregate_root_type' => self::AGGREGATE_ROOT_TYPE,
                 'aggregate_root_identifier' => self::AGGREGATE_ROOT_IDENTIFIER,
                 'known_revision' => 1,
                 'current_state_name' => 'inactive',
@@ -325,6 +377,7 @@ class AggregateRootTest extends TestCase
 
         $workflow_command = new ProceedAuthorWorkflowCommand(
             [
+                'aggregate_root_type' => self::AGGREGATE_ROOT_TYPE,
                 'aggregate_root_identifier' => self::AGGREGATE_ROOT_IDENTIFIER,
                 'known_revision' => 0,
                 'current_state_name' => 'inactive',
@@ -347,6 +400,7 @@ class AggregateRootTest extends TestCase
 
         $workflow_command = new ProceedAuthorWorkflowCommand(
             [
+                'aggregate_root_type' => self::AGGREGATE_ROOT_TYPE,
                 'aggregate_root_identifier' => self::AGGREGATE_ROOT_IDENTIFIER,
                 'known_revision' => 1,
                 'current_state_name' => 'active',
@@ -361,6 +415,8 @@ class AggregateRootTest extends TestCase
      * Expects an exception when trying to proceed in the workflow state
      * but providing an invalid transition event (according to the
      * state-machine definition).
+     *
+     * @expectedException Workflux\Error\Error
      */
     public function testProceedWorkflowInvalidEvent()
     {
@@ -368,14 +424,13 @@ class AggregateRootTest extends TestCase
 
         $workflow_command = new ProceedAuthorWorkflowCommand(
             [
+                'aggregate_root_type' => self::AGGREGATE_ROOT_TYPE,
                 'aggregate_root_identifier' => self::AGGREGATE_ROOT_IDENTIFIER,
                 'known_revision' => 1,
                 'current_state_name' => 'inactive',
                 'event_name' => 'demote'
             ]
         );
-
-        $this->setExpectedException(WorkfluxError::CLASS);
 
         $aggregate_root->proceedWorkflow($workflow_command);
     }
@@ -433,7 +488,7 @@ class AggregateRootTest extends TestCase
     public function testGetShortIdentifier()
     {
         $aggregate_root = $this->getCreatedAggregateRoot();
-        $this->assertEquals('honeybee-cmf.aggregate_fixtures.author-0', $aggregate_root->getShortIdentifier());
+        $this->assertEquals(self::AGGREGATE_ROOT_TYPE . '-0', $aggregate_root->getShortIdentifier());
     }
 
     /**
@@ -477,6 +532,7 @@ class AggregateRootTest extends TestCase
 
         $workflow_command = new ProceedAuthorWorkflowCommand(
             [
+                'aggregate_root_type' => self::AGGREGATE_ROOT_TYPE,
                 'aggregate_root_identifier' => self::AGGREGATE_ROOT_IDENTIFIER,
                 'known_revision' => 1,
                 'current_state_name' => 'inactive',
@@ -535,9 +591,10 @@ class AggregateRootTest extends TestCase
 
     protected function getHistoryFixture()
     {
-        $history_fixture = new AggregateRootEventList();
+        $history_fixture = new AggregateRootEventList;
         $history_fixture->push(
             new AuthorCreatedEvent([
+                'aggregate_root_type' => self::AGGREGATE_ROOT_TYPE,
                 'aggregate_root_identifier' => self::AGGREGATE_ROOT_IDENTIFIER,
                 'uuid' => '26cfb993-5946-4bd3-befe-8fb92648fd27',
                 'seq_number' => 1,
@@ -557,6 +614,7 @@ class AggregateRootTest extends TestCase
         );
         $history_fixture->push(
             new AuthorModifiedEvent([
+                'aggregate_root_type' => self::AGGREGATE_ROOT_TYPE,
                 'aggregate_root_identifier' => self::AGGREGATE_ROOT_IDENTIFIER,
                 'uuid' => '9d3cefd9-f5f1-4a3f-ad2b-8d146d50eba7',
                 'seq_number' => 2,
@@ -567,6 +625,7 @@ class AggregateRootTest extends TestCase
         );
         $history_fixture->push(
             new AuthorModifiedEvent([
+                'aggregate_root_type' => self::AGGREGATE_ROOT_TYPE,
                 'aggregate_root_identifier' => self::AGGREGATE_ROOT_IDENTIFIER,
                 'uuid' => '39e3d80a-d700-4c1f-8bc7-0c3141b94af7',
                 'seq_number' => 3,
@@ -577,6 +636,7 @@ class AggregateRootTest extends TestCase
         );
         $history_fixture->push(
             new AuthorModifiedEvent([
+                'aggregate_root_type' => self::AGGREGATE_ROOT_TYPE,
                 'aggregate_root_identifier' => self::AGGREGATE_ROOT_IDENTIFIER,
                 'uuid' => '6d3f60a0-3662-47ad-a7f0-1eaf33bb46b0',
                 'seq_number' => 4,
@@ -592,6 +652,7 @@ class AggregateRootTest extends TestCase
     protected function getAlternativeHistoryFixture()
     {
         $first_event = new AuthorCreatedEvent([
+            'aggregate_root_type' => self::AGGREGATE_ROOT_TYPE,
             'aggregate_root_identifier' => self::AGGREGATE_ROOT_IDENTIFIER,
             'uuid' => '968bbade-5182-411f-9d02-39376035a068',
             'seq_number' => 1,
@@ -608,6 +669,7 @@ class AggregateRootTest extends TestCase
         ]);
 
         $second_event = new AuthorWorkflowProceededEvent([
+            'aggregate_root_type' => self::AGGREGATE_ROOT_TYPE,
             'aggregate_root_identifier' => self::AGGREGATE_ROOT_IDENTIFIER,
             'uuid' => '81b07c06-33f6-4c2e-8675-ad9b493d8142',
             'seq_number' => 2,
@@ -625,6 +687,7 @@ class AggregateRootTest extends TestCase
             [
                 new AuthorCreatedEvent(
                     [
+                        'aggregate_root_type' => self::AGGREGATE_ROOT_TYPE,
                         'aggregate_root_identifier' => self::AGGREGATE_ROOT_IDENTIFIER,
                         'uuid' => '26cfb993-5946-4bd3-befe-8fb92648fd27',
                         'seq_number' => 1,

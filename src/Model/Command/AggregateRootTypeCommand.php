@@ -12,7 +12,7 @@ abstract class AggregateRootTypeCommand extends Command implements AggregateRoot
 
     protected $embedded_entity_commands;
 
-    public function __construct(array $state = array())
+    public function __construct(array $state = [])
     {
         $this->embedded_entity_commands = new EmbeddedEntityTypeCommandList;
 
@@ -48,7 +48,11 @@ abstract class AggregateRootTypeCommand extends Command implements AggregateRoot
     {
         parent::guardRequiredState();
 
-        Assertion::classExists($this->aggregate_root_type);
+        Assertion::regex(
+            $this->aggregate_root_type,
+            // @todo improve regex to match double underscores/hyphens
+            '#^([a-z][a-z_-]+(?<![_-])\.){2}[a-z][a-z_-]+(?<![_-])$#'
+        );
         Assertion::notNull($this->embedded_entity_commands);
     }
 }

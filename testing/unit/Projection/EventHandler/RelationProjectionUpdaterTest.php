@@ -53,7 +53,7 @@ class RelationProjectionUpdaterTest extends TestCase
     {
         // build projection finder results
         foreach ($projections as $projection) {
-            $projection_type = $this->projection_type_map->getByEntityImplementor($projection['@type']);
+            $projection_type = $this->projection_type_map->getItem($projection['@type']);
             $projection_type_prefix = $projection_type->getPrefix();
             $related_projections[] = $projection_type->createEntity($projection);
         }
@@ -100,7 +100,7 @@ class RelationProjectionUpdaterTest extends TestCase
                     ->with('honeybee.events.infrastructure', Mockery::on(
                         function (ProjectionUpdatedEvent $update_event) use ($expectation) {
                             $this->assertEquals($expectation['identifier'], $update_event->getProjectionIdentifier());
-                            $this->assertEquals($expectation['@type'] . 'Type', $update_event->getProjectionType());
+                            $this->assertEquals($expectation['@type'], $update_event->getProjectionType());
                             $this->assertEquals($expectation, $update_event->getData());
                             return true;
                         }
@@ -140,7 +140,7 @@ class RelationProjectionUpdaterTest extends TestCase
     public function provideTestEvents()
     {
         $tests = [];
-        foreach (glob(__DIR__ . '/Fixture/relation_projection_updater*.php') as $filename) {
+        foreach (glob(__DIR__ . '/Fixture/relation_projection_updater_test*.php') as $filename) {
             $tests[] = include $filename;
         }
         return $tests;

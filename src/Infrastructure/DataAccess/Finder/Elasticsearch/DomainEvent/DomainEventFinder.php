@@ -16,7 +16,7 @@ class DomainEventFinder extends ElasticsearchFinder
             $resource_data = $hit['_source'];
             $event_type = isset($resource_data[self::OBJECT_TYPE]) ? $resource_data[self::OBJECT_TYPE] : false;
             if (!$event_type || !class_exists($event_type, true)) {
-                throw new RuntimeError("Invalid or corrupt type information within resource data.");
+                throw new RuntimeError('Invalid or corrupt type information within resource data.');
             }
             unset($resource_data[self::OBJECT_TYPE]);
 
@@ -24,7 +24,7 @@ class DomainEventFinder extends ElasticsearchFinder
             if (!$domain_event instanceof AggregateRootEventInterface) {
                 throw new RuntimeError(
                     sprintf(
-                        "Non-event object given within result data. %s only supports instancesof %s.",
+                        'Non-event object given within result data. %s only supports instancesof %s.',
                         __CLASS__,
                         AggregateRootEventInterface::CLASS
                     )

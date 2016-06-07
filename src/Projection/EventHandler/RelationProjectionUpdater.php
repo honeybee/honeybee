@@ -60,8 +60,7 @@ class RelationProjectionUpdater extends EventHandler
         $affected_relatives = $this->loadAffectedRelativesFromProjectionEvent($event);
 
         // reconstruct complete projection from event data
-        $source_projection_type_impl = $event->getProjectionType();
-        $source_projection_type = $this->projection_type_map->getByClassName($source_projection_type_impl);
+        $source_projection_type = $this->projection_type_map->getItem($event->getProjectionType());
         $source_projection = $source_projection_type->createEntity($event->getData());
 
         $updated_relatives = $this->updateAffectedRelatives($affected_relatives, $source_projection);
@@ -139,7 +138,7 @@ class RelationProjectionUpdater extends EventHandler
                 [
                     'uuid' => Uuid::uuid4()->toString(),
                     'projection_identifier' => $identifier,
-                    'projection_type' => get_class($modified_relative->getType()),
+                    'projection_type' => $modified_relative->getType()->getPrefix(),
                     'data' => $modified_relative->toArray()
                 ]
             );
@@ -150,8 +149,8 @@ class RelationProjectionUpdater extends EventHandler
     protected function loadAffectedRelativesFromProjectionEvent(ProjectionUpdatedEvent $event)
     {
         // we don't know what exactly has changed in the source projection so first we filter out
-        // reference attributes not supporting the matching entity type of the updated projection
-        $foreign_projection_type_impl = $event->getProjectionType();
+        // reference attributes not referencing the type of the updated projection
+        $foreign_projection_type_impl = get_class($this->projection_type_map->getItem($event->getProjectionType()));
         $referenced_attributes_map = $this->getRelativeProjectionType()->getReferenceAttributes()->filter(
             function ($ref_attribute) use ($foreign_projection_type_impl) {
                 foreach ($ref_attribute->getEmbeddedEntityTypeMap() as $ref_embed) {
