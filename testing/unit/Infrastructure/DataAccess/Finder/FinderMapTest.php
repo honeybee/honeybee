@@ -6,8 +6,8 @@ use Honeybee\Infrastructure\DataAccess\Finder\FinderInterface;
 use Honeybee\Infrastructure\DataAccess\Finder\FinderMap;
 use Honeybee\Tests\TestCase;
 use Mockery;
-use Trellis\Common\Collection\TypedMap;
 use Trellis\Common\Collection\Map;
+use Trellis\Common\Collection\TypedMap;
 
 class FinderMapTest extends TestCase
 {
@@ -93,9 +93,9 @@ class FinderMapTest extends TestCase
         $mock_finder = Mockery::mock(FinderInterface::CLASS);
         $finder_map = new FinderMap([ 'finder1' => $mock_finder ]);
 
-        $count_before = $finder_map->getSize();
+        $map_size = $finder_map->getSize();
         $finder_map->removeItem($mock_finder);
-        $this->assertCount($count_before - 1, $finder_map);
+        $this->assertCount($map_size - 1, $finder_map);
     }
 
     public function testRemoveItemWithMissingValue()
@@ -104,9 +104,9 @@ class FinderMapTest extends TestCase
         $mock_finder2 = Mockery::mock(FinderInterface::CLASS);
         $finder_map = new FinderMap([ 'finder1' => $mock_finder1 ]);
 
-        $count_before = $finder_map->getSize();
+        $map_size = $finder_map->getSize();
         $finder_map->removeItem($mock_finder2);
-        $this->assertCount($count_before, $finder_map);
+        $this->assertCount($map_size, $finder_map);
     }
 
     public function testUnset()
@@ -114,9 +114,9 @@ class FinderMapTest extends TestCase
         $mock_finder = Mockery::mock(FinderInterface::CLASS);
         $finder_map = new FinderMap([ 'finder1' => $mock_finder ]);
 
-        $count_before = $finder_map->getSize();
+        $map_size = $finder_map->getSize();
         unset($finder_map['finder1']);
-        $this->assertCount($count_before - 1, $finder_map);
+        $this->assertCount($map_size - 1, $finder_map);
     }
 
     /**
@@ -127,9 +127,9 @@ class FinderMapTest extends TestCase
         $mock_finder = Mockery::mock(FinderInterface::CLASS);
         $finder_map = new FinderMap([ 'finder1' => $mock_finder ]);
 
-        $count_before = $finder_map->getSize();
+        $map_size = $finder_map->getSize();
         unset($finder_map['finder2']);
-        $this->assertCount($count_before, $finder_map);
+        $this->assertCount($map_size, $finder_map);
     }
 
     public function testAppend()
