@@ -19,7 +19,7 @@ class ServiceLocator implements ServiceLocatorInterface
 
     protected $aggregate_root_type_map;
 
-    protected $resource_type_map;
+    protected $projection_type_map;
 
     protected $service_map;
 
@@ -49,12 +49,12 @@ class ServiceLocator implements ServiceLocatorInterface
         DiContainer $di_container,
         ServiceDefinitionMap $service_map,
         AggregateRootTypeMap $aggregate_root_type_map,
-        ProjectionTypeMap $resource_type_map
+        ProjectionTypeMap $projection_type_map
     ) {
         $this->di_container = $di_container;
         $this->service_map = $service_map;
         $this->aggregate_root_type_map = $aggregate_root_type_map;
-        $this->resource_type_map = $resource_type_map;
+        $this->projection_type_map = $projection_type_map;
     }
 
     public function getService($service_key)
@@ -178,6 +178,11 @@ class ServiceLocator implements ServiceLocatorInterface
         return $this->getService('honeybee.infrastructure.process_manager');
     }
 
+    public function getProcessMap()
+    {
+        return $this->getService('honeybee.infrastructure.process_map');
+    }
+
     public function getJobService()
     {
         return $this->getService('honeybee.infrastructure.job_service');
@@ -190,7 +195,7 @@ class ServiceLocator implements ServiceLocatorInterface
 
     public function getProjectionTypeMap()
     {
-        return $this->resource_type_map;
+        return $this->projection_type_map;
     }
 
     public function getAggregateRootTypeMap()
@@ -209,15 +214,15 @@ class ServiceLocator implements ServiceLocatorInterface
         return $this->aggregate_root_type_map[$aggregate_root_name];
     }
 
-    public function getProjectionTypeByPrefix($resource_type_prefix)
+    public function getProjectionTypeByPrefix($projection_type_prefix)
     {
-        if (!isset($this->resource_type_map[$resource_type_prefix])) {
+        if (!isset($this->projection_type_map[$projection_type_prefix])) {
             throw new RuntimeError(
-                "Invalid resource-type name given: " . $resource_type_prefix
+                "Invalid projection-type name given: " . $projection_type_prefix
             );
         }
 
-        return $this->resource_type_map[$resource_type_prefix];
+        return $this->projection_type_map[$projection_type_prefix];
     }
 
     public function createEntity($implementor, array $state = [])
@@ -239,17 +244,17 @@ class ServiceLocator implements ServiceLocatorInterface
         return $aggregate_root_type;
     }
 
-    protected function resolveProjectionType($resource_type)
+    protected function resolveProjectionType($projection_type)
     {
-        if (is_string($resource_type)) {
-            $resource_type = $this->getProjectionTypeByPrefix($resource_type);
-        } elseif (!$resource_type instanceof ProjectionTypeInterface) {
+        if (is_string($projection_type)) {
+            $projection_type = $this->getProjectionTypeByPrefix($projection_type);
+        } elseif (!$projection_type instanceof ProjectionTypeInterface) {
             throw new RuntimeError(
-                'Invalid argument type given for $resource_type.'.
+                'Invalid argument type given for $projection_type.'.
                 'Make sure to pass either a valid name or ProjectionTypeInterface instance.'
             );
         }
 
-        return $resource_type;
+        return $projection_type;
     }
 }
