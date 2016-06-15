@@ -2,11 +2,11 @@
 
 namespace Honeybee\Infrastructure\Migration;
 
+use Auryn\Injector;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Common\Util\PhpClassParser;
 use Honeybee\Common\Util\StringToolkit;
 use Honeybee\Infrastructure\Config\ConfigInterface;
-use Honeybee\ServiceLocatorInterface;
 
 class FileSystemLoader implements MigrationLoaderInterface
 {
@@ -14,12 +14,12 @@ class FileSystemLoader implements MigrationLoaderInterface
 
     protected $config;
 
-    protected $service_locator;
+    protected $injector;
 
-    public function __construct(ConfigInterface $config, ServiceLocatorInterface $service_locator)
+    public function __construct(ConfigInterface $config, Injector $injector)
     {
         $this->config = $config;
-        $this->service_locator = $service_locator;
+        $this->injector = $injector;
     }
 
     /**
@@ -56,7 +56,7 @@ class FileSystemLoader implements MigrationLoaderInterface
             }
 
             $class_name_parts = explode('_', $migration_class_info->getClassName());
-            $migration = $this->service_locator->createEntity(
+            $migration = $this->injector->make(
                 $migration_class,
                 [
                     ':state' => [
