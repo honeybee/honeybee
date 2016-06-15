@@ -34,9 +34,14 @@ abstract class CouchDbStorage extends Storage
             $client = $this->connector->getConnection();
             $request_path = $this->buildRequestUrl($identifier, $params);
             if (empty($body)) {
-                $request = new Request($method, $request_path);
+                $request = new Request($method, $request_path, [ 'Accept' => 'application/json' ]);
             } else {
-                $request = new Request($method, $request_path, [ 'application/json' ], json_encode($body));
+                $request = new Request(
+                    $method,
+                    $request_path,
+                    [ 'Accept' => 'application/json', 'Content-Type' => 'application/json' ],
+                    json_encode($body)
+                );
             }
         } catch (GuzzleException $guzzle_error) {
             throw new RuntimeError(
