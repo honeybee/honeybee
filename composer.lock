@@ -2640,16 +2640,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "5.4.2",
+            "version": "5.4.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "f5726a0262e5f74f8e9cf03128798b64160c441d"
+                "reference": "2f1fc94b77ea6418bd6a06c64a1dac0645fbce59"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/f5726a0262e5f74f8e9cf03128798b64160c441d",
-                "reference": "f5726a0262e5f74f8e9cf03128798b64160c441d",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/2f1fc94b77ea6418bd6a06c64a1dac0645fbce59",
+                "reference": "2f1fc94b77ea6418bd6a06c64a1dac0645fbce59",
                 "shasum": ""
             },
             "require": {
@@ -2668,13 +2668,16 @@
                 "phpunit/phpunit-mock-objects": "^3.2",
                 "sebastian/comparator": "~1.1",
                 "sebastian/diff": "~1.2",
-                "sebastian/environment": "~1.3",
+                "sebastian/environment": "^1.3 || ^2.0",
                 "sebastian/exporter": "~1.2",
                 "sebastian/global-state": "~1.0",
                 "sebastian/object-enumerator": "~1.0",
                 "sebastian/resource-operations": "~1.0",
                 "sebastian/version": "~1.0|~2.0",
                 "symfony/yaml": "~2.1|~3.0"
+            },
+            "conflict": {
+                "phpdocumentor/reflection-docblock": "3.0.2"
             },
             "suggest": {
                 "phpunit/php-invoker": "~1.1"
@@ -2711,20 +2714,20 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2016-06-03 09:59:50"
+            "time": "2016-06-16 06:01:15"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
-            "version": "3.2.1",
+            "version": "3.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit-mock-objects.git",
-                "reference": "0dc8fd8e87e0366c22b6c25d1f43c4e2e66847b3"
+                "reference": "b13d0d9426ced06958bd32104653526a6c998a52"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/0dc8fd8e87e0366c22b6c25d1f43c4e2e66847b3",
-                "reference": "0dc8fd8e87e0366c22b6c25d1f43c4e2e66847b3",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/b13d0d9426ced06958bd32104653526a6c998a52",
+                "reference": "b13d0d9426ced06958bd32104653526a6c998a52",
                 "shasum": ""
             },
             "require": {
@@ -2770,7 +2773,7 @@
                 "mock",
                 "xunit"
             ],
-            "time": "2016-06-04 05:52:19"
+            "time": "2016-06-12 07:37:26"
         },
         {
             "name": "pimple/pimple",
@@ -3622,7 +3625,7 @@
         },
         {
             "name": "symfony/config",
-            "version": "v3.1.0",
+            "version": "v3.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/config.git",
@@ -3675,16 +3678,16 @@
         },
         {
             "name": "symfony/dependency-injection",
-            "version": "v3.1.0",
+            "version": "v3.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/dependency-injection.git",
-                "reference": "383110341e8f47ae972da3a29503b099831549e1"
+                "reference": "4b9645f5870e0b4ab35cc5b528422049946e8bec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/383110341e8f47ae972da3a29503b099831549e1",
-                "reference": "383110341e8f47ae972da3a29503b099831549e1",
+                "url": "https://api.github.com/repos/symfony/dependency-injection/zipball/4b9645f5870e0b4ab35cc5b528422049946e8bec",
+                "reference": "4b9645f5870e0b4ab35cc5b528422049946e8bec",
                 "shasum": ""
             },
             "require": {
@@ -3731,7 +3734,7 @@
             ],
             "description": "Symfony DependencyInjection Component",
             "homepage": "https://symfony.com",
-            "time": "2016-05-24 10:06:56"
+            "time": "2016-06-14 11:18:07"
         },
         {
             "name": "symfony/finder",
@@ -3833,16 +3836,16 @@
         },
         {
             "name": "symfony/stopwatch",
-            "version": "v3.1.0",
+            "version": "v3.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/stopwatch.git",
-                "reference": "4670f122fa32a4900003a6802f6b8575f3f0b17e"
+                "reference": "e7238f98c90b99e9b53f3674a91757228663b04d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/stopwatch/zipball/4670f122fa32a4900003a6802f6b8575f3f0b17e",
-                "reference": "4670f122fa32a4900003a6802f6b8575f3f0b17e",
+                "url": "https://api.github.com/repos/symfony/stopwatch/zipball/e7238f98c90b99e9b53f3674a91757228663b04d",
+                "reference": "e7238f98c90b99e9b53f3674a91757228663b04d",
                 "shasum": ""
             },
             "require": {
@@ -3878,7 +3881,7 @@
             ],
             "description": "Symfony Stopwatch Component",
             "homepage": "https://symfony.com",
-            "time": "2016-03-04 07:56:56"
+            "time": "2016-06-06 11:42:41"
         },
         {
             "name": "symfony/yaml",

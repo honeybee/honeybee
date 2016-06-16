@@ -23,11 +23,11 @@ class ProjectionReader extends ElasticsearchStorage implements StorageReaderInte
         ConnectorInterface $connector,
         ConfigInterface $config,
         LoggerInterface $logger,
-        ProjectionTypeInterface $resource_type
+        ProjectionTypeInterface $projection_type
     ) {
         parent::__construct($connector, $config, $logger);
 
-        $this->resource_type = $resource_type;
+        $this->projection_type = $projection_type;
     }
 
     public function readAll(SettingsInterface $settings)
@@ -52,7 +52,7 @@ class ProjectionReader extends ElasticsearchStorage implements StorageReaderInte
         $raw_result = $this->connector->getConnection()->search($query_params);
         $result_hits = $raw_result['hits'];
         foreach ($result_hits['hits'] as $data_row) {
-            $data[] = $this->resource_type->createEntity($data_row['_source']);
+            $data[] = $this->projection_type->createEntity($data_row['_source']);
         }
 
         if ($result_hits['total'] === $this->offset + 1) {
@@ -88,7 +88,7 @@ class ProjectionReader extends ElasticsearchStorage implements StorageReaderInte
             return null;
         }
 
-        return $this->resource_type->createEntity($result['_source']);
+        return $this->projection_type->createEntity($result['_source']);
     }
 
     public function getIterator()
@@ -98,6 +98,6 @@ class ProjectionReader extends ElasticsearchStorage implements StorageReaderInte
 
     protected function getType()
     {
-        return $this->config->get('type', $this->resource_type->getPrefix());
+        return $this->config->get('type', $this->projection_type->getPrefix());
     }
 }

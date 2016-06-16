@@ -8,7 +8,7 @@ use Honeybee\Common\ScopeKeyInterface;
 abstract class Projection extends Entity implements ProjectionInterface
 {
     /**
-     * Return the resource's short identifier.
+     * Return the projection short identifier.
      *
      * @return string
      */
@@ -20,7 +20,7 @@ abstract class Projection extends Entity implements ProjectionInterface
     }
 
     /**
-     * Return a resource's uuid.
+     * Return a projection uuid.
      *
      * @return string
      */
@@ -30,7 +30,7 @@ abstract class Projection extends Entity implements ProjectionInterface
     }
 
     /**
-     * Returns an resource's language.
+     * Returns an projection language.
      *
      * @return string
      */
@@ -40,7 +40,7 @@ abstract class Projection extends Entity implements ProjectionInterface
     }
 
     /**
-     * Returns an resource's current (known)revision.
+     * Returns an projection current (known)revision.
      *
      * @return string
      */
@@ -50,7 +50,7 @@ abstract class Projection extends Entity implements ProjectionInterface
     }
 
     /**
-     * Returns the projection's version.
+     * Returns the projection version.
      *
      * @return string
      */
@@ -60,7 +60,7 @@ abstract class Projection extends Entity implements ProjectionInterface
     }
 
     /**
-     * Returns an resource's short-id.
+     * Returns an projection short-id.
      *
      * @return string
      */
@@ -70,7 +70,7 @@ abstract class Projection extends Entity implements ProjectionInterface
     }
 
     /**
-     * Returns an resource's slug.
+     * Returns an projection slug.
      *
      * @return string
      */
@@ -100,7 +100,7 @@ abstract class Projection extends Entity implements ProjectionInterface
     }
 
     /**
-     * Returns the resource's created date.
+     * Returns the projection created date.
      *
      * @return string
      */
@@ -110,7 +110,7 @@ abstract class Projection extends Entity implements ProjectionInterface
     }
 
     /**
-     * Returns the resource's modified date.
+     * Returns the projections modified date.
      *
      * @return string
      */

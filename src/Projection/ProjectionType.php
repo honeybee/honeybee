@@ -34,7 +34,7 @@ abstract class ProjectionType extends EntityType implements ProjectionTypeInterf
     }
 
     /**
-     * Creates a new Resource instance.
+     * Creates a new Projection instance.
      *
      * @param array $data Optional data for initial hydration.
      * @param EntityInterface $parent_entity

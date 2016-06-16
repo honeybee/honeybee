@@ -15,11 +15,11 @@ class ProjectionFinder extends ElasticsearchFinder
         ConnectorInterface $connector,
         ConfigInterface $config,
         LoggerInterface $logger,
-        ProjectionTypeInterface $resource_type
+        ProjectionTypeInterface $projection_type
     ) {
         parent::__construct($connector, $config, $logger);
 
-        $this->resource_type = $resource_type;
+        $this->projection_type = $projection_type;
     }
 
     private function createResult(array $document_data)
@@ -27,11 +27,11 @@ class ProjectionFinder extends ElasticsearchFinder
         $source = $document_data['_source'];
         $event_type = isset($source[self::OBJECT_TYPE]) ? $source[self::OBJECT_TYPE] : false;
         if (!$event_type) {
-            throw new RuntimeError("Invalid or corrupt type information within resource data.");
+            throw new RuntimeError("Invalid or corrupt type information within projection data.");
         }
         unset($source[self::OBJECT_TYPE]);
 
-        return $this->resource_type->createEntity($source);
+        return $this->projection_type->createEntity($source);
     }
 
     protected function mapResultData(array $result_data)
@@ -62,6 +62,6 @@ class ProjectionFinder extends ElasticsearchFinder
 
     protected function getType()
     {
-        return $this->config->get('type', $this->resource_type->getPrefix());
+        return $this->config->get('type', $this->projection_type->getPrefix());
     }
 }

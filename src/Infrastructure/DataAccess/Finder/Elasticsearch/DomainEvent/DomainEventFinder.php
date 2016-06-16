@@ -13,14 +13,14 @@ class DomainEventFinder extends ElasticsearchFinder
         $results = [];
         $hits = $result_data['hits'];
         foreach ($hits['hits'] as $hit) {
-            $resource_data = $hit['_source'];
-            $event_type = isset($resource_data[self::OBJECT_TYPE]) ? $resource_data[self::OBJECT_TYPE] : false;
+            $event_data = $hit['_source'];
+            $event_type = isset($event_data[self::OBJECT_TYPE]) ? $event_data[self::OBJECT_TYPE] : false;
             if (!$event_type || !class_exists($event_type, true)) {
-                throw new RuntimeError('Invalid or corrupt type information within resource data.');
+                throw new RuntimeError('Invalid or corrupt type information within event data.');
             }
-            unset($resource_data[self::OBJECT_TYPE]);
+            unset($event_data[self::OBJECT_TYPE]);
 
-            $domain_event = new $event_type($resource_data);
+            $domain_event = new $event_type($event_data);
             if (!$domain_event instanceof AggregateRootEventInterface) {
                 throw new RuntimeError(
                     sprintf(

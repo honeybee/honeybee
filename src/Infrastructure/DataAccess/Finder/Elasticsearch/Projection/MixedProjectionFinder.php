@@ -202,8 +202,8 @@ class MixedProjectionFinder extends ElasticSearchFinder
         }
         unset($source[self::OBJECT_TYPE]);
 
-        $resource_type = $this->projection_type_map->getByEntityImplementor($fqcn);
+        $projection_type = $this->projection_type_map->getByEntityImplementor($fqcn);
 
-        return $resource_type->createEntity($source);
+        return $projection_type->createEntity($source);
     }
 }
