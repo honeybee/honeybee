@@ -1,13 +1,12 @@
 <?php
 
-namespace Honeybee\Projection;
+namespace Honeybee\Projection\Event;
 
 use Assert\Assertion;
-use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Common\Util\StringToolkit;
 use Honeybee\Infrastructure\Event\Event;
 
-class ProjectionUpdatedEvent extends Event
+abstract class ProjectionEvent extends Event implements ProjectionEventInterface
 {
     protected $projection_identifier;
 

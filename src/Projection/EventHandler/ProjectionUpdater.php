@@ -26,10 +26,11 @@ use Honeybee\Model\Task\ModifyAggregateRoot\ModifyEmbeddedEntity\EmbeddedEntityM
 use Honeybee\Model\Task\ModifyAggregateRoot\RemoveEmbeddedEntity\EmbeddedEntityRemovedEvent;
 use Honeybee\Model\Task\MoveAggregateRootNode\AggregateRootNodeMovedEvent;
 use Honeybee\Model\Task\ProceedWorkflow\WorkflowProceededEvent;
+use Honeybee\Projection\Event\ProjectionCreatedEvent;
+use Honeybee\Projection\Event\ProjectionUpdatedEvent;
 use Honeybee\Projection\ProjectionMap;
 use Honeybee\Projection\ProjectionTypeInterface;
 use Honeybee\Projection\ProjectionTypeMap;
-use Honeybee\Projection\ProjectionUpdatedEvent;
 use Psr\Log\LoggerInterface;
 use Ramsey\Uuid\Uuid;
 use Trellis\Runtime\Attribute\AttributeInterface;
@@ -69,24 +70,27 @@ class ProjectionUpdater extends EventHandler
 
     public function handleEvent(EventInterface $event)
     {
-        $updated_projections = $this->invokeEventHandler($event, 'on');
+        $affected_projections = $this->invokeEventHandler($event, 'on');
 
         // store updates and distribute projection update events
-        $this->getStorageWriter($event)->writeMany($updated_projections);
+        $this->getStorageWriter($event)->writeMany($affected_projections);
 
-        foreach ($updated_projections as $updated_projection) {
-            $update_event = new ProjectionUpdatedEvent(
-                [
-                    'uuid' => Uuid::uuid4()->toString(),
-                    'projection_identifier' => $updated_projection->getIdentifier(),
-                    'projection_type' => $updated_projection->getType()->getPrefix(),
-                    'data' => $updated_projection->toArray()
-                ]
-            );
-            $this->event_bus->distribute(ChannelMap::CHANNEL_INFRA, $update_event);
+        foreach ($affected_projections as $affected_projection) {
+            $projection_event_state = [
+                'uuid' => Uuid::uuid4()->toString(),
+                'projection_identifier' => $affected_projection->getIdentifier(),
+                'projection_type' => $affected_projection->getType()->getPrefix(),
+                'data' => $affected_projection->toArray()
+            ];
+
+            $projection_event = $event instanceof AggregateRootCreatedEvent
+                ? new ProjectionCreatedEvent($projection_event_state)
+                : new ProjectionUpdatedEvent($projection_event_state);
+
+            $this->event_bus->distribute(ChannelMap::CHANNEL_INFRA, $projection_event);
         }
 
-        return $updated_projections->toList()->getFirst();
+        return $affected_projections->toList()->getFirst();
     }
 
     protected function onAggregateRootCreated(AggregateRootCreatedEvent $event)

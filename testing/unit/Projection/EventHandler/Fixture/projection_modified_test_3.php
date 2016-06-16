@@ -38,7 +38,7 @@ return [
                 'embedded_entity_events' => []
             ]
         ],
-        'seq_number' => 3,
+        'seq_number' => 5,
         'uuid' => '44c4597c-f463-4916-a330-2db87ef36547',
         'iso_date' => '2016-04-28T10:54:37.371793+00:00',
         'metadata' => []
@@ -46,7 +46,7 @@ return [
     'subject' => [
         '@type' => 'honeybee-tests.game_schema.game',
         'identifier' => 'honeybee.fixtures.game-a7cec777-d932-4bbd-8156-261138d3fe39-de_DE-1',
-        'revision' => 3,
+        'revision' => 4,
         'uuid' => 'a7cec777-d932-4bbd-8156-261138d3fe39',
         'short_id' => 0,
         'language' => 'de_DE',
@@ -144,7 +144,7 @@ return [
         [
             '@type' => 'honeybee-tests.game_schema.game',
             'identifier' => 'honeybee.fixtures.game-a7cec777-d932-4bbd-8156-261138d3fe39-de_DE-1',
-            'revision' => 3,
+            'revision' => 5,
             'uuid' => 'a7cec777-d932-4bbd-8156-261138d3fe39',
             'short_id' => 0,
             'language' => 'de_DE',

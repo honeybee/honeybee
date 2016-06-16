@@ -20,7 +20,7 @@ return [
     'subject' => [
         '@type' => 'honeybee-tests.game_schema.team',
         'identifier' => 'honeybee.fixtures.team-d8668418-719e-4c09-886c-c49f45d3ee97-de_DE-1',
-        'revision' => 3,
+        'revision' => 2,
         'uuid' => 'd8668418-719e-4c09-886c-c49f45d3ee97',
         'short_id' => 0,
         'language' => 'de_DE',
@@ -76,7 +76,7 @@ return [
         [
             '@type' => 'honeybee-tests.game_schema.team',
             'identifier' => 'honeybee.fixtures.team-abeca70c-c0d9-4d6d-a983-1441d7343954-de_DE-1',
-            'revision' => 1,
+            'revision' => 2,
             'uuid' => 'a726301d-dbae-4fb6-91e9-a19188a17e71',
             'short_id' => 0,
             'language' => 'de_DE',
@@ -94,7 +94,7 @@ return [
         [
             '@type' => 'honeybee-tests.game_schema.team',
             'identifier' => 'honeybee.fixtures.team-5ab9c99b-3d69-4cfe-8f06-1d367a02160b-de_DE-1',
-            'revision' => 1,
+            'revision' => 2,
             'uuid' => '5ab9c99b-3d69-4cfe-8f06-1d367a02160b',
             'short_id' => 0,
             'language' => 'de_DE',
@@ -135,7 +135,7 @@ return [
         [
             '@type' => 'honeybee-tests.game_schema.team',
             'identifier' => 'honeybee.fixtures.team-abeca70c-c0d9-4d6d-a983-1441d7343954-de_DE-1',
-            'revision' => 1,
+            'revision' => 2,
             'uuid' => 'a726301d-dbae-4fb6-91e9-a19188a17e71',
             'short_id' => 0,
             'language' => 'de_DE',
@@ -156,7 +156,7 @@ return [
         [
             '@type' => 'honeybee-tests.game_schema.team',
             'identifier' => 'honeybee.fixtures.team-5ab9c99b-3d69-4cfe-8f06-1d367a02160b-de_DE-1',
-            'revision' => 1,
+            'revision' => 2,
             'uuid' => '5ab9c99b-3d69-4cfe-8f06-1d367a02160b',
             'short_id' => 0,
             'language' => 'de_DE',

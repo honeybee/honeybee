@@ -5,10 +5,11 @@ namespace Honeybee\Tests\Projection\EventHandler;
 use Honeybee\Tests\TestCase;
 use Honeybee\Model\Aggregate\AggregateRootTypeMap;
 use Honeybee\Model\Event\EmbeddedEntityEventList;
+use Honeybee\Projection\Event\ProjectionCreatedEvent;
+use Honeybee\Projection\Event\ProjectionUpdatedEvent;
 use Honeybee\Projection\ProjectionInterface;
 use Honeybee\Projection\ProjectionMap;
 use Honeybee\Projection\ProjectionTypeMap;
-use Honeybee\Projection\ProjectionUpdatedEvent;
 use Honeybee\Projection\EventHandler\ProjectionUpdater;
 use Honeybee\Infrastructure\Config\ArrayConfig;
 use Honeybee\Infrastructure\Event\Bus\EventBusInterface;
@@ -293,7 +294,12 @@ class ProjectionUpdaterTest extends TestCase
             $mock_event_bus->shouldReceive('distribute')
                 ->once()
                 ->with('honeybee.events.infrastructure', Mockery::on(
-                    function (ProjectionUpdatedEvent $event) use ($expectation) {
+                    function ($event) use ($expectation) {
+                        if ($expectation['revision'] === 1) {
+                            $this->assertInstanceOf(ProjectionCreatedEvent::CLASS, $event);
+                        } else {
+                            $this->assertInstanceOf(ProjectionUpdatedEvent::CLASS, $event);
+                        }
                         $this->assertEquals($expectation['identifier'], $event->getProjectionIdentifier());
                         $this->assertEquals($expectation['@type'], $event->getProjectionType());
                         $this->assertEquals($expectation, $event->getData());

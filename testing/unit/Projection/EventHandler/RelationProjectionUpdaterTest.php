@@ -3,10 +3,10 @@
 namespace Honeybee\Tests\Projection\EventHandler;
 
 use Honeybee\Model\Event\EmbeddedEntityEventList;
+use Honeybee\Projection\Event\ProjectionUpdatedEvent;
 use Honeybee\Projection\ProjectionInterface;
 use Honeybee\Projection\ProjectionMap;
 use Honeybee\Projection\ProjectionTypeMap;
-use Honeybee\Projection\ProjectionUpdatedEvent;
 use Honeybee\Projection\EventHandler\RelationProjectionUpdater;
 use Honeybee\Infrastructure\Config\ArrayConfig;
 use Honeybee\Infrastructure\DataAccess\Query\QueryInterface;
@@ -47,9 +47,9 @@ class RelationProjectionUpdaterTest extends TestCase
     }
 
     /**
-     * @dataProvider provideTestEvents
+     * @dataProvider provideTestUpdateEvents
      */
-    public function testHandleEvents(array $event, array $query, array $projections, array $expectations)
+    public function testHandleUpdateEvents(array $event, array $query, array $projections, array $expectations)
     {
         // build projection finder results
         foreach ($projections as $projection) {
@@ -132,15 +132,50 @@ class RelationProjectionUpdaterTest extends TestCase
         $relation_projection_updater->handleEvent($event);
     }
 
+    /**
+     * @dataProvider provideTestCreateEvents
+     */
+    public function testHandleCreateEvents(array $event)
+    {
+        $mock_storage_writer_map = Mockery::mock(StorageWriterMap::CLASS)->shouldNotReceive('getItem')->mock();
+        $mock_query_service_map = Mockery::mock(QueryServiceMap::CLASS)->shouldNotReceive('getItem')->mock();
+        $mock_event_bus = Mockery::mock(EventBus::CLASS)->shouldNotReceive('distribute')->mock();
+
+        // prepare and test subject
+        $relation_projection_updater = new RelationProjectionUpdater(
+            new ArrayConfig([]),
+            new NullLogger,
+            $mock_storage_writer_map,
+            $mock_query_service_map,
+            $this->projection_type_map,
+            $mock_event_bus
+        );
+
+        $event = $this->buildEvent($event);
+        $relation_projection_updater->handleEvent($event);
+    }
+
     // ------------------------------ helpers ------------------------------
 
     /**
      * @codeCoverageIgnore
      */
-    public function provideTestEvents()
+    public function provideTestUpdateEvents()
     {
         $tests = [];
-        foreach (glob(__DIR__ . '/Fixture/relation_projection_updater_test*.php') as $filename) {
+        foreach (glob(__DIR__ . '/Fixture/relation_projection_update_test*.php') as $filename) {
+            $tests[] = include $filename;
+        }
+        return $tests;
+    }
+
+    /**
+     * @codeCoverageIgnore
+     */
+    public function provideTestCreateEvents()
+    {
+        $tests = [];
+        foreach (glob(__DIR__ . '/Fixture/relation_projection_create_test*.php') as $filename) {
             $tests[] = include $filename;
         }
         return $tests;

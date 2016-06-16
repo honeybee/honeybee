@@ -20,7 +20,7 @@ return [
     'subject' => [
         '@type' => 'honeybee-tests.game_schema.game',
         'identifier' => 'honeybee.fixtures.game-a7cec777-d932-4bbd-8156-261138d3fe39-de_DE-1',
-        'revision' => 3,
+        'revision' => 2,
         'uuid' => 'a7cec777-d932-4bbd-8156-261138d3fe39',
         'short_id' => 0,
         'language' => 'de_DE',
