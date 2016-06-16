@@ -85,8 +85,6 @@ abstract class AggregateRootType extends EntityType implements AggregateRootType
             new IntegerAttribute('short_id', $this),
             new TextAttribute('language', $this, [ 'default_value' => 'de_DE' ]),
             new IntegerAttribute('version', $this, [ 'default_value' => 1 ]),
-            new TimestampAttribute('created_at', $this, [ 'default_value' => 'now' ]),
-            new TimestampAttribute('modified_at', $this, [ 'default_value' => 'now' ]),
             new TextAttribute('workflow_state', $this),
             new KeyValueListAttribute('workflow_parameters', $this)
         ];

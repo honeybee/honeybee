@@ -623,11 +623,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
         }
 
         if ($source_event) {
-            if ($source_event instanceof AggregateRootCreatedEvent) {
-                $this->setValue('created_at', $source_event->getDateTime());
-            }
             $this->setValue('revision', $source_event->getSeqNumber());
-            $this->setValue('modified_at', $source_event->getDateTime());
             $this->markClean();
         } else {
             $notice = 'Applied event %s for %s did not trigger any state changes, so it is being dropped ...';

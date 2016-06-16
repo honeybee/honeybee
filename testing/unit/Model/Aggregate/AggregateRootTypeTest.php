@@ -46,8 +46,6 @@ class AggregateRootTypeTest extends TestCase
             'short_id',
             'language',
             'version',
-            'created_at',
-            'modified_at',
             'workflow_state',
             'workflow_parameters'
         ];
