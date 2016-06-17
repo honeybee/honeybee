@@ -132,11 +132,9 @@ class RelationProjectionUpdaterTest extends TestCase
         $relation_projection_updater->handleEvent($event);
     }
 
-    /**
-     * @dataProvider provideTestCreateEvents
-     */
-    public function testHandleCreateEvents(array $event)
+    public function testHandleCreateEvents()
     {
+        // Relation projection updater should not handle creation events
         $mock_storage_writer_map = Mockery::mock(StorageWriterMap::CLASS)->shouldNotReceive('getItem')->mock();
         $mock_query_service_map = Mockery::mock(QueryServiceMap::CLASS)->shouldNotReceive('getItem')->mock();
         $mock_event_bus = Mockery::mock(EventBus::CLASS)->shouldNotReceive('distribute')->mock();
@@ -151,7 +149,13 @@ class RelationProjectionUpdaterTest extends TestCase
             $mock_event_bus
         );
 
-        $event = $this->buildEvent($event);
+        $event = $this->buildEvent([
+            '@type' => 'Honeybee\Projection\Event\ProjectionCreatedEvent',
+            'uuid' => '44c4597c-f463-4916-a330-2db87ef36547',
+            'projection_type' => 'honeybee-tests.game_schema.player',
+            'projection_identifier' => 'honeybee.fixtures.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
+            'data' => []
+        ]);
         $relation_projection_updater->handleEvent($event);
     }
 
@@ -164,18 +168,6 @@ class RelationProjectionUpdaterTest extends TestCase
     {
         $tests = [];
         foreach (glob(__DIR__ . '/Fixture/relation_projection_update_test*.php') as $filename) {
-            $tests[] = include $filename;
-        }
-        return $tests;
-    }
-
-    /**
-     * @codeCoverageIgnore
-     */
-    public function provideTestCreateEvents()
-    {
-        $tests = [];
-        foreach (glob(__DIR__ . '/Fixture/relation_projection_create_test*.php') as $filename) {
             $tests[] = include $filename;
         }
         return $tests;
