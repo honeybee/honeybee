@@ -2,8 +2,8 @@
 
 namespace Honeybee\Tests\Fixture\BookSchema\Model\Book;
 
-use Trellis\Runtime\Attribute\Text\TextAttribute as Text;
 use Honeybee\Tests\Fixture\BookSchema\Model\AggregateRootType;
+use Trellis\Runtime\Attribute\Text\TextAttribute;
 use Workflux\StateMachine\StateMachineInterface;
 
 class BookType extends AggregateRootType
@@ -15,8 +15,8 @@ class BookType extends AggregateRootType
         parent::__construct(
             'Book',
             [
-                new Text('title', $this, [ 'mandatory' => true ]),
-                new Text('description', $this)
+                new TextAttribute('title', $this, [ 'mandatory' => true ]),
+                new TextAttribute('description', $this)
             ]
         );
     }

@@ -2,9 +2,10 @@
 
 namespace Honeybee\Tests\Fixture\BookSchema\Projection\Publication;
 
+use Honeybee\Tests\Fixture\BookSchema\Projection\ProjectionType;
 use Trellis\Runtime\Attribute\Integer\IntegerAttribute;
 use Trellis\Runtime\Attribute\Text\TextAttribute;
-use Honeybee\Tests\Fixture\BookSchema\Projection\ProjectionType;
+use Workflux\StateMachine\StateMachineInterface;
 
 class PublicationType extends ProjectionType
 {
@@ -15,8 +16,8 @@ class PublicationType extends ProjectionType
         parent::__construct(
             'Publication',
             [
-                new IntegerAttribute('year', [ 'mandatory' => true ]),
-                new TextAttribute('description')
+                new IntegerAttribute('year', $this, [ 'mandatory' => true ]),
+                new TextAttribute('description', $this)
             ]
         );
     }

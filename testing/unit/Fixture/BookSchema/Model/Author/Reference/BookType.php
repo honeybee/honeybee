@@ -4,8 +4,8 @@ namespace Honeybee\Tests\Fixture\BookSchema\Model\Author\Reference;
 
 use Honeybee\Model\Aggregate\ReferencedEntityType;
 use Trellis\Common\Options;
-use Trellis\Runtime\EntityTypeInterface;
 use Trellis\Runtime\Attribute\AttributeInterface;
+use Trellis\Runtime\EntityTypeInterface;
 
 class BookType extends ReferencedEntityType
 {

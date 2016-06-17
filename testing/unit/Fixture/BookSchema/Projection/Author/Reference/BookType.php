@@ -2,10 +2,10 @@
 
 namespace Honeybee\Tests\Fixture\BookSchema\Projection\Author\Reference;
 
-use Trellis\Common\Options;
-use Trellis\Runtime\EntityTypeInterface;
-use Trellis\Runtime\Attribute\AttributeInterface;
 use Honeybee\Projection\ReferencedEntityType;
+use Trellis\Common\Options;
+use Trellis\Runtime\Attribute\AttributeInterface;
+use Trellis\Runtime\EntityTypeInterface;
 
 class BookType extends ReferencedEntityType
 {

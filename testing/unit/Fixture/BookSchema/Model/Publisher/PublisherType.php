@@ -2,8 +2,8 @@
 
 namespace Honeybee\Tests\Fixture\BookSchema\Model\Publisher;
 
-use Trellis\Runtime\Attribute\Text\TextAttribute as Text;
 use Honeybee\Tests\Fixture\BookSchema\Model\AggregateRootType;
+use Trellis\Runtime\Attribute\Text\TextAttribute;
 use Workflux\StateMachine\StateMachineInterface;
 
 class PublisherType extends AggregateRootType
@@ -15,8 +15,8 @@ class PublisherType extends AggregateRootType
         parent::__construct(
             'Publisher',
             [
-                new Text('name', $this, [ 'mandatory' => true ]),
-                new Text('description', $this)
+                new TextAttribute('name', $this, [ 'mandatory' => true ]),
+                new TextAttribute('description', $this)
             ]
         );
     }

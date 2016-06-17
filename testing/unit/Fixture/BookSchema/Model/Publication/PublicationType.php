@@ -2,9 +2,9 @@
 
 namespace Honeybee\Tests\Fixture\BookSchema\Model\Publication;
 
+use Honeybee\Tests\Fixture\BookSchema\Model\AggregateRootType;
 use Trellis\Runtime\Attribute\Integer\IntegerAttribute;
 use Trellis\Runtime\Attribute\Text\TextAttribute;
-use Honeybee\Tests\Fixture\BookSchema\Model\AggregateRootType;
 use Workflux\StateMachine\StateMachineInterface;
 
 class PublicationType extends AggregateRootType

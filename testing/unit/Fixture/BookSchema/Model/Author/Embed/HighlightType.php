@@ -4,9 +4,9 @@ namespace Honeybee\Tests\Fixture\BookSchema\Model\Author\Embed;
 
 use Honeybee\Model\Aggregate\EmbeddedEntityType;
 use Trellis\Common\Options;
-use Trellis\Runtime\EntityTypeInterface;
 use Trellis\Runtime\Attribute\AttributeInterface;
-use Trellis\Runtime\Attribute\Text\TextAttribute as Text;
+use Trellis\Runtime\Attribute\Text\TextAttribute;
+use Trellis\Runtime\EntityTypeInterface;
 
 class HighlightType extends EmbeddedEntityType
 {
@@ -15,8 +15,8 @@ class HighlightType extends EmbeddedEntityType
         parent::__construct(
             'Highlight',
             [
-                new Text('title', $this, [], $parent_attribute),
-                new Text('description', $this, [], $parent_attribute),
+                new TextAttribute('title', $this, [], $parent_attribute),
+                new TextAttribute('description', $this, [], $parent_attribute),
             ],
             new Options([]),
             $parent,

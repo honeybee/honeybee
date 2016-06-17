@@ -2,8 +2,9 @@
 
 namespace Honeybee\Tests\Fixture\BookSchema\Projection\Publisher;
 
-use Trellis\Runtime\Attribute\Text\TextAttribute as Text;
 use Honeybee\Tests\Fixture\BookSchema\Projection\ProjectionType;
+use Trellis\Runtime\Attribute\Text\TextAttribute;
+use Workflux\StateMachine\StateMachineInterface;
 
 class PublisherType extends ProjectionType
 {
@@ -14,8 +15,8 @@ class PublisherType extends ProjectionType
         parent::__construct(
             'Publisher',
             [
-                new Text('name', [ 'mandatory' => true ]),
-                new Text('description')
+                new TextAttribute('name', $this, [ 'mandatory' => true ]),
+                new TextAttribute('description', $this)
             ]
         );
     }
