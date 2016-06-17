@@ -43,7 +43,6 @@ class AggregateRootTypeTest extends TestCase
             'identifier',
             'revision',
             'uuid',
-            'short_id',
             'language',
             'version',
             'workflow_state',

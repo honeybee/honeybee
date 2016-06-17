@@ -24,14 +24,6 @@ return [
         'validator' => null,
         'value_holder_implementor' => null
     ],
-    'short_id' => [
-        '@type' => 'Trellis\Runtime\Attribute\Integer\IntegerAttribute',
-        'parent' => null,
-        'name' => 'short_id',
-        'options' => [],
-        'validator' => null,
-        'value_holder_implementor' => null
-    ],
     'language' => [
         '@type' => 'Trellis\Runtime\Attribute\Text\TextAttribute',
         'parent' => null,

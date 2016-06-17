@@ -29,13 +29,11 @@ class ProjectionTest extends TestCase
         $this->assertEquals('Twain', $this->projection->getLastname());
         $this->assertNotEmpty($this->projection->getCreatedAt());
         $this->assertNotEmpty($this->projection->getModifiedAt());
-        $this->assertEquals('honeybee-cmf.projection_fixtures.author-0', $this->projection->getShortIdentifier());
         $this->assertNull($this->projection->getUuid());
         // UUID self-generated
         $this->assertNull($this->projection->getUuid());
         $this->assertEquals(0, $this->projection->getRevision());
         $this->assertEquals('de_DE', $this->projection->getLanguage());
-        $this->assertEquals(0, $this->projection->getShortId());
         $this->assertEmpty($this->projection->getWorkflowState());
         $this->assertInternalType('array', $this->projection->getWorkflowParameters());
         $this->assertEmpty($this->projection->getWorkflowParameters());

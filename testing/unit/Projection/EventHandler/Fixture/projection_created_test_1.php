@@ -29,7 +29,6 @@ return [
             'identifier' => 'honeybee.fixtures.game-49c5a3b7-8127-4169-8676-a9ebb5229142-de_DE-1',
             'revision' => 1,
             'uuid' => '49c5a3b7-8127-4169-8676-a9ebb5229142',
-            'short_id' => 0,
             'language' => 'de_DE',
             'version' => 1,
             'created_at' => '2016-04-28T10:52:37.371793+00:00',

@@ -8,18 +8,6 @@ use Honeybee\Common\ScopeKeyInterface;
 abstract class Projection extends Entity implements ProjectionInterface
 {
     /**
-     * Return the projection short identifier.
-     *
-     * @return string
-     */
-    public function getShortIdentifier()
-    {
-        $type = $this->getType();
-
-        return sprintf('%s-%s', $type->getPrefix(), $this->getShortId());
-    }
-
-    /**
      * Return a projection uuid.
      *
      * @return string
@@ -57,16 +45,6 @@ abstract class Projection extends Entity implements ProjectionInterface
     public function getVersion()
     {
         return $this->getValue('version');
-    }
-
-    /**
-     * Returns an projection short-id.
-     *
-     * @return string
-     */
-    public function getShortId()
-    {
-        return $this->getValue('short_id');
     }
 
     /**

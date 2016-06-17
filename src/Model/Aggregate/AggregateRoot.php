@@ -121,28 +121,6 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
     }
 
     /**
-     * Return the aggregate-root's short identifier.
-     *
-     * @return string
-     */
-    public function getShortIdentifier()
-    {
-        $type = $this->getType();
-
-        return sprintf('%s-%s', $type->getPrefix(), $this->getShortId());
-    }
-
-    /**
-     * Returns an aggregate-root's short-id.
-     *
-     * @return string
-     */
-    public function getShortId()
-    {
-        return $this->getValue('short_id');
-    }
-
-    /**
      * Return the id of our parent-node, if the aggregate's data is being managed as a tree.
      *
      * @return string

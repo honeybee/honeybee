@@ -60,7 +60,6 @@ abstract class ProjectionType extends EntityType implements ProjectionTypeInterf
             new TextAttribute('identifier', $this),
             new IntegerAttribute('revision', $this, [ 'default_value' => 0 ]),
             new UuidAttribute('uuid', $this),
-            new IntegerAttribute('short_id', $this),
             new TextAttribute('language', $this, [ 'default_value' => 'de_DE' ]),
             new IntegerAttribute('version', $this, [ 'default_value' => 1 ]),
             new TimestampAttribute('created_at', $this, [ 'default_value' => 'now' ]),

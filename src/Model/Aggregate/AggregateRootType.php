@@ -82,7 +82,6 @@ abstract class AggregateRootType extends EntityType implements AggregateRootType
             new TextAttribute('identifier', $this),
             new IntegerAttribute('revision', $this, [ 'default_value' => 0 ]),
             new UuidAttribute('uuid', $this, [ 'default_value' => 'auto_gen' ]),
-            new IntegerAttribute('short_id', $this),
             new TextAttribute('language', $this, [ 'default_value' => 'de_DE' ]),
             new IntegerAttribute('version', $this, [ 'default_value' => 1 ]),
             new TextAttribute('workflow_state', $this),

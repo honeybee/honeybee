@@ -43,7 +43,7 @@ class ProjectionTypeTest extends TestCase
         $default_attributes = $test_entity_type->getDefaultAttributes();
 
         $this->assertInstanceOf(AttributeMap::CLASS, $default_attributes);
-        $this->assertCount(11, $default_attributes);
+        $this->assertCount(10, $default_attributes);
         $this->assertEquals($expected_attributes, $default_attributes->toArray());
     }
 
@@ -56,7 +56,7 @@ class ProjectionTypeTest extends TestCase
         $default_attributes = $test_entity_type->getDefaultAttributes();
 
         $this->assertInstanceOf(AttributeMap::CLASS, $default_attributes);
-        $this->assertCount(13, $default_attributes);
+        $this->assertCount(12, $default_attributes);
         $this->assertEquals($expected_attributes, $default_attributes->toArray());
     }
 

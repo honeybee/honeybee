@@ -480,30 +480,6 @@ class AggregateRootTest extends TestCase
     }
 
     /**
-     * Expects a correctly initialised ShortIdentifier attribute.
-     *
-     * This method is available in the interface but should not be relied upon
-     * as long as it depends on the 'getShortId' method, that is not yet implemented.
-     */
-    public function testGetShortIdentifier()
-    {
-        $aggregate_root = $this->getCreatedAggregateRoot();
-        $this->assertEquals(self::AGGREGATE_ROOT_TYPE . '-0', $aggregate_root->getShortIdentifier());
-    }
-
-    /**
-     * Expects a correctly initialised ShortId attribute.
-     *
-     * ShortId will always be null, as long there is no implementation for it yet.
-     */
-    public function testGetShortId()
-    {
-        $aggregate_root = $this->getCreatedAggregateRoot();
-
-        $this->assertEquals(0, $aggregate_root->getShortId());
-    }
-
-    /**
      * Expects the workflow-state to be inactive, as specified into the state-machine
      * definition, when no workflow event has been applied before.
      */

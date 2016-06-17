@@ -11,7 +11,6 @@ return [
             'identifier' => 'honeybee.fixtures.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
             'revision' => 1,
             'uuid' => 'a726301d-dbae-4fb6-91e9-a19188a17e71',
-            'short_id' => 0,
             'language' => 'de_DE',
             'version' => 1,
             'created_at' => '2016-05-27T10:52:37.371793+00:00',
