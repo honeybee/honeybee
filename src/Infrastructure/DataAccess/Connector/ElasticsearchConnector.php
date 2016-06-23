@@ -11,7 +11,7 @@ class ElasticsearchConnector extends Connector
     const DEFAULT_HOST = 'localhost';
 
     /**
-     * @return Client
+     * @return Elasticsearch\Client
      */
     protected function connect()
     {
@@ -20,6 +20,9 @@ class ElasticsearchConnector extends Connector
             $this->config->get('host', self::DEFAULT_HOST),
             $this->config->get('port', self::DEFAULT_PORT)
         );
+
+        // maybe use building from configuration hash?
+        // $client = ClientBuilder::fromConfig($params);
 
         return (new ClientBuilder())
             ->setHosts([ $connection_dsn ])
@@ -44,7 +47,7 @@ class ElasticsearchConnector extends Connector
         // - GET _cluster/health?level=indices
         // - GET _cluster/stats
         // - GET _nodes/stats
-        // - https://www.elastic.co/guide/en/elasticsearch/guide/1.x/_cat_api.html
+        // - https://www.elastic.co/guide/en/elasticsearch/guide/2.x/_cat_api.html
         // Here only some are implemented as an example.
 
         $test = $this->config->get('status_test', 'ping');
