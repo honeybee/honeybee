@@ -45,7 +45,6 @@ return [
         'parent' => null,
         'name' => 'created_at',
         'options' => [
-            'default_value' => 'now',
             'force_internal_timezone' => true,
             'internal_timezone_name' => 'UTC'
         ],
@@ -57,7 +56,6 @@ return [
         'parent' => null,
         'name' => 'modified_at',
         'options' => [
-            'default_value' => 'now',
             'force_internal_timezone' => true,
             'internal_timezone_name' => 'UTC'
         ],

@@ -62,8 +62,8 @@ abstract class ProjectionType extends EntityType implements ProjectionTypeInterf
             new UuidAttribute('uuid', $this),
             new TextAttribute('language', $this, [ 'default_value' => 'de_DE' ]),
             new IntegerAttribute('version', $this, [ 'default_value' => 1 ]),
-            new TimestampAttribute('created_at', $this, [ 'default_value' => 'now' ]),
-            new TimestampAttribute('modified_at', $this, [ 'default_value' => 'now' ]),
+            new TimestampAttribute('created_at', $this),
+            new TimestampAttribute('modified_at', $this),
             new TextAttribute('workflow_state', $this),
             new KeyValueListAttribute('workflow_parameters', $this),
             new KeyValueListAttribute('metadata', $this)

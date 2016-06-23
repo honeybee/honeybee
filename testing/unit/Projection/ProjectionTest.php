@@ -27,8 +27,8 @@ class ProjectionTest extends TestCase
     {
         $this->assertEquals('Mark', $this->projection->getFirstname());
         $this->assertEquals('Twain', $this->projection->getLastname());
-        $this->assertNotEmpty($this->projection->getCreatedAt());
-        $this->assertNotEmpty($this->projection->getModifiedAt());
+        $this->assertNull($this->projection->getCreatedAt());
+        $this->assertNull($this->projection->getModifiedAt());
         $this->assertNull($this->projection->getUuid());
         // UUID self-generated
         $this->assertNull($this->projection->getUuid());
