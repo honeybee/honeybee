@@ -199,7 +199,10 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
             foreach ($result->getViolatedRules() as $rule) {
                 foreach ($rule->getIncidents() as $name => $incident) {
                     $incident_params = $incident->getParameters();
-                    $errors[$attribute->getName()]['@incidents'][] = [ $name => $incident_params ];
+                    $errors[$attribute->getName()]['@incidents'][] = [
+                        'path' => $attribute->getPath(),
+                        'incidents' => [ $name => $incident_params ]
+                    ];
                 }
             }
         }

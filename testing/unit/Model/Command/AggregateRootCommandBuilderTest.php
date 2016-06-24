@@ -65,10 +65,16 @@ class AggregateRootCommandBuilderTest extends TestCase
         $this->assertEquals(
             [
                 'firstname' => [
-                    [ 'non_string_value' => [ 'value' => 123 ] ]
+                    [
+                        'path' => 'firstname',
+                        'incidents' => [ 'non_string_value' => [ 'value' => 123 ] ]
+                    ]
                 ],
                 'lastname' => [
-                   [ 'non_string_value' => [ 'value' => 456 ] ]
+                    [
+                        'path' => 'lastname',
+                        'incidents' => [ 'non_string_value' => [ 'value' => 456 ] ]
+                    ]
                 ]
             ],
             $build_result->get()
@@ -105,19 +111,34 @@ class AggregateRootCommandBuilderTest extends TestCase
         $this->assertEquals(
             [
                 'firstname' => [
-                    [ 'non_string_value' => [ 'value' => 123 ] ]
+                    [
+                        'path' => 'firstname',
+                        'incidents' => [ 'non_string_value' => [ 'value' => 123 ] ]
+                    ]
                 ],
                 'products.0.title' => [
-                    [ 'non_string_value' => [ 'value' => 456 ] ]
+                    [
+                        'path' => 'products.highlight.title',
+                        'incidents' => [ 'non_string_value' => [ 'value' => 456 ] ]
+                    ]
                 ],
                 'products.0.description' => [
-                    [ 'non_string_value' => [ 'value' => 789 ] ]
+                    [
+                        'path' => 'products.highlight.description',
+                        'incidents' => [ 'non_string_value' => [ 'value' => 789 ] ]
+                    ]
                 ],
                 'products.1.title' => [
-                    [ 'non_string_value' => [ 'value' => 890 ] ]
+                    [
+                        'path' => 'products.highlight.title',
+                        'incidents' => [ 'non_string_value' => [ 'value' => 890 ] ]
+                    ]
                 ],
                 'products.1.description' => [
-                    [ 'non_string_value' => [ 'value' => 321 ] ]
+                    [
+                        'path' => 'products.highlight.description',
+                        'incidents' => [ 'non_string_value' => [ 'value' => 321 ] ]
+                    ]
                 ]
             ],
             $build_result->get()
