@@ -60,7 +60,7 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
     {
         $affected_identifiers = [];
         $attribute_name = $attribute->getName();
-        $embedded_entity_list = $this->projection ? $this->projection->getValue($attribute_name) : new EntityList;
+        $embedded_entity_list = $this->entity ? $this->entity->getValue($attribute_name) : new EntityList;
         $builder_list = new CommandBuilderList;
 
         foreach ($values as $position => $embedded_values) {
@@ -69,7 +69,7 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
             $embed_type = $attribute->getEmbeddedTypeByPrefix($embed_type_prefix);
 
             /*
-             * Filter entities from the projection by incoming payload identifiers. If the
+             * Filter entities from the entity by incoming payload identifiers. If the
              * identifier is not matched then prepare an 'add' command, otherwise a 'modify'.
              */
             $affected_entity = $embedded_entity_list->filter(
@@ -106,7 +106,7 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
         }
 
         /*
-         * Iterate the projection attribute entity list and prepare remove commands for
+         * Iterate the attribute entity list and prepare remove commands for
          * any embedded entities with no incoming payload, or compensate for commands
          * which already exist.
          */
@@ -125,10 +125,10 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
                     }
                 }
                 if (!is_null($command_key)) {
-                    // remove the unnecessary add command if the entity already exists in the projection
+                    // remove the unnecessary add command if the entity already exists in the entity
                     $builder_list->splice($command_key);
                 } else {
-                    // the projection entity was not found in the payload so we can prepare removal
+                    // the entity was not found in the payload so we can prepare removal
                     $builder_list->push(
                         (new self($embedded_entity->getType(), RemoveEmbeddedEntityCommand::CLASS))
                         ->withParentAttributeName($attribute_name)

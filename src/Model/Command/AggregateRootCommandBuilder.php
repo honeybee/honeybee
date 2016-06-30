@@ -2,14 +2,17 @@
 
 namespace Honeybee\Model\Command;
 
-use Honeybee\Projection\ProjectionInterface;
+use Honeybee\Common\Error\RuntimeError;
+use Honeybee\EntityInterface;
 use Honeybee\Model\Aggregate\AggregateRootTypeInterface;
+use Honeybee\Model\Aggregate\AggregateRootInterface;
+use Honeybee\Projection\ProjectionInterface;
 use Shrink0r\Monatic\Error;
 use Shrink0r\Monatic\Success;
 
 class AggregateRootCommandBuilder extends EmbeddedEntityCommandBuilder
 {
-    protected $projection;
+    protected $entity;
 
     public function __construct(AggregateRootTypeInterface $aggregate_root_type, $command_class)
     {
@@ -28,11 +31,22 @@ class AggregateRootCommandBuilder extends EmbeddedEntityCommandBuilder
         return $result;
     }
 
-    public function withProjection(ProjectionInterface $projection)
+    public function fromEntity(EntityInterface $entity)
     {
-        $this->projection = $projection;
-        $this->command_state['aggregate_root_identifier'] = $projection->getIdentifier();
-        $this->command_state['known_revision'] = $projection->getRevision();
+        if (!$entity instanceof ProjectionInterface &&
+            !$entity instanceof AggregateRootInterface
+        ) {
+            throw new RuntimeError(sprintf(
+                'Provided %s must implement %s or %s.',
+                get_class($entity),
+                ProjectionInterface::CLASS,
+                AggregateRootInterface::CLASS
+            ));
+        }
+
+        $this->entity = $entity;
+        $this->command_state['aggregate_root_identifier'] = $entity->getIdentifier();
+        $this->command_state['known_revision'] = $entity->getRevision();
         return $this;
     }
 

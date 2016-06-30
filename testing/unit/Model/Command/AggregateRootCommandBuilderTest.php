@@ -15,6 +15,7 @@ use Shrink0r\Monatic\Error;
 use Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\AddEmbeddedEntityCommand;
 use Workflux\StateMachine\StateMachineInterface;
 use Mockery;
+use Honeybee\EntityInterface;
 
 class AggregateRootCommandBuilderTest extends TestCase
 {
@@ -169,7 +170,7 @@ class AggregateRootCommandBuilderTest extends TestCase
 
         $builder = new AggregateRootCommandBuilder($author_type, ModifyAuthorCommand::CLASS);
         $build_result = $builder
-            ->withProjection($projection)
+            ->fromEntity($projection)
             ->withValues($payload['author'])
             ->build();
 
@@ -181,9 +182,24 @@ class AggregateRootCommandBuilderTest extends TestCase
     }
 
     /**
+     * @expectedException Honeybee\Common\Error\RuntimeError
+     */
+    public function testModifyCommandWithInvalidEntity()
+    {
+        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
+        $author_type = new AuthorType($state_machine);
+
+        $builder = new AggregateRootCommandBuilder($author_type, ModifyAuthorCommand::CLASS);
+        $build_result = $builder
+            ->fromEntity(Mockery::mock(EntityInterface::CLASS))
+            ->withValues([ 'firstname' => 'Amitav', 'lastname' => 'Gosh' ])
+            ->build();
+    }
+
+    /**
      * @expectedException Assert\InvalidArgumentException
      */
-    public function testModifyCommandWithMissingProjection()
+    public function testModifyCommandWithMissingIdentifier()
     {
         $state_machine = Mockery::mock(StateMachineInterface::CLASS);
         $author_type = new AuthorType($state_machine);
