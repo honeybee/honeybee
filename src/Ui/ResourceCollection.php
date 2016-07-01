@@ -2,10 +2,10 @@
 
 namespace Honeybee\Ui;
 
-use Trellis\Common\Collection\Collection;
+use Trellis\Runtime\Entity\EntityList;
 use Trellis\Common\Collection\CollectionInterface;
 
-class ResourceCollection extends Collection
+class ResourceCollection extends EntityList
 {
     // CollectionInterface
 
