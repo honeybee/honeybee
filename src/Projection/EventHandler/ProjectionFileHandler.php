@@ -39,13 +39,13 @@ class ProjectionFileHandler extends EventHandler
 
     protected function onAggregateRootCreated(AggregateRootCreatedEvent $event)
     {
-        $ar_type = $this->aggregate_root_type_map->getByClassName($event->getAggregateRootType());
+        $ar_type = $this->aggregate_root_type_map->getItem($event->getAggregateRootType());
         $this->moveTempFilesToFinalLocation($event, $ar_type);
     }
 
     protected function onAggregateRootModified(AggregateRootModifiedEvent $event)
     {
-        $ar_type = $this->aggregate_root_type_map->getByClassName($event->getAggregateRootType());
+        $ar_type = $this->aggregate_root_type_map->getItem($event->getAggregateRootType());
         $this->moveTempFilesToFinalLocation($event, $ar_type);
     }
 
