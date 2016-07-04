@@ -16,8 +16,8 @@ class PublicationType extends AggregateRootType
         parent::__construct(
             'Publication',
             [
-                new IntegerAttribute('year', $this, [ 'mandatory' => true ]),
-                new TextAttribute('description', $this)
+                new IntegerAttribute('year', $this, []),
+                new TextAttribute('description', $this, [])
             ]
         );
     }

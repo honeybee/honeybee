@@ -1,25 +1,13 @@
 <?php
 
 return [
-    // empty payload
-    [
-        'payload' => [
-            'author' => []
-        ],
-        'expected_command' => [
-            '@type' => 'Honeybee\Tests\Fixture\BookSchema\Task\CreateAuthor\CreateAuthorCommand',
-            'values' => [],
-            'aggregate_root_type' => 'honeybee-cmf.aggregate_fixtures.author',
-            'embedded_entity_commands' => [],
-            'metadata' => []
-        ]
-    ],
     // payload with no embeds or references
     [
         'payload' => [
             'author' => [
                 'firstname' => 'Amitav',
                 'lastname' => 'Gosh',
+                'email' => 'test@honeybee.com',
                 'products' => [],
                 'books' => []
             ]
@@ -28,7 +16,8 @@ return [
             '@type' => 'Honeybee\Tests\Fixture\BookSchema\Task\CreateAuthor\CreateAuthorCommand',
             'values' => [
                 'firstname' => 'Amitav',
-                'lastname' => 'Gosh'
+                'lastname' => 'Gosh',
+                'email' => 'test@honeybee.com'
             ],
             'aggregate_root_type' => 'honeybee-cmf.aggregate_fixtures.author',
             'embedded_entity_commands' => [],
@@ -41,6 +30,7 @@ return [
             'author' => [
                 'firstname' => 'Amitav',
                 'lastname' => 'Gosh',
+                'email' => 'test@honeybee.com',
                 'products' => [
                     [
                         '@type' => 'highlight',
@@ -54,7 +44,8 @@ return [
             '@type' => 'Honeybee\Tests\Fixture\BookSchema\Task\CreateAuthor\CreateAuthorCommand',
             'values' => [
                 'firstname' => 'Amitav',
-                'lastname' => 'Gosh'
+                'lastname' => 'Gosh',
+                'email' => 'test@honeybee.com'
             ],
             'aggregate_root_type' => 'honeybee-cmf.aggregate_fixtures.author',
             'embedded_entity_commands' => [
@@ -80,6 +71,7 @@ return [
             'author' => [
                 'firstname' => 'Amitav',
                 'lastname' => '',
+                'email' => 'test@honeybee.com',
                 'products' => [
                     [
                         '@type' => 'highlight',
@@ -103,7 +95,8 @@ return [
             '@type' => 'Honeybee\Tests\Fixture\BookSchema\Task\CreateAuthor\CreateAuthorCommand',
             'values' => [
                 'firstname' => 'Amitav',
-                'lastname' => ''
+                'lastname' => '',
+                'email' => 'test@honeybee.com'
             ],
             'aggregate_root_type' => 'honeybee-cmf.aggregate_fixtures.author',
             'embedded_entity_commands' => [
@@ -151,6 +144,7 @@ return [
             'author' => [
                 'firstname' => 'Amitav',
                 'lastname' => 'Gosh',
+                'email' => 'test@honeybee.com',
                 'books' => [
                     [
                         '@type' => 'book',
@@ -167,7 +161,8 @@ return [
             '@type' => 'Honeybee\Tests\Fixture\BookSchema\Task\CreateAuthor\CreateAuthorCommand',
             'values' => [
                 'firstname' => 'Amitav',
-                'lastname' => 'Gosh'
+                'lastname' => 'Gosh',
+                'email' => 'test@honeybee.com'
             ],
             'aggregate_root_type' => 'honeybee-cmf.aggregate_fixtures.author',
             'embedded_entity_commands' => [

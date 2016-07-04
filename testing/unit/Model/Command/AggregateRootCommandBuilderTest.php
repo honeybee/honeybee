@@ -2,10 +2,13 @@
 
 namespace Honeybee\Tests\Model\Command;
 
+use Honeybee\EntityInterface;
 use Honeybee\Model\Command\AggregateRootCommandBuilder;
 use Honeybee\Tests\Fixture\BookSchema\Model\Author\AuthorType;
+use Honeybee\Tests\Fixture\BookSchema\Model\Publication\PublicationType;
 use Honeybee\Tests\Fixture\BookSchema\Projection\Author\AuthorType  as AuthorProjectionType;
 use Honeybee\Tests\Fixture\BookSchema\Task\CreateAuthor\CreateAuthorCommand;
+use Honeybee\Tests\Fixture\BookSchema\Task\CreatePublication\CreatePublicationCommand;
 use Honeybee\Tests\Fixture\BookSchema\Task\ModifyAuthor\ModifyAuthorCommand;
 use Honeybee\Tests\TestCase;
 use Shrink0r\Monatic\Result;
@@ -13,7 +16,6 @@ use Shrink0r\Monatic\Success;
 use Shrink0r\Monatic\Error;
 use Workflux\StateMachine\StateMachineInterface;
 use Mockery;
-use Honeybee\EntityInterface;
 
 class AggregateRootCommandBuilderTest extends TestCase
 {
@@ -49,6 +51,32 @@ class AggregateRootCommandBuilderTest extends TestCase
         $this->assertArraySubset($expected_command, $result->toArray());
     }
 
+    public function testBuildCreateCommandWithEmptyValues()
+    {
+        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
+        $publication_type = new PublicationType($state_machine);
+
+        $builder = new AggregateRootCommandBuilder($publication_type, CreatePublicationCommand::CLASS);
+        $build_result = $builder
+            ->withValues([])
+            ->build();
+
+        $this->assertInstanceOf(Result::CLASS, $build_result);
+        $this->assertInstanceOf(Success::CLASS, $build_result);
+        $result = $build_result->get();
+        $this->assertInstanceOf(CreatePublicationCommand::CLASS, $result);
+        $this->assertArraySubset(
+            [
+                '@type' => 'Honeybee\Tests\Fixture\BookSchema\Task\CreatePublication\CreatePublicationCommand',
+                'values' => [],
+                'aggregate_root_type' => 'honeybee-cmf.aggregate_fixtures.publication',
+                'embedded_entity_commands' => [],
+                'metadata' => []
+            ],
+            $result->toArray()
+        );
+    }
+
     public function testBuildCreateCommandWithInvalidValues()
     {
         $state_machine = Mockery::mock(StateMachineInterface::CLASS);
@@ -56,7 +84,11 @@ class AggregateRootCommandBuilderTest extends TestCase
 
         $builder = new AggregateRootCommandBuilder($author_type, CreateAuthorCommand::CLASS);
         $build_result = $builder
-            ->withValues([ 'firstname' => 123, 'lastname' => 456 ])
+            ->withValues([
+                'firstname' => 123,
+                'lastname' => 456,
+                'email' => 'invalid'
+            ])
             ->build();
 
         $this->assertInstanceOf(Result::CLASS, $build_result);
@@ -73,6 +105,12 @@ class AggregateRootCommandBuilderTest extends TestCase
                     [
                         'path' => 'lastname',
                         'incidents' => [ 'non_string_value' => [ 'value' => 456 ] ]
+                    ]
+                ],
+                'email' => [
+                    [
+                        'path' => 'email',
+                        'incidents' => [ 'invalid_format' => [ 'reason' => 'ERR_NODOMAIN' ] ]
                     ]
                 ]
             ],
@@ -100,6 +138,10 @@ class AggregateRootCommandBuilderTest extends TestCase
                         '@type' => 'highlight',
                         'title' => 890,
                         'description' => 321
+                    ],
+                    [
+                        '@type' => 'highlight'
+                        // missing title
                     ]
                 ]
             ])
@@ -113,6 +155,12 @@ class AggregateRootCommandBuilderTest extends TestCase
                     [
                         'path' => 'firstname',
                         'incidents' => [ 'non_string_value' => [ 'value' => 123 ] ]
+                    ]
+                ],
+                'email' => [
+                    [
+                        'path' => 'email',
+                        'incidents' => [ 'mandatory' => [ 'reason' => 'missing' ] ]
                     ]
                 ],
                 'products.0.title' => [
@@ -138,7 +186,13 @@ class AggregateRootCommandBuilderTest extends TestCase
                         'path' => 'products.highlight.description',
                         'incidents' => [ 'non_string_value' => [ 'value' => 321 ] ]
                     ]
-                ]
+                ],
+                'products.2.title' => [
+                    [
+                        'path' => 'products.highlight.title',
+                        'incidents' => [ 'mandatory' => [ 'reason' => 'missing' ] ]
+                    ]
+                ],
             ],
             $build_result->get()
         );
@@ -204,7 +258,12 @@ class AggregateRootCommandBuilderTest extends TestCase
 
         $builder = new AggregateRootCommandBuilder($author_type, ModifyAuthorCommand::CLASS);
         $build_result = $builder
-            ->withValues([ 'firstname' => 'Amitav', 'lastname' => 'Gosh' ])
+            ->withKnownRevision(1)
+            ->withValues([
+                'firstname' => 'Amitav',
+                'lastname' => 'Gosh',
+                'email' => 'test@honeybee.com'
+            ])
             ->build();
     }
 }

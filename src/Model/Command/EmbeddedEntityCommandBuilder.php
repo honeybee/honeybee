@@ -178,6 +178,14 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
                 } elseif ($result instanceof Error) {
                     $errors[] = $result->get();
                 }
+            } else {
+                // weak assumption that mandatory option only applies to AR creation commands
+                if ($attribute->getOption('mandatory', false) === true && !isset($this->entity)) {
+                    $errors[][$attribute->getName()]['@incidents'][] = [
+                        'path' => $attribute->getPath(),
+                        'incidents' => [ 'mandatory' => [ 'reason' => 'missing' ] ]
+                    ];
+                }
             }
         }
 
