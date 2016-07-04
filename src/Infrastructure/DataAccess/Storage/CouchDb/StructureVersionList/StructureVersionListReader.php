@@ -8,7 +8,6 @@ use Honeybee\Infrastructure\DataAccess\Storage\StorageReaderIterator;
 use Honeybee\Infrastructure\DataAccess\Storage\CouchDb\CouchDbStorage;
 use Honeybee\Infrastructure\Migration\StructureVersionList;
 use Honeybee\Infrastructure\Migration\StructureVersion;
-use Honeybee\Model\UnitOfWork\EventStream;
 use GuzzleHttp\Exception\RequestException;
 
 class StructureVersionListReader extends CouchDbStorage implements StorageReaderInterface

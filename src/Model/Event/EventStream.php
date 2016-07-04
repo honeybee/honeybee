@@ -3,7 +3,6 @@
 namespace Honeybee\Model\Event;
 
 use Trellis\Common\Object;
-use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Model\Event\AggregateRootEventInterface;
 use Honeybee\Model\Event\AggregateRootEventList;
 

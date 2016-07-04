@@ -5,7 +5,6 @@ namespace Honeybee\Infrastructure\DataAccess\Storage\Elasticsearch\StructureVers
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Config\SettingsInterface;
 use Honeybee\Infrastructure\DataAccess\Storage\Elasticsearch\ElasticsearchStorageWriter;
-use Honeybee\Infrastructure\DataAccess\Storage\StorageWriterInterface;
 use Honeybee\Infrastructure\Migration\StructureVersionList;
 
 class StructureVersionListWriter extends ElasticsearchStorageWriter

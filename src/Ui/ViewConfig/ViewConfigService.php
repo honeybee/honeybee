@@ -2,14 +2,10 @@
 
 namespace Honeybee\Ui\ViewConfig;
 
-use Trellis\Common\Object;
 use Honeybee\Common\Error\RuntimeError;
-use Honeybee\Common\Util\StringToolkit;
 use Honeybee\Infrastructure\Config\ConfigInterface;
-use Honeybee\Ui\Activity\ActivityInterface;
 use Honeybee\Ui\OutputFormat\OutputFormatInterface;
-use ReflectionClass;
-use Honeybee\Entity;
+use Trellis\Common\Object;
 
 class ViewConfigService extends Object implements ViewConfigServiceInterface
 {

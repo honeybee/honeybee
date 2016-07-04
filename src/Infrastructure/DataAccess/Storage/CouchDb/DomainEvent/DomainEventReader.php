@@ -7,7 +7,6 @@ use Honeybee\Infrastructure\DataAccess\Storage\StorageReaderInterface;
 use Honeybee\Infrastructure\Config\SettingsInterface;
 use Honeybee\Infrastructure\DataAccess\Storage\StorageReaderIterator;
 use Honeybee\Infrastructure\DataAccess\Storage\CouchDb\CouchDbStorage;
-use Honeybee\Model\Event\AggregateRootEventList;
 use GuzzleHttp\Exception\RequestException;
 
 class DomainEventReader extends CouchDbStorage implements StorageReaderInterface

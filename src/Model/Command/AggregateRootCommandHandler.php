@@ -2,7 +2,6 @@
 
 namespace Honeybee\Model\Command;
 
-use Exception;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Command\CommandHandler;
 use Honeybee\Infrastructure\Command\CommandInterface;

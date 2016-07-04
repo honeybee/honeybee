@@ -3,8 +3,6 @@
 namespace Honeybee\Model\Command;
 
 use Assert\Assertion;
-use Honeybee\Model\Task\ModifyAggregateRoot\AggregateRootModifiedEvent;
-use Honeybee\Model\Event\AggregateRootEventInterface;
 
 abstract class AggregateRootCommand extends AggregateRootTypeCommand implements AggregateRootCommandInterface
 {

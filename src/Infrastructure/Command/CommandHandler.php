@@ -2,7 +2,6 @@
 
 namespace Honeybee\Infrastructure\Command;
 
-use Exception;
 use Psr\Log\LoggerInterface;
 use Trellis\Common\Object;
 

@@ -4,7 +4,6 @@ namespace Honeybee\Ui\Activity;
 
 use Honeybee\Infrastructure\Config\SettingsInterface;
 use Trellis\Common\Configurable;
-use Exception;
 
 class Activity extends Configurable implements ActivityInterface
 {

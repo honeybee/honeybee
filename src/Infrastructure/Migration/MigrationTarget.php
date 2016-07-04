@@ -6,7 +6,6 @@ use Honeybee\Infrastructure\Config\ConfigInterface;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\DataAccess\DataAccessServiceInterface;
 use Honeybee\Infrastructure\DataAccess\Connector\ConnectorServiceInterface;
-use Exception;
 
 class MigrationTarget implements MigrationTargetInterface
 {

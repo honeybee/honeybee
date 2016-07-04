@@ -4,7 +4,6 @@ namespace Honeybee\Infrastructure\DataAccess\Finder;
 
 use Honeybee\Infrastructure\Config\ConfigInterface;
 use Honeybee\Infrastructure\DataAccess\Connector\ConnectorInterface;
-use Honeybee\Infrastructure\DataAccess\Query\QueryTranslationInterface;
 use Psr\Log\LoggerInterface;
 use Trellis\Common\Object;
 

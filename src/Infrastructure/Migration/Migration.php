@@ -2,7 +2,6 @@
 
 namespace Honeybee\Infrastructure\Migration;
 
-use Honeybee\Infrastructure\DataAccess\Connector\ConnectableInterface;
 use Honeybee\Common\Error\RuntimeError;
 use Trellis\Common\Object;
 

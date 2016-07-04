@@ -9,10 +9,8 @@ use Honeybee\Infrastructure\DataAccess\Query\AttributeCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\CriteriaList;
 use Honeybee\Infrastructure\DataAccess\Query\Query;
 use Honeybee\Infrastructure\DataAccess\Query\QueryInterface;
-use Honeybee\Infrastructure\DataAccess\Query\QueryTranslationInterface;
 use Honeybee\Infrastructure\DataAccess\Query\SortCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\Comparison\Equals;
-use Honeybee\Projection\ProjectionTypeInterface;
 use Psr\Log\LoggerInterface;
 
 class QueryService implements QueryServiceInterface

@@ -2,12 +2,10 @@
 
 namespace Honeybee\Infrastructure\Migration;
 
-use Honeybee\Infrastructure\DataAccess\Connector\ConnectableInterface;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Common\Util\JsonToolkit;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Elasticsearch\Common\Exceptions\BadRequest400Exception;
-use DateTime;
 
 abstract class ElasticsearchMigration extends Migration
 {

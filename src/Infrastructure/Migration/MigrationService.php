@@ -3,7 +3,6 @@
 namespace Honeybee\Infrastructure\Migration;
 
 use Honeybee\Infrastructure\Config\ConfigInterface;
-use Honeybee\Infrastructure\DataAccess\Connector\ConnectorServiceInterface;
 use Honeybee\Common\Error\RuntimeError;
 
 class MigrationService implements MigrationServiceInterface

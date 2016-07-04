@@ -5,7 +5,6 @@ namespace Honeybee\Infrastructure\ProcessManager\StateMachine;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\ProcessManager\ProcessStateInterface;
 use Honeybee\Model\Aggregate\AggregateRootTypeMap;
-use Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\AddEmbeddedEntityCommand;
 use JmesPath\AstRuntime;
 use Workflux\State\State;
 use Workflux\StatefulSubjectInterface;

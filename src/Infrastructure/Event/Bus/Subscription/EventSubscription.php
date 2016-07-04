@@ -3,7 +3,6 @@
 namespace Honeybee\Infrastructure\Event\Bus\Subscription;
 
 use Trellis\Common\Object;
-use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Event\Bus\Transport\EventTransportInterface;
 use Honeybee\Infrastructure\Event\EventHandlerList;
 use Honeybee\Infrastructure\Event\Bus\Strategy\EventStrategy;

@@ -2,18 +2,12 @@
 
 namespace Honeybee\Model\Aggregate;
 
-use Trellis\Common\ObjectInterface;
 use Honeybee\Model\Event\EmbeddedEntityEventInterface;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Model\Event\EmbeddedEntityEventList;
-use Honeybee\Model\Command\EmbeddedEntityTypeCommandInterface;
-use Honeybee\Model\Task\ModifyAggregateRoot\ModifyEmbeddedEntity\ModifyEmbeddedEntityCommand;
 use Honeybee\Model\Task\ModifyAggregateRoot\ModifyEmbeddedEntity\EmbeddedEntityModifiedEvent;
-use Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\AddEmbeddedEntityCommand;
 use Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\EmbeddedEntityAddedEvent;
-use Honeybee\Model\Task\ModifyAggregateRoot\RemoveEmbeddedEntity\RemoveEmbeddedEntityCommand;
 use Honeybee\Model\Task\ModifyAggregateRoot\RemoveEmbeddedEntity\EmbeddedEntityRemovedEvent;
-use Trellis\Runtime\Attribute\EmbeddedEntityList\EmbeddedEntityListAttribute;
 
 abstract class EmbeddedEntity extends Entity
 {

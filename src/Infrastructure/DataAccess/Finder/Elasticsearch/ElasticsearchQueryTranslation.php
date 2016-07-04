@@ -3,7 +3,6 @@
 namespace Honeybee\Infrastructure\DataAccess\Finder\Elasticsearch;
 
 use Honeybee\Infrastructure\Config\ConfigInterface;
-use Honeybee\Infrastructure\DataAccess\QueryBuilderInterface;
 use Honeybee\Infrastructure\DataAccess\Query\AttributeCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\CriteriaContainerInterface;
 use Honeybee\Infrastructure\DataAccess\Query\CriteriaInterface;

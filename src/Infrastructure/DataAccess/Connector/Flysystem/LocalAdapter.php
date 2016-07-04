@@ -4,7 +4,6 @@ namespace Honeybee\Infrastructure\DataAccess\Connector\Flysystem;
 
 use League\Flysystem\Adapter\Local;
 use League\Flysystem\Config;
-use Finfo;
 
 /**
  * Flysystem Local adapter doesn't use 'b' as mode on fopen calls.

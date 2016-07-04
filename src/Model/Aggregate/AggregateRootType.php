@@ -3,15 +3,12 @@
 namespace Honeybee\Model\Aggregate;
 
 use Trellis\Runtime\Attribute\AttributeMap;
-use Trellis\Runtime\Attribute\EmbeddedEntityList\EmbeddedEntityListAttribute;
 use Trellis\Runtime\Attribute\Integer\IntegerAttribute;
 use Trellis\Runtime\Attribute\KeyValueList\KeyValueListAttribute;
 use Trellis\Runtime\Attribute\Text\TextAttribute;
-use Trellis\Runtime\Attribute\Timestamp\TimestampAttribute;
 use Trellis\Runtime\Attribute\Uuid\UuidAttribute;
 use Trellis\Runtime\Entity\EntityInterface;
 use Honeybee\Common\Error\RuntimeError;
-use Honeybee\Common\ScopeKeyInterface;
 use Honeybee\Common\Util\StringToolkit;
 
 abstract class AggregateRootType extends EntityType implements AggregateRootTypeInterface

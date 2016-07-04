@@ -2,7 +2,6 @@
 
 namespace Honeybee\Infrastructure\ProcessManager;
 
-use DateTime;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Command\Bus\CommandBusInterface;
 use Honeybee\Infrastructure\Command\CommandList;

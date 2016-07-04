@@ -2,8 +2,6 @@
 
 namespace Honeybee\Ui\Activity;
 
-use Honeybee\Common\ScopeKeyInterface;
-
 interface ActivityServiceInterface
 {
     public function getContainers();

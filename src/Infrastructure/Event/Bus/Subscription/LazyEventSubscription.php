@@ -6,7 +6,6 @@ use Closure;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Event\Bus\Subscription\EventFilterList;
 use Honeybee\Infrastructure\Event\Bus\Transport\EventTransportInterface;
-use Honeybee\Infrastructure\Event\EventHandlerInterface;
 use Honeybee\Infrastructure\Event\EventHandlerList;
 use Honeybee\Infrastructure\Config\SettingsInterface;
 

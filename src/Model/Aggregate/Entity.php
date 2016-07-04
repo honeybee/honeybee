@@ -3,15 +3,12 @@
 namespace Honeybee\Model\Aggregate;
 
 use Honeybee\Entity as BaseEntity;
-use Zend\Permissions\Acl\Resource\ResourceInterface;
-use Honeybee\Common\ScopeKeyInterface;
 use Honeybee\Model\Event\EmbeddedEntityEventInterface;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Model\Task\ModifyAggregateRoot\ModifyEmbeddedEntity\EmbeddedEntityModifiedEvent;
 use Honeybee\Model\Task\ModifyAggregateRoot\RemoveEmbeddedEntity\EmbeddedEntityRemovedEvent;
 use Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\EmbeddedEntityAddedEvent;
 use Trellis\Runtime\Attribute\EmbeddedEntityList\EmbeddedEntityListAttribute;
-use Trellis\Common\ObjectInterface;
 
 abstract class Entity extends BaseEntity
 {

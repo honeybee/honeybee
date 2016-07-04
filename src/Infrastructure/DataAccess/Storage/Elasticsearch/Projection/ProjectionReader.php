@@ -3,7 +3,6 @@
 namespace Honeybee\Infrastructure\DataAccess\Storage\Elasticsearch\Projection;
 
 use Elasticsearch\Common\Exceptions\Missing404Exception;
-use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Config\ConfigInterface;
 use Honeybee\Infrastructure\Config\SettingsInterface;
 use Honeybee\Infrastructure\DataAccess\Connector\ConnectorInterface;

@@ -2,11 +2,6 @@
 
 namespace Honeybee\Infrastructure\Fixture;
 
-use Honeybee\Common\Error\RuntimeError;
-use Honeybee\Infrastructure\DataAccess\DataAccessServiceInterface;
-use Honeybee\Infrastructure\DataAccess\Connector\ConnectorServiceInterface;
-use Exception;
-
 class FixtureTarget implements FixtureTargetInterface
 {
     protected $name;

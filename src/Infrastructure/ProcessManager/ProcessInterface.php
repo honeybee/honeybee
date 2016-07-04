@@ -3,7 +3,6 @@
 namespace Honeybee\Infrastructure\ProcessManager;
 
 use Honeybee\Infrastructure\Event\EventInterface;
-use Workflux\StateMachine\StateMachine;
 
 interface ProcessInterface
 {

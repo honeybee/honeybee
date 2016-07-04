@@ -2,14 +2,10 @@
 
 namespace Honeybee\Model\Aggregate;
 
-use Trellis\Common\ObjectInterface;
 use Trellis\Runtime\Attribute\AttributeInterface;
 use Trellis\Runtime\Attribute\EmbeddedEntityList\EmbeddedEntityListAttribute;
 use Trellis\Runtime\Attribute\Uuid\UuidAttribute;
-use Trellis\Runtime\ValueHolder\ValueChangedEvent;
 use Honeybee\Common\Error\RuntimeError;
-use Honeybee\Common\ScopeKeyInterface;
-use Honeybee\Common\Util\StringToolkit;
 use Honeybee\Model\Aggregate\AggregateRootTypeInterface;
 use Honeybee\Model\Command\AggregateRootCommandInterface;
 use Honeybee\Model\Command\AggregateRootTypeCommandInterface;
@@ -20,12 +16,9 @@ use Honeybee\Model\Event\EmbeddedEntityEventList;
 use Honeybee\Model\Task\CreateAggregateRoot\AggregateRootCreatedEvent;
 use Honeybee\Model\Task\CreateAggregateRoot\CreateAggregateRootCommand;
 use Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\AddEmbeddedEntityCommand;
-use Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\EmbeddedEntityAddedEvent;
 use Honeybee\Model\Task\ModifyAggregateRoot\AggregateRootModifiedEvent;
 use Honeybee\Model\Task\ModifyAggregateRoot\ModifyAggregateRootCommand;
-use Honeybee\Model\Task\ModifyAggregateRoot\ModifyEmbeddedEntity\EmbeddedEntityModifiedEvent;
 use Honeybee\Model\Task\ModifyAggregateRoot\ModifyEmbeddedEntity\ModifyEmbeddedEntityCommand;
-use Honeybee\Model\Task\ModifyAggregateRoot\RemoveEmbeddedEntity\EmbeddedEntityRemovedEvent;
 use Honeybee\Model\Task\ModifyAggregateRoot\RemoveEmbeddedEntity\RemoveEmbeddedEntityCommand;
 use Honeybee\Model\Task\MoveAggregateRootNode\AggregateRootNodeMovedEvent;
 use Honeybee\Model\Task\MoveAggregateRootNode\MoveAggregateRootNodeCommand;

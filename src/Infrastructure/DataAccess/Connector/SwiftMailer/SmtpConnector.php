@@ -2,7 +2,6 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Connector\SwiftMailer;
 
-use Honeybee\Common\Error\ConfigError;
 use Honeybee\Infrastructure\DataAccess\Connector\Connector;
 use Swift_Mailer;
 use Swift_SmtpTransport;

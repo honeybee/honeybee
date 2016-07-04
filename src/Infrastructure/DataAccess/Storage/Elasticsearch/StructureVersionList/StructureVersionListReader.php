@@ -3,7 +3,6 @@
 namespace Honeybee\Infrastructure\DataAccess\Storage\Elasticsearch\StructureVersionList;
 
 use Elasticsearch\Common\Exceptions\Missing404Exception;
-use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Config\SettingsInterface;
 use Honeybee\Infrastructure\DataAccess\Storage\Elasticsearch\ElasticsearchStorage;
 use Honeybee\Infrastructure\DataAccess\Storage\StorageReaderInterface;

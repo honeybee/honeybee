@@ -3,7 +3,6 @@
 namespace Honeybee\Infrastructure\DataAccess\Connector\SwiftMailer;
 
 use Exception;
-use Honeybee\Common\Error\ConfigError;
 use Honeybee\Infrastructure\DataAccess\Connector\Connector;
 use Honeybee\Infrastructure\DataAccess\Connector\Status;
 use Swift_Mailer;

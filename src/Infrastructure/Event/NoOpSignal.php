@@ -3,7 +3,6 @@
 namespace Honeybee\Infrastructure\Event;
 
 use Assert\Assertion;
-use Trellis\Common\Object;
 
 class NoOpSignal extends Event
 {

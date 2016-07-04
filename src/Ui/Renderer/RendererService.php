@@ -2,7 +2,6 @@
 
 namespace Honeybee\Ui\Renderer;
 
-use Trellis\Runtime\Attribute\AttributeInterface;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Config\ArrayConfig;
 use Honeybee\Infrastructure\Config\ConfigInterface;
