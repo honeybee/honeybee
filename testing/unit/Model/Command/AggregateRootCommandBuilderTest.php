@@ -3,7 +3,6 @@
 namespace Honeybee\Tests\Model\Command;
 
 use Honeybee\Model\Command\AggregateRootCommandBuilder;
-use Honeybee\Model\Command\EmbeddedEntityCommandBuilder;
 use Honeybee\Tests\Fixture\BookSchema\Model\Author\AuthorType;
 use Honeybee\Tests\Fixture\BookSchema\Projection\Author\AuthorType  as AuthorProjectionType;
 use Honeybee\Tests\Fixture\BookSchema\Task\CreateAuthor\CreateAuthorCommand;
@@ -12,7 +11,6 @@ use Honeybee\Tests\TestCase;
 use Shrink0r\Monatic\Result;
 use Shrink0r\Monatic\Success;
 use Shrink0r\Monatic\Error;
-use Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\AddEmbeddedEntityCommand;
 use Workflux\StateMachine\StateMachineInterface;
 use Mockery;
 use Honeybee\EntityInterface;

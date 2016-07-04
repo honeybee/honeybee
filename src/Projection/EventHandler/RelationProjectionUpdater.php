@@ -3,7 +3,6 @@
 namespace Honeybee\Projection\EventHandler;
 
 use Honeybee\EntityInterface;
-use Honeybee\EntityTypeInterface;
 use Honeybee\Infrastructure\Config\ConfigInterface;
 use Honeybee\Infrastructure\DataAccess\Query\AttributeCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\CriteriaList;

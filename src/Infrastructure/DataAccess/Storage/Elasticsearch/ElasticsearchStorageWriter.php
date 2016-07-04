@@ -2,7 +2,6 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Storage\Elasticsearch;
 
-use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Config\Settings;
 use Honeybee\Infrastructure\Config\SettingsInterface;
 use Honeybee\Infrastructure\DataAccess\Storage\StorageWriterInterface;

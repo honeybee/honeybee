@@ -3,7 +3,6 @@
 namespace Honeybee\Projection;
 
 use Honeybee\Common\Error\RuntimeError;
-use Honeybee\Common\ScopeKeyInterface;
 
 abstract class Projection extends Entity implements ProjectionInterface
 {

@@ -8,7 +8,6 @@ use Trellis\Runtime\ReferencedEntityTypeInterface;
 use Trellis\Runtime\Attribute\AttributeMap;
 use Trellis\Runtime\Attribute\AttributeInterface;
 use Trellis\Runtime\Attribute\Text\TextAttribute;
-use Trellis\Runtime\Attribute\Timestamp\TimestampAttribute;
 
 abstract class ReferencedEntityType extends EmbeddedEntityType implements ReferencedEntityTypeInterface
 {

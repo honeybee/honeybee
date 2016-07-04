@@ -5,7 +5,6 @@ namespace Honeybee\Tests\Infrastructure\DataAccess\Connector;
 use Honeybee\Infrastructure\Config\ArrayConfig;
 use Honeybee\Infrastructure\DataAccess\Connector\ConnectorMap;
 use Honeybee\Infrastructure\DataAccess\Connector\ConnectorService;
-use Honeybee\Infrastructure\DataAccess\Connector\Status;
 use Honeybee\Infrastructure\DataAccess\Connector\StatusReport;
 use Honeybee\Tests\TestCase;
 

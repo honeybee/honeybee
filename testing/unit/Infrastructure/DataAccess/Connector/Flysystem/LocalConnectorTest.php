@@ -6,7 +6,6 @@ use Honeybee\Infrastructure\Config\ArrayConfig;
 use Honeybee\Infrastructure\Config\ConfigInterface;
 use Honeybee\Infrastructure\DataAccess\Connector\ConnectorInterfaceTest;
 use Honeybee\Infrastructure\DataAccess\Connector\Flysystem\LocalConnector;
-use Honeybee\Tests\TestCase;
 
 class LocalConnectorTest extends ConnectorInterfaceTest
 {

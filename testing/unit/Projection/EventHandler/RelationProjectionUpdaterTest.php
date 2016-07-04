@@ -2,9 +2,7 @@
 
 namespace Honeybee\Tests\Projection\EventHandler;
 
-use Honeybee\Model\Event\EmbeddedEntityEventList;
 use Honeybee\Projection\Event\ProjectionUpdatedEvent;
-use Honeybee\Projection\ProjectionInterface;
 use Honeybee\Projection\ProjectionMap;
 use Honeybee\Projection\ProjectionTypeMap;
 use Honeybee\Projection\EventHandler\RelationProjectionUpdater;

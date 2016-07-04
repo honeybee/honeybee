@@ -2,13 +2,8 @@
 
 namespace Honeybee\Tests\Model\Aggregate;
 
-use Honeybee\Model\Aggregate\AggregateRootTypeInterface;
 use Honeybee\Model\Event\AggregateRootEventList;
-use Honeybee\Model\Task\CreateAggregateRoot\AggregateRootCreatedEvent;
 use Honeybee\Tests\Fixture\BookSchema\Model\Author\AuthorType;
-use Honeybee\Tests\Fixture\BookSchema\Model\Book\BookType;
-use Honeybee\Tests\Fixture\BookSchema\Model\Publication\PublicationType;
-use Honeybee\Tests\Fixture\BookSchema\Model\Publisher\PublisherType;
 use Honeybee\Tests\Fixture\BookSchema\Task\CreateAuthor\AuthorCreatedEvent;
 use Honeybee\Tests\Fixture\BookSchema\Task\CreateAuthor\CreateAuthorCommand;
 use Honeybee\Tests\Fixture\BookSchema\Task\ModifyAuthor\AuthorModifiedEvent;

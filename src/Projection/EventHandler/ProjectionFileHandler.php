@@ -3,14 +3,12 @@
 namespace Honeybee\Projection\EventHandler;
 
 use Exception;
-use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Common\Error\FilesystemError;
 use Honeybee\EntityTypeInterface;
 use Honeybee\Infrastructure\Config\ConfigInterface;
 use Honeybee\Infrastructure\Event\EventHandler;
 use Honeybee\Infrastructure\Filesystem\FilesystemServiceInterface;
 use Honeybee\Model\Aggregate\AggregateRootTypeMap;
-use Honeybee\Model\Event\AggregateRootEventInterface;
 use Honeybee\Model\Event\HasEmbeddedEntityEventsInterface;
 use Honeybee\Model\Task\CreateAggregateRoot\AggregateRootCreatedEvent;
 use Honeybee\Model\Task\ModifyAggregateRoot\AggregateRootModifiedEvent;

@@ -3,14 +3,10 @@
 namespace Honeybee\Tests\Infrastructure\DataAccess\Connector;
 
 use Elasticsearch\Client;
-use Elasticsearch\ClientBuilder;
 use Honeybee\Infrastructure\Config\ArrayConfig;
 use Honeybee\Infrastructure\Config\ConfigInterface;
-use Honeybee\Infrastructure\Config\SettingsInterface;
-use Honeybee\Infrastructure\DataAccess\Connector\ConnectorInterface;
 use Honeybee\Infrastructure\DataAccess\Connector\ConnectorInterfaceTest;
 use Honeybee\Infrastructure\DataAccess\Connector\ElasticsearchConnector;
-use Honeybee\Tests\TestCase;
 use Mockery;
 
 class ElasticsearchConnectorTest extends ConnectorInterfaceTest

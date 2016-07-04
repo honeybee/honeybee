@@ -13,7 +13,6 @@ use Honeybee\Projection\ProjectionMap;
 use Honeybee\Tests\TestCase;
 use Mockery;
 use Psr\Log\NullLogger;
-use Workflux\StateMachine\StateMachineInterface;
 
 class ProjectionWriterTest extends TestCase
 {
