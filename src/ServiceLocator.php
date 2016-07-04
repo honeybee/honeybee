@@ -203,28 +203,6 @@ class ServiceLocator implements ServiceLocatorInterface
         return $this->aggregate_root_type_map;
     }
 
-    public function getAggregateRootTypeByPrefix($aggregate_root_name)
-    {
-        if (!isset($this->aggregate_root_type_map[$aggregate_root_name])) {
-            throw new RuntimeError(
-                "Invalid aggregate-root-type name given: " . $aggregate_root_name
-            );
-        }
-
-        return $this->aggregate_root_type_map[$aggregate_root_name];
-    }
-
-    public function getProjectionTypeByPrefix($projection_type_prefix)
-    {
-        if (!isset($this->projection_type_map[$projection_type_prefix])) {
-            throw new RuntimeError(
-                "Invalid projection-type name given: " . $projection_type_prefix
-            );
-        }
-
-        return $this->projection_type_map[$projection_type_prefix];
-    }
-
     public function createEntity($implementor, array $state = [])
     {
         return $this->di_container->make($implementor, $state);
@@ -233,7 +211,7 @@ class ServiceLocator implements ServiceLocatorInterface
     protected function resolveAggregateRootType($aggregate_root_type)
     {
         if (is_string($aggregate_root_type)) {
-            $aggregate_root_type = $this->getAggregateRootTypeByPrefix($aggregate_root_type);
+            $aggregate_root_type = $this->aggregate_root_type_map->getItem($aggregate_root_type);
         } elseif (!$aggregate_root_type instanceof AggregateRootTypeInterface) {
             throw new RuntimeError(
                 'Invalid argument type given for $aggregate_root_type.'.
@@ -247,7 +225,7 @@ class ServiceLocator implements ServiceLocatorInterface
     protected function resolveProjectionType($projection_type)
     {
         if (is_string($projection_type)) {
-            $projection_type = $this->getProjectionTypeByPrefix($projection_type);
+            $projection_type = $this->projection_type_map->getItem($projection_type);
         } elseif (!$projection_type instanceof ProjectionTypeInterface) {
             throw new RuntimeError(
                 'Invalid argument type given for $projection_type.'.

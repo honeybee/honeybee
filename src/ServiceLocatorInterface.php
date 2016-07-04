@@ -13,9 +13,7 @@ interface ServiceLocatorInterface
     public function getService($service_key);
 
     public function getAggregateRootTypeMap();
-    public function getAggregateRootTypeByPrefix($aggregate_root_prefix);
     public function getProjectionTypeMap();
-    public function getProjectionTypeByPrefix($projection_type_prefix);
 
     public function getAuthenticationService();
     public function getAclService();
