@@ -6,6 +6,7 @@ use Honeybee\EntityInterface;
 use Honeybee\EntityTypeInterface;
 use Honeybee\Infrastructure\Command\CommandBuilder;
 use Honeybee\Infrastructure\Command\CommandBuilderList;
+use Honeybee\Model\Task\CreateAggregateRoot\CreateAggregateRootCommand;
 use Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\AddEmbeddedEntityCommand;
 use Honeybee\Model\Task\ModifyAggregateRoot\ModifyEmbeddedEntity\ModifyEmbeddedEntityCommand;
 use Honeybee\Model\Task\ModifyAggregateRoot\RemoveEmbeddedEntity\RemoveEmbeddedEntityCommand;
@@ -179,8 +180,13 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
                     $errors[] = $result->get();
                 }
             } else {
-                // weak assumption that mandatory option only applies to AR creation commands
-                if ($attribute->getOption('mandatory', false) === true && !isset($this->entity)) {
+                // weak assumption that mandatory option only applies to creation/add commands
+                if ($attribute->getOption('mandatory', false) === true
+                    && (
+                        is_subclass_of($this->command_class, CreateAggregateRootCommand::CLASS)
+                        || $this->command_class === AddEmbeddedEntityCommand::CLASS
+                    )
+                ) {
                     $errors[][$attribute->getName()]['@incidents'][] = [
                         'path' => $attribute->getPath(),
                         'incidents' => [ 'mandatory' => [ 'reason' => 'missing' ] ]
