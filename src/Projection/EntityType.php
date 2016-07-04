@@ -61,7 +61,7 @@ abstract class EntityType extends BaseEntityType
         // iterate the source attributes and extract the required mirrored values
         foreach ($mirrored_attributes_map->getKeys() as $mirrored_attribute_path) {
             // @todo possible risk of path name collision in greedy regex
-            $mirrored_attribute_path = preg_replace('#([a-z]+\.)+'.$type_prefix.'\.#', '', $mirrored_attribute_path);
+            $mirrored_attribute_path = preg_replace('#([a-z_]+\.)+'.$type_prefix.'\.#', '', $mirrored_attribute_path);
             $mirrored_attr_name = explode('.', $mirrored_attribute_path)[0];
             $mirrored_attribute = $this->getAttribute($mirrored_attr_name);
             $source_attribute_name = $mirrored_attribute->getOption('attribute_alias', $mirrored_attr_name);
