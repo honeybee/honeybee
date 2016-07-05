@@ -198,9 +198,19 @@ class ServiceLocator implements ServiceLocatorInterface
         return $this->projection_type_map;
     }
 
+    public function getProjectionTypeByPrefix($prefix)
+    {
+        return $this->getProjectionTypeMap()->getItem($prefix);
+    }
+
     public function getAggregateRootTypeMap()
     {
         return $this->aggregate_root_type_map;
+    }
+
+    public function getAggregateRootTypeByPrefix($prefix)
+    {
+        return $this->getAggregateRootTypeMap()->getItem($prefix);
     }
 
     public function createEntity($implementor, array $state = [])
