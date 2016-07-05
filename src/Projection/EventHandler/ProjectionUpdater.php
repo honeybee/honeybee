@@ -11,23 +11,24 @@ use Honeybee\Infrastructure\DataAccess\Query\Comparison\Equals;
 use Honeybee\Infrastructure\DataAccess\Query\CriteriaList;
 use Honeybee\Infrastructure\DataAccess\Query\Query;
 use Honeybee\Infrastructure\DataAccess\Query\QueryServiceMap;
+use Honeybee\Infrastructure\Event\Bus\Channel\ChannelMap;
+use Honeybee\Infrastructure\Event\Bus\EventBusInterface;
 use Honeybee\Infrastructure\Event\EventHandler;
 use Honeybee\Infrastructure\Event\EventInterface;
-use Honeybee\Infrastructure\Event\Bus\EventBusInterface;
-use Honeybee\Infrastructure\Event\Bus\Channel\ChannelMap;
 use Honeybee\Model\Aggregate\AggregateRootTypeMap;
 use Honeybee\Model\Event\AggregateRootEventInterface;
 use Honeybee\Model\Event\EmbeddedEntityEventInterface;
 use Honeybee\Model\Event\EmbeddedEntityEventList;
 use Honeybee\Model\Task\CreateAggregateRoot\AggregateRootCreatedEvent;
-use Honeybee\Model\Task\ModifyAggregateRoot\AggregateRootModifiedEvent;
 use Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\EmbeddedEntityAddedEvent;
+use Honeybee\Model\Task\ModifyAggregateRoot\AggregateRootModifiedEvent;
 use Honeybee\Model\Task\ModifyAggregateRoot\ModifyEmbeddedEntity\EmbeddedEntityModifiedEvent;
 use Honeybee\Model\Task\ModifyAggregateRoot\RemoveEmbeddedEntity\EmbeddedEntityRemovedEvent;
 use Honeybee\Model\Task\MoveAggregateRootNode\AggregateRootNodeMovedEvent;
 use Honeybee\Model\Task\ProceedWorkflow\WorkflowProceededEvent;
 use Honeybee\Projection\Event\ProjectionCreatedEvent;
 use Honeybee\Projection\Event\ProjectionUpdatedEvent;
+use Honeybee\Projection\ProjectionInterface;
 use Honeybee\Projection\ProjectionMap;
 use Honeybee\Projection\ProjectionTypeInterface;
 use Honeybee\Projection\ProjectionTypeMap;
@@ -102,7 +103,22 @@ class ProjectionUpdater extends EventHandler
         $projection_data['modified_at'] = $event->getDateTime();
         $projection_data['metadata'] = $event->getMetaData();
 
-        $new_projection = $this->getProjectionType($event)->createEntity($projection_data);
+        $projection_type = $this->getProjectionType($event);
+        if ($projection_type->isHierarchical()) {
+            $path_parts = [];
+            if (isset($projection_data['parent_node_id'])) {
+                $parent_id = $projection_data['parent_node_id'];
+                $parent_projection = $this->loadProjection($event, $parent_id);
+                $parent_path = $parent_projection->getMaterializedPath();
+                if (!empty($parent_path)) {
+                    $path_parts = explode('/', $parent_path);
+                }
+                $path_parts[] = $parent_id;
+            }
+            $projection_data['materialized_path'] = implode('/', $path_parts);
+        }
+
+        $new_projection = $projection_type->createEntity($projection_data);
         $this->handleEmbeddedEntityEvents($new_projection, $event->getEmbeddedEntityEvents());
 
         return new ProjectionMap([ $new_projection ]);
@@ -128,7 +144,9 @@ class ProjectionUpdater extends EventHandler
 
     protected function onWorkflowProceeded(WorkflowProceededEvent $event)
     {
-        $updated_data = $this->loadProjection($event)->toArray();
+        $projection = $this->loadProjection($event);
+
+        $updated_data = $projection->toArray();
         $updated_data['revision'] = $event->getSeqNumber();
         $updated_data['modified_at'] = $event->getDateTime();
         $updated_data['metadata'] = array_merge($updated_data['metadata'], $event->getMetaData());
@@ -138,7 +156,7 @@ class ProjectionUpdater extends EventHandler
             $updated_data['workflow_parameters'] = $workflow_parameters;
         }
 
-        $projection = $this->getProjectionType($event)->createEntity($updated_data);
+        $projection = $projection->getType()->createEntity($updated_data);
 
         return new ProjectionMap([ $projection ]);
     }
@@ -199,6 +217,11 @@ class ProjectionUpdater extends EventHandler
         }
 
         return new ProjectionMap($updated_projections);
+    }
+
+    protected function calculateMaterializedPath(ProjectionInterface $projection)
+    {
+
     }
 
     protected function handleEmbeddedEntityEvents(EntityInterface $projection, EmbeddedEntityEventList $events)
