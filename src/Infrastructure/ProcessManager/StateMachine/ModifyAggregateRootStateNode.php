@@ -50,7 +50,7 @@ class ModifyAggregateRootStateNode extends AggregateRootCommandStateNode
         $command_payload = $this->getCommandPayload($process_state);
 
         $result = (new AggregateRootCommandBuilder($aggregate_root_type, $command_class))
-            ->withProjection($projection)
+            ->fromEntity($projection)
             ->withValues($command_payload)
             ->withMetadata([
                 'process_name' => $process_state->getProcessName(),
