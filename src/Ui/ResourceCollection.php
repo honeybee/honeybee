@@ -2,36 +2,31 @@
 
 namespace Honeybee\Ui;
 
-use Trellis\Runtime\Entity\EntityList;
-use Trellis\Common\Collection\CollectionInterface;
+use Trellis\Common\Collection\ArrayList;
 
-class ResourceCollection extends EntityList
+class ResourceCollection extends ArrayList
 {
-    // CollectionInterface
-
-    public function filter(Closure $callback)
+    /**
+     * Returns whether the items in the list have the same class
+     *
+     * @return boolean
+     */
+    public function containsMultipleTypes()
     {
-        $filtered_list = new static();
+        $mixed = false;
 
+        $types = [];
         foreach ($this->items as $item) {
-            if ($callback($item) === true) {
-                $filtered_list->push($item);
+            $class = get_class($item);
+            if (!in_array($class, $types, true)) {
+                $types[] = $class;
             }
         }
 
-        return $filtered_list;
-    }
-
-    public function append(CollectionInterface $collection)
-    {
-        if (!$collection instanceof static) {
-            throw new RuntimeException(
-                sprintf("Can only append collections of the same type %s", get_class($this))
-            );
+        if (count($types) > 1) {
+            $mixed = true;
         }
 
-        foreach ($collection as $item) {
-            $this->addItem($item);
-        }
+        return $mixed;
     }
 }
