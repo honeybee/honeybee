@@ -35,6 +35,17 @@ class AggregateRootTypeTest extends TestCase
         $this->assertTrue($aggregate_root->isValid());
     }
 
+    /**
+     * @expectedException Honeybee\Common\Error\RuntimeError
+     */
+    public function testAggregateRootCreationWithState()
+    {
+        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
+        $aggregate_root_type = new AuthorType($state_machine);
+
+        $aggregate_root = $aggregate_root_type->createEntity([ 'invalid' => 'state' ]);
+    }
+
     public function provideDefaultAttributeFixture()
     {
         $state_machine = Mockery::mock(StateMachineInterface::CLASS);

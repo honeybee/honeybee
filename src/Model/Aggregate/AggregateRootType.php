@@ -55,6 +55,14 @@ abstract class AggregateRootType extends EntityType implements AggregateRootType
      */
     public function createEntity(array $data = [], EntityInterface $parent_entity = null)
     {
+        if (!empty($data)) {
+            throw new RuntimeError(
+                'An aggregate root can only be reconstituted from its historical event stream ' .
+                'or populated via an appropriate command, so it is not possible to create an ' .
+                'aggregate root explicitly with state.'
+            );
+        }
+
         $implementor = $this->getEntityImplementor();
         if (!class_exists($implementor, true)) {
             throw new RuntimeError(
