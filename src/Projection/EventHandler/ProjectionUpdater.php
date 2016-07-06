@@ -91,6 +91,11 @@ class ProjectionUpdater extends EventHandler
             $this->event_bus->distribute(ChannelMap::CHANNEL_INFRA, $projection_event);
         }
 
+        // call any dependent handlers
+        foreach ($affected_projections as $affected_projection) {
+            $this->invokeEventHandler($event, 'after', [ $affected_projection ]);
+        }
+
         return $affected_projections->toList()->getFirst();
     }
 
