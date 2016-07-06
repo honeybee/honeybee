@@ -110,19 +110,12 @@ class ProjectionUpdater extends EventHandler
 
         $projection_type = $this->getProjectionType($event);
         if ($projection_type->isHierarchical()) {
-            $path_parts = [];
+            $parent_projection = null;
             if (isset($projection_data['parent_node_id'])) {
-                $parent_id = $projection_data['parent_node_id'];
-                $parent_projection = $this->loadProjection($event, $parent_id);
-                $parent_path = $parent_projection->getMaterializedPath();
-                if (!empty($parent_path)) {
-                    $path_parts = explode('/', $parent_path);
-                }
-                $path_parts[] = $parent_id;
+                $parent_projection = $this->loadProjection($event, $projection_data['parent_node_id']);
             }
-            $projection_data['materialized_path'] = implode('/', $path_parts);
+            $projection_data['materialized_path'] = $this->calculateMaterializedPath($parent_projection);
         }
-
         $new_projection = $projection_type->createEntity($projection_data);
         $this->handleEmbeddedEntityEvents($new_projection, $event->getEmbeddedEntityEvents());
 
@@ -169,17 +162,11 @@ class ProjectionUpdater extends EventHandler
     protected function onAggregateRootNodeMoved(AggregateRootNodeMovedEvent $event)
     {
         $updated_projection = $this->loadProjection($event);
-        $new_parent_node_id = $event->getParentNodeId();
-        $current_path_parts = explode('/', $updated_projection->getValue('materialized_path'));
-        $new_path_parts = [];
+        $parent_identifier = $event->getParentNodeId();
 
-        if (!empty($new_parent_node_id)) {
-            $new_parent_projection = $this->loadProjection($event, $new_parent_node_id);
-            $new_parent_path = $new_parent_projection->getMaterializedPath();
-            if (!empty($new_parent_path)) {
-                $new_path_parts = explode('/', $new_parent_path);
-            }
-            $new_path_parts[] = $new_parent_node_id;
+        $parent_projection = null;
+        if (!empty($parent_identifier)) {
+            $parent_projection = $this->loadProjection($event, $parent_identifier);
         }
 
         // create the updated node projection
@@ -187,8 +174,8 @@ class ProjectionUpdater extends EventHandler
         $updated_data['revision'] = $event->getSeqNumber();
         $updated_data['modified_at'] = $event->getDateTime();
         $updated_data['metadata'] = array_merge($updated_data['metadata'], $event->getMetaData());
-        $updated_data['parent_node_id'] = $new_parent_node_id;
-        $updated_data['materialized_path'] = implode('/', $new_path_parts);
+        $updated_data['parent_node_id'] = $parent_identifier;
+        $updated_data['materialized_path'] = $this->calculateMaterializedPath($parent_projection);
         $projection_type = $this->getProjectionType($event);
         $updated_projections[] = $projection_type->createEntity($updated_data);
 
@@ -224,9 +211,19 @@ class ProjectionUpdater extends EventHandler
         return new ProjectionMap($updated_projections);
     }
 
-    protected function calculateMaterializedPath(ProjectionInterface $projection)
+    protected function calculateMaterializedPath(ProjectionInterface $parent = null)
     {
+        $path_parts = [];
 
+        if ($parent) {
+            $parent_path = $parent->getMaterializedPath();
+            if (!empty($parent_path)) {
+                $path_parts = explode('/', $parent_path);
+            }
+            $path_parts[] = $parent->getIdentifier();
+        }
+
+        return implode('/', $path_parts);
     }
 
     protected function handleEmbeddedEntityEvents(EntityInterface $projection, EmbeddedEntityEventList $events)
