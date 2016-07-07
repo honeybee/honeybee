@@ -118,7 +118,7 @@ class AggregateRootCommandBuilderTest extends TestCase
         );
     }
 
-    public function testBuildCreateCommandWithInvalidEmbeddedCommands()
+    public function testBuildCreateCommandWithInvalidCommands()
     {
         $state_machine = Mockery::mock(StateMachineInterface::CLASS);
         $author_type = new AuthorType($state_machine);
@@ -127,7 +127,7 @@ class AggregateRootCommandBuilderTest extends TestCase
         $build_result = $builder
             ->withValues([
                 'firstname' => 123,
-                'lastname' => 'Gosh',
+                // missing mandatory email & lastname
                 'products' => [
                     [
                         '@type' => 'highlight',
@@ -140,8 +140,18 @@ class AggregateRootCommandBuilderTest extends TestCase
                         'description' => 321
                     ],
                     [
-                        '@type' => 'highlight'
-                        // missing title
+                        '@type' => 'highlight',
+                        // missing mandatory title
+                        'description' => 222
+                    ],
+                    [
+                        // missing @type
+                        'title' => 'hello'
+                    ],
+                    [
+                        // invalid @type
+                        '@type' => 'brexit',
+                        'title' => 'goodbye'
                     ]
                 ]
             ])
@@ -160,6 +170,12 @@ class AggregateRootCommandBuilderTest extends TestCase
                 'email' => [
                     [
                         'path' => 'email',
+                        'incidents' => [ 'mandatory' => [ 'reason' => 'missing' ] ]
+                    ]
+                ],
+                'lastname' => [
+                    [
+                        'path' => 'lastname',
                         'incidents' => [ 'mandatory' => [ 'reason' => 'missing' ] ]
                     ]
                 ],
@@ -193,6 +209,24 @@ class AggregateRootCommandBuilderTest extends TestCase
                         'incidents' => [ 'mandatory' => [ 'reason' => 'missing' ] ]
                     ]
                 ],
+                'products.2.description' => [
+                    [
+                        'path' => 'products.highlight.description',
+                        'incidents' => [ 'non_string_value' => [ 'value' => 222 ] ]
+                    ]
+                ],
+                'products.3.@type' => [
+                    [
+                        'path' => 'products',
+                        'incidents' => [ 'invalid_type' => [ 'reason' => 'missing' ] ]
+                    ]
+                ],
+                'products.4.@type' => [
+                    [
+                        'path' => 'products',
+                        'incidents' => [ 'invalid_type' => [ 'reason' => 'unknown' ] ]
+                    ]
+                ]
             ],
             $build_result->get()
         );

@@ -7,8 +7,8 @@ use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Common\Util\StringToolkit;
 use ReflectionClass;
 use Shrink0r\Monatic\Error;
-use Shrink0r\Monatic\Success;
 use Shrink0r\Monatic\Result;
+use Shrink0r\Monatic\Success;
 
 class CommandBuilder implements CommandBuilderInterface
 {

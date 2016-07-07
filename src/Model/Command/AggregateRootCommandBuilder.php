@@ -71,12 +71,12 @@ class AggregateRootCommandBuilder extends EmbeddedEntityCommandBuilder
 
         foreach ($array as $key => $value) {
             $key = $parent_prefix . $key;
-            $key = preg_replace('/(^\.|\.?(values|embedded_entity_commands)\.(\d|\.)?\.?)/', '', $key);
+            $key = preg_replace('#(^\.|\.?(values|embedded_entity_commands)\.(\d|\.)?\.?)#', '', $key);
             if (is_array($value)) {
                 if (isset($value['@incidents'])) {
                     $flattened[$key] = $value['@incidents'];
                 } else {
-                    $flattened = array_merge(self::flatten($value, $key . '.'), $flattened);
+                    $flattened = array_merge(self::flatten($value, $key ? $key . '.' : ''), $flattened);
                 }
             } else {
                 $flattened[$key] = $value;

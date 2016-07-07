@@ -10,13 +10,13 @@ use Honeybee\Model\Task\CreateAggregateRoot\CreateAggregateRootCommand;
 use Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\AddEmbeddedEntityCommand;
 use Honeybee\Model\Task\ModifyAggregateRoot\ModifyEmbeddedEntity\ModifyEmbeddedEntityCommand;
 use Honeybee\Model\Task\ModifyAggregateRoot\RemoveEmbeddedEntity\RemoveEmbeddedEntityCommand;
-use Trellis\Runtime\Entity\EntityList;
+use Shrink0r\Monatic\Error;
+use Shrink0r\Monatic\Result;
+use Shrink0r\Monatic\Success;
 use Trellis\Runtime\Attribute\AttributeInterface;
 use Trellis\Runtime\Attribute\EmbeddedEntityList\EmbeddedEntityListAttribute;
+use Trellis\Runtime\Entity\EntityList;
 use Trellis\Runtime\Validator\Result\IncidentInterface;
-use Shrink0r\Monatic\Error;
-use Shrink0r\Monatic\Success;
-use Shrink0r\Monatic\Result;
 
 class EmbeddedEntityCommandBuilder extends CommandBuilder
 {
@@ -59,15 +59,34 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
      */
     protected function getEmbeddedCommands(EmbeddedEntityListAttribute $attribute, array $values)
     {
+        $errors = [];
         $affected_identifiers = [];
         $attribute_name = $attribute->getName();
         $embedded_entity_list = $this->entity ? $this->entity->getValue($attribute_name) : new EntityList;
         $builder_list = new CommandBuilderList;
 
         foreach ($values as $position => $embedded_values) {
+            if (!isset($embedded_values['@type'])) {
+                $value_path = sprintf('%s.%d.@type', $attribute_name, $position);
+                $errors[$value_path]['@incidents'][] = [
+                    'path' => $attribute->getPath(),
+                    'incidents' => [ 'invalid_type' => [ 'reason' => 'missing' ] ]
+                ];
+                continue;
+            }
+
             $embed_type_prefix = $embedded_values['@type'];
             unset($embedded_values['@type']);
             $embed_type = $attribute->getEmbeddedTypeByPrefix($embed_type_prefix);
+
+            if (!$embed_type) {
+                $value_path = sprintf('%s.%d.@type', $attribute_name, $position);
+                $errors[$value_path]['@incidents'][] = [
+                    'path' => $attribute->getPath(),
+                    'incidents' => [ 'invalid_type' => [ 'reason' => 'unknown' ] ]
+                ];
+                continue;
+            }
 
             /*
              * Filter entities from the entity by incoming payload identifiers. If the
@@ -139,7 +158,16 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
             }
         }
 
-        return $builder_list->build();
+        $build_result = $builder_list->build();
+
+        if (!empty($errors)) {
+            if ($build_result instanceof Error) {
+                $errors = array_merge($errors, $build_result->get());
+            }
+            return Error::unit($errors);
+        }
+
+        return $build_result;
     }
 
     /**
@@ -182,12 +210,10 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
             } else {
                 // weak assumption that mandatory option only applies to creation/add commands
                 if ($attribute->getOption('mandatory', false) === true
-                    && (
-                        is_subclass_of($this->command_class, CreateAggregateRootCommand::CLASS)
-                        || $this->command_class === AddEmbeddedEntityCommand::CLASS
-                    )
+                    && (is_subclass_of($this->command_class, CreateAggregateRootCommand::CLASS)
+                        || $this->command_class === AddEmbeddedEntityCommand::CLASS)
                 ) {
-                    $errors[][$attribute->getName()]['@incidents'][] = [
+                    $errors[][$attribute_name]['@incidents'][] = [
                         'path' => $attribute->getPath(),
                         'incidents' => [ 'mandatory' => [ 'reason' => 'missing' ] ]
                     ];
