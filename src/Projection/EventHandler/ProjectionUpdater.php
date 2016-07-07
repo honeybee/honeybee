@@ -161,31 +161,40 @@ class ProjectionUpdater extends EventHandler
 
     protected function onAggregateRootNodeMoved(AggregateRootNodeMovedEvent $event)
     {
-        $updated_projection = $this->loadProjection($event);
-        $parent_identifier = $event->getParentNodeId();
-
+        $projection_type = $this->getProjectionType($event);
+        $projection = $this->loadProjection($event);
         $parent_projection = null;
-        if (!empty($parent_identifier)) {
+        if ($parent_identifier = $event->getParentNodeId()) {
             $parent_projection = $this->loadProjection($event, $parent_identifier);
         }
 
-        // create the updated node projection
-        $updated_data = $updated_projection->toArray();
+        $updated_data = $projection->toArray();
         $updated_data['revision'] = $event->getSeqNumber();
         $updated_data['modified_at'] = $event->getDateTime();
         $updated_data['metadata'] = array_merge($updated_data['metadata'], $event->getMetaData());
         $updated_data['parent_node_id'] = $parent_identifier;
         $updated_data['materialized_path'] = $this->calculateMaterializedPath($parent_projection);
-        $projection_type = $this->getProjectionType($event);
-        $updated_projections[] = $projection_type->createEntity($updated_data);
 
-        // find all existing children of the updated node
+        $updated_projections = [ $projection_type->createEntity($updated_data) ];
+        $updated_projections = array_merge(
+            $updated_projections,
+            $this->updateChildNodesAfterMovingParent($updated_projections[0])
+        );
+
+        return new ProjectionMap($updated_projections);
+    }
+
+    protected function updateChildNodesAfterMovingParent(EntityInterface $parent)
+    {
+        // find all existing children of the moved parent node
+        $projection_type = $parent->getType();
+        $parent_identifier = $parent->getIdentifier();
         $affected_children = $this->getQueryService($projection_type)->find(
             // @todo scan and scroll support
             new Query(
                 new CriteriaList,
                 new CriteriaList(
-                    [ new AttributeCriteria('materialized_path', new Equals($updated_projection->getIdentifier())) ]
+                    [ new AttributeCriteria('materialized_path', new Equals($parent_identifier)) ]
                 ),
                 new CriteriaList,
                 0,
@@ -193,28 +202,21 @@ class ProjectionUpdater extends EventHandler
             )
         );
 
-        // updated the affected children
-        $parent_identifier = $updated_projection->getIdentifier();
-        $new_path_parts[] = $parent_identifier;
-        $new_child_path_root = implode('/', $new_path_parts);
+        $updated_projections = [];
+        $path = $this->calculateMaterializedPath($parent);
         foreach ($affected_children->getResults() as $affected_child) {
-            $new_child_path = preg_replace(
-                '#.*' . $parent_identifier . '#',
-                $new_child_path_root,
-                $affected_child->getMaterializedPath()
-            );
             $child_data = $affected_child->toArray();
-            $child_data['materialized_path'] = $new_child_path;
+            $pattern = '#.*' . $parent_identifier . '#';
+            $child_data['materialized_path'] = preg_replace($pattern, $path, $affected_child->getMaterializedPath());
             $updated_projections[] = $projection_type->createEntity($child_data);
         }
 
-        return new ProjectionMap($updated_projections);
+        return $updated_projections;
     }
 
     protected function calculateMaterializedPath(ProjectionInterface $parent = null)
     {
         $path_parts = [];
-
         if ($parent) {
             $parent_path = $parent->getMaterializedPath();
             if (!empty($parent_path)) {
