@@ -58,7 +58,7 @@ return [
             'author' => [
                 'identifier' => $aggregate_root_identifier,
                 'firstname' => 'Amitav',
-                'lastname' => 'Gosh',
+                'lastname' => 'OhMyGosh',
                 'products' => [
                     [
                         '@type' => 'highlight',
@@ -77,7 +77,9 @@ return [
         ],
         'expected_command' => [
             '@type' => 'Honeybee\Tests\Fixture\BookSchema\Task\ModifyAuthor\ModifyAuthorCommand',
-            'values' => [],
+            'values' => [
+                'lastname' => 'OhMyGosh'
+            ],
             'aggregate_root_identifier' => $aggregate_root_identifier,
             'aggregate_root_type' => 'honeybee-cmf.aggregate_fixtures.author',
             'known_revision' => 3,
@@ -92,7 +94,7 @@ return [
                     ],
                     'embedded_entity_commands' => [],
                     'position' => 1,
-                    'metadata' => []
+                    'metadata' => [],
                 ]
             ],
             'metadata' => []

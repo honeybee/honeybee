@@ -264,7 +264,17 @@ class AggregateRootCommandBuilderTest extends TestCase
         $this->assertInstanceOf(Success::CLASS, $build_result);
         $result = $build_result->get();
         $this->assertInstanceOf(ModifyAuthorCommand::CLASS, $result);
-        $this->assertArraySubset($expected_command, $result->toArray());
+        $result_as_array = $result->toArray();
+        $this->assertEquals($expected_command, $this->filterUuids($result_as_array));
+    }
+
+    protected function filterUuids(array &$payload)
+    {
+        if (isset($payload['uuid'])) unset($payload['uuid']);
+        foreach ($payload as $key => &$value) {
+            if (is_array($value)) $this->filterUuids($value);
+        }
+        return $payload;
     }
 
     /**

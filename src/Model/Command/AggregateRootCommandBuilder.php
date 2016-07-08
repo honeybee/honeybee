@@ -57,9 +57,13 @@ class AggregateRootCommandBuilder extends EmbeddedEntityCommandBuilder
     {
         $result = parent::validateValues($values);
 
-        if (isset($this->projection) && $result instanceof Success) {
-            $modified_values = $this->filterUnmodifiedValues($this->projection, $result->get());
-            $result = Success::unit($modified_values);
+        if (isset($this->entity) && $result instanceof Success) {
+            $values = $result->get();
+            // only filter root command values here since filtering for embeds is done in parent
+            if (!isset($values['@type'])) {
+                $modified_values = $this->filterUnmodifiedValues($this->entity, $values);
+                $result = Success::unit($modified_values);
+            }
         }
 
         return $result;
