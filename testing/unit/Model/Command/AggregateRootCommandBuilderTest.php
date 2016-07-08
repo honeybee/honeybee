@@ -270,9 +270,13 @@ class AggregateRootCommandBuilderTest extends TestCase
 
     protected function filterUuids(array &$payload)
     {
-        if (isset($payload['uuid'])) unset($payload['uuid']);
+        if (isset($payload['uuid'])) {
+            unset($payload['uuid']);
+        }
         foreach ($payload as $key => &$value) {
-            if (is_array($value)) $this->filterUuids($value);
+            if (is_array($value)) {
+                $this->filterUuids($value);
+            }
         }
         return $payload;
     }
