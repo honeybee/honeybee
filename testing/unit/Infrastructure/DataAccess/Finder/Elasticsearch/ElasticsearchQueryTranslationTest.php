@@ -14,9 +14,8 @@ class ElasticsearchQueryTranslationTest extends TestCase
      */
     public function testTranslate(QueryInterface $query, array $expected_es_query)
     {
-        $es_query = (
-            new ElasticsearchQueryTranslation($this->getQueryTranslationConfig())
-        )->translate($query);
+        $es_query = (new ElasticsearchQueryTranslation($this->getQueryTranslationConfig()))
+            ->translate($query);
 
         $this->assertEquals($expected_es_query, $es_query);
     }

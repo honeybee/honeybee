@@ -2,8 +2,8 @@
 
 namespace Honeybee\Infrastructure\Filesystem;
 
-use Trellis\Runtime\Attribute\AttributeInterface;
 use Honeybee\EntityTypeInterface;
+use Trellis\EntityType\Attribute\AttributeInterface;
 
 /**
  * Please note: a prefix is the scheme name plus scheme separator, e.g. 'userfiles://'.

@@ -5,9 +5,8 @@ namespace Honeybee\Infrastructure\DataAccess\Finder;
 use Honeybee\Infrastructure\Config\ConfigInterface;
 use Honeybee\Infrastructure\DataAccess\Connector\ConnectorInterface;
 use Psr\Log\LoggerInterface;
-use Trellis\Common\Object;
 
-abstract class Finder extends Object implements FinderInterface
+abstract class Finder implements FinderInterface
 {
     const DOMAIN_FIELD_ID = 'identifier';
 

@@ -11,11 +11,10 @@ use Honeybee\Model\Aggregate\AggregateRootTypeMap;
 use Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\AddEmbeddedEntityCommand;
 use Honeybee\Model\Task\ModifyAggregateRoot\ModifyEmbeddedEntity\ModifyEmbeddedEntityCommand;
 use Symfony\Component\Finder\Finder;
-use Trellis\Common\Object;
 use Trellis\Runtime\Attribute\EmbeddedEntityList\EmbeddedEntityListAttribute;
 use Trellis\Runtime\Entity\EntityInterface;
 
-abstract class Fixture extends Object implements FixtureInterface
+abstract class Fixture implements FixtureInterface
 {
     protected $name;
 
@@ -34,7 +33,12 @@ abstract class Fixture extends Object implements FixtureInterface
         Finder $finder,
         array $state = []
     ) {
-        parent::__construct($state);
+        foreach ($state as $key => $val) {
+            if (property_exists($this, $key)) {
+                $this->$key = $val;
+            }
+        }
+
         $this->command_bus = $command_bus;
         $this->aggregate_root_type_map = $aggregate_root_type_map;
         $this->filesystem_service = $filesystem_service;

@@ -2,14 +2,13 @@
 
 namespace Honeybee\Infrastructure\Security\Acl\Permission;
 
-use Trellis\Common\Configurable;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Model\Aggregate\AggregateRootTypeMap;
 use Honeybee\Ui\Activity\ActivityServiceInterface;
 use Honeybee\Ui\Activity\ActivityContainer;
 use Honeybee\Infrastructure\Security\Acl\AclService;
 
-class PermissionService extends Configurable implements PermissionServiceInterface
+class PermissionService implements PermissionServiceInterface
 {
     const WORKFLOW_SCOPE_REGEXP = '/(.*)\.resource\.workflow\./';
 

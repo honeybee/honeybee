@@ -11,7 +11,6 @@ use Honeybee\Projection\ProjectionTypeInterface;
 use Honeybee\Projection\ProjectionTypeMap;
 use Honeybee\ServiceDefinitionMap;
 use ReflectionClass;
-use Trellis\Common\ObjectInterface;
 
 class ServiceLocator implements ServiceLocatorInterface
 {
@@ -23,9 +22,9 @@ class ServiceLocator implements ServiceLocatorInterface
 
     protected $service_map;
 
-    public static function buildServiceKey(ObjectInterface $object, $service_type)
+    public static function buildServiceKey($service_object, $service_type)
     {
-        $reflection_class = new ReflectionClass($object);
+        $reflection_class = new ReflectionClass($service_object);
         $namespace_parts = explode('\\', $reflection_class->getNamespaceName());
 
         if (count($namespace_parts) < 3) {

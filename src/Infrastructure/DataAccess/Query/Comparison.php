@@ -2,9 +2,7 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Query;
 
-use Trellis\Common\Object;
-
-class Comparison extends Object
+class Comparison
 {
     const EQUALS = 'eq';
 
@@ -52,5 +50,10 @@ class Comparison extends Object
         }
 
         return $string;
+    }
+
+    public function toArray()
+    {
+        return get_object_vars($this);
     }
 }

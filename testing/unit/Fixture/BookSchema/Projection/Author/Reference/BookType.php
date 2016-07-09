@@ -25,7 +25,7 @@ class BookType extends ReferencedEntityType
         );
     }
 
-    public static function getEntityImplementor()
+    public function getEntityImplementor()
     {
         return Book::CLASS;
     }

@@ -2,13 +2,13 @@
 
 namespace Honeybee\Infrastructure\Event\Bus\Subscription;
 
-use Trellis\Common\Collection\UniqueValueInterface;
-use Trellis\Common\Collection\TypedList;
+use Trellis\Collection\TypedList;
+use Trellis\Collection\UniqueItemInterface;
 
-class EventSubscriptionList extends TypedList implements UniqueValueInterface
+class EventSubscriptionList extends TypedList implements UniqueItemInterface
 {
-    protected function getItemImplementor()
+    public function __construct(array $subscriptions = [])
     {
-        return EventSubscriptionInterface::CLASS;
+        parent::__construct(EventSubscriptionInterface::CLASS, $subscriptions);
     }
 }

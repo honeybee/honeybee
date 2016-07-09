@@ -2,18 +2,19 @@
 
 namespace Honeybee;
 
-use Trellis\Runtime\EntityType as BaseEntityType;
-use Trellis\Runtime\Attribute\HandlesFileInterface;
-use Trellis\Runtime\Attribute\HandlesFileListInterface;
-use Trellis\Runtime\Attribute\EmbeddedEntityList\EmbeddedEntityListAttribute;
 use Honeybee\Common\ScopeKeyInterface;
+use Trellis\EntityType\Attribute\AttributeInterface;
+use Trellis\EntityType\Attribute\EntityList\EntityList;
+use Trellis\EntityType\Attribute\HandlesFileInterface;
+use Trellis\EntityType\Attribute\HandlesFileListInterface;
+use Trellis\EntityType\EntityType as BaseEntityType;
 
 abstract class EntityType extends BaseEntityType implements EntityTypeInterface, ScopeKeyInterface
 {
     public function getMandatoryAttributes()
     {
         return $this->getAttributes()->filter(
-            function ($attribute) {
+            function (AttributeInterface $attribute) {
                 return $attribute->getOption('mandatory', false);
             }
         );
@@ -60,7 +61,7 @@ abstract class EntityType extends BaseEntityType implements EntityTypeInterface,
                 $attributes[$attribute->getPath()] = $attribute;
             } elseif ($attribute instanceof HandlesFileInterface) {
                 $attributes[$attribute->getPath()] = $attribute;
-            } elseif ($attribute instanceof EmbeddedEntityListAttribute) {
+            } elseif ($attribute instanceof EntityListAttribute) {
                 foreach ($attribute->getEmbeddedEntityTypeMap() as $embedded_entity_type) {
                     $attributes = array_merge($attributes, $embedded_entity_type->getFileHandlingAttributes());
                 }

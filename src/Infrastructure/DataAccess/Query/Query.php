@@ -2,9 +2,7 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Query;
 
-use Trellis\Common\Object;
-
-class Query extends Object implements QueryInterface
+class Query implements QueryInterface
 {
     protected $search_criteria_list;
 
@@ -91,5 +89,10 @@ class Query extends Object implements QueryInterface
             isset($this->limit) ? ('LIMIT ' . $this->limit) : '',
             isset($this->offset) ? ('OFFSET ' . $this->offset) : ''
         );
+    }
+
+    public function toArray()
+    {
+        return get_object_vars($this);
     }
 }

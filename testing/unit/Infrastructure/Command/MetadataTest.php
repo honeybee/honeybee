@@ -13,26 +13,4 @@ class MetadataTest extends TestCase
         $metadata = new Metadata($data);
         $this->assertEquals($data, $metadata->toArray());
     }
-
-    /**
-     * @expectedException Trellis\Common\Error\RuntimeException
-     */
-    public function testAppendWithKeyCollision()
-    {
-        $data = [ 'test' => 'value' ];
-        $colliding_data = [ 'test' => 'immutable' ];
-        $metadata = new Metadata($data);
-        $colliding_metadata = new Metadata($colliding_data);
-        $metadata->append($colliding_metadata);
-    }
-
-    /**
-     * @expectedException Trellis\Common\Error\RuntimeException
-     */
-    public function testSetItemWithKeyCollision()
-    {
-        $data = [ 'test' => 'value' ];
-        $metadata = new Metadata($data);
-        $metadata->setItem('test', 'immutable');
-    }
 }

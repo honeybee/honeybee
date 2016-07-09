@@ -3,9 +3,8 @@
 namespace Honeybee\Infrastructure\Job;
 
 use Ramsey\Uuid\Uuid;
-use Trellis\Common\Object;
 
-abstract class Job extends Object implements JobInterface
+abstract class Job implements JobInterface
 {
     protected $uuid;
 
@@ -15,7 +14,11 @@ abstract class Job extends Object implements JobInterface
     {
         $this->metadata = [];
 
-        parent::__construct($state);
+        foreach ($state as $key => $val) {
+            if (property_exists($this, $key)) {
+                $this->$key = $val;
+            }
+        }
 
         if (!$this->uuid) {
             $this->uuid = Uuid::uuid4()->toString();
@@ -30,5 +33,10 @@ abstract class Job extends Object implements JobInterface
     public function getMetadata()
     {
         return $this->metadata;
+    }
+
+    public function toArray()
+    {
+        return get_object_vars($this);
     }
 }

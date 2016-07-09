@@ -3,7 +3,7 @@
 namespace Honeybee\Infrastructure\DataAccess\Connector\Memory;
 
 use Honeybee\Infrastructure\DataAccess\Connector\Connector;
-use Trellis\Common\Collection\Map;
+use Trellis\Collection\Map;
 
 class ArrayConnector extends Connector
 {

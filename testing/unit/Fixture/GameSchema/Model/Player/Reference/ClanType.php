@@ -29,7 +29,7 @@ class ClanType extends ReferencedEntityType
         );
     }
 
-    public static function getEntityImplementor()
+    public function getEntityImplementor()
     {
         return Clan::CLASS;
     }

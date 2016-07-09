@@ -4,11 +4,10 @@ namespace Honeybee\Ui\WebSocket;
 
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface;
-use Trellis\Common\Object;
 use SplObjectStorage;
 use Exception;
 
-class EventPusher extends Object implements MessageComponentInterface
+class EventPusher implements MessageComponentInterface
 {
     protected $clients;
 

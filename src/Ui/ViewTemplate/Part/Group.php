@@ -2,9 +2,7 @@
 
 namespace Honeybee\Ui\ViewTemplate\Part;
 
-use Trellis\Common\Object;
-
-class Group extends Object implements GroupInterface
+class Group implements GroupInterface
 {
     protected $name;
 

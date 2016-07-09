@@ -19,7 +19,7 @@ class ConnectorServiceTest extends TestCase
     public function testGetConnectorMapWorks()
     {
         $connector_map = new ConnectorMap;
-        $connector_map->setItem('conn1', new TestConnector('conn1', new ArrayConfig([])));
+        $connector_map = $connector_map->withItem('conn1', new TestConnector('conn1', new ArrayConfig([])));
 
         $service = new ConnectorService($connector_map);
 
@@ -31,7 +31,7 @@ class ConnectorServiceTest extends TestCase
         $connector = new TestConnector('conn1', new ArrayConfig([]));
 
         $connector_map = new ConnectorMap;
-        $connector_map->setItem('conn1', $connector);
+        $connector_map = $connector_map->withItem('conn1', $connector);
 
         $service = new ConnectorService($connector_map);
 
@@ -43,7 +43,7 @@ class ConnectorServiceTest extends TestCase
         $connector = new TestConnector('conn1', new ArrayConfig([]));
 
         $connector_map = new ConnectorMap;
-        $connector_map->setItem('conn1', $connector);
+        $connector_map = $connector_map->withItem('conn1', $connector);
 
         $service = new ConnectorService($connector_map);
 
@@ -55,7 +55,7 @@ class ConnectorServiceTest extends TestCase
         $connector = new TestConnector('conn1', new ArrayConfig([]));
 
         $connector_map = new ConnectorMap;
-        $connector_map->setItem('conn1', $connector);
+        $connector_map = $connector_map->withItem('conn1', $connector);
 
         $service = new ConnectorService($connector_map);
 

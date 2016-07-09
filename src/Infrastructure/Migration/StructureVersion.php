@@ -2,9 +2,7 @@
 
 namespace Honeybee\Infrastructure\Migration;
 
-use Trellis\Common\Object;
-
-class StructureVersion extends Object implements StructureVersionInterface
+class StructureVersion implements StructureVersionInterface
 {
     protected $target_name;
 
@@ -12,11 +10,15 @@ class StructureVersion extends Object implements StructureVersionInterface
 
     protected $created_date;
 
-    public function __construct(array $state = array())
+    public function __construct(array $state = [])
     {
         $this->created_date = date(DATE_ISO8601);
 
-        parent::__construct($state);
+        foreach ($state as $key => $val) {
+            if (property_exists($this, $key)) {
+                $this->$key = $val;
+            }
+        }
     }
 
     public function getTargetName()
@@ -32,5 +34,10 @@ class StructureVersion extends Object implements StructureVersionInterface
     public function getCreatedDate()
     {
         return $this->created_date;
+    }
+
+    public function toArray()
+    {
+        return get_object_vars($this);
     }
 }

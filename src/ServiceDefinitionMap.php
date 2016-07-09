@@ -2,8 +2,8 @@
 
 namespace Honeybee;
 
-use Trellis\Common\Collection\TypedMap;
-use Trellis\Common\Options;
+use Trellis\Collection\TypedMap;
+use Trellis\Collection\UniqueItemInterface;
 
 /**
  * Holds a map with service keys and the implementor to use for creation of
@@ -13,27 +13,10 @@ use Trellis\Common\Options;
  *
  * "authentication" => "Honeybee\Infrastructure\Security\Auth\StandardAuthProvider"
  */
-class ServiceDefinitionMap extends TypedMap
+class ServiceDefinitionMap extends TypedMap implements UniqueItemInterface
 {
-    protected $options;
-
-    public function __construct(Options $options = null)
+    public function __construct(array $service_definitions = [])
     {
-        $this->options = $options;
-    }
-
-    public function getOption($option_key)
-    {
-        return $this->options->get($option_key);
-    }
-
-    public function hasOption($option_key)
-    {
-        return $this->options->has($option_key);
-    }
-
-    protected function getItemImplementor()
-    {
-        return ServiceDefinitionInterface::CLASS;
+        parent::__construct(ServiceDefinitionInterface::CLASS, $service_definitions);
     }
 }

@@ -3,9 +3,8 @@
 namespace Honeybee\Infrastructure\Command;
 
 use Psr\Log\LoggerInterface;
-use Trellis\Common\Object;
 
-abstract class CommandHandler extends Object implements CommandHandlerInterface
+abstract class CommandHandler implements CommandHandlerInterface
 {
     /**
      * @var LoggerInterface $logger

@@ -10,9 +10,8 @@ use Honeybee\Infrastructure\DataAccess\Query\Query;
 use Honeybee\Infrastructure\DataAccess\Query\SearchCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\SortCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\Comparison\Equals;
-use Trellis\Common\Object;
 
-class ListConfig extends Object implements ListConfigInterface
+class ListConfig implements ListConfigInterface
 {
     protected $filter;
     protected $limit;
@@ -30,7 +29,11 @@ class ListConfig extends Object implements ListConfigInterface
         $this->settings = new Settings([]);
         $this->sort = '';
 
-        parent::__construct($state);
+        foreach ($state as $key => $val) {
+            if (property_exists($this, $key)) {
+                $this->$key = $val;
+            }
+        }
     }
 
     public function asQuery()
@@ -125,6 +128,11 @@ class ListConfig extends Object implements ListConfigInterface
     public function getSettings()
     {
         return $this->settings;
+    }
+
+    public function toArray()
+    {
+        return get_object_vars($this);
     }
 
     protected function setSettings($settings)

@@ -2,13 +2,14 @@
 
 namespace Honeybee\Projection;
 
-use Trellis\Runtime\Entity\EntityMap;
+use Trellis\Collection\TypedMap;
+use Trellis\Collection\UniqueItemInterface;
 
-class ProjectionMap extends EntityMap
+class ProjectionMap extends TypedMap implements UniqueItemInterface
 {
-    protected function getItemImplementor()
+    public function __construct(array $projections = [])
     {
-        return ProjectionInterface::CLASS;
+        parent::__construct(ProjectionInterface::CLASS, $projections);
     }
 
     /**

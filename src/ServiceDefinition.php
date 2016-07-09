@@ -2,14 +2,22 @@
 
 namespace Honeybee;
 
-use Trellis\Common\Configurable;
 use Honeybee\Infrastructure\Config\ArrayConfig;
 
-class ServiceDefinition extends Configurable implements ServiceDefinitionInterface
+class ServiceDefinition implements ServiceDefinitionInterface
 {
     protected $class;
 
     protected $provisioner;
+
+    public function __construct(array $state = [])
+    {
+        foreach ($state as $key => $val) {
+            if (property_exists($this, $key)) {
+                $this->$key = $val;
+            }
+        }
+    }
 
     public function getProvisioner()
     {
@@ -33,6 +41,11 @@ class ServiceDefinition extends Configurable implements ServiceDefinitionInterfa
 
     public function getConfig()
     {
-        return new ArrayConfig($this->options->toArray());
+        return new ArrayConfig($this->options);
+    }
+
+    public function toArray()
+    {
+        return get_object_vars($this);
     }
 }

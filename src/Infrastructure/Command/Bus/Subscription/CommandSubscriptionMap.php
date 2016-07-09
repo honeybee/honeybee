@@ -2,13 +2,13 @@
 
 namespace Honeybee\Infrastructure\Command\Bus\Subscription;
 
-use Trellis\Common\Collection\UniqueValueInterface;
-use Trellis\Common\Collection\TypedMap;
+use Trellis\Collection\TypedMap;
+use Trellis\Collection\UniqueItemInterface;
 
-class CommandSubscriptionMap extends TypedMap implements UniqueValueInterface
+class CommandSubscriptionMap extends TypedMap implements UniqueItemInterface
 {
-    protected function getItemImplementor()
+    public function __construct(array $command_subscriptions = [])
     {
-        return CommandSubscriptionInterface::CLASS;
+        parent::__construct(CommandSubscriptionInterface::CLASS, $command_subscriptions);
     }
 }

@@ -4,15 +4,11 @@ namespace Honeybee\Infrastructure\ProcessManager;
 
 use Honeybee\Common\Error\RuntimeError;
 use Ramsey\Uuid\Uuid as UuidGenerator;
-use Trellis\Common\Object;
 use Workflux\ExecutionContext;
 use Workflux\StatefulSubjectInterface;
 
-class ProcessState extends Object implements ProcessStateInterface, StatefulSubjectInterface
+class ProcessState implements ProcessStateInterface, StatefulSubjectInterface
 {
-    /**
-     * @hiddenProperty
-     */
     protected $execution_context;
 
     protected $uuid;
@@ -25,7 +21,11 @@ class ProcessState extends Object implements ProcessStateInterface, StatefulSubj
 
     public function __construct(array $object_state)
     {
-        parent::__construct($object_state);
+        foreach ($state as $key => $val) {
+            if (property_exists($this, $key)) {
+                $this->$key = $val;
+            }
+        }
 
         if (!$this->uuid) {
             $this->uuid = UuidGenerator::uuid4()->toString();
@@ -72,8 +72,8 @@ class ProcessState extends Object implements ProcessStateInterface, StatefulSubj
 
     public function toArray()
     {
-        $process_state_as_array = parent::toArray();
-
+        $process_state_as_array = get_object_vars($this);
+        unset($process_state_as_array['execution_context']);
         $process_state_as_array['state_name'] = $this->getStateName();
         $process_state_as_array['payload'] = $this->getPayload();
 

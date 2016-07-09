@@ -28,7 +28,7 @@ class TeamType extends ReferencedEntityType
         );
     }
 
-    public static function getEntityImplementor()
+    public function getEntityImplementor()
     {
         return Team::CLASS;
     }

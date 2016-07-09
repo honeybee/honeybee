@@ -2,11 +2,16 @@
 
 namespace Honeybee\Infrastructure\Command;
 
-use Trellis\Common\Collection\TypedList;
-use Trellis\Common\Collection\UniqueValueInterface;
+use Trellis\Collection\TypedList;
+use Trellis\Collection\UniqueItemInterface;
 
-class CommandEnricher extends TypedList implements UniqueValueInterface, CommandEnricherInterface
+class CommandEnricher extends TypedList implements UniqueItemInterface, CommandEnricherInterface
 {
+    public function __construct(array $enrichers = [])
+    {
+        parent::__construct(MetadataEnricherInterface::CLASS, $enrichers);
+    }
+
     public function enrich(CommandInterface $command)
     {
         $metadata = new Metadata($command->getMetadata());
@@ -16,10 +21,5 @@ class CommandEnricher extends TypedList implements UniqueValueInterface, Command
         }
 
         return $command->withMetadata($metadata);
-    }
-
-    protected function getItemImplementor()
-    {
-        return MetadataEnricherInterface::CLASS;
     }
 }

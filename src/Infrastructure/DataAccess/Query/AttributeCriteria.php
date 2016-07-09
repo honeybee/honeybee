@@ -2,9 +2,7 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Query;
 
-use Trellis\Common\Object;
-
-class AttributeCriteria extends Object implements CriteriaInterface
+class AttributeCriteria implements CriteriaInterface
 {
     protected $attribute_path;
 
@@ -28,10 +26,11 @@ class AttributeCriteria extends Object implements CriteriaInterface
 
     public function __toString()
     {
-        return sprintf(
-            'ATTRIBUTE %s %s',
-            $this->attribute_path,
-            $this->comparison
-        );
+        return sprintf('ATTRIBUTE %s %s', $this->attribute_path, $this->comparison);
+    }
+
+    public function toArray()
+    {
+        return get_object_vars($this);
     }
 }

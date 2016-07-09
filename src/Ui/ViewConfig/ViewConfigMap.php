@@ -2,13 +2,13 @@
 
 namespace Honeybee\Ui\ViewConfig;
 
-use Trellis\Common\Collection\TypedMap;
-use Trellis\Common\Collection\UniqueValueInterface;
+use Trellis\Collection\TypedMap;
+use Trellis\Collection\UniqueItemInterface;
 
-class ViewConfigMap extends TypedMap implements UniqueValueInterface
+class ViewConfigMap extends TypedMap implements UniqueItemInterface
 {
-    protected function getItemImplementor()
+    public function __construct(array $view_configs = [])
     {
-        return ViewConfigInterface::CLASS;
+        parent::__construct(ViewConfigInterface::CLASS, $view_configs);
     }
 }

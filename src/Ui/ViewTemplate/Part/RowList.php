@@ -2,13 +2,13 @@
 
 namespace Honeybee\Ui\ViewTemplate\Part;
 
-use Trellis\Common\Collection\TypedList;
-use Trellis\Common\Collection\UniqueValueInterface;
+use Trellis\Collection\TypedList;
+use Trellis\Collection\UniqueItemInterface;
 
-class RowList extends TypedList implements UniqueValueInterface
+class RowList extends TypedList implements UniqueItemInterface
 {
-    protected function getItemImplementor()
+    public function __construct(array $rows = [])
     {
-        return RowInterface::CLASS;
+        parent::__construct(RowInterface::CLASS, $rows);
     }
 }

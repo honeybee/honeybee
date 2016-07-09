@@ -2,9 +2,7 @@
 
 namespace Honeybee\Ui\ViewTemplate\Part;
 
-use Trellis\Common\Object;
-
-class Row extends Object implements RowInterface
+class Row implements RowInterface
 {
     protected $css;
 

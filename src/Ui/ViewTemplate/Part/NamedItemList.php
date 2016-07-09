@@ -3,14 +3,14 @@
 namespace Honeybee\Ui\ViewTemplate\Part;
 
 use Honeybee\Common\Error\RuntimeError;
-use Trellis\Common\Collection\TypedList;
-use Trellis\Common\Collection\UniqueValueInterface;
+use Trellis\Collection\TypedList;
+use Trellis\Collection\UniqueItemInterface;
 
-class NamedItemList extends TypedList implements UniqueValueInterface
+class NamedItemList extends TypedList implements UniqueItemInterface
 {
-    protected function getItemImplementor()
+    public function __construct(array $named_items = [])
     {
-        return NamedItemInterface::CLASS;
+        parent::__construct(NamedItemInterface::CLASS, $named_items);
     }
 
     public function getByName($name)

@@ -3,9 +3,8 @@
 namespace Honeybee\Infrastructure\Migration;
 
 use Honeybee\Common\Error\RuntimeError;
-use Trellis\Common\Object;
 
-abstract class Migration extends Object implements MigrationInterface
+abstract class Migration implements MigrationInterface
 {
     protected $name;
 
@@ -14,6 +13,15 @@ abstract class Migration extends Object implements MigrationInterface
     abstract protected function up(MigrationTargetInterface $migration_target);
 
     abstract protected function down(MigrationTargetInterface $migration_target);
+
+    public function __construct(array $state = [])
+    {
+        foreach ($state as $key => $val) {
+            if (property_exists($this, $key)) {
+                $this->$key = $val;
+            }
+        }
+    }
 
     final public function migrate(MigrationTargetInterface $migration_target, $direction = self::MIGRATE_UP)
     {

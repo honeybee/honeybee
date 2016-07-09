@@ -43,7 +43,7 @@ class StatusReportTest extends TestCase
     public function testToStringIsCorrectForFailingReport()
     {
         $connector_map = new ConnectorMap;
-        $connector_map->setItem(
+        $connector_map = $connector_map->withItem(
             'failing',
             new TestConnector('failing', new ArrayConfig(['fake_status'=> Status::FAILING]))
         );
@@ -56,7 +56,7 @@ class StatusReportTest extends TestCase
     public function testToStringIsCorrectForWorkingReport()
     {
         $connector_map = new ConnectorMap;
-        $connector_map->setItem(
+        $connector_map = $connector_map->withItem(
             'working',
             new TestConnector('working', new ArrayConfig(['fake_status'=> Status::WORKING]))
         );
@@ -70,12 +70,12 @@ class StatusReportTest extends TestCase
     {
         $connector_map = new ConnectorMap;
         $connector1 = new TestConnector('connection1', new ArrayConfig([]));
-        $connector_map->setItem('connection1', $connector1);
-        $connector_map->setItem(
+        $connector_map = $connector_map->withItem('connection1', $connector1);
+        $connector_map = $connector_map->withItem(
             'connection2',
             new TestConnector('connection2', new ArrayConfig(['fake_status'=> Status::WORKING]))
         );
-        $connector_map->setItem(
+        $connector_map = $connector_map->withItem(
             'connection3',
             new TestConnector('connection3', new ArrayConfig(['fake_status'=> Status::FAILING]))
         );

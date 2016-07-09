@@ -2,13 +2,13 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Query\Geometry;
 
-use Trellis\Common\Collection\TypedList;
+use Trellis\Collection\TypedList;
 
 class Polygon extends TypedList implements GeometryInterface
 {
-    protected function getItemImplementor()
+    public function __construct(array $points = [])
     {
-        return Point::CLASS;
+        parent::__construct(Point::CLASS, $points);
     }
 
     public function __toString()

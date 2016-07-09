@@ -2,13 +2,13 @@
 
 namespace Honeybee\Infrastructure\Migration;
 
-use Trellis\Common\Collection\TypedList;
-use Trellis\Common\Collection\UniqueValueInterface;
+use Trellis\Collection\TypedList;
+use Trellis\Collection\UniqueItemInterface;
 
-class MigrationList extends TypedList implements UniqueValueInterface
+class MigrationList extends TypedList implements UniqueItemInterface
 {
-    protected function getItemImplementor()
+    public function __construct(array $migrations = [])
     {
-        return MigrationInterface::CLASS;
+        parent::__construct(MigrationInterface::CLASS, $migrations);
     }
 }

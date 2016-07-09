@@ -2,12 +2,11 @@
 
 namespace Honeybee\Ui\ViewConfig;
 
-use Trellis\Common\Object;
 use Honeybee\Infrastructure\Config\Settings;
 use Honeybee\Infrastructure\Config\ArrayConfig;
 use Honeybee\Ui\OutputFormat\OutputFormatInterface;
 
-class ViewConfig extends Object implements ViewConfigInterface
+class ViewConfig implements ViewConfigInterface
 {
     protected $scope = 'default';
     protected $activities;
@@ -22,7 +21,11 @@ class ViewConfig extends Object implements ViewConfigInterface
         $this->slots = new Settings([]);
         $this->output_formats = new Settings([]);
 
-        parent::__construct($state);
+        foreach ($state as $key => $val) {
+            if (property_exists($this, $key)) {
+                $this->$key = $val;
+            }
+        }
     }
 
     public function getScope()

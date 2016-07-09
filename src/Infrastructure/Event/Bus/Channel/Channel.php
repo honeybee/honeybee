@@ -2,11 +2,10 @@
 
 namespace Honeybee\Infrastructure\Event\Bus\Channel;
 
-use Trellis\Common\Object;
 use Honeybee\Infrastructure\Event\Bus\Subscription\EventSubscriptionInterface;
 use Honeybee\Infrastructure\Event\Bus\Subscription\EventSubscriptionList;
 
-class Channel extends Object implements ChannelInterface
+class Channel implements ChannelInterface
 {
     protected $name;
 
@@ -15,7 +14,7 @@ class Channel extends Object implements ChannelInterface
     public function __construct($name)
     {
         $this->name = $name;
-        $this->subscriptions = new EventSubscriptionList();
+        $this->subscriptions = new EventSubscriptionList;
     }
 
     public function getName()

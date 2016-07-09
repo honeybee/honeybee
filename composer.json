@@ -46,7 +46,7 @@
     "require": {
         "php": ">=5.6.0",
         "beberlei/assert": "~2.5",
-        "honeybee/trellis": "master@dev",
+        "honeybee/trellis": "dev-immutability",
         "shrink0r/workflux": "master@dev",
         "shrink0r/monatic": "master@dev",
         "elasticsearch/elasticsearch": "~2.0",

@@ -2,9 +2,7 @@
 
 namespace Honeybee\Ui\ViewTemplate\Part;
 
-use Trellis\Common\Object;
-
-class Panel extends Object implements PanelInterface
+class Panel implements PanelInterface
 {
     protected $name;
 

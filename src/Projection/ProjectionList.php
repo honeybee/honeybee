@@ -2,13 +2,14 @@
 
 namespace Honeybee\Projection;
 
-use Trellis\Runtime\Entity\EntityList;
+use Trellis\Collection\TypedList;
+use Trellis\Collection\UniqueItemInterface;
 
-class ProjectionList extends EntityList
+class ProjectionList extends TypedList implements UniqueItemInterface
 {
-    protected function getItemImplementor()
+    public function __construct(array $projections = [])
     {
-        return ProjectionInterface::CLASS;
+        parent::__construct(ProjectionInterface::CLASS, $projections);
     }
 
     /**

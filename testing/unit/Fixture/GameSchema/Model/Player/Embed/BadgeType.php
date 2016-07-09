@@ -23,7 +23,7 @@ class BadgeType extends EmbeddedEntityType
         );
     }
 
-    public static function getEntityImplementor()
+    public function getEntityImplementor()
     {
         return Badge::CLASS;
     }

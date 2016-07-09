@@ -2,13 +2,13 @@
 
 namespace Honeybee\Infrastructure\Command;
 
-use Trellis\Common\Collection\TypedMap;
-use Trellis\Common\Collection\UniqueValueInterface;
+use Trellis\Collection\TypedMap;
+use Trellis\Collection\UniqueItemInterface;
 
-class CommandMap extends TypedMap implements UniqueValueInterface
+class CommandMap extends TypedMap implements UniqueItemInterface
 {
-    protected function getItemImplementor()
+    public function __construct(array $commands = [])
     {
-        return CommandInterface::CLASS;
+        parent::__construct(CommandInterface::CLASS, $commands);
     }
 }

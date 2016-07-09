@@ -50,7 +50,7 @@ class PlayerType extends ReferencedEntityType
         );
     }
 
-    public static function getEntityImplementor()
+    public function getEntityImplementor()
     {
         return Player::CLASS;
     }

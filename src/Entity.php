@@ -2,22 +2,13 @@
 
 namespace Honeybee;
 
-use Trellis\Runtime\Entity\Entity as BaseEntity;
-use Trellis\Runtime\ValueHolder\ValueChangedEvent;
+use Trellis\Entity\Entity as BaseEntity;
 use Zend\Permissions\Acl\Resource\ResourceInterface;
 use Honeybee\Common\ScopeKeyInterface;
 
 abstract class Entity extends BaseEntity implements ResourceInterface, ScopeKeyInterface, EntityInterface
 {
     const SCOPE_KEY_SEPARATOR = '.';
-
-    public function onValueChanged(ValueChangedEvent $event)
-    {
-        // skip value changed events, that bubbled up from embedded entities
-        if (!$event->getEmbeddedEvent()) {
-            $this->changes->push($event);
-        }
-    }
 
     public function getIdentifier()
     {

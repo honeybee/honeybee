@@ -2,14 +2,14 @@
 
 namespace Honeybee\Infrastructure\Security\Acl\Permission;
 
-use Trellis\Common\Collection\TypedList;
-use Trellis\Common\Collection\UniqueValueInterface;
+use Trellis\Collection\TypedList;
+use Trellis\Collection\UniqueItemInterface;
 
-class PermissionList extends TypedList implements UniqueValueInterface
+class PermissionList extends TypedList implements UniqueItemInterface
 {
-    protected function getItemImplementor()
+    public function __construct(array $permissions = [])
     {
-        return Permission::CLASS;
+        parent::__construct(Permission::CLASS, $permissions);
     }
 
     public function __toString()

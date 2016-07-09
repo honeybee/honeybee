@@ -2,10 +2,10 @@
 
 namespace Honeybee\Infrastructure\Migration;
 
-use Trellis\Common\Collection\TypedList;
-use Trellis\Common\Collection\UniqueValueInterface;
+use Trellis\Collection\TypedList;
+use Trellis\Collection\UniqueItemInterface;
 
-class StructureVersionList extends TypedList implements UniqueValueInterface
+class StructureVersionList extends TypedList implements UniqueItemInterface
 {
     private $identifier;
 

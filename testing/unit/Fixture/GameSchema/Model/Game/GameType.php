@@ -40,7 +40,7 @@ class GameType extends AggregateRootType
         );
     }
 
-    public static function getEntityImplementor()
+    public function getEntityImplementor()
     {
         return Game::CLASS;
     }

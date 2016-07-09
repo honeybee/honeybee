@@ -2,7 +2,6 @@
 
 namespace Honeybee\Infrastructure\Security\Acl;
 
-use Trellis\Common\Object;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Security\Acl\Permission\Permission;
 use Honeybee\Infrastructure\Security\Acl\Permission\PermissionListMap;
@@ -13,7 +12,7 @@ use Zend\Permissions\Acl\Resource\GenericResource;
 use Zend\Permissions\Acl\Role\GenericRole;
 use Zend\Permissions\Acl\Acl;
 
-class AclService extends Object implements AclServiceInterface
+class AclService implements AclServiceInterface
 {
     protected static $default_roles = array(self::ROLE_ADMIN, self::ROLE_NON_PRIV);
 

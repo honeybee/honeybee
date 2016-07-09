@@ -41,7 +41,7 @@ class GameType extends ProjectionType
     }
 
 
-    public static function getEntityImplementor()
+    public function getEntityImplementor()
     {
         return Game::CLASS;
     }

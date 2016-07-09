@@ -2,15 +2,13 @@
 
 namespace Honeybee\Infrastructure\ProcessManager;
 
-use Trellis\Common\Collection\TypedMap;
-use Trellis\Common\Collection\UniqueKeyInterface;
-use Trellis\Common\Collection\UniqueValueInterface;
-use Trellis\Common\Collection\MandatoryKeyInterface;
+use Trellis\Collection\TypedMap;
+use Trellis\Collection\UniqueItemInterface;
 
-class ProcessMap extends TypedMap implements UniqueKeyInterface, UniqueValueInterface, MandatoryKeyInterface
+class ProcessMap extends TypedMap implements UniqueItemInterface
 {
-    protected function getItemImplementor()
+    public function __construct(array $processes = [])
     {
-        return ProcessInterface::CLASS;
+        parent::__construct(ProcessInterface::CLASS, $processes);
     }
 }

@@ -2,12 +2,10 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Storage;
 
-use Trellis\Common\Collection\TypedMap;
-use Trellis\Common\Collection\UniqueValueInterface;
-use Trellis\Common\Collection\UniqueKeyInterface;
-use Trellis\Common\Collection\MandatoryKeyInterface;
+use Trellis\Collection\TypedMap;
+use Trellis\Collection\UniqueItemInterface;
 
-class StorageWriterMap extends TypedMap implements UniqueKeyInterface, UniqueValueInterface, MandatoryKeyInterface
+class StorageWriterMap extends TypedMap implements UniqueItemInterface
 {
     public function getByEntityType($entity_type_prefix)
     {

@@ -6,8 +6,8 @@ use Honeybee\Infrastructure\DataAccess\Finder\FinderInterface;
 use Honeybee\Infrastructure\DataAccess\Finder\FinderMap;
 use Honeybee\Tests\TestCase;
 use Mockery;
-use Trellis\Common\Collection\Map;
-use Trellis\Common\Collection\TypedMap;
+use Trellis\Collection\Map;
+use Trellis\Collection\TypedMap;
 
 class FinderMapTest extends TestCase
 {
@@ -38,11 +38,11 @@ class FinderMapTest extends TestCase
 
         $this->assertCount(2, $finder_map);
         $this->assertEquals([ 'finder1', 'finder2' ], $finder_map->getKeys());
-        $this->assertEquals([ $mock_finder1, $mock_finder2 ], $finder_map->getValues());
+        $this->assertEquals([ 'finder1' => $mock_finder1, 'finder2' => $mock_finder2 ], $finder_map->toArray());
     }
 
     /**
-     * @expectedException Trellis\Common\Error\InvalidTypeException
+     * @expectedException Trellis\Exception
      */
     public function testWithInvalidType()
     {
@@ -50,7 +50,7 @@ class FinderMapTest extends TestCase
     }
 
     /**
-     * @expectedException Trellis\Common\Error\RuntimeException
+     * @expectedException Trellis\Exception
      */
     public function testConstructWithNonUniqueValue()
     {
@@ -59,33 +59,13 @@ class FinderMapTest extends TestCase
     }
 
     /**
-     * @expectedException Trellis\Common\Error\RuntimeException
+     * @expectedException Trellis\Exception
      */
     public function testSetItemWithNonUniqueValue()
     {
         $mock_finder = Mockery::mock(FinderInterface::CLASS);
         $finder_map = new FinderMap([ 'finder1' => $mock_finder ]);
-        $finder_map->setItem('finder2', $mock_finder);
-    }
-
-    /**
-     * @expectedException Trellis\Common\Error\RuntimeException
-     */
-    public function testSetItemWithNonUniqueKey()
-    {
-        $mock_finder1 = Mockery::mock(FinderInterface::CLASS);
-        $mock_finder2 = Mockery::mock(FinderInterface::CLASS);
-        $finder_map = new FinderMap([ 'finder1' => $mock_finder1 ]);
-        $finder_map->setItem('finder1', $mock_finder2);
-    }
-
-    /**
-     * @expectedException Trellis\Common\Error\RuntimeException
-     */
-    public function testGetItemWithMissingKey()
-    {
-        $finder_map = new FinderMap;
-        $finder_map->getItem('finder1');
+        $finder_map->withItem('finder2', $mock_finder);
     }
 
     public function testRemoveItem()
@@ -94,7 +74,7 @@ class FinderMapTest extends TestCase
         $finder_map = new FinderMap([ 'finder1' => $mock_finder ]);
 
         $map_size = $finder_map->getSize();
-        $finder_map->removeItem($mock_finder);
+        $finder_map = $finder_map->withoutItem($mock_finder);
         $this->assertCount($map_size - 1, $finder_map);
     }
 
@@ -105,30 +85,7 @@ class FinderMapTest extends TestCase
         $finder_map = new FinderMap([ 'finder1' => $mock_finder1 ]);
 
         $map_size = $finder_map->getSize();
-        $finder_map->removeItem($mock_finder2);
-        $this->assertCount($map_size, $finder_map);
-    }
-
-    public function testUnset()
-    {
-        $mock_finder = Mockery::mock(FinderInterface::CLASS);
-        $finder_map = new FinderMap([ 'finder1' => $mock_finder ]);
-
-        $map_size = $finder_map->getSize();
-        unset($finder_map['finder1']);
-        $this->assertCount($map_size - 1, $finder_map);
-    }
-
-    /**
-     * @expectedException Trellis\Common\Error\RuntimeException
-     */
-    public function testUnsetWithMissingKey()
-    {
-        $mock_finder = Mockery::mock(FinderInterface::CLASS);
-        $finder_map = new FinderMap([ 'finder1' => $mock_finder ]);
-
-        $map_size = $finder_map->getSize();
-        unset($finder_map['finder2']);
+        $finder_map = $finder_map->withoutItem($mock_finder2);
         $this->assertCount($map_size, $finder_map);
     }
 
@@ -143,7 +100,7 @@ class FinderMapTest extends TestCase
         $map_size1 = $finder_map1->getSize();
         $map_size2 = $finder_map2->getSize();
 
-        $finder_map1->append($finder_map2);
+        $finder_map1 = $finder_map1->append($finder_map2);
         $this->assertCount($map_size1 + $map_size2, $finder_map1);
         $this->assertEquals([ 'finder1' => $mock_finder1, 'finder2' => $mock_finder2 ], $finder_map1->getItems());
         $this->assertEquals([ 'finder2' => $mock_finder2 ], $finder_map2->getItems());
@@ -157,14 +114,14 @@ class FinderMapTest extends TestCase
 
         $map_size = $finder_map1->getSize();
 
-        $finder_map1->append($finder_map2);
+        $finder_map1 = $finder_map1->append($finder_map2);
         $this->assertCount($map_size, $finder_map1);
         $this->assertEquals([ 'finder1' => $mock_finder1 ], $finder_map1->getItems());
         $this->assertEquals([], $finder_map2->getItems());
     }
 
     /**
-     * @expectedException Trellis\Common\Error\RuntimeException
+     * @expectedException Trellis\Exception
      */
     public function testAppendWithNonUniqueValue()
     {
@@ -176,20 +133,7 @@ class FinderMapTest extends TestCase
     }
 
     /**
-     * @expectedException Trellis\Common\Error\RuntimeException
-     */
-    public function testAppendWithNonUniqueKey()
-    {
-        $mock_finder1 = Mockery::mock(FinderInterface::CLASS);
-        $mock_finder2 = Mockery::mock(FinderInterface::CLASS);
-        $finder_map1 = new FinderMap([ 'finder1' => $mock_finder1 ]);
-        $finder_map2 = new FinderMap([ 'finder1' => $mock_finder2 ]);
-
-        $finder_map1->append($finder_map2);
-    }
-
-    /**
-     * @expectedException Trellis\Common\Error\RuntimeException
+     * @expectedException Trellis\Exception
      */
     public function testAppendInvalidMap()
     {

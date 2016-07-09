@@ -24,7 +24,7 @@ class HighlightType extends EmbeddedEntityType
         );
     }
 
-    public static function getEntityImplementor()
+    public function getEntityImplementor()
     {
         return Highlight::CLASS;
     }

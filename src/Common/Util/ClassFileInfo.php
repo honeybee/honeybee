@@ -2,15 +2,22 @@
 
 namespace Honeybee\Common\Util;
 
-use Trellis\Common\Object;
-
-class ClassFileInfo extends Object
+class ClassFileInfo
 {
     protected $class_file_path;
 
     protected $class_name;
 
     protected $namespace;
+
+    public function __construct(array $state = [])
+    {
+        foreach ($state as $key => $val) {
+            if (property_exists($this, $key)) {
+                $this->$key = $val;
+            }
+        }
+    }
 
     public function getFilePath()
     {
@@ -35,5 +42,10 @@ class ClassFileInfo extends Object
     public function getFullyQualifiedClassName()
     {
         return empty($this->namespace) ? $this->class_name : $this->namespace . '\\' . $this->class_name;
+    }
+
+    public function toArray()
+    {
+        return get_object_vars($this);
     }
 }

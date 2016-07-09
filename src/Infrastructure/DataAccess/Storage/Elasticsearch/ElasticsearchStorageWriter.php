@@ -45,7 +45,6 @@ abstract class ElasticsearchStorageWriter extends ElasticsearchStorage implement
     public function delete($identifier, SettingsInterface $settings = null)
     {
         if (!is_string($identifier) || empty($identifier)) {
-            error_log(__METHOD__ . ' - Ignoring invalid identifier.');
             return;
         }
 

@@ -2,14 +2,22 @@
 
 namespace Honeybee\Ui\ViewTemplate;
 
-use Trellis\Common\Object;
 use Honeybee\Common\Error\RuntimeError;
 
-class ViewTemplatesContainer extends Object implements ViewTemplatesContainerInterface
+class ViewTemplatesContainer implements ViewTemplatesContainerInterface
 {
     protected $scope;
 
     protected $view_template_map;
+
+    public function __construct(array $state = [])
+    {
+        foreach ($state as $key => $val) {
+            if (property_exists($this, $key)) {
+                $this->$key = $val;
+            }
+        }
+    }
 
     public function getScope()
     {

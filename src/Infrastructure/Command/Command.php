@@ -5,9 +5,8 @@ namespace Honeybee\Infrastructure\Command;
 use Assert\Assertion;
 use Honeybee\Common\Util\StringToolkit;
 use Ramsey\Uuid\Uuid;
-use Trellis\Common\Object;
 
-abstract class Command extends Object implements CommandInterface
+abstract class Command implements CommandInterface
 {
     protected $uuid;
 
@@ -17,8 +16,11 @@ abstract class Command extends Object implements CommandInterface
     {
         $this->metadata = [];
         $this->uuid = Uuid::uuid4()->toString();
-
-        parent::__construct($state);
+        foreach ($state as $key => $val) {
+            if (property_exists($this, $key)) {
+                $this->$key = $val;
+            }
+        }
 
         $this->guardRequiredState();
     }
@@ -63,6 +65,11 @@ abstract class Command extends Object implements CommandInterface
         $command = str_replace('_command', '', StringToolkit::asSnakeCase(array_pop($fqcn_parts)));
 
         return sprintf('%s.%s.%s.%s', $vendor, $package, $type, $command);
+    }
+
+    public function toArray()
+    {
+        return get_object_vars($this);
     }
 
     protected function guardRequiredState()

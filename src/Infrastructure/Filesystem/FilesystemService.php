@@ -8,7 +8,7 @@ use Honeybee\Common\Util\StringToolkit;
 use Honeybee\EntityTypeInterface;
 use League\Flysystem\MountManager;
 use Ramsey\Uuid\Uuid as UuidGenerator;
-use Trellis\Runtime\Attribute\AttributeInterface;
+use Trellis\EntityType\Attribute\AttributeInterface;
 
 /**
  * Service that encapsulates the handling of files. All calls to non-existing methods

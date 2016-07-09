@@ -21,7 +21,7 @@ class TeamType extends ProjectionType
         );
     }
 
-    public static function getEntityImplementor()
+    public function getEntityImplementor()
     {
         return Team::CLASS;
     }

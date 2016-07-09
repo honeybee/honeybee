@@ -29,7 +29,7 @@ class MembershipType extends ReferencedEntityType
         );
     }
 
-    public static function getEntityImplementor()
+    public function getEntityImplementor()
     {
         return Membership::CLASS;
     }

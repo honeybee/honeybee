@@ -2,13 +2,13 @@
 
 namespace Honeybee\Infrastructure\Fixture;
 
-use Trellis\Common\Collection\TypedList;
-use Trellis\Common\Collection\UniqueValueInterface;
+use Trellis\Collection\TypedList;
+use Trellis\Collection\UniqueItemInterface;
 
-class FixtureList extends TypedList implements UniqueValueInterface
+class FixtureList extends TypedList implements UniqueItemInterface
 {
-    protected function getItemImplementor()
+    public function __construct(array $fixtures = [])
     {
-        return FixtureInterface::CLASS;
+        parent::__construct(FixtureInterface::CLASS, $fixtures);
     }
 }

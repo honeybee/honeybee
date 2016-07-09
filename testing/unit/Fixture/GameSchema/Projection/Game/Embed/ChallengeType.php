@@ -23,7 +23,7 @@ class ChallengeType extends EmbeddedEntityType
         );
     }
 
-    public static function getEntityImplementor()
+    public function getEntityImplementor()
     {
         return Challenge::CLASS;
     }

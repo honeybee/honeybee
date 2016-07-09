@@ -2,9 +2,7 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Query;
 
-use Trellis\Common\Object;
-
-class SearchCriteria extends Object implements CriteriaInterface
+class SearchCriteria implements CriteriaInterface
 {
     protected $attribute_path;
 
@@ -33,5 +31,10 @@ class SearchCriteria extends Object implements CriteriaInterface
             $this->phrase,
             $this->attribute_path ? (' ON ATTRIBUTE ' . $this->attribute_path) : ''
         );
+    }
+
+    public function toArray()
+    {
+        return get_object_vars($this);
     }
 }

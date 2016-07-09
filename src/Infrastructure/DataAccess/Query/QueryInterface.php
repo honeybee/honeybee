@@ -13,4 +13,6 @@ interface QueryInterface
     public function getSearchCriteriaList();
 
     public function getSortCriteriaList();
+
+    public function toArray();
 }

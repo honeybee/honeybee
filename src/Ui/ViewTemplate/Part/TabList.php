@@ -2,10 +2,13 @@
 
 namespace Honeybee\Ui\ViewTemplate\Part;
 
-class TabList extends NamedItemList
+use Trellis\Collection\TypedList;
+use Trellis\Collection\UniqueItemInterface;
+
+class TabList extends TypedList implements UniqueItemInterface
 {
-    protected function getItemImplementor()
+    public function __construct(array $tabs = [])
     {
-        return TabInterface::CLASS;
+        parent::__construct(TabInterface::CLASS, $tabs);
     }
 }

@@ -21,7 +21,7 @@ class BookType extends ProjectionType
         );
     }
 
-    public static function getEntityImplementor()
+    public function getEntityImplementor()
     {
         return Book::CLASS;
     }

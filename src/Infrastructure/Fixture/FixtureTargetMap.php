@@ -2,15 +2,13 @@
 
 namespace Honeybee\Infrastructure\Fixture;
 
-use Trellis\Common\Collection\TypedMap;
-use Trellis\Common\Collection\UniqueKeyInterface;
-use Trellis\Common\Collection\UniqueValueInterface;
-use Trellis\Common\Collection\MandatoryKeyInterface;
+use Trellis\Collection\TypedMap;
+use Trellis\Collection\UniqueItemInterface;
 
-class FixtureTargetMap extends TypedMap implements UniqueKeyInterface, UniqueValueInterface, MandatoryKeyInterface
+class FixtureTargetMap extends TypedMap implements UniqueItemInterface
 {
-    protected function getItemImplementor()
+    public function __construct(array $fixture_targets = [])
     {
-        return FixtureTargetInterface::CLASS;
+        parent::__construct(FixtureTargetInterface::CLASS, $fixture_targets);
     }
 }

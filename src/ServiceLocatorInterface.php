@@ -2,8 +2,6 @@
 
 namespace Honeybee;
 
-use Trellis\Common\ObjectInterface;
-
 /**
  * Interface for convenience wrapper classes that provide access
  * to well known and often used Honeybee services.
@@ -47,5 +45,5 @@ interface ServiceLocatorInterface
     public function createEntity($implementor, array $state = []);
     public function getLogger();
 
-    public static function buildServiceKey(ObjectInterface $object, $service_type);
+    public static function buildServiceKey($service_object, $service_type);
 }

@@ -2,10 +2,13 @@
 
 namespace Honeybee\Ui\ViewTemplate\Part;
 
-class GroupList extends NamedItemList
+use Trellis\Collection\TypedList;
+use Trellis\Collection\UniqueItemInterface;
+
+class GroupList extends TypedList implements UniqueItemInterface
 {
-    protected function getItemImplementor()
+    public function __construct(array $groups = [])
     {
-        return GroupInterface::CLASS;
+        parent::__construct(GroupInterface::CLASS, $groups);
     }
 }

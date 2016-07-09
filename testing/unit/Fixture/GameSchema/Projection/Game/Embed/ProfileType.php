@@ -49,7 +49,7 @@ class ProfileType extends EmbeddedEntityType
         );
     }
 
-    public static function getEntityImplementor()
+    public function getEntityImplementor()
     {
         return Profile::CLASS;
     }

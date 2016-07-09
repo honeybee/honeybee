@@ -2,13 +2,13 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Connector;
 
-use Trellis\Common\Collection\TypedMap;
-use Trellis\Common\Collection\UniqueValueInterface;
+use Trellis\Collection\TypedMap;
+use Trellis\Collection\UniqueItemInterface;
 
-class ConnectorMap extends TypedMap implements UniqueValueInterface
+class ConnectorMap extends TypedMap implements UniqueItemInterface
 {
-    protected function getItemImplementor()
+    public function __construct(array $connectors = [])
     {
-        return ConnectorInterface::CLASS;
+        parent::__construct(ConnectorInterface::CLASS, $connectors);
     }
 }

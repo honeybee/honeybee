@@ -11,10 +11,8 @@ class JobStrategy
 
     protected $failure_strategy;
 
-    public function __construct(
-        RetryStrategyInterface $retry_strategy,
-        FailureStrategyInterface $failure_strategy
-    ) {
+    public function __construct(RetryStrategyInterface $retry_strategy, FailureStrategyInterface $failure_strategy)
+    {
         $this->retry_strategy = $retry_strategy;
         $this->failure_strategy = $failure_strategy;
     }

@@ -2,10 +2,9 @@
 
 namespace Honeybee\Ui\ViewTemplate;
 
-use Trellis\Common\Object;
 use Honeybee\Ui\ViewTemplate\Part\TabList;
 
-class ViewTemplate extends Object implements ViewTemplateInterface
+class ViewTemplate implements ViewTemplateInterface
 {
     protected $name;
 

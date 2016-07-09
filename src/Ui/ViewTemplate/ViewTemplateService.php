@@ -2,7 +2,6 @@
 
 namespace Honeybee\Ui\ViewTemplate;
 
-use Trellis\Common\Object;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Config\ConfigInterface;
 use Honeybee\Projection\ProjectionTypeInterface;
@@ -20,7 +19,7 @@ use Honeybee\Ui\ViewTemplate\Part\RowList;
 use Honeybee\Ui\ViewTemplate\Part\Tab;
 use Honeybee\Ui\ViewTemplate\Part\TabList;
 
-class ViewTemplateService extends Object implements ViewTemplateServiceInterface
+class ViewTemplateService implements ViewTemplateServiceInterface
 {
     protected $config;
 

@@ -2,11 +2,10 @@
 
 namespace Honeybee\Infrastructure\Command\Bus\Subscription;
 
-use Trellis\Common\Object;
 use Honeybee\Infrastructure\Command\Bus\Transport\CommandTransportInterface;
 use Honeybee\Infrastructure\Command\CommandHandlerInterface;
 
-class CommandSubscription extends Object implements CommandSubscriptionInterface
+class CommandSubscription implements CommandSubscriptionInterface
 {
     protected $command_type;
 

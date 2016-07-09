@@ -2,13 +2,13 @@
 
 namespace Honeybee\Ui\ViewTemplate;
 
-use Trellis\Common\Collection\TypedMap;
-use Trellis\Common\Collection\UniqueValueInterface;
+use Trellis\Collection\TypedMap;
+use Trellis\Collection\UniqueItemInterface;
 
-class ViewTemplateMap extends TypedMap implements UniqueValueInterface
+class ViewTemplateMap extends TypedMap implements UniqueItemInterface
 {
-    protected function getItemImplementor()
+    public function __construct(array $view_templates = [])
     {
-        return ViewTemplateInterface::CLASS;
+        parent::__construct(ViewTemplateInterface::CLASS, $view_templates);
     }
 }

@@ -2,9 +2,7 @@
 
 namespace Honeybee\Infrastructure\Security\Acl\Permission;
 
-use Trellis\Common\Object;
-
-class Permission extends Object implements PermissionInterface
+class Permission implements PermissionInterface
 {
     const ALLOW = 'allow';
 
@@ -21,6 +19,15 @@ class Permission extends Object implements PermissionInterface
     protected $type;
 
     protected $expression;
+
+    public function __construct(array $state = [])
+    {
+        foreach ($state as $key => $val) {
+            if (property_exists($this, $key)) {
+                $this->$key = $val;
+            }
+        }
+    }
 
     public function getName()
     {
@@ -45,6 +52,11 @@ class Permission extends Object implements PermissionInterface
     public function getExpression()
     {
         return $this->expression;
+    }
+
+    public function toArray()
+    {
+        return get_object_vars($this);
     }
 
     public function __toString()

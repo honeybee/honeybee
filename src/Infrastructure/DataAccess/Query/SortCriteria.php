@@ -2,9 +2,7 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Query;
 
-use Trellis\Common\Object;
-
-class SortCriteria extends Object implements CriteriaInterface
+class SortCriteria implements CriteriaInterface
 {
     const SORT_ASC = 'asc';
 
@@ -37,5 +35,10 @@ class SortCriteria extends Object implements CriteriaInterface
             $this->attribute_path,
             strtoupper($this->direction)
         );
+    }
+
+    public function toArray()
+    {
+        return get_object_vars($this);
     }
 }

@@ -2,13 +2,13 @@
 
 namespace Honeybee\Infrastructure\Event;
 
-use Trellis\Common\Collection\UniqueValueInterface;
-use Trellis\Common\Collection\TypedList;
+use Trellis\Collection\TypedList;
+use Trellis\Collection\UniqueItemInterface;
 
-class EventHandlerList extends TypedList implements UniqueValueInterface
+class EventHandlerList extends TypedList implements UniqueItemInterface
 {
-    protected function getItemImplementor()
+    public function __construct(array $event_handlers = [])
     {
-        return EventHandlerInterface::CLASS;
+        parent::__construct(EventHandlerInterface::CLASS, $event_handlers);
     }
 }

@@ -21,7 +21,7 @@ class BookType extends AggregateRootType
         );
     }
 
-    public static function getEntityImplementor()
+    public function getEntityImplementor()
     {
         return Book::CLASS;
     }

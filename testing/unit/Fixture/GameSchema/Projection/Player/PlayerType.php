@@ -41,7 +41,7 @@ class PlayerType extends ProjectionType
         );
     }
 
-    public static function getEntityImplementor()
+    public function getEntityImplementor()
     {
         return Player::CLASS;
     }

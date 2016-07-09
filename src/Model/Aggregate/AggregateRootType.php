@@ -2,14 +2,13 @@
 
 namespace Honeybee\Model\Aggregate;
 
-use Trellis\Runtime\Attribute\AttributeMap;
-use Trellis\Runtime\Attribute\Integer\IntegerAttribute;
-use Trellis\Runtime\Attribute\KeyValueList\KeyValueListAttribute;
-use Trellis\Runtime\Attribute\Text\TextAttribute;
-use Trellis\Runtime\Attribute\Uuid\UuidAttribute;
-use Trellis\Runtime\Entity\EntityInterface;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Common\Util\StringToolkit;
+use Trellis\EntityType\Attribute\AttributeMap;
+use Trellis\EntityType\Attribute\Integer\IntegerAttribute;
+use Trellis\EntityType\Attribute\Text\TextAttribute;
+use Trellis\EntityType\Attribute\Uuid\UuidAttribute;
+use Trellis\Entity\EntityInterface;
 
 abstract class AggregateRootType extends EntityType implements AggregateRootTypeInterface
 {
@@ -98,6 +97,7 @@ abstract class AggregateRootType extends EntityType implements AggregateRootType
         }
 
         $default_attributes_map = new AttributeMap($default_attributes);
+
         return parent::getDefaultAttributes()->append($default_attributes_map);
     }
 }

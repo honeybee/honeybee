@@ -2,14 +2,13 @@
 
 namespace Honeybee\Infrastructure\Event\Bus\Subscription;
 
-use Trellis\Common\Object;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Event\EventInterface;
 use Honeybee\Infrastructure\Config\Settings;
 use Honeybee\Infrastructure\Expression\ExpressionServiceInterface;
 use Psr\Log\LoggerInterface;
 
-class EventFilter extends Object implements EventFilterInterface
+class EventFilter implements EventFilterInterface
 {
     protected $settings;
 

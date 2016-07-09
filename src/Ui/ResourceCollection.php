@@ -2,9 +2,9 @@
 
 namespace Honeybee\Ui;
 
-use Trellis\Common\Collection\ArrayList;
+use Trellis\Collection\ItemList;
 
-class ResourceCollection extends ArrayList
+class ResourceCollection extends ItemList
 {
     /**
      * Returns whether the items in the list have the same class

@@ -2,9 +2,7 @@
 
 namespace Honeybee\Infrastructure\Event\Bus\Transport;
 
-use Trellis\Common\Object;
-
-abstract class EventTransport extends Object implements EventTransportInterface
+abstract class EventTransport implements EventTransportInterface
 {
     protected $name;
 

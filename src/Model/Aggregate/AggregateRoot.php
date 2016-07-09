@@ -2,9 +2,6 @@
 
 namespace Honeybee\Model\Aggregate;
 
-use Trellis\Runtime\Attribute\AttributeInterface;
-use Trellis\Runtime\Attribute\EmbeddedEntityList\EmbeddedEntityListAttribute;
-use Trellis\Runtime\Attribute\Uuid\UuidAttribute;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Model\Aggregate\AggregateRootTypeInterface;
 use Honeybee\Model\Command\AggregateRootCommandInterface;
@@ -46,17 +43,9 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
      */
     protected $uncomitted_events_list;
 
-    /**
-     * @todo Find a way of getting the state machine here, without "hacking" the Trellis ctor.
-     * Maybe we dont want to extend but to compose the generated trellis entities??
-     * And maybe the problem will fix itself, once we have separate models for reading and writing.
-     */
-    public function __construct(
-        AggregateRootTypeInterface $aggregate_root_type,
-        StateMachineInterface $state_machine,
-        array $data = []
-    ) {
-        parent::__construct($aggregate_root_type, $data);
+    public function __construct(AggregateRootTypeInterface $aggregate_root_type, StateMachineInterface $state_machine)
+    {
+        parent::__construct($aggregate_root_type, []);
 
         $this->state_machine = $state_machine;
         $this->history = new AggregateRootEventList;
@@ -152,7 +141,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
      */
     public function markAsComitted()
     {
-        $this->uncomitted_events_list->clear();
+        $this->uncomitted_events_list = new AggregateRootEventList;
     }
 
     /**
@@ -202,8 +191,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
                     );
                 }
             }
-
-            $this->history->push($this->applyEvent($past_event, false));
+            $this->history = $this->history->push($this->applyEvent($past_event, false));
         }
 
         return $this->isValid();

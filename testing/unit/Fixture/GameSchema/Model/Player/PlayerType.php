@@ -41,7 +41,7 @@ class PlayerType extends AggregateRootType
         );
     }
 
-    public static function getEntityImplementor()
+    public function getEntityImplementor()
     {
         return Player::CLASS;
     }

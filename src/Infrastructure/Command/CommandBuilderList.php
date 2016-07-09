@@ -2,20 +2,20 @@
 
 namespace Honeybee\Infrastructure\Command;
 
-use Trellis\Common\Collection\TypedList;
-use Trellis\Common\Collection\UniqueValueInterface;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\AddEmbeddedEntityCommand;
 use Honeybee\Model\Task\ModifyAggregateRoot\ModifyEmbeddedEntity\ModifyEmbeddedEntityCommand;
 use Honeybee\Model\Task\ModifyAggregateRoot\RemoveEmbeddedEntity\RemoveEmbeddedEntityCommand;
-use Shrink0r\Monatic\Success;
 use Shrink0r\Monatic\Error;
+use Shrink0r\Monatic\Success;
+use Trellis\Collection\TypedList;
+use Trellis\Collection\UniqueItemInterface;
 
-class CommandBuilderList extends TypedList implements UniqueValueInterface
+class CommandBuilderList extends TypedList implements UniqueItemInterface
 {
-    protected function getItemImplementor()
+    public function __construct(array $command_builders = [])
     {
-        return CommandBuilderInterface::CLASS;
+        parent::__construct(CommandBuilderInterface::CLASS, $command_builders)
     }
 
     public function build()

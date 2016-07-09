@@ -2,12 +2,10 @@
 
 namespace Honeybee\Infrastructure\Event\Bus\Channel;
 
-use Trellis\Common\Collection\TypedMap;
-use Trellis\Common\Collection\UniqueKeyInterface;
-use Trellis\Common\Collection\UniqueValueInterface;
-use Trellis\Common\Collection\MandatoryKeyInterface;
+use Trellis\Collection\TypedMap;
+use Trellis\Collection\UniqueItemInterface;
 
-class ChannelMap extends TypedMap implements UniqueKeyInterface, UniqueValueInterface, MandatoryKeyInterface
+class ChannelMap extends TypedMap implements UniqueItemInterface
 {
     const CHANNEL_DOMAIN = 'honeybee.events.domain';
 
@@ -27,9 +25,9 @@ class ChannelMap extends TypedMap implements UniqueKeyInterface, UniqueValueInte
         self::CHANNEL_FAILED
     ];
 
-    protected function getItemImplementor()
+    public function __construct(array $channels = [])
     {
-        return ChannelInterface::CLASS;
+        parent::__construct(ChannelInterface::CLASS, $channels);
     }
 
     public static function getDefaultChannels()

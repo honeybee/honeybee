@@ -2,10 +2,13 @@
 
 namespace Honeybee\Ui\ViewTemplate\Part;
 
-class FieldList extends NamedItemList
+use Trellis\Collection\TypedList;
+use Trellis\Collection\UniqueItemInterface;
+
+class FieldList extends TypedList implements UniqueItemInterface
 {
-    protected function getItemImplementor()
+    public function __construct(array $fields = [])
     {
-        return FieldInterface::CLASS;
+        parent::__construct(FieldInterface::CLASS, $fields);
     }
 }

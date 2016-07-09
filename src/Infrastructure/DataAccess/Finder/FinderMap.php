@@ -2,15 +2,13 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Finder;
 
-use Trellis\Common\Collection\MandatoryKeyInterface;
-use Trellis\Common\Collection\TypedMap;
-use Trellis\Common\Collection\UniqueKeyInterface;
-use Trellis\Common\Collection\UniqueValueInterface;
+use Trellis\Collection\TypedMap;
+use Trellis\Collection\UniqueItemInterface;
 
-class FinderMap extends TypedMap implements UniqueKeyInterface, UniqueValueInterface, MandatoryKeyInterface
+class FinderMap extends TypedMap implements UniqueItemInterface
 {
-    protected function getItemImplementor()
+    public function __construct(array $finders = [])
     {
-        return FinderInterface::CLASS;
+        parent::__construct(FinderInterface::CLASS, $finders);
     }
 }

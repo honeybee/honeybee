@@ -2,9 +2,7 @@
 
 namespace Honeybee\Ui\ViewTemplate\Part;
 
-use Trellis\Common\Object;
-
-class Tab extends Object implements TabInterface
+class Tab implements TabInterface
 {
     protected $name;
 

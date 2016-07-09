@@ -2,10 +2,13 @@
 
 namespace Honeybee\Ui\ViewTemplate\Part;
 
-class PanelList extends NamedItemList
+use Trellis\Collection\TypedList;
+use Trellis\Collection\UniqueItemInterface;
+
+class PanelList extends TypedList implements UniqueItemInterface
 {
-    protected function getItemImplementor()
+    public function __construct(array $panels = [])
     {
-        return PanelInterface::CLASS;
+        parent::__construct(PanelInterface::CLASS, $panels);
     }
 }

@@ -4,9 +4,8 @@ namespace Honeybee\Infrastructure\Event;
 
 use Assert\Assertion;
 use DateTimeImmutable;
-use Trellis\Common\Object;
 
-abstract class Event extends Object implements EventInterface
+abstract class Event implements EventInterface
 {
     const DATE_ISO8601_WITH_MICROS = 'Y-m-d\TH:i:s.uP';
 
@@ -22,7 +21,11 @@ abstract class Event extends Object implements EventInterface
         $this->iso_date = DateTimeImmutable::createFromFormat('U.u', sprintf('%.6F', microtime(true)))
             ->format(self::DATE_ISO8601_WITH_MICROS);
 
-        parent::__construct($state);
+        foreach ($state as $key => $val) {
+            if (property_exists($this, $key)) {
+                $this->$key = $val;
+            }
+        }
 
         $this->guardRequiredState();
     }
@@ -62,6 +65,11 @@ abstract class Event extends Object implements EventInterface
 
         Assertion::uuid($this->uuid);
         Assertion::isArray($this->metadata);
+    }
+
+    public function toArray()
+    {
+        return get_object_vars($this);
     }
 
     public function __toString()

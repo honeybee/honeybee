@@ -4,7 +4,7 @@ namespace Honeybee\Ui\ViewTemplate\Part;
 
 use Trellis\Common\Object;
 
-class Cell extends Object implements CellInterface
+class Cell implements CellInterface
 {
     protected $css;
 

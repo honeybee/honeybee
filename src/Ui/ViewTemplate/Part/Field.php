@@ -2,11 +2,10 @@
 
 namespace Honeybee\Ui\ViewTemplate\Part;
 
-use Trellis\Common\Object;
 use Honeybee\Infrastructure\Config\ArrayConfig;
 use Honeybee\Infrastructure\Config\ConfigInterface;
 
-class Field extends Object implements FieldInterface
+class Field implements FieldInterface
 {
     protected $name;
     protected $config;

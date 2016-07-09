@@ -2,13 +2,13 @@
 
 namespace Honeybee\Infrastructure\DataAccess\UnitOfWork;
 
-use Trellis\Common\Collection\TypedMap;
-use Trellis\Common\Collection\UniqueValueInterface;
+use Trellis\Collection\TypedMap;
+use Trellis\Collection\UniqueItemInterface;
 
-class UnitOfWorkMap extends TypedMap implements UniqueValueInterface
+class UnitOfWorkMap extends TypedMap implements UniqueItemInterface
 {
-    protected function getItemImplementor()
+    public function __construct(array $unit_of_works = [])
     {
-        return UnitOfWorkInterface::CLASS;
+        parent::__construct(UnitOfWorkInterface::CLASS, $unit_of_works);
     }
 }

@@ -215,7 +215,7 @@ class ElasticsearchQueryTranslation implements QueryTranslationInterface
                 $filter = [
                     'geo_polygon' => [
                         $attribute_path => [
-                            'points' => array_map('strval', $geometry->toArray())
+                            'points' => array_map('strval', iterator_to_array($geometry))
                         ]
                     ]
                 ];
