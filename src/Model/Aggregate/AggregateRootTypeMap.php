@@ -2,13 +2,13 @@
 
 namespace Honeybee\Model\Aggregate;
 
-use Trellis\Runtime\EntityTypeMap;
-use Trellis\Common\Collection\MandatoryKeyInterface;
+use Trellis\Collection\TypedMap;
+use Trellis\Collection\UniqueItemInterface;
 
-class AggregateRootTypeMap extends EntityTypeMap implements MandatoryKeyInterface
+class AggregateRootTypeMap extends TypedMap implements UniqueItemInterface
 {
-    public function getItemImplementor()
+    public function __construct(array $aggregate_root_types = [])
     {
-        return AggregateRootType::CLASS;
+        parent::__construct(AggregateRootType::CLASS, $aggregate_root_types);
     }
 }

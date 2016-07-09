@@ -3,47 +3,42 @@
 namespace Honeybee\Tests\Fixture\GameSchema\Model\Game\Embed;
 
 use Honeybee\Model\Aggregate\EmbeddedEntityType;
-use Trellis\Common\Options;
-use Trellis\Runtime\EntityTypeInterface;
-use Trellis\Runtime\Attribute\AttributeInterface;
-use Trellis\Runtime\Attribute\Text\TextAttribute as Text;
-use Trellis\Runtime\Attribute\TextList\TextListAttribute;
-use Trellis\Runtime\Attribute\EmbeddedEntityList\EmbeddedEntityListAttribute;
-use Trellis\Runtime\Attribute\EntityReferenceList\EntityReferenceListAttribute;
+use Honeybee\Tests\Fixture\GameSchema\Model\Game\Embed\BadgeType;
+use Honeybee\Tests\Fixture\GameSchema\Model\Game\Reference\MembershipType;
+use Trellis\EntityType\Attribute\AttributeInterface;
+use Trellis\EntityType\Attribute\EntityList\EntityListAttribute;
+use Trellis\EntityType\Attribute\ReferenceList\ReferenceListAttribute;
+use Trellis\EntityType\Attribute\TextList\TextListAttribute;
+use Trellis\EntityType\Attribute\Text\TextAttribute;
 
 class ProfileType extends EmbeddedEntityType
 {
-    public function __construct(EntityTypeInterface $parent = null, AttributeInterface $parent_attribute = null)
+    public function __construct(AttributeInterface $parent_attribute = null)
     {
         parent::__construct(
             'Profile',
             [
-                new Text('nickname', $this, [], $parent_attribute),
-                new Text('alias', $this, [], $parent_attribute),
+                new TextAttribute('nickname', $this, [], $parent_attribute),
+                new TextAttribute('alias', $this, [], $parent_attribute),
                 new TextListAttribute('tags', $this, [], $parent_attribute),
-                new EmbeddedEntityListAttribute(
+                new EntityListAttribute(
                     'badges',
                     $this,
                     [
-                        'entity_types' => [
-                            '\\Honeybee\\Tests\\Fixture\\GameSchema\\Model\\Game\\Embed\\BadgeType'
-                        ]
+                        'entity_types' => [ BadgeType::CLASS ]
                     ],
                     $parent_attribute
                 ),
-                new EntityReferenceListAttribute(
+                new ReferenceListAttribute(
                     'memberships',
                     $this,
                     [
-                        'entity_types' => [
-                            '\\Honeybee\\Tests\\Fixture\\GameSchema\\Model\\Game\\Reference\\MembershipType'
-                        ]
+                        'entity_types' => [ MembershipType::CLASS ]
                     ],
                     $parent_attribute
                 )
             ],
-            new Options,
-            $parent,
+            [],
             $parent_attribute
         );
     }

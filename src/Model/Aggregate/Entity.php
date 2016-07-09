@@ -2,13 +2,13 @@
 
 namespace Honeybee\Model\Aggregate;
 
+use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Entity as BaseEntity;
 use Honeybee\Model\Event\EmbeddedEntityEventInterface;
-use Honeybee\Common\Error\RuntimeError;
+use Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\EmbeddedEntityAddedEvent;
 use Honeybee\Model\Task\ModifyAggregateRoot\ModifyEmbeddedEntity\EmbeddedEntityModifiedEvent;
 use Honeybee\Model\Task\ModifyAggregateRoot\RemoveEmbeddedEntity\EmbeddedEntityRemovedEvent;
-use Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\EmbeddedEntityAddedEvent;
-use Trellis\Runtime\Attribute\EmbeddedEntityList\EmbeddedEntityListAttribute;
+use Trellis\EntityType\Attribute\EntityList\EntityListAttribute;
 
 abstract class Entity extends BaseEntity
 {
@@ -111,7 +111,7 @@ abstract class Entity extends BaseEntity
 
         foreach ($this->getChanges() as $value_changed_event) {
             $attribute = $this->getType()->getAttribute($value_changed_event->getAttributeName());
-            if ($attribute instanceof EmbeddedEntityListAttribute) {
+            if ($attribute instanceof EntityListAttribute) {
                 continue;
             }
             $recorded_changes[$attribute->getName()] = $value_changed_event->getNewValue();

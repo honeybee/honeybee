@@ -4,17 +4,12 @@ namespace Honeybee\Tests\Fixture\GameSchema\Model\Player\Embed;
 
 use Honeybee\Model\Aggregate\EmbeddedEntityType;
 use Honeybee\Tests\Fixture\GameSchema\Model\EntityType;
-use Trellis\Common\Options;
-use Trellis\Runtime\EntityTypeInterface;
-use Trellis\Runtime\Attribute\AttributeInterface;
-use Trellis\Runtime\Attribute\Text\TextAttribute as Text;
-use Trellis\Runtime\Attribute\TextList\TextListAttribute;
-use Trellis\Runtime\Attribute\EmbeddedEntityList\EmbeddedEntityListAttribute;
-use Trellis\Runtime\Attribute\EntityReferenceList\EntityReferenceListAttribute;
+use Honeybee\Tests\Fixture\GameSchema\Model\Player\Embed\BadgeType;
+use Honeybee\Tests\Fixture\GameSchema\Model\Player\Reference\TeamType;
 
 class ProfileType extends EmbeddedEntityType
 {
-    public function __construct(EntityTypeInterface $parent = null, AttributeInterface $parent_attribute = null)
+    public function __construct(AttributeInterface $parent_attribute = null)
     {
         parent::__construct(
             'Profile',
@@ -24,26 +19,17 @@ class ProfileType extends EmbeddedEntityType
                 new EntityReferenceListAttribute(
                     'teams',
                     $this,
-                    [
-                        'entity_types' => [
-                            EntityType::NAMESPACE_PREFIX . 'Player\\Reference\\TeamType'
-                        ]
-                    ],
+                    [ 'entity_types' => [ TeamType::CLASS ] ],
                     $parent_attribute
                 ),
                 new EmbeddedEntityListAttribute(
                     'badges',
                     $this,
-                    [
-                        'entity_types' => [
-                            EntityType::NAMESPACE_PREFIX . 'Player\\Embed\\BadgeType'
-                        ]
-                    ],
+                    [ 'entity_types' => [ BadgeType::CLASS ] ],
                     $parent_attribute
                 )
             ],
-            new Options,
-            $parent,
+            [],
             $parent_attribute
         );
     }

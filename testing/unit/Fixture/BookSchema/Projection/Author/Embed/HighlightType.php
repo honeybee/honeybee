@@ -2,15 +2,14 @@
 
 namespace Honeybee\Tests\Fixture\BookSchema\Projection\Author\Embed;
 
+use Honeybee\EntityTypeInterface;
 use Honeybee\Projection\EmbeddedEntityType;
-use Trellis\Common\Options;
-use Trellis\Runtime\Attribute\AttributeInterface;
-use Trellis\Runtime\Attribute\Text\TextAttribute;
-use Trellis\Runtime\EntityTypeInterface;
+use Trellis\EntityType\Attribute\AttributeInterface;
+use Trellis\EntityType\Attribute\Text\TextAttribute;
 
 class HighlightType extends EmbeddedEntityType
 {
-    public function __construct(EntityTypeInterface $parent = null, AttributeInterface $parent_attribute = null)
+    public function __construct(AttributeInterface $parent_attribute = null)
     {
         parent::__construct(
             'Highlight',
@@ -18,8 +17,7 @@ class HighlightType extends EmbeddedEntityType
                 new TextAttribute('title', $this, [ 'mandatory' => true ], $parent_attribute),
                 new TextAttribute('description', $this, [], $parent_attribute)
             ],
-            new Options,
-            $parent,
+            [],
             $parent_attribute
         );
     }

@@ -4,7 +4,10 @@ namespace Honeybee\Tests\Fixture\BookSchema\Model\Author;
 
 use Honeybee\Tests\Fixture\BookSchema\Model\AggregateRootType;
 use Honeybee\Tests\Fixture\BookSchema\Model\Author\Embed\HighlightType;
+use Honeybee\Tests\Fixture\BookSchema\Model\Author\Reference\BookType;
+use Trellis\EntityType\Attribute\Email\EmailAttribute;
 use Trellis\EntityType\Attribute\EntityList\EntityListAttribute;
+use Trellis\EntityType\Attribute\ReferenceList\ReferenceListAttribute;
 use Trellis\EntityType\Attribute\Text\TextAttribute;
 use Workflux\StateMachine\StateMachineInterface;
 
@@ -24,20 +27,12 @@ class AuthorType extends AggregateRootType
                 new EntityListAttribute(
                     'products',
                     $this,
-                    [
-                        'entity_types' => [
-                            '\\Honeybee\\Tests\\Fixture\\BookSchema\\Model\\Author\\Embed\\HighlightType',
-                        ]
-                    ]
+                    [ 'entity_types' => [ HighlightType::CLASS ] ]
                 ),
-                new EntityReferenceListAttribute(
+                new ReferenceListAttribute(
                     'books',
                     $this,
-                    [
-                        'entity_types' => [
-                            '\\Honeybee\\Tests\\Fixture\\BookSchema\\Model\\Author\\Reference\\BookType',
-                        ]
-                    ]
+                    [ 'entity_types' => [ BookType::CLASS ] ]
                 )
             ]
         );

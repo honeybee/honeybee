@@ -2,15 +2,14 @@
 
 namespace Honeybee\Model\Aggregate;
 
-use Trellis\Runtime\ReferencedEntityTypeInterface;
-use Trellis\Common\OptionsInterface;
-use Trellis\Runtime\EntityTypeInterface;
-use Trellis\Runtime\Attribute\AttributeInterface;
-use Trellis\Runtime\Attribute\Text\TextAttribute;
-use Trellis\Runtime\Attribute\AttributeMap;
+use Honeybee\Common\Error\RuntimeError;
+use Trellis\EntityType\Attribute\AttributeInterface;
+use Trellis\EntityType\Attribute\AttributeMap;
+use Trellis\EntityType\Attribute\Text\TextAttribute;
+use Trellis\EntityType\TypeReferenceInterface;
 
 // @todo we might want to inherit from Honeybee\Entity here, instead of EmbeddedEntityType
-abstract class ReferencedEntityType extends EmbeddedEntityType implements ReferencedEntityTypeInterface
+abstract class ReferencedEntityType extends EmbeddedEntityType implements TypeReferenceInterface
 {
     const OPTION_IDENTIFYING_ATTRIBUTE_NAME = 'identifying_attribute';
 
@@ -19,20 +18,19 @@ abstract class ReferencedEntityType extends EmbeddedEntityType implements Refere
     public function __construct(
         $name,
         array $attributes = [],
-        OptionsInterface $options = null,
-        EntityTypeInterface $parent = null,
+        array $options = [],
         AttributeInterface $parent_attribute = null
     ) {
-        parent::__construct($name, $attributes, $options, $parent, $parent_attribute);
+        parent::__construct($name, $attributes, $options, $parent_attribute);
 
         if (!$this->hasOption(self::OPTION_IDENTIFYING_ATTRIBUTE_NAME)) {
-            throw new RuntimeException(
+            throw new RuntimeError(
                 sprintf('Missing expected option "%s"', self::OPTION_IDENTIFYING_ATTRIBUTE_NAME)
             );
         }
 
         if (!$this->hasOption(self::OPTION_REFERENCED_TYPE_CLASS)) {
-            throw new RuntimeException(
+            throw new RuntimeError(
                 sprintf('Missing expected option "%s"', self::OPTION_REFERENCED_TYPE_CLASS)
             );
         }
@@ -54,7 +52,6 @@ abstract class ReferencedEntityType extends EmbeddedEntityType implements Refere
             new TextAttribute('referenced_identifier', $this, [], $this->getParentAttribute())
         ];
 
-        $default_attributes_map = new AttributeMap($default_attributes);
-        return parent::getDefaultAttributes()->append($default_attributes_map);
+        return parent::getDefaultAttributes()->append(new AttributeMap($default_attributes));
     }
 }

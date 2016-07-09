@@ -3,13 +3,13 @@
 namespace Honeybee\Projection;
 
 use Honeybee\Common\Util\StringToolkit;
-use Trellis\Runtime\Attribute\Integer\IntegerAttribute;
-use Trellis\Runtime\Attribute\KeyValueList\KeyValueListAttribute;
-use Trellis\Runtime\Attribute\Text\TextAttribute;
-use Trellis\Runtime\Attribute\Timestamp\TimestampAttribute;
-use Trellis\Runtime\Attribute\Uuid\UuidAttribute;
-use Trellis\Runtime\Entity\EntityInterface;
-use Trellis\Runtime\Attribute\AttributeMap;
+use Trellis\EntityType\Attribute\AttributeMap;
+use Trellis\EntityType\Attribute\Integer\IntegerAttribute;
+use Trellis\EntityType\Attribute\KeyValueList\KeyValueListAttribute;
+use Trellis\EntityType\Attribute\Text\TextAttribute;
+use Trellis\EntityType\Attribute\Timestamp\TimestampAttribute;
+use Trellis\EntityType\Attribute\Uuid\UuidAttribute;
+use Trellis\Entity\EntityInterface;
 
 abstract class ProjectionType extends EntityType implements ProjectionTypeInterface
 {

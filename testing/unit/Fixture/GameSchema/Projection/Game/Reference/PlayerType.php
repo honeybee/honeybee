@@ -3,22 +3,22 @@
 namespace Honeybee\Tests\Fixture\GameSchema\Projection\Game\Reference;
 
 use Honeybee\Projection\ReferencedEntityType;
-use Trellis\Common\Options;
-use Trellis\Runtime\EntityTypeInterface;
-use Trellis\Runtime\Attribute\AttributeInterface;
-use Trellis\Runtime\Attribute\Text\TextAttribute as Text;
-use Trellis\Runtime\Attribute\GeoPoint\GeoPointAttribute;
-use Trellis\Runtime\Attribute\EmbeddedEntityList\EmbeddedEntityListAttribute;
+use Honeybee\Tests\Fixture\GameSchema\Projection\Game\Embed\ProfileType;
+use Honeybee\Tests\Fixture\GameSchema\Projection\Player\PlayerType;
+use Trellis\EntityType\Attribute\AttributeInterface;
+use Trellis\EntityType\Attribute\EntityList\EntityListAttribute;
+use Trellis\EntityType\Attribute\GeoPoint\GeoPointAttribute;
+use Trellis\EntityType\Attribute\Text\TextAttribute;
 
 class PlayerType extends ReferencedEntityType
 {
-    public function __construct(EntityTypeInterface $parent = null, AttributeInterface $parent_attribute = null)
+    public function __construct(AttributeInterface $parent_attribute = null)
     {
         parent::__construct(
             'Player',
             [
-                new Text('name', $this, [ 'mirrored' => true ], $parent_attribute),
-                new Text('tagline', $this, [], $parent_attribute),
+                new TextAttribute('name', $this, [ 'mirrored' => true ], $parent_attribute),
+                new TextAttribute('tagline', $this, [], $parent_attribute),
                 new GeoPointAttribute(
                     'area',
                     $this,
@@ -28,24 +28,17 @@ class PlayerType extends ReferencedEntityType
                     ],
                     $parent_attribute
                 ),
-                new EmbeddedEntityListAttribute(
+                new EntityListAttribute(
                     'profiles',
                     $this,
-                    [
-                        'entity_types' => [
-                            '\\Honeybee\\Tests\\Fixture\\GameSchema\\Projection\\Game\\Embed\\ProfileType'
-                        ]
-                    ],
+                    [ 'entity_types' => [ ProfileType::CLASS ] ],
                     $parent_attribute
                 ),
             ],
-            new Options(
-                [
-                    'referenced_type' => '\\Honeybee\\Tests\\Fixture\\GameSchema\\Projection\\Player\\PlayerType',
-                    'identifying_attribute' => 'identifier'
-                ]
-            ),
-            $parent,
+            [
+                'referenced_type' => PlayerType::CLASS,
+                'identifying_attribute' => 'identifier'
+            ],
             $parent_attribute
         );
     }

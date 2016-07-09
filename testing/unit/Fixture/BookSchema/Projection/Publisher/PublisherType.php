@@ -3,7 +3,7 @@
 namespace Honeybee\Tests\Fixture\BookSchema\Projection\Publisher;
 
 use Honeybee\Tests\Fixture\BookSchema\Projection\ProjectionType;
-use Trellis\Runtime\Attribute\Text\TextAttribute;
+use Trellis\EntityType\Attribute\Text\TextAttribute;
 use Workflux\StateMachine\StateMachineInterface;
 
 class PublisherType extends ProjectionType

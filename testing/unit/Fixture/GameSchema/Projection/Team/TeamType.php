@@ -3,9 +3,8 @@
 namespace Honeybee\Tests\Fixture\GameSchema\Projection\Team;
 
 use Honeybee\Tests\Fixture\GameSchema\Projection\ProjectionType;
+use Trellis\EntityType\Attribute\Text\TextAttribute;
 use Workflux\StateMachine\StateMachineInterface;
-use Trellis\Common\Options;
-use Trellis\Runtime\Attribute\Text\TextAttribute as Text;
 
 class TeamType extends ProjectionType
 {
@@ -15,9 +14,9 @@ class TeamType extends ProjectionType
         parent::__construct(
             'Team',
             [
-                new Text('name', $this, [ 'mandatory' => true ])
+                new TextAttribute('name', $this, [ 'mandatory' => true ])
             ],
-            new Options([ 'is_hierarchical' => true ])
+            [ 'is_hierarchical' => true ]
         );
     }
 

@@ -2,9 +2,9 @@
 
 namespace Honeybee\Model\Aggregate;
 
-use Trellis\Runtime\Entity\EntityReferenceInterface;
+use Trellis\Entity\ReferenceInterface;
 
-abstract class ReferencedEntity extends EmbeddedEntity implements EntityReferenceInterface
+abstract class ReferencedEntity extends EmbeddedEntity implements ReferenceInterface
 {
     public function getReferencedIdentifier()
     {

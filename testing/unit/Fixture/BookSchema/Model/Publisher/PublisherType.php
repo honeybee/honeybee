@@ -3,7 +3,7 @@
 namespace Honeybee\Tests\Fixture\BookSchema\Model\Publisher;
 
 use Honeybee\Tests\Fixture\BookSchema\Model\AggregateRootType;
-use Trellis\Runtime\Attribute\Text\TextAttribute;
+use Trellis\EntityType\Attribute\Text\TextAttribute;
 use Workflux\StateMachine\StateMachineInterface;
 
 class PublisherType extends AggregateRootType

@@ -2,11 +2,12 @@
 
 namespace Honeybee\Tests\Fixture\GameSchema\Projection\Player;
 
+use Honeybee\Tests\Fixture\GameSchema\Projection\Player\Embed\ProfileType;
 use Honeybee\Tests\Fixture\GameSchema\Projection\ProjectionType;
+use Trellis\EntityType\Attribute\EntityList\EntityListAttribute;
+use Trellis\EntityType\Attribute\GeoPoint\GeoPointAttribute;
+use Trellis\EntityType\Attribute\Text\TextAttribute;
 use Workflux\StateMachine\StateMachineInterface;
-use Trellis\Runtime\Attribute\Text\TextAttribute as Text;
-use Trellis\Runtime\Attribute\GeoPoint\GeoPointAttribute;
-use Trellis\Runtime\Attribute\EmbeddedEntityList\EmbeddedEntityListAttribute;
 
 class PlayerType extends ProjectionType
 {
@@ -17,25 +18,17 @@ class PlayerType extends ProjectionType
         parent::__construct(
             'Player',
             [
-                new Text('name', $this, [ 'mandatory' => true ]),
+                new TextAttribute('name', $this, [ 'mandatory' => true ]),
                 new GeoPointAttribute('location', $this, []),
-                new EmbeddedEntityListAttribute(
+                new EntityListAttribute(
                     'profiles',
                     $this,
-                    [
-                        'entity_types' => [
-                            '\\Honeybee\\Tests\\Fixture\\GameSchema\\Projection\\Player\\Embed\\ProfileType'
-                        ]
-                    ]
+                    [ 'entity_types' => [ ProfileType::CLASS ] ]
                 ),
-                new EmbeddedEntityListAttribute(
+                new EntityListAttribute(
                     'simple_profiles',
                     $this,
-                    [
-                        'entity_types' => [
-                            '\\Honeybee\\Tests\\Fixture\\GameSchema\\Projection\\Player\\Embed\\ProfileType'
-                        ]
-                    ]
+                    [ 'entity_types' => [ ProfileType::CLASS ] ]
                 )
             ]
         );

@@ -2,13 +2,13 @@
 
 namespace Honeybee\Model\Aggregate;
 
-use Trellis\Runtime\Entity\EntityList;
+use Trellis\EntityType\Attribute\EntityList\EntityList;
 
 class AggregateRootList extends EntityList
 {
-    protected function getItemImplementor()
+    public function __construct(array $aggregate_roots = [])
     {
-        return AggregateRootInterface::CLASS;
+        parent::__construct($aggregate_roots, AggregateRootInterface::CLASS);
     }
 
     /**
