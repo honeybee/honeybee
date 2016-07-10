@@ -8,7 +8,7 @@ class Publisher extends AggregateRoot
 {
     public function getName()
     {
-        return $this->getValue('name');
+        return $this->get('name');
     }
 
     public function setName($name)
@@ -18,7 +18,7 @@ class Publisher extends AggregateRoot
 
     public function getDescription()
     {
-        return $this->getValue('description');
+        return $this->get('description');
     }
 
     public function setDescription($description)

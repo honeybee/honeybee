@@ -69,7 +69,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
      */
     public function getUuid()
     {
-        return $this->getValue('uuid');
+        return $this->get('uuid');
     }
 
     /**
@@ -79,7 +79,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
      */
     public function getLanguage()
     {
-        return $this->getValue('language');
+        return $this->get('language');
     }
 
     /**
@@ -89,7 +89,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
      */
     public function getVersion()
     {
-        return $this->getValue('version');
+        return $this->get('version');
     }
 
     /**
@@ -99,7 +99,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
      */
     public function getRevision()
     {
-        return $this->getValue('revision');
+        return $this->get('revision');
     }
 
     /**
@@ -109,11 +109,11 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
      */
     public function getParentNodeId()
     {
-        if (!$this->getType()->isActingAsTree()) {
+        if (!$this->getEntityType()->isActingAsTree()) {
             throw new RuntimeError('Cant return parent_node_id for a non-hierarchically managed type.');
         }
 
-        return $this->getValue('parent_node_id');
+        return $this->get('parent_node_id');
     }
 
     /**
@@ -123,7 +123,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
      */
     public function getWorkflowState()
     {
-        return $this->getValue('workflow_state');
+        return $this->get('workflow_state');
     }
 
     /**
@@ -133,7 +133,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
      */
     public function getWorkflowParameters()
     {
-        return $this->getValue('workflow_parameters');
+        return $this->get('workflow_parameters');
     }
 
     /**
@@ -193,8 +193,6 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
             }
             $this->history = $this->history->push($this->applyEvent($past_event, false));
         }
-
-        return $this->isValid();
     }
 
     /**
@@ -326,7 +324,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
      */
     protected function createInitialData(CreateAggregateRootCommand $create_command)
     {
-        $type = $this->getType();
+        $type = $this->getEntityType();
         $type_prefix = $type->getPrefix();
 
         $create_data = $create_command->getValues();

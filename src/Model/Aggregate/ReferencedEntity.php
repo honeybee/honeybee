@@ -8,6 +8,6 @@ abstract class ReferencedEntity extends EmbeddedEntity implements ReferenceInter
 {
     public function getReferencedIdentifier()
     {
-        return $this->getValue('referenced_identifier');
+        return $this->get('referenced_identifier');
     }
 }

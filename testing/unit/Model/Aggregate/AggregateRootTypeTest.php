@@ -32,7 +32,6 @@ class AggregateRootTypeTest extends TestCase
         $aggregate_root = $aggregate_root_type->createEntity();
 
         $this->assertInstanceOf(Author::CLASS, $aggregate_root);
-        $this->assertTrue($aggregate_root->isValid());
     }
 
     /**

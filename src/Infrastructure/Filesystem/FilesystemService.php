@@ -298,13 +298,13 @@ class FilesystemService implements FilesystemServiceInterface
         $uuid_string = $uuid->toString();
         $uuid_parts = $uuid->getClockSeqLow(); // 8 bit int => 256 folders
 
-        $root_type = $attribute->getRootType();
+        $root_type = $attribute->getEntityType()->getRoot();
         $root_type_name = $root_type->getName();
         if ($root_type instanceof EntityTypeInterface) {
             $root_type_name = $root_type->getPrefix();
         }
 
-        $attribute_path = $attribute->getPath();
+        $attribute_path = $attribute->toTypePath();
 
         $identifier = '';
 

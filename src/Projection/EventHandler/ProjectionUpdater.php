@@ -260,7 +260,7 @@ class ProjectionUpdater extends EventHandler
         $embedded_projection_attr = $projection->getType()->getAttribute($event->getParentAttributeName());
         $embedded_projection_type = $this->getEmbeddedEntityTypeFor($projection, $event);
         $embedded_projection = $embedded_projection_type->createEntity($event->getData(), $projection);
-        $projection_list = $projection->getValue($embedded_projection_attr->getName());
+        $projection_list = $projection->get($embedded_projection_attr->getName());
         if ($embedded_projection_type instanceof ReferencedEntityTypeInterface) {
             $embedded_projection = $this->mirrorReferencedProjection($embedded_projection);
         }
@@ -275,7 +275,7 @@ class ProjectionUpdater extends EventHandler
         $embedded_projection_attr = $projection->getType()->getAttribute($event->getParentAttributeName());
         $embedded_projection_type = $this->getEmbeddedEntityTypeFor($projection, $event);
 
-        $embedded_projections = $projection->getValue($embedded_projection_attr->getName());
+        $embedded_projections = $projection->get($embedded_projection_attr->getName());
         $projection_to_modify = null;
         foreach ($embedded_projections as $embedded_projection) {
             if ($embedded_projection->getIdentifier() === $event->getEmbeddedEntityIdentifier()) {
@@ -301,7 +301,7 @@ class ProjectionUpdater extends EventHandler
 
     protected function onEmbeddedEntityRemoved(EntityInterface $projection, EmbeddedEntityRemovedEvent $event)
     {
-        $projection_list = $projection->getValue($event->getParentAttributeName());
+        $projection_list = $projection->get($event->getParentAttributeName());
         $projection_to_remove = null;
 
         foreach ($projection_list as $embedded_projection) {

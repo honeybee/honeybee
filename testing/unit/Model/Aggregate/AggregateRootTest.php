@@ -44,8 +44,6 @@ class AggregateRootTest extends TestCase
     public function testCreate()
     {
         $aggregate_root = $this->constructAggregateRoot();
-        $this->assertTrue($aggregate_root->isValid());
-
         $create_command = new CreateAuthorCommand(
             [
                 'aggregate_root_type' => self::AGGREGATE_ROOT_TYPE,
@@ -58,7 +56,6 @@ class AggregateRootTest extends TestCase
 
         $aggregate_root->create($create_command);
 
-        $this->assertTrue($aggregate_root->isValid());
         $this->assertEquals('Mark', $aggregate_root->getFirstname());
         $this->assertEquals('Twain', $aggregate_root->getLastname());
         $this->assertCount(1, $aggregate_root->getUncomittedEvents());
@@ -73,8 +70,6 @@ class AggregateRootTest extends TestCase
     public function testCreateWithoutType()
     {
         $aggregate_root = $this->constructAggregateRoot();
-        $this->assertTrue($aggregate_root->isValid());
-
         $create_command = new CreateAuthorCommand(
             [
                 'values' => [
@@ -95,7 +90,6 @@ class AggregateRootTest extends TestCase
     {
         $this->markTestIncomplete();
         $aggregate_root = $this->constructAggregateRoot();
-        $this->assertTrue($aggregate_root->isValid());
 
         $create_command = new CreateAuthorCommand(
             [
@@ -109,10 +103,6 @@ class AggregateRootTest extends TestCase
 
         $aggregate_root->create($create_command);
 
-        $this->assertFalse(
-            $aggregate_root->isValid(),
-            'The AggregateRoot should not be valid when mandatory attributes are not set.'
-        );
         $this->assertEquals('Mark', $aggregate_root->getFirstname());
     }
 
@@ -134,7 +124,6 @@ class AggregateRootTest extends TestCase
         );
         $aggregate_root->modify($modify_command);
 
-        $this->assertTrue($aggregate_root->isValid());
         $this->assertEquals('Wahlberg', $aggregate_root->getLastname());
         $this->assertCount(1, $aggregate_root->getUncomittedEvents());
         $this->assertCount(2, $aggregate_root->getHistory());
@@ -236,7 +225,6 @@ class AggregateRootTest extends TestCase
         $events_history = $this->getHistoryFixture();
         $aggregate_root->reconstituteFrom($events_history);
 
-        $this->assertTrue($aggregate_root->isValid());
         $this->assertCount(0, $aggregate_root->getUncomittedEvents());
         $this->assertCount(4, $aggregate_root->getHistory());
         $this->assertEquals('Donnie', $aggregate_root->getFirstname());
@@ -355,7 +343,6 @@ class AggregateRootTest extends TestCase
 
         $aggregate_root->proceedWorkflow($workflow_command);
 
-        $this->assertTrue($aggregate_root->isValid());
         $this->assertEquals('active', $aggregate_root->getWorkflowState());
     }
 
@@ -516,7 +503,6 @@ class AggregateRootTest extends TestCase
 
         $aggregate_root->proceedWorkflow($workflow_command);
 
-        $this->assertTrue($aggregate_root->isValid());
         $this->assertEquals($expected_workflow_parameters, $aggregate_root->getWorkflowParameters());
     }
 

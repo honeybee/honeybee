@@ -8,7 +8,7 @@ class Book extends Resource
 {
     public function getTitle()
     {
-        return $this->getValue('title');
+        return $this->get('title');
     }
 
     public function setTitle($title)
@@ -18,7 +18,7 @@ class Book extends Resource
 
     public function getDescription()
     {
-        return $this->getValue('description');
+        return $this->get('description');
     }
 
     public function setDescription($description)

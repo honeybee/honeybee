@@ -7,7 +7,7 @@ use Honeybee\Model\Aggregate\AggregateRootList;
 use Honeybee\Model\Aggregate\AggregateRootMap;
 use Honeybee\Tests\TestCase;
 use Mockery;
-use Trellis\Runtime\Entity\EntityList;
+use Trellis\EntityType\Attribute\EntityList\EntityList;
 
 class AggregateRootListTest extends TestCase
 {
@@ -21,45 +21,32 @@ class AggregateRootListTest extends TestCase
 
     public function testGetItemImplementor()
     {
-        $projection = Mockery::mock(AggregateRootInterface::CLASS);
-        $projection->shouldReceive('addEntityChangedListener')->once()->with(Mockery::on(
-            function ($listener) {
-                $this->assertInstanceOf(AggregateRootList::CLASS, $listener);
-                return true;
-            }
-        ));
-        $aggregate_root_list = new AggregateRootList([ $projection ]);
+        $agg_root = Mockery::mock(AggregateRootInterface::CLASS);
+        $aggregate_root_list = new AggregateRootList([ $agg_root ]);
 
         $this->assertInstanceOf(EntityList::CLASS, $aggregate_root_list);
         $this->assertCount(1, $aggregate_root_list);
-        $this->assertEquals([ $projection ], $aggregate_root_list->getItems());
+        $this->assertEquals([ $agg_root ], $aggregate_root_list->getItems());
     }
 
     /**
-     * @expectedException Trellis\Common\Error\InvalidTypeException
+     * @expectedException Trellis\Exception
      */
     public function testGetItemImplementorWithNotMatching()
     {
         $aggregate_root_list = new AggregateRootList([ new \stdClass ]);
-    }
+    } // @codeCoverageIgnore
 
     public function testToMap()
     {
         $projection = Mockery::mock(AggregateRootInterface::CLASS);
         $projection->shouldReceive('getIdentifier')->once()->withNoArgs()->andReturn('ar1');
-        $projection->shouldReceive('addEntityChangedListener')->once()->with(Mockery::on(
-            function ($listener) {
-                $this->assertInstanceOf(AggregateRootList::CLASS, $listener);
-                return true;
-            }
-        ));
         $aggregate_root_list = new AggregateRootList([ $projection ]);
 
         $aggregate_root_map = $aggregate_root_list->toMap();
         $this->assertInstanceOf(AggregateRootMap::CLASS, $aggregate_root_map);
         $this->assertCount(1, $aggregate_root_map);
         $this->assertEquals([ 'ar1' ], $aggregate_root_map->getKeys());
-        $this->assertEquals([ 'ar1' => $projection ], $aggregate_root_map->getItems());
-        $this->assertEquals([ $projection ], $aggregate_root_map->getValues());
+        $this->assertEquals([ 'ar1' => $projection ], iterator_to_array($aggregate_root_map));
     }
 }

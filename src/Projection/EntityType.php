@@ -29,7 +29,7 @@ abstract class EntityType extends BaseEntityType
             foreach ($this->getAttributes() as $attribute) {
                 if (!$attribute instanceof EmbeddedEntityListAttribute) {
                     $attribute_name = $attribute->getName();
-                    $attribute_value = $reference_entity->getValue($attribute_name);
+                    $attribute_value = $reference_entity->get($attribute_name);
                     $mirrored_values[$attribute_name] = $attribute_value instanceof ObjectInterface
                         ? $attribute_value->toArray()
                         : $attribute_value;
@@ -65,7 +65,7 @@ abstract class EntityType extends BaseEntityType
             $mirrored_attr_name = explode('.', $mirrored_attribute_path)[0];
             $mirrored_attribute = $this->getAttribute($mirrored_attr_name);
             $source_attribute_name = $mirrored_attribute->getOption('attribute_alias', $mirrored_attr_name);
-            $source_attribute_value = $source_entity->getValue($source_attribute_name);
+            $source_attribute_value = $source_entity->get($source_attribute_name);
             if ($mirrored_attribute instanceof EmbeddedEntityListAttribute) {
                 foreach ($source_attribute_value as $position => $source_embedded_entity) {
                     // skip entity mirroring if values already exist since we may traverse over paths repeatedly
@@ -76,7 +76,7 @@ abstract class EntityType extends BaseEntityType
                             : $mirrored_attribute->getEmbeddedTypeByPrefix($source_embed_prefix);
                         if ($mirrored_embed_type) {
                             $reference_embedded_entity = $reference_entity
-                            ? $reference_entity->getValue($mirrored_attr_name)
+                            ? $reference_entity->get($mirrored_attr_name)
                                 ->getEntityByIdentifier($source_embedded_entity->getIdentifier())
                                 : null;
                             $mirrored_embedded_entity = $mirrored_embed_type->createEntity(

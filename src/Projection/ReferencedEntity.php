@@ -8,7 +8,7 @@ abstract class ReferencedEntity extends EmbeddedEntity implements EntityReferenc
 {
     public function getReferencedIdentifier()
     {
-        return $this->getValue('referenced_identifier');
+        return $this->get('referenced_identifier');
     }
 
     /**
@@ -18,7 +18,7 @@ abstract class ReferencedEntity extends EmbeddedEntity implements EntityReferenc
      */
     public function getModifiedAt()
     {
-        return $this->getValue('modified_at');
+        return $this->get('modified_at');
     }
 
     /**
@@ -28,6 +28,6 @@ abstract class ReferencedEntity extends EmbeddedEntity implements EntityReferenc
      */
     public function getWorkflowState()
     {
-        return $this->getValue('workflow_state');
+        return $this->get('workflow_state');
     }
 }

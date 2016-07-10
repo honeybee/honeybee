@@ -8,7 +8,7 @@ class Author extends AggregateRoot
 {
     public function getFirstname()
     {
-        return $this->getValue('firstname');
+        return $this->get('firstname');
     }
 
     public function setFirstname($firstname)
@@ -18,7 +18,7 @@ class Author extends AggregateRoot
 
     public function getLastname()
     {
-        return $this->getValue('lastname');
+        return $this->get('lastname');
     }
 
     public function setLastname($lastname)

@@ -24,7 +24,7 @@ class EntityNode extends Node
 
     public function getLabel()
     {
-        return $this->aggregate_root->getValue(
+        return $this->aggregate_root->get(
             $this->aggregate_root->getType()->getOption('tree_label_attribute')
         );
     }

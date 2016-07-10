@@ -2,13 +2,13 @@
 
 namespace Honeybee\Model\Command;
 
-use Trellis\Common\Collection\UniqueValueInterface;
-use Trellis\Common\Collection\TypedList;
+use Trellis\Collection\TypedList;
+use Trellis\Collection\UniqueItemInterface;
 
-class EmbeddedEntityTypeCommandList extends TypedList implements UniqueValueInterface
+class EmbeddedEntityTypeCommandList extends TypedList implements UniqueItemInterface
 {
-    protected function getItemImplementor()
+    public function __construct(array $embedded_entity_type_commands = [])
     {
-        return EmbeddedEntityTypeCommandInterface::CLASS;
+        parent::__construct(EmbeddedEntityTypeCommandInterface::CLASS, $embedded_entity_type_commands);
     }
 }

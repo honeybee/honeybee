@@ -13,10 +13,8 @@ use Honeybee\Model\Task\ModifyAggregateRoot\RemoveEmbeddedEntity\RemoveEmbeddedE
 use Shrink0r\Monatic\Error;
 use Shrink0r\Monatic\Result;
 use Shrink0r\Monatic\Success;
-use Trellis\Runtime\Attribute\AttributeInterface;
-use Trellis\Runtime\Attribute\EmbeddedEntityList\EmbeddedEntityListAttribute;
-use Trellis\Runtime\Entity\EntityList;
-use Trellis\Runtime\Validator\Result\IncidentInterface;
+use Trellis\EntityType\Attribute\EntityList\EntityList;
+use Trellis\EntityType\Attribute\EntityList\EntityListAttribute;
 
 class EmbeddedEntityCommandBuilder extends CommandBuilder
 {
@@ -57,12 +55,12 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
     /**
      * @return array
      */
-    protected function getEmbeddedCommands(EmbeddedEntityListAttribute $attribute, array $values)
+    protected function getEmbeddedCommands(EntityListAttribute $attribute, array $values)
     {
         $errors = [];
         $affected_identifiers = [];
         $attribute_name = $attribute->getName();
-        $embedded_entity_list = $this->entity ? $this->entity->getValue($attribute_name) : new EntityList;
+        $embedded_entity_list = $this->entity ? $this->entity->get($attribute_name) : new EntityList;
         $builder_list = new CommandBuilderList;
 
         foreach ($values as $position => $embedded_values) {
@@ -188,7 +186,7 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
 
         foreach ($this->entity_type->getAttributes() as $attribute_name => $attribute) {
             if (isset($values[$attribute_name])) {
-                if ($attribute instanceof EmbeddedEntityListAttribute) {
+                if ($attribute instanceof EntityListAttribute) {
                     /*
                      * prepare and build embedded commands on the fly and then add them to the global
                      * scope list which is validated later
@@ -259,7 +257,7 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
             }
             $value_holder = $attribute->createValueHolder();
             $payload_value = $payload[$attribute_name];
-            $attribute_value = $entity->getValue($attribute_name);
+            $attribute_value = $entity->get($attribute_name);
             $result = $value_holder->setValue($payload_value, $entity);
             if ($result->getSeverity() <= IncidentInterface::NOTICE) {
                 if (!$value_holder->sameValueAs($attribute_value)) {

@@ -12,7 +12,7 @@ abstract class Entity extends BaseEntity implements ResourceInterface, ScopeKeyI
 
     public function getIdentifier()
     {
-        return $this->getValue('identifier');
+        return $this->get('identifier');
     }
 
     /**
@@ -32,18 +32,18 @@ abstract class Entity extends BaseEntity implements ResourceInterface, ScopeKeyI
      */
     public function getScopeKey()
     {
-        $parent_attribute = $this->getType()->getParentAttribute();
+        $parent_attribute = $this->getEntityType()->getParentAttribute();
         $scope_key_pieces = [];
 
         if ($parent_attribute) {
-            $scope_key_pieces[] = $this->getRoot()->getType()->getScopeKey();
+            $scope_key_pieces[] = $this->getRoot()->getEntityType()->getScopeKey();
             if ($workflow_state = $this->getRoot()->getWorkflowState()) {
                 $scope_key_pieces[] = $workflow_state;
             }
             $scope_key_pieces[] = $parent_attribute->getPath();
-            $scope_key_pieces[] = $this->getType()->getPrefix();
+            $scope_key_pieces[] = $this->getEntityType()->getPrefix();
         } else {
-            $scope_key_pieces[] = $this->getType()->getScopeKey();
+            $scope_key_pieces[] = $this->getEntityType()->getScopeKey();
             if ($workflow_state = $this->getWorkflowState()) {
                 $scope_key_pieces[] = $workflow_state;
             }
@@ -54,7 +54,7 @@ abstract class Entity extends BaseEntity implements ResourceInterface, ScopeKeyI
 
     public function createMirrorFrom(EntityInterface $entity)
     {
-        return $this->getType()->createMirroredEntity($entity, $this);
+        return $this->getEntityType()->createMirroredEntity($entity, $this);
     }
 
     public function __toString()

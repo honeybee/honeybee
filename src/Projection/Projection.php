@@ -13,7 +13,7 @@ abstract class Projection extends Entity implements ProjectionInterface
      */
     public function getUuid()
     {
-        return $this->getValue('uuid');
+        return $this->get('uuid');
     }
 
     /**
@@ -23,7 +23,7 @@ abstract class Projection extends Entity implements ProjectionInterface
      */
     public function getLanguage()
     {
-        return $this->getValue('language');
+        return $this->get('language');
     }
 
     /**
@@ -33,7 +33,7 @@ abstract class Projection extends Entity implements ProjectionInterface
      */
     public function getRevision()
     {
-        return $this->getValue('revision');
+        return $this->get('revision');
     }
 
     /**
@@ -43,7 +43,7 @@ abstract class Projection extends Entity implements ProjectionInterface
      */
     public function getVersion()
     {
-        return $this->getValue('version');
+        return $this->get('version');
     }
 
     /**
@@ -53,7 +53,7 @@ abstract class Projection extends Entity implements ProjectionInterface
      */
     public function getSlug()
     {
-        return $this->getValue('slug');
+        return $this->get('slug');
     }
 
     /**
@@ -63,7 +63,7 @@ abstract class Projection extends Entity implements ProjectionInterface
      */
     public function getWorkflowState()
     {
-        return $this->getValue('workflow_state');
+        return $this->get('workflow_state');
     }
 
     /**
@@ -73,7 +73,7 @@ abstract class Projection extends Entity implements ProjectionInterface
      */
     public function getWorkflowParameters()
     {
-        return $this->getValue('workflow_parameters');
+        return $this->get('workflow_parameters');
     }
 
     /**
@@ -83,7 +83,7 @@ abstract class Projection extends Entity implements ProjectionInterface
      */
     public function getCreatedAt()
     {
-        return $this->getValue('created_at');
+        return $this->get('created_at');
     }
 
     /**
@@ -93,7 +93,7 @@ abstract class Projection extends Entity implements ProjectionInterface
      */
     public function getModifiedAt()
     {
-        return $this->getValue('modified_at');
+        return $this->get('modified_at');
     }
 
     public function getParentNodeId()
@@ -103,7 +103,7 @@ abstract class Projection extends Entity implements ProjectionInterface
                 sprintf('"is_hierarchical" option not enabled on type: %s', $this->getType()->getName())
             );
         }
-        return $this->getValue('parent_node_id');
+        return $this->get('parent_node_id');
     }
 
     public function getMaterializedPath()
@@ -113,6 +113,6 @@ abstract class Projection extends Entity implements ProjectionInterface
                 sprintf('"is_hierarchical" option not enabled on type: %s', $this->getType()->getName())
             );
         }
-        return $this->getValue('materialized_path');
+        return $this->get('materialized_path');
     }
 }

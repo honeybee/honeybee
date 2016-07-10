@@ -67,26 +67,6 @@ abstract class EmbeddedEntity extends Entity
         }
 
         $this->setValues($event->getData());
-        if (!$this->isValid()) {
-            foreach ($this->getValidationResults() as $validation_result) {
-                foreach ($validation_result->getViolatedRules() as $violated_rule) {
-                    foreach ($violated_rule->getIncidents() as $incident) {
-                        $errors[] = PHP_EOL . $validation_result->getSUbject()->getName() .
-                            ' - ' .$violated_rule->getName() .
-                            ' > ' . $incident->getName() . ', params: ' . var_export($incident->getParameters(), true);
-                    }
-                }
-            }
-
-            error_log(
-                sprintf(
-                    "Corrupt event data given to %s through event %s.\nErrors:%s",
-                    $this->getType()->getPrefix(),
-                    $event->getType(),
-                    implode(PHP_EOL, $errors)
-                )
-            );
-        }
 
         $embedded_entity_events = new EmbeddedEntityEventList();
         foreach ($event->getEmbeddedEntityEvents() as $embedded_event) {

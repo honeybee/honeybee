@@ -256,9 +256,9 @@ abstract class Renderer implements RendererInterface
         if ($url->getType() === Url::TYPE_ROUTE) {
             $route_params = $parameters;
             $route_params = array_replace_recursive($url->getParameters(), $parameters);
-            $link = $this->url_generator->generateUrl($url->getValue(), $route_params, $options);
+            $link = $this->url_generator->generateUrl($url->get(), $route_params, $options);
         } elseif ($url->getType() === Url::TYPE_URI_TEMPLATE) {
-            $uri_template = new UriTemplate($url->getValue());
+            $uri_template = new UriTemplate($url->get());
             $template_params = array_replace_recursive($url->getParameters(), $parameters);
             $link = $uri_template->expand($template_params);
         } else {

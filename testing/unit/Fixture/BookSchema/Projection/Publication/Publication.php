@@ -8,7 +8,7 @@ class Publication extends Resource
 {
     public function getYear()
     {
-        return $this->getValue('year');
+        return $this->get('year');
     }
 
     public function setYear($year)
@@ -18,7 +18,7 @@ class Publication extends Resource
 
     public function getDescription()
     {
-        return $this->getValue('description');
+        return $this->get('description');
     }
 
     public function setDescription($description)

@@ -6,6 +6,7 @@ use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Common\Util\StringToolkit;
 use Trellis\EntityType\Attribute\AttributeMap;
 use Trellis\EntityType\Attribute\Integer\IntegerAttribute;
+use Trellis\EntityType\Attribute\KeyValueList\KeyValueListAttribute;
 use Trellis\EntityType\Attribute\Text\TextAttribute;
 use Trellis\EntityType\Attribute\Uuid\UuidAttribute;
 use Trellis\Entity\EntityInterface;

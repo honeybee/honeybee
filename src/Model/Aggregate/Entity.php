@@ -25,7 +25,7 @@ abstract class Entity extends BaseEntity
         $auto_commit = true
     ) {
         $attribute_name = $embedded_entity_event->getParentAttributeName();
-        $embedded_entity_list = $this->getValue($attribute_name);
+        $embedded_entity_list = $this->get($attribute_name);
 
         if ($embedded_entity_event instanceof EmbeddedEntityAddedEvent) {
             $embedded_type = $this->getEmbeddedEntityTypeFor(
@@ -90,7 +90,7 @@ abstract class Entity extends BaseEntity
     protected function getEmbeddedEntityFor($attribute_name, $embedded_entity_id)
     {
         $found_entity = null;
-        foreach ($this->getValue($attribute_name) as $embedded_entity) {
+        foreach ($this->get($attribute_name) as $embedded_entity) {
             if ($embedded_entity->getIdentifier() === $embedded_entity_id) {
                 $found_entity = $embedded_entity;
                 break;
