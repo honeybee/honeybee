@@ -87,14 +87,31 @@ abstract class ElasticsearchMigration extends Migration
             ));
         }
 
-        $index_settings = current($index_api->getSettings([ 'index' => $index_name ]));
+        // Allow index settings override
+        $index_settings = $this->getIndexSettings($migration_target);
+        $index_settings = isset($index_settings['body'])
+            ? $index_settings['body']
+            : current($index_api->getSettings([ 'index' => $index_name ]));
+
+        // Load existing mappings from previous index
         $index_mappings = current($index_api->getMapping([ 'index' => $index_name ]));
         $current_index = key($aliases);
         $new_index = sprintf('%s_%s', $index_name, $this->getTimestamp());
 
-        // Merge existing and new type mappings
+        // Merge mappings from new index settings if provided
+        if (isset($index_settings['mappings'])) {
+            foreach ($index_settings['mappings'] as $type_name => $mapping) {
+                $index_mappings['mappings'] = array_replace(
+                    $index_mappings['mappings'],
+                    [ $type_name => $mapping ]
+                );
+            }
+            unset($index_settings['mappings']);
+        }
+
+        // Replace existing mappings with new ones
         foreach ($this->getTypeMappings($migration_target) as $type_name => $mapping) {
-            $index_mappings['mappings'] = array_replace_recursive(
+            $index_mappings['mappings'] = array_replace(
                 $index_mappings['mappings'],
                 [ $type_name => $mapping ]
             );
@@ -174,14 +191,19 @@ abstract class ElasticsearchMigration extends Migration
     {
         $settings_json_file = $this->getIndexSettingsPath($migration_target);
 
+        if (empty($settings_json_file)) {
+            return [];
+        }
+
         if (!is_readable($settings_json_file)) {
             throw new RuntimeError(sprintf('Unable to read settings for index at: %s', $settings_json_file));
         }
-        $index_settings['body'] = JsonToolkit::parse(file_get_contents($settings_json_file));
-        $index_name = $this->getIndexName($migration_target);
+
         // Index is created with migration timestamp suffix and aliased in order to support
         // zero down-time migrations
+        $index_name = $this->getIndexName($migration_target);
         $index_settings['index'] = sprintf('%s_%s', $index_name, $this->getTimestamp());
+        $index_settings['body'] = JsonToolkit::parse(file_get_contents($settings_json_file));
         $index_settings['body']['aliases'][$index_name] = new \stdClass();
 
         if ($include_type_mapping) {
