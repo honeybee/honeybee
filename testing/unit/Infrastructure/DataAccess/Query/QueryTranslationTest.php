@@ -8,6 +8,5 @@ class QueryTranslationTest extends TestCase
 {
     public function testConstruct()
     {
-
     }
 }

@@ -31,7 +31,7 @@ return [
                 'embedded_entity_events' => [
                     [
                         '@type' =>
-                            'Honeybee\Model\Task\ModifyAggregateRoot\ModifyEmbeddedEntity\EmbeddedEntityModifiedEvent',
+                        'Honeybee\Model\Task\ModifyAggregateRoot\ModifyEmbeddedEntity\EmbeddedEntityModifiedEvent',
                         'data' => [
                             'identifier' => '6c469af2-f60a-4bd9-b220-822a377f033e',
                             'nickname' => 'Game Player Nickname'

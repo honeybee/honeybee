@@ -8,6 +8,5 @@ class CriteriaListTest extends TestCase
 {
     public function testConstruct()
     {
-
     }
 }
