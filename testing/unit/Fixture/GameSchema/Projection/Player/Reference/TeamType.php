@@ -3,7 +3,7 @@
 namespace Honeybee\Tests\Fixture\GameSchema\Projection\Player\Reference;
 
 use Honeybee\Projection\ReferencedEntityType;
-use Honeybee\Tests\Fixture\GameSchema\Projection\Team\TeamType;
+use Honeybee\Tests\Fixture\GameSchema\Projection\Team\TeamType as ReferencedTeamType;
 
 class TeamType extends ReferencedEntityType
 {
@@ -15,7 +15,7 @@ class TeamType extends ReferencedEntityType
                 new Text('name', $this, [ 'mirrored' => true ], $parent_attribute)
             ],
             [
-                'referenced_type' => TeamType::CLASS,
+                'referenced_type' => ReferencedTeamType::CLASS,
                 'identifying_attribute' => 'identifier',
             ],
             [],

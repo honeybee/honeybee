@@ -2,14 +2,13 @@
 
 namespace Honeybee\Projection;
 
-use Trellis\Common\OptionsInterface;
-use Trellis\Runtime\EntityTypeInterface;
-use Trellis\Runtime\ReferencedEntityTypeInterface;
-use Trellis\Runtime\Attribute\AttributeMap;
-use Trellis\Runtime\Attribute\AttributeInterface;
-use Trellis\Runtime\Attribute\Text\TextAttribute;
+use Honeybee\Common\Error\RuntimeError;
+use Trellis\EntityType\Attribute\AttributeInterface;
+use Trellis\EntityType\Attribute\AttributeMap;
+use Trellis\EntityType\Attribute\Text\TextAttribute;
+use Trellis\EntityType\TypeReferenceInterface;
 
-abstract class ReferencedEntityType extends EmbeddedEntityType implements ReferencedEntityTypeInterface
+abstract class ReferencedEntityType extends EmbeddedEntityType implements TypeReferenceInterface
 {
     const OPTION_IDENTIFYING_ATTRIBUTE_NAME = 'identifying_attribute';
 
@@ -18,20 +17,19 @@ abstract class ReferencedEntityType extends EmbeddedEntityType implements Refere
     public function __construct(
         $name,
         array $attributes = [],
-        OptionsInterface $options = null,
-        EntityTypeInterface $parent = null,
+        array $options = [],
         AttributeInterface $parent_attribute = null
     ) {
         parent::__construct($name, $attributes, $options, $parent, $parent_attribute);
 
         if (!$this->hasOption(self::OPTION_IDENTIFYING_ATTRIBUTE_NAME)) {
-            throw new RuntimeException(
+            throw new RuntimeError(
                 sprintf('Missing expected option "%s"', self::OPTION_IDENTIFYING_ATTRIBUTE_NAME)
             );
         }
 
         if (!$this->hasOption(self::OPTION_REFERENCED_TYPE_CLASS)) {
-            throw new RuntimeException(
+            throw new RuntimeError(
                 sprintf('Missing expected option "%s"', self::OPTION_REFERENCED_TYPE_CLASS)
             );
         }

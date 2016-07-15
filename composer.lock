@@ -498,12 +498,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/honeybee/trellis.git",
-                "reference": "8ba8689b8dc113312ccdbd888209b7c155c3b5c2"
+                "reference": "67e61dcaed479b55322c0dae15be3da0b72bafa2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/honeybee/trellis/zipball/8ba8689b8dc113312ccdbd888209b7c155c3b5c2",
-                "reference": "8ba8689b8dc113312ccdbd888209b7c155c3b5c2",
+                "url": "https://api.github.com/repos/honeybee/trellis/zipball/67e61dcaed479b55322c0dae15be3da0b72bafa2",
+                "reference": "67e61dcaed479b55322c0dae15be3da0b72bafa2",
                 "shasum": ""
             },
             "require": {
@@ -536,7 +536,7 @@
                 "value-object",
                 "vo"
             ],
-            "time": "2016-07-09 21:36:05"
+            "time": "2016-07-10 00:52:58"
         },
         {
             "name": "jms/parser-lib",

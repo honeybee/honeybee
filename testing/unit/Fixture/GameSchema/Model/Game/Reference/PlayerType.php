@@ -4,7 +4,7 @@ namespace Honeybee\Tests\Fixture\GameSchema\Model\Game\Reference;
 
 use Honeybee\Model\Aggregate\ReferencedEntityType;
 use Honeybee\Tests\Fixture\GameSchema\Model\Game\Embed\ProfileType;
-use Honeybee\Tests\Fixture\GameSchema\Model\Player\PlayerType;
+use Honeybee\Tests\Fixture\GameSchema\Model\Player\PlayerType as ReferencedPlayerType;
 use Trellis\EntityType\Attribute\EntityList\EntityListAttribute;
 use Trellis\EntityType\Attribute\GeoPoint\GeoPointAttribute;
 use Trellis\EntityType\Attribute\Text\TextAttribute;
@@ -27,7 +27,7 @@ class PlayerType extends ReferencedEntityType
                 ),
             ],
             [
-                'referenced_type' => PlayerType::CLASS,
+                'referenced_type' => ReferencedPlayerType::CLASS,
                 'identifying_attribute' => 'identifier'
             ],
             $parent_attribute

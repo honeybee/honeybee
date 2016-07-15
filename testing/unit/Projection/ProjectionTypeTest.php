@@ -20,7 +20,7 @@ class ProjectionTypeTest extends TestCase
         $expected_attributes = include __DIR__ . '/Fixture/default_attributes.php';
         $attribute_names = array_keys($expected_attributes);
 
-        $this->assertEquals($attribute_names, $test_entity_type->getDefaultAttributeNames());
+        $this->assertEquals($attribute_names, $test_entity_type->getDefaultAttributes()->getKeys());
     }
 
     public function testGetDefaultAttributesNamesHierarchicalType()
@@ -31,7 +31,7 @@ class ProjectionTypeTest extends TestCase
         $expected_attributes = include __DIR__ . '/Fixture/default_attributes_hierarchical.php';
         $attribute_names = array_keys($expected_attributes);
 
-        $this->assertEquals($attribute_names, $test_entity_type->getDefaultAttributeNames());
+        $this->assertEquals($attribute_names, $test_entity_type->getDefaultAttributes()->getKeys());
     }
 
     public function testGetDefaultAttributes()

@@ -3,7 +3,7 @@
 namespace Honeybee\Tests\Fixture\GameSchema\Model\Player\Reference;
 
 use Honeybee\Model\Aggregate\ReferencedEntityType;
-use Honeybee\Tests\Fixture\GameSchema\Model\Team\TeamType;
+use Honeybee\Tests\Fixture\GameSchema\Model\Team\TeamType as ReferencedTeamType;
 use Trellis\EntityType\Attribute\AttributeInterface;
 use Trellis\EntityType\Attribute\Text\TextAttribute;
 
@@ -17,7 +17,7 @@ class TeamType extends ReferencedEntityType
                 new TextAttribute('name', $this, [], $parent_attribute)
             ],
             [
-                'referenced_type' => TeamType::CLASS,
+                'referenced_type' => ReferencedTeamType::CLASS,
                 'identifying_attribute' => 'identifier'
             ],
             $parent_attribute

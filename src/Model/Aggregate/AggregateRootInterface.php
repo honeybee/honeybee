@@ -34,6 +34,9 @@ interface AggregateRootInterface
 
     public function getVersion();
 
+    /**
+     * @return int
+     */
     public function getRevision();
 
     public function getWorkflowState();

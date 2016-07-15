@@ -65,7 +65,7 @@ class AggregateRootTest extends TestCase
     /**
      * The create command requires an aggregate root type to be specified
      *
-     * @expectedException Assert\InvalidArgumentException
+     * @expectedException \Assert\InvalidArgumentException
      */
     public function testCreateWithoutType()
     {
@@ -132,7 +132,7 @@ class AggregateRootTest extends TestCase
     /**
      * The modify command requires an aggregate root type to be specified
      *
-     * @expectedException Assert\InvalidArgumentException
+     * @expectedException \Assert\InvalidArgumentException
      */
     public function testModifyWithoutType()
     {
@@ -153,7 +153,7 @@ class AggregateRootTest extends TestCase
      * Expects an exception when providing an aggregate-root-identifier that does
      * not correspond to the aggregate-root which the command is processed upon.
      *
-     * @expectedException Assert\InvalidArgumentException
+     * @expectedException \Assert\InvalidArgumentException
      */
     public function testModifyInvalidAggregateRootIdentifier()
     {
@@ -235,7 +235,7 @@ class AggregateRootTest extends TestCase
      * Expects a second reconstitution from a different event list to
      * generate a different aggregate-root, with no data related to the
      * first aggregate-root.
-     * @expectedException Honeybee\Common\Error\RuntimeError
+     * @expectedException \Honeybee\Common\Error\RuntimeError
      */
     public function testReconstituteFromEventListTwice()
     {
@@ -252,7 +252,7 @@ class AggregateRootTest extends TestCase
      * Expects an exception when trying to force a non valid sequence-number
      * into a manually created event.
      *
-     * @expectedException Honeybee\Common\Error\RuntimeError
+     * @expectedException \Honeybee\Common\Error\RuntimeError
      */
     public function testReconstituteFromInvalidEventSequenceNumber()
     {
@@ -276,7 +276,7 @@ class AggregateRootTest extends TestCase
      * Expects an exception when trying to force a non valid known-revision
      * into a command.
      *
-     * @expectedException Honeybee\Common\Error\RuntimeError
+     * @expectedException \Honeybee\Common\Error\RuntimeError
      */
     public function testReconstituteFromInvalidCommandKnownRevision()
     {
@@ -300,7 +300,7 @@ class AggregateRootTest extends TestCase
      * Expects an exception when trying to reconstitute an aggregate-root
      * from an event list where the first event is not a CreatedEvent.
      *
-     * @expectedException Honeybee\Common\Error\RuntimeError
+     * @expectedException \Honeybee\Common\Error\RuntimeError
      */
     public function testReconstituteFromEventListWithNoCreatedEvent()
     {
@@ -350,7 +350,7 @@ class AggregateRootTest extends TestCase
      * Expects an exception with a specific message, when trying to proceed
      * to a workflow state without having first created the aggregate-root.
      *
-     * @expectedException Honeybee\Common\Error\RuntimeError
+     * @expectedException \Honeybee\Common\Error\RuntimeError
      * @expectedExceptionMessage Invalid event history. No event has been previously applied.
      */
     public function testProceedWorkflowWithoutCreation()
@@ -374,7 +374,7 @@ class AggregateRootTest extends TestCase
      * Expects an exception when trying to proceed in the workflow providing
      * a not valid current state.
      *
-     * @expectedException Honeybee\Common\Error\RuntimeError
+     * @expectedException \Honeybee\Common\Error\RuntimeError
      */
     public function testProceedWorkflowInvalidCurrentState()
     {
@@ -398,7 +398,7 @@ class AggregateRootTest extends TestCase
      * but providing an invalid transition event (according to the
      * state-machine definition).
      *
-     * @expectedException Workflux\Error\Error
+     * @expectedException \Workflux\Error\Error
      */
     public function testProceedWorkflowInvalidEvent()
     {

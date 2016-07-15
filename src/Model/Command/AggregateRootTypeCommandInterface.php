@@ -9,4 +9,6 @@ interface AggregateRootTypeCommandInterface extends CommandInterface
     public function getAggregateRootType();
 
     public function getEventClass();
+
+    public function getEmbeddedEntityCommands();
 }

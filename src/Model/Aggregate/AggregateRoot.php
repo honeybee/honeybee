@@ -2,11 +2,11 @@
 
 namespace Honeybee\Model\Aggregate;
 
+use Assert\Assertion;
 use Honeybee\Common\Error\RuntimeError;
-use Honeybee\Model\Aggregate\AggregateRootTypeInterface;
+use Honeybee\Infrastructure\Command\CommandInterface;
 use Honeybee\Model\Command\AggregateRootCommandInterface;
 use Honeybee\Model\Command\AggregateRootTypeCommandInterface;
-use Honeybee\Infrastructure\Command\CommandInterface;
 use Honeybee\Model\Event\AggregateRootEventInterface;
 use Honeybee\Model\Event\AggregateRootEventList;
 use Honeybee\Model\Event\EmbeddedEntityEventList;
@@ -21,6 +21,10 @@ use Honeybee\Model\Task\MoveAggregateRootNode\AggregateRootNodeMovedEvent;
 use Honeybee\Model\Task\MoveAggregateRootNode\MoveAggregateRootNodeCommand;
 use Honeybee\Model\Task\ProceedWorkflow\ProceedWorkflowCommand;
 use Honeybee\Model\Task\ProceedWorkflow\WorkflowProceededEvent;
+use Trellis\EntityType\Attribute\AttributeInterface;
+use Trellis\EntityType\Attribute\EntityList\EntityListAttribute;
+use Trellis\EntityType\Attribute\Uuid\Uuid;
+use Trellis\EntityType\Attribute\Uuid\Uuidd;
 use Workflux\StateMachine\StateMachineInterface;
 
 /**
@@ -95,7 +99,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
     /**
      * Returns an aggregate-root's revision.
      *
-     * @return string
+     * @return int
      */
     public function getRevision()
     {
@@ -106,6 +110,8 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
      * Return the id of our parent-node, if the aggregate's data is being managed as a tree.
      *
      * @return string
+     *
+     * @throws RuntimeError
      */
     public function getParentNodeId()
     {
@@ -171,26 +177,10 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
      */
     public function reconstituteFrom(AggregateRootEventList $history)
     {
-        if (!$this->history->isEmpty()) {
-            throw new RuntimeError('Trying to reconstitute a history on a already initialized aggregate-root.');
-        }
-
-        $first = true;
-        foreach ($history as $past_event) {
-            if ($first) {
-                $first = false;
-                if (!$past_event instanceof AggregateRootCreatedEvent) {
-                    throw new RuntimeError(
-                        sprintf(
-                            'The first event given within a history to reconstitue from must be by the type of "%s".' .
-                            ' Instead "%s" was given for AR %s.',
-                            AggregateRootCreatedEvent::CLASS,
-                            get_class($past_event),
-                            $past_event->getAggregateRootIdentifier()
-                        )
-                    );
-                }
-            }
+        Assertion::count($this->history, 0, 'Reconstituting an already initialized aggregate-root is not allowed.');
+        for ($i = 0; $i < $history->getSize(); $i++) {
+            $past_event = $history[$i];
+            Assertion::eq($past_event->getSeqNumber(), $i, 'Unexpected seq-number given within history.');
             $this->history = $this->history->push($this->applyEvent($past_event, false));
         }
     }
@@ -198,25 +188,19 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
     /**
      * Start a new life-cycle for the current aggregate-root.
      *
-     * @param CreateAggreagteRootCommand $create_command
+     * @param CreateAggregateRootCommand $create_command
      */
     public function create(CreateAggregateRootCommand $create_command)
     {
-        $initial_data = $this->createInitialData($create_command);
-
         $created_event = $this->processCommand(
             $create_command,
-            [ 'aggregate_root_identifier' => $initial_data['identifier'], 'data' => $initial_data ]
+            [ 'data' => $this->createInitialData($create_command) ]
         );
-
-        if (!$created_event instanceof AggregateRootCreatedEvent) {
-            throw new RuntimeError(
-                sprintf(
-                    'Corrupt event type detected. Events that reflect entity creation must descend from %s.',
-                    AggregateRootCreatedEvent::CLASS
-                )
-            );
-        }
+        Assertion::isInstanceOf(
+            AggregateRootCreatedEvent::CLASS,
+            $created_event,
+            'Events that reflect AR creation must descend from: ' . AggregateRootCreatedEvent::CLASS
+        );
 
         $this->applyEvent($created_event);
     }
@@ -229,20 +213,15 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
     public function modify(ModifyAggregateRootCommand $modify_command)
     {
         $this->guardCommandPreConditions($modify_command);
-
         $modified_event = $this->processCommand(
             $modify_command,
             [ 'data' => $modify_command->getValues() ]
         );
-
-        if (!$modified_event instanceof AggregateRootModifiedEvent) {
-            throw new RuntimeError(
-                sprintf(
-                    'Corrupt event type detected. Events that reflect entity modification must descend from %s.',
-                    AggregateRootModifiedEvent::CLASS
-                )
-            );
-        }
+        Assertion::isInstanceOf(
+            AggregateRootModifiedEvent::CLASS,
+            $modified_event,
+            'Events that reflect AR mutation must descend from: ' . AggregateRootModifiedEvent::CLASS
+        );
 
         $this->applyEvent($modified_event);
     }
@@ -255,36 +234,29 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
     public function proceedWorkflow(ProceedWorkflowCommand $workflow_command)
     {
         $this->guardCommandPreConditions($workflow_command);
-
-        if ($workflow_command->getCurrentStateName() !== $this->getWorkflowState()) {
-            throw new RuntimeError(
-                sprintf(
-                    'The AR\'s(%s) current state %s does not match the given command state %s.',
-                    $this,
-                    $this->getWorkflowState(),
-                    $workflow_command->getCurrentStateName()
-                )
-            );
-        }
+        Assertion::eq($workflow_command->getCurrentStateName(), $this->getWorkflowState(), sprintf(
+            "Unexpected workflow state. Expected: '%s', given '%s'.",
+            $this->getWorkflowState(),
+            $workflow_command->getCurrentStateName()
+        ));
 
         $workflow_subject = new WorkflowSubject($this->state_machine->getName(), $this);
         $this->state_machine->execute($workflow_subject, $workflow_command->getEventName());
 
-        $workflow_data = [
-            'workflow_state' => $workflow_subject->getCurrentStateName(),
-            'workflow_parameters' => $workflow_subject->getWorkflowParameters()
-        ];
-
-        $proceeded_event = $this->processCommand($workflow_command, [ 'data' => $workflow_data ]);
-
-        if (!$proceeded_event instanceof WorkflowProceededEvent) {
-            throw new RuntimeError(
-                sprintf(
-                    'Corrupt event type detected. Events that reflect workflow transitions must descend from %s.',
-                    WorkflowProceededEvent::CLASS
-                )
-            );
-        }
+        $proceeded_event = $this->processCommand(
+            $workflow_command,
+            [
+                'data' => [
+                    'workflow_state' => $workflow_subject->getCurrentStateName(),
+                    'workflow_parameters' => $workflow_subject->getWorkflowParameters()
+                ]
+            ]
+        );
+        Assertion::isInstanceOf(
+            WorkflowProceededEvent::CLASS,
+            $proceeded_event,
+            'Events that reflect  workflow transitions must descend from: ' . WorkflowProceededEvent::CLASS
+        );
 
         $this->applyEvent($proceeded_event);
     }
@@ -292,25 +264,22 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
     /**
      * Transition to the next workflow state (hence next state of the statemachine based on the command paylaod).
      *
-     * @param ProceedWorkflowCommand $workflow_command
+     * @param MoveAggregateRootNodeCommand $move_node_command
+     *
+     * @throws RuntimeError
      */
     public function moveNode(MoveAggregateRootNodeCommand $move_node_command)
     {
         $this->guardCommandPreConditions($move_node_command);
-
         $node_moved_event = $this->processCommand(
             $move_node_command,
             [ 'data' => [ 'parent_node_id' => $move_node_command->getParentNodeId() ] ]
         );
-
-        if (!$node_moved_event instanceof AggregateRootNodeMovedEvent) {
-            throw new RuntimeError(
-                sprintf(
-                    'Corrupt event type detected. Events that reflect nodes being moved must descend from %s.',
-                    AggregateRootNodeMovedEvent::CLASS
-                )
-            );
-        }
+        Assertion::isInstanceOf(
+            AggregateRootNodeMovedEvent::CLASS,
+            $node_moved_event,
+            'Events that reflect  nodes being moved must descend from: ' . AggregateRootNodeMovedEvent::CLASS
+        );
 
         $this->applyEvent($node_moved_event);
     }
@@ -324,46 +293,24 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
      */
     protected function createInitialData(CreateAggregateRootCommand $create_command)
     {
-        $type = $this->getEntityType();
-        $type_prefix = $type->getPrefix();
-
+        $entity_type = $this->getEntityType();
         $create_data = $create_command->getValues();
-        $create_data[self::OBJECT_TYPE] = $type_prefix;
 
         $value_or_default = function ($key, $default) use ($create_data) {
             return isset($create_data[$key]) ? $create_data[$key] : $default;
         };
-
-        $uuid = $value_or_default('uuid', $type->getAttribute('uuid')->getDefaultValue());
-        $language = $value_or_default('language', $type->getAttribute('language')->getDefaultValue());
+        $uuid = $value_or_default('uuid', Uuid::generate()->toNative());
+        $language = $value_or_default('language', $entity_type->getOption('default_lang', 'de_DE'));
         $version = $value_or_default('version', 1);
-        $identifier = sprintf('%s-%s-%s-%s', $type_prefix, $uuid, $language, $version);
-
-        $default_attributes = $type->getDefaultAttributes();
-        $non_default_attributes = $type->getAttributes()->filter(
-            function (AttributeInterface $attribute) use ($default_attributes) {
-                return !$attribute instanceof EmbeddedEntityListAttribute
-                   && !array_key_exists($attribute->getName(), $default_attributes);
-            }
-        );
-
-        $default_values = [];
-        foreach ($non_default_attributes as $attribute_name => $attribute) {
-            if (!$attribute->createValueHolder(true)->isNull()) {
-                $default_values[$attribute_name] = $attribute->getDefaultValue();
-            }
-        }
 
         return array_merge(
-            $default_values,
             $create_data,
             [
-                'identifier' => $identifier,
+                'identifier' => sprintf('%s-%s-%s-%s', $entity_type->getPrefix(), $uuid, $language, $version),
                 'uuid' => $uuid,
                 'language' => $language,
                 'version' => $version,
-                'workflow_state' => $this->state_machine->getInitialState()->getName(),
-                'workflow_parameters' => []
+                'workflow_state' => $this->state_machine->getInitialState()->getName()
             ]
         );
     }
@@ -372,26 +319,19 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
      * Check if the given command conflicts with any events that have occured since it was issued.
      *
      * @param AggregateRootCommandInterface $command
+     *
+     * @throws RuntimeError
      */
     protected function guardCommandPreConditions(AggregateRootCommandInterface $command)
     {
-        if ($this->getHistory()->isEmpty()) {
-            throw new RuntimeError(
-                sprintf(
-                    'Invalid event history.' .
-                    ' No event has been previously applied. At least a %s should be applied.',
-                    AggregateRootCreatedEvent::CLASS
-                )
-            );
-        }
+        Assertion::notEmpty($this->getHistory(), 'Cant send commands to a not yet created AR.');
+        Assertion::greaterOrEqualThan(
+            $this->getRevision(),
+            $command->getKnownRevision(),
+            'The current head revision may not be smaller than the commands given known-revision.'
+        );
 
-        if ($this->getHistory()->getLast()->getSeqNumber() < $command->getKnownRevision()) {
-            throw new RuntimeError(
-                'Invalid known-revision.' .
-                ' The current head revision may not be smaller than a given known-revision.'
-            );
-        }
-
+        $conflicting_events = [];
         if ($this->getHistory()->getLast()->getSeqNumber() > $command->getKnownRevision()) {
             $conflicting_events = $this->getHistory()->reverse()->filter(
                 function (AggregateRootEventInterface $event) use ($command) {
@@ -399,49 +339,8 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
                         && $command->conflictsWith($event);
                 }
             );
-
-            if (!$conflicting_events->isEmpty()) {
-                throw new RuntimeError('Command can not be applied, because conflicting changes have occured.');
-            }
         }
-    }
-
-    protected function guardEventPreConditions(AggregateRootEventInterface $event)
-    {
-        if (!$event instanceof AggregateRootCreatedEvent
-            && $this->getIdentifier() !== $event->getAggregateRootIdentifier()
-        ) {
-            throw new RuntimeError(
-                sprintf(
-                    'The AR\'s current identifier (%s) does not match the given event\'s AR identifier (%s).',
-                    $this->getIdentifier(),
-                    $event->getAggregateRootIdentifier()
-                )
-            );
-        }
-
-        if (!$event instanceof AggregateRootCreatedEvent && !$event instanceof AggregateRootModifiedEvent) {
-            throw new RuntimeError(
-                sprintf(
-                    'Unsupported domain event-type "%s" given. Supported event-types are: %s.',
-                    get_class($event),
-                    implode(', ', [ AggregateRootCreatedEvent::CLASS, AggregateRootModifiedEvent::CLASS ])
-                )
-            );
-        }
-
-        $last_event = $this->getHistory()->getLast();
-
-        if ($last_event && $event->getSeqNumber() !== $this->getRevision() + 1) {
-            throw new RuntimeError(
-                sprintf(
-                    'Invalid sequence-number. ' .
-                    'The given event sequence-number(%d) must be incremental relative to the known-revision(%s).',
-                    $event->getSeqNumber(),
-                    $this->getRevision()
-                )
-            );
-        }
+        Assertion::count($conflicting_events, 0, 'Conflict with concurrent operation detected, command cancelled.');
     }
 
     /**
@@ -451,31 +350,39 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
      * @param array $custom_event_state
      *
      * @return AggregateRootEventInterface
+     *
+     * @throws RuntimeError
      */
     protected function processCommand(AggregateRootTypeCommandInterface $command, array $custom_event_state = [])
     {
-        $event_class = $command->getEventClass();
-        $default_event_state = [
-            'metadata' => $command->getMetadata(),
-            'uuid' => $command->getUuid(),
-            'seq_number' => $this->getRevision() + 1,
-            'aggregate_root_type' => $command->getAggregateRootType()
-        ];
-
+        $ar_identifier = null;
         if ($command instanceof AggregateRootCommandInterface) {
-            $default_event_state['aggregate_root_identifier'] = $command->getAggregateRootIdentifier();
-        } elseif (!isset($custom_event_state['aggregate_root_identifier'])) {
-            throw new RuntimeError(
-                'Missing required "aggregate_root_identifier" attribute for building domain-event.'
-            );
+            $ar_identifier = $command->getAggregateRootIdentifier();
+        } else {
+            $payload = isset($custom_event_state['data']) ? $custom_event_state['data'] : $custom_event_state;
+            $ar_identifier = isset($$payload['aggregate_root_identifier'])
+                ? $$payload['aggregate_root_identifier']
+                : null;
         }
-        $embedded_entity_events = new EmbeddedEntityEventList();
-        foreach ($command->getEmbeddedEntityCommands() as $embedded_command) {
-            $embedded_entity_events->push($this->processEmbeddedEntityCommand($embedded_command));
-        }
-        $default_event_state['embedded_entity_events'] = $embedded_entity_events;
+        Assertion::notEmpty(
+            $ar_identifier,
+            'Missing required "aggregate_root_identifier" attribute for building domain-event.'
+        );
 
-        return new $event_class(array_merge($custom_event_state, $default_event_state));
+        $embedded_entity_events = new EmbeddedEntityEventList;
+        foreach ($command->getEmbeddedEntityCommands() as $embedded_command) {
+            $embedded_entity_events->push($this->processChildCommand($embedded_command));
+        }
+
+        $event_class = $command->getEventClass();
+        return new $event_class(array_merge($custom_event_state, [
+            'aggregate_root_type' => $command->getAggregateRootType(),
+            'aggregate_root_identifier' => $ar_identifier,
+            'metadata' => $command->getMetadata(),
+            'seq_number' => $this->getRevision() + 1,
+            'uuid' => $command->getUuid(),
+            'embedded_entity_events' => $embedded_entity_events
+        ]));
     }
 
     /**
@@ -484,9 +391,9 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
      * @param CommandInterface $command
      * @param array $custom_event_state
      *
-     * @return EmbeddedEntityEventInterface
+     * @return \Honeybee\Model\Event\EmbeddedEntityEventInterface;
      */
-    protected function processEmbeddedEntityCommand(CommandInterface $command, array $custom_event_state = [])
+    protected function processChildCommand(CommandInterface $command, array $custom_event_state = [])
     {
         $event_class = $command->getEventClass();
         $attribute_name = $command->getParentAttributeName();
@@ -501,7 +408,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
         } elseif ($command instanceof AddEmbeddedEntityCommand) {
             $create_data = $command->getValues();
             if (!isset($create_data['identifier'])) {
-                $create_data['identifier'] = UuidAttribute::generateVersion4();
+                $create_data['identifier'] = Uuid::generate();
             }
             $event_state = array_merge(
                 $event_state,
@@ -521,9 +428,9 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
                 ]
             );
         }
-        $embedded_entity_events = new EmbeddedEntityEventList();
+        $embedded_entity_events = new EmbeddedEntityEventList;
         foreach ($command->getEmbeddedEntityCommands() as $embedded_command) {
-            $embedded_entity_events->push($this->processEmbeddedEntityCommand($embedded_command));
+            $embedded_entity_events->push($this->processChildCommand($embedded_command));
         }
         $event_state['embedded_entity_events'] = $embedded_entity_events;
 
@@ -540,27 +447,8 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
      */
     protected function applyEvent(AggregateRootEventInterface $event, $auto_commit = true)
     {
-        $this->guardEventPreConditions($event);
-        if (!$this->setValues($event->getData())) {
-            foreach ($this->getValidationResults() as $validation_result) {
-                foreach ($validation_result->getViolatedRules() as $violated_rule) {
-                    foreach ($violated_rule->getIncidents() as $incident) {
-                        $errors[] = PHP_EOL . $validation_result->getSUbject()->getName() .
-                            ' - ' . $violated_rule->getName() .
-                            ' > ' . $incident->getName() . ': ' . print_r($incident->getParameters(), true);
-                    }
-                }
-            }
-            throw new RuntimeError(
-                sprintf(
-                    "Aggregate-root is in an invalid state after applying %s.\nErrors:%s",
-                    get_class($event),
-                    implode(PHP_EOL, $errors)
-                )
-            );
-        }
-
-        $embedded_entity_events = new EmbeddedEntityEventList();
+        $this->value_map = $this->value_map->withItems($event->getData());
+        $embedded_entity_events = new EmbeddedEntityEventList;
         foreach ($event->getEmbeddedEntityEvents() as $embedded_entity_event) {
             $embedded_entity_events->push($this->applyEmbeddedEntityEvent($embedded_entity_event));
         }
