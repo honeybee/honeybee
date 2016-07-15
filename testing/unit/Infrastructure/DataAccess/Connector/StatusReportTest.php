@@ -12,14 +12,13 @@ class StatusReportTest extends TestCase
 {
     public function testCreationSucceeds()
     {
-        $report1 = new StatusReport(Status::UNKNOWN, [], []);
-
+        new StatusReport(Status::UNKNOWN, [], []);
         $report2 = StatusReport::generate(new ConnectorMap);
         $this->assertInstanceOf(StatusReport::CLASS, $report2);
     }
 
     /**
-     * @expectedException Honeybee\Common\Error\RuntimeError
+     * @expectedException \Honeybee\Common\Error\RuntimeError
      */
     public function testCreationThrowsOnUnknownStatus()
     {
@@ -27,7 +26,7 @@ class StatusReportTest extends TestCase
     }
 
     /**
-     * @expectedException Honeybee\Common\Error\RuntimeError
+     * @expectedException \Honeybee\Common\Error\RuntimeError
      */
     public function testCreationThrowsOnNonStringStatus()
     {

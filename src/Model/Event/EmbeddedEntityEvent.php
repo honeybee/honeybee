@@ -3,12 +3,10 @@
 namespace Honeybee\Model\Event;
 
 use Assert\Assertion;
-use Trellis\Common\Object;
+use Honeybee\EntityInterface;
 use Honeybee\Common\Error\RuntimeError;
 
-abstract class EmbeddedEntityEvent extends Object implements
-    EmbeddedEntityEventInterface,
-    HasEmbeddedEntityEventsInterface
+abstract class EmbeddedEntityEvent implements EmbeddedEntityEventInterface, HasEmbeddedEntityEventsInterface
 {
     protected $data = [];
 
@@ -24,7 +22,11 @@ abstract class EmbeddedEntityEvent extends Object implements
     {
         $this->embedded_entity_events = new EmbeddedEntityEventList;
 
-        parent::__construct($state);
+        foreach ($state as $key => $val) {
+            if (property_exists($this, $key)) {
+                $this->$key = $val;
+            }
+        }
     }
 
     public function getData()
@@ -59,7 +61,7 @@ abstract class EmbeddedEntityEvent extends Object implements
         } elseif (is_array($embedded_entity_events)) {
             $this->embedded_entity_events = new EmbeddedEntityEventList;
             foreach ($embedded_entity_events as $embedded_entity_event) {
-                $event_class = $embedded_entity_event[self::OBJECT_TYPE];
+                $event_class = $embedded_entity_event['@type'];
                 $this->embedded_entity_events->push(new $event_class($embedded_entity_event));
             }
         } else {
@@ -69,12 +71,18 @@ abstract class EmbeddedEntityEvent extends Object implements
 
     protected function guardRequiredState()
     {
-        parent::guardRequiredState();
-
         Assertion::string($this->parent_attribute_name);
         Assertion::string($this->embedded_entity_type);
         Assertion::uuid($this->embedded_entity_identifier);
         Assertion::isArray($this->embedded_entity_events);
         Assertion::isArray($this->data);
+    }
+
+    public function toArray()
+    {
+        $array = get_object_vars($this);
+        $array['@type'] = static::CLASS;
+
+        return $array;
     }
 }

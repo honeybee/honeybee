@@ -8,7 +8,7 @@ use Honeybee\Tests\Fixture\GameSchema\Projection\Game\GameType;
 use Honeybee\Tests\Fixture\GameSchema\Projection\Team\TeamType;
 use Honeybee\Tests\Fixture\GameSchema\Projection\Player\PlayerType;
 use Mockery;
-use Trellis\Runtime\Attribute\AttributeMap;
+use Trellis\EntityType\Attribute\AttributeMap;
 
 class ProjectionTypeTest extends TestCase
 {

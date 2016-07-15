@@ -2,8 +2,8 @@
 
 namespace Honeybee\Projection;
 
-use Trellis\Runtime\Attribute\AttributeMap;
-use Trellis\Runtime\Attribute\Uuid\UuidAttribute;
+use Trellis\EntityType\Attribute\AttributeMap;
+use Trellis\EntityType\Attribute\Uuid\UuidAttribute;
 
 abstract class EmbeddedEntityType extends EntityType
 {
@@ -14,11 +14,10 @@ abstract class EmbeddedEntityType extends EntityType
      */
     public function getDefaultAttributes()
     {
-        $default_attributes = [
-            new UuidAttribute('identifier', $this, [], $this->getParentAttribute())
-        ];
+        $default_attributes_map = new AttributeMap(
+            [ new UuidAttribute('identifier', $this, [], $this->getParentAttribute()) ]
+        );
 
-        $default_attributes_map = new AttributeMap($default_attributes);
         return parent::getDefaultAttributes()->append($default_attributes_map);
     }
 }

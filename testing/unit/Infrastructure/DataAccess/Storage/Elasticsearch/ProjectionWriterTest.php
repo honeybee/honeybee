@@ -97,7 +97,7 @@ class ProjectionWriterTest extends TestCase
     }
 
     /**
-     * @expectedException Honeybee\Common\Error\RuntimeError
+     * @expectedException \Honeybee\Common\Error\RuntimeError
      */
     public function testWriteWithNull()
     {
@@ -114,7 +114,7 @@ class ProjectionWriterTest extends TestCase
     }
 
     /**
-     * @expectedException Honeybee\Common\Error\RuntimeError
+     * @expectedException \Honeybee\Common\Error\RuntimeError
      */
     public function testWriteWithArray()
     {
@@ -359,7 +359,7 @@ class ProjectionWriterTest extends TestCase
     }
 
     /**
-     * @expectedException Honeybee\Common\Error\RuntimeError
+     * @expectedException \Honeybee\Common\Error\RuntimeError
      */
     public function testWriteManyWithNull()
     {
@@ -376,7 +376,7 @@ class ProjectionWriterTest extends TestCase
     }
 
     /**
-     * @expectedException Honeybee\Common\Error\RuntimeError
+     * @expectedException \Honeybee\Common\Error\RuntimeError
      */
     public function testWriteManyWithArray()
     {

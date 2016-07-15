@@ -7,7 +7,7 @@ use Honeybee\Projection\ProjectionList;
 use Honeybee\Projection\ProjectionMap;
 use Honeybee\Tests\TestCase;
 use Mockery;
-use Trellis\Runtime\Entity\EntityList;
+use Trellis\EntityType\Attribute\EntityList\EntityList;
 
 class ProjectionListTest extends TestCase
 {
@@ -36,11 +36,11 @@ class ProjectionListTest extends TestCase
     }
 
     /**
-     * @expectedException Trellis\Common\Error\InvalidTypeException
+     * @expectedException \Trellis\Exception
      */
     public function testGetItemImplementorWithNotMatching()
     {
-        $projection_list = new ProjectionList([ new \stdClass ]);
+        new ProjectionList([ new \stdClass ]);
     }
 
     public function testToMap()

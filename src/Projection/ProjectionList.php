@@ -7,9 +7,9 @@ use Trellis\Collection\UniqueItemInterface;
 
 class ProjectionList extends TypedList implements UniqueItemInterface
 {
-    public function __construct(array $projections = [])
+    public function __construct(array $projection_types = [])
     {
-        parent::__construct(ProjectionInterface::CLASS, $projections);
+        parent::__construct(ProjectionInterface::CLASS, $projection_types);
     }
 
     /**

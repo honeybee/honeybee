@@ -12,6 +12,9 @@ use Workflux\StateMachine\StateMachineInterface;
 
 class GameType extends ProjectionType
 {
+    /**
+     * @param StateMachineInterface $state_machine
+     */
     public function __construct(StateMachineInterface $state_machine)
     {
         $this->workflow_state_machine = $state_machine;
@@ -35,6 +38,9 @@ class GameType extends ProjectionType
     }
 
 
+    /**
+     * @return string
+     */
     public function getEntityImplementor()
     {
         return Game::CLASS;

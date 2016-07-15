@@ -1,7 +1,7 @@
 <?php
 return [
     'identifier' => [
-        '@type' => 'Trellis\Runtime\Attribute\Text\TextAttribute',
+        '@type' => 'Trellis\EntityType\Attribute\Text\TextAttribute',
         'parent' => null,
         'name' => 'identifier',
         'options' => [],
@@ -9,7 +9,7 @@ return [
         'value_holder_implementor' => null
     ],
     'revision' => [
-        '@type' => 'Trellis\Runtime\Attribute\Integer\IntegerAttribute',
+        '@type' => 'Trellis\EntityType\Attribute\Integer\IntegerAttribute',
         'parent' => null,
         'name' => 'revision',
         'options' => [ 'default_value' => 0 ],
@@ -17,7 +17,7 @@ return [
         'value_holder_implementor' => null
     ],
     'uuid' => [
-        '@type' => 'Trellis\Runtime\Attribute\Uuid\UuidAttribute',
+        '@type' => 'Trellis\EntityType\Attribute\Uuid\UuidAttribute',
         'parent' => null,
         'name' => 'uuid',
         'options' => [],
@@ -25,7 +25,7 @@ return [
         'value_holder_implementor' => null
     ],
     'language' => [
-        '@type' => 'Trellis\Runtime\Attribute\Text\TextAttribute',
+        '@type' => 'Trellis\EntityType\Attribute\Text\TextAttribute',
         'parent' => null,
         'name' => 'language',
         'options' => [ 'default_value' => 'de_DE' ],
@@ -33,7 +33,7 @@ return [
         'value_holder_implementor' => null
     ],
     'version' => [
-        '@type' => 'Trellis\Runtime\Attribute\Integer\IntegerAttribute',
+        '@type' => 'Trellis\EntityType\Attribute\Integer\IntegerAttribute',
         'parent' => null,
         'name' => 'version',
         'options' => [ 'default_value' => 1 ],
@@ -41,7 +41,7 @@ return [
         'value_holder_implementor' => null
     ],
     'created_at' => [
-        '@type' => 'Trellis\Runtime\Attribute\Timestamp\TimestampAttribute',
+        '@type' => 'Trellis\EntityType\Attribute\Timestamp\TimestampAttribute',
         'parent' => null,
         'name' => 'created_at',
         'options' => [
@@ -52,7 +52,7 @@ return [
         'value_holder_implementor' => null
     ],
     'modified_at' => [
-        '@type' => 'Trellis\Runtime\Attribute\Timestamp\TimestampAttribute',
+        '@type' => 'Trellis\EntityType\Attribute\Timestamp\TimestampAttribute',
         'parent' => null,
         'name' => 'modified_at',
         'options' => [
@@ -63,7 +63,7 @@ return [
         'value_holder_implementor' => null
     ],
     'workflow_state' => [
-        '@type' => 'Trellis\Runtime\Attribute\Text\TextAttribute',
+        '@type' => 'Trellis\EntityType\Attribute\Text\TextAttribute',
         'parent' => null,
         'name' => 'workflow_state',
         'options' => [],
@@ -71,7 +71,7 @@ return [
         'value_holder_implementor' => null
     ],
     'workflow_parameters' => [
-        '@type' => 'Trellis\Runtime\Attribute\KeyValueList\KeyValueListAttribute',
+        '@type' => 'Trellis\EntityType\Attribute\KeyValueList\KeyValueListAttribute',
         'parent' => null,
         'name' => 'workflow_parameters',
         'options' => [],
@@ -79,7 +79,7 @@ return [
         'value_holder_implementor' => null
     ],
     'metadata' => [
-        '@type' => 'Trellis\Runtime\Attribute\KeyValueList\KeyValueListAttribute',
+        '@type' => 'Trellis\EntityType\Attribute\KeyValueList\KeyValueListAttribute',
         'parent' => null,
         'name' => 'metadata',
         'options' => [],

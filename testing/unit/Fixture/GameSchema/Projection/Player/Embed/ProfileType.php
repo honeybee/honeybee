@@ -3,7 +3,6 @@
 namespace Honeybee\Tests\Fixture\GameSchema\Projection\Player\Embed;
 
 use Honeybee\Projection\EmbeddedEntityType;
-use Honeybee\Tests\Fixture\GameSchema\Projection\Player\Embed\BadgeType;
 use Honeybee\Tests\Fixture\GameSchema\Projection\Player\Reference\ClanType;
 use Honeybee\Tests\Fixture\GameSchema\Projection\Player\Reference\TeamType;
 use Trellis\EntityType\Attribute\AttributeInterface;
@@ -14,6 +13,9 @@ use Trellis\EntityType\Attribute\Text\TextAttribute;
 
 class ProfileType extends EmbeddedEntityType
 {
+    /**
+     * @param AttributeInterface|null $parent_attribute
+     */
     public function __construct(AttributeInterface $parent_attribute = null)
     {
         parent::__construct(
@@ -39,6 +41,9 @@ class ProfileType extends EmbeddedEntityType
         );
     }
 
+    /**
+     * @return string
+     */
     public function getEntityImplementor()
     {
         return Profile::CLASS;

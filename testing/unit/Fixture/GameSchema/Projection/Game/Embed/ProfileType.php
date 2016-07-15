@@ -13,6 +13,9 @@ use Trellis\EntityType\Attribute\Text\TextAttribute;
 
 class ProfileType extends EmbeddedEntityType
 {
+    /**
+     * @param AttributeInterface|null $parent_attribute
+     */
     public function __construct(AttributeInterface $parent_attribute = null)
     {
         parent::__construct(
@@ -42,6 +45,9 @@ class ProfileType extends EmbeddedEntityType
         );
     }
 
+    /**
+     * @return string
+     */
     public function getEntityImplementor()
     {
         return Profile::CLASS;

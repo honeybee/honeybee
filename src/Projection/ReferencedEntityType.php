@@ -20,7 +20,7 @@ abstract class ReferencedEntityType extends EmbeddedEntityType implements TypeRe
         array $options = [],
         AttributeInterface $parent_attribute = null
     ) {
-        parent::__construct($name, $attributes, $options, $parent, $parent_attribute);
+        parent::__construct($name, $attributes, $options, $parent_attribute);
 
         if (!$this->hasOption(self::OPTION_IDENTIFYING_ATTRIBUTE_NAME)) {
             throw new RuntimeError(

@@ -7,7 +7,6 @@ use Honeybee\Projection\ProjectionList;
 use Honeybee\Projection\ProjectionMap;
 use Honeybee\Tests\TestCase;
 use Mockery;
-use Trellis\Runtime\Entity\EntityMap;
 
 class ProjectionMapTest extends TestCase
 {
@@ -15,7 +14,7 @@ class ProjectionMapTest extends TestCase
     {
         $projection_map = new ProjectionMap;
 
-        $this->assertInstanceOf(EntityMap::CLASS, $projection_map);
+        $this->assertInstanceOf(ProjectionMap::CLASS, $projection_map);
         $this->assertCount(0, $projection_map);
     }
 
@@ -25,18 +24,17 @@ class ProjectionMapTest extends TestCase
         $projection->shouldReceive('getIdentifier')->once()->withNoArgs()->andReturn('projection1');
         $projection_map = new ProjectionMap([ $projection ]);
 
-        $this->assertInstanceOf(EntityMap::CLASS, $projection_map);
         $this->assertCount(1, $projection_map);
         $this->assertEquals([ 'projection1' ], $projection_map->getKeys());
         $this->assertEquals([ $projection ], $projection_map->getValues());
     }
 
     /**
-     * @expectedException Trellis\Common\Error\InvalidTypeException
+     * @expectedException \Trellis\Exception
      */
     public function testGetItemImplementorWithNotMatching()
     {
-        $projection_map = new ProjectionMap([ new \stdClass ]);
+        new ProjectionMap([ new \stdClass ]);
     }
 
     public function testToList()
@@ -54,6 +52,6 @@ class ProjectionMapTest extends TestCase
         $projection_list = $projection_map->toList();
         $this->assertInstanceOf(ProjectionList::CLASS, $projection_list);
         $this->assertCount(1, $projection_list);
-        $this->assertEquals([ $projection ], $projection_list->getItems());
+        $this->assertEquals([ $projection ], iterator_to_array($projection_list));
     }
 }

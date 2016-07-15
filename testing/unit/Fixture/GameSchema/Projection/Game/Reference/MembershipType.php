@@ -9,6 +9,9 @@ use Trellis\EntityType\Attribute\Text\TextAttribute;
 
 class MembershipType extends ReferencedEntityType
 {
+    /**
+     * @param AttributeInterface|null $parent_attribute
+     */
     public function __construct(AttributeInterface $parent_attribute = null)
     {
         parent::__construct(
@@ -25,6 +28,9 @@ class MembershipType extends ReferencedEntityType
         );
     }
 
+    /**
+     * @return string
+     */
     public function getEntityImplementor()
     {
         return Membership::CLASS;

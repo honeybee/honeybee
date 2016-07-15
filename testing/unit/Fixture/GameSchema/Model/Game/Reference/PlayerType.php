@@ -5,12 +5,16 @@ namespace Honeybee\Tests\Fixture\GameSchema\Model\Game\Reference;
 use Honeybee\Model\Aggregate\ReferencedEntityType;
 use Honeybee\Tests\Fixture\GameSchema\Model\Game\Embed\ProfileType;
 use Honeybee\Tests\Fixture\GameSchema\Model\Player\PlayerType as ReferencedPlayerType;
+use Trellis\EntityType\Attribute\AttributeInterface;
 use Trellis\EntityType\Attribute\EntityList\EntityListAttribute;
 use Trellis\EntityType\Attribute\GeoPoint\GeoPointAttribute;
 use Trellis\EntityType\Attribute\Text\TextAttribute;
 
 class PlayerType extends ReferencedEntityType
 {
+    /**
+     * @param AttributeInterface|null $parent_attribute
+     */
     public function __construct(AttributeInterface $parent_attribute = null)
     {
         parent::__construct(
@@ -34,6 +38,9 @@ class PlayerType extends ReferencedEntityType
         );
     }
 
+    /**
+     * @return string
+     */
     public function getEntityImplementor()
     {
         return Player::CLASS;

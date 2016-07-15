@@ -2,9 +2,10 @@
 
 namespace Honeybee\Projection;
 
+use Trellis\EntityType\EntityTypeInterface;
 use Workflux\StateMachine\StateMachineInterface;
 
-interface ProjectionTypeInterface
+interface ProjectionTypeInterface extends EntityTypeInterface
 {
     /**
      * @return StateMachineInterface

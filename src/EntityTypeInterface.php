@@ -2,7 +2,9 @@
 
 namespace Honeybee;
 
-interface EntityTypeInterface
+use Trellis\EntityType\EntityTypeInterface as TrellisEntityTypeInterface;
+
+interface EntityTypeInterface extends TrellisEntityTypeInterface
 {
     public function isHierarchical();
 
@@ -18,7 +20,7 @@ interface EntityTypeInterface
     public function getFileHandlingAttributes();
 
     /**
-     * @return AttributeMap
+     * @return \Trellis\\EntityType\Attribute\AttributeMap
      */
     public function getMandatoryAttributes();
 }

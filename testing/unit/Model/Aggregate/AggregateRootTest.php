@@ -171,7 +171,7 @@ class AggregateRootTest extends TestCase
      * Expects an exception when trying to process a command without
      * having a CreatedEvent in the history.
      *
-     * @expectedException Honeybee\Common\Error\RuntimeError
+     * @expectedException \Honeybee\Common\Error\RuntimeError
      */
     public function testModifyWithoutCreatedEvent()
     {

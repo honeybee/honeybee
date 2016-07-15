@@ -11,8 +11,8 @@ use Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\AddEmbeddedEntityC
 use Honeybee\Model\Task\ModifyAggregateRoot\ModifyEmbeddedEntity\ModifyEmbeddedEntityCommand;
 use Honeybee\Model\Task\ModifyAggregateRoot\RemoveEmbeddedEntity\RemoveEmbeddedEntityCommand;
 use Shrink0r\Monatic\Error;
-use Shrink0r\Monatic\Result;
 use Shrink0r\Monatic\Success;
+use Trellis\EntityType\Attribute\AttributeInterface;
 use Trellis\EntityType\Attribute\EntityList\EntityList;
 use Trellis\EntityType\Attribute\EntityList\EntityListAttribute;
 
@@ -53,7 +53,10 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
     }
 
     /**
-     * @return array
+     * @param EntityListAttribute $attribute
+     * @param mixed[] $values
+     *
+     * @return \Shrink0r\Monatic\Result
      */
     protected function getEmbeddedCommands(EntityListAttribute $attribute, array $values)
     {
@@ -67,7 +70,7 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
             if (!isset($embedded_values['@type'])) {
                 $value_path = sprintf('%s.%d.@type', $attribute_name, $position);
                 $errors[$value_path]['@incidents'][] = [
-                    'path' => $attribute->getPath(),
+                    'path' => $attribute->toTypePath(),
                     'incidents' => [ 'invalid_type' => [ 'reason' => 'missing' ] ]
                 ];
                 continue;
@@ -169,7 +172,7 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
     }
 
     /**
-     * @return array
+     * @return mixed[]
      */
     public function getValues()
     {
@@ -177,13 +180,16 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
     }
 
     /**
-     * @return Result
+     * @param mixed[] $values
+     *
+     * @return \Shrink0r\Monatic\Result
      */
     protected function validateValues(array $values)
     {
         $errors = [];
         $sanitized_values = [];
 
+        /* @var \Trellis\EntityType\Attribute\AttributeInterface $attribute */
         foreach ($this->entity_type->getAttributes() as $attribute_name => $attribute) {
             if (isset($values[$attribute_name])) {
                 if ($attribute instanceof EntityListAttribute) {
@@ -193,7 +199,9 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
                      */
                     $result = $this->getEmbeddedCommands($attribute, $values[$attribute_name]);
                     if ($result instanceof Success) {
-                        $this->command_state['embedded_entity_commands']->addItems($result->get());
+                        /* @var EmbeddedEntityTypeCommandList $child_commands */
+                        $child_commands = $this->command_state['embedded_entity_commands'];
+                        $this->command_state['embedded_entity_commands'] = $child_commands->withItems($result->get());
                         continue;
                     }
                 } else {
@@ -212,7 +220,7 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
                         || $this->command_class === AddEmbeddedEntityCommand::CLASS)
                 ) {
                     $errors[][$attribute_name]['@incidents'][] = [
-                        'path' => $attribute->getPath(),
+                        'path' => $attribute->toTypePath(),
                         'incidents' => [ 'mandatory' => [ 'reason' => 'missing' ] ]
                     ];
                 }
@@ -223,58 +231,30 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
     }
 
     /**
-     * @return Result
+     * @param AttributeInterface $attribute
+     * @param mixed $value
+     *
+     * @return \Shrink0r\Monatic\Result
      */
     protected function sanitizeAttributeValue(AttributeInterface $attribute, $value)
     {
-        $errors = [];
-        $sanitized_value = null;
-
-        $value_holder = $attribute->createValueHolder();
-        $result = $value_holder->setValue($value);
-
-        if ($result->getSeverity() > IncidentInterface::NOTICE) {
-            foreach ($result->getViolatedRules() as $rule) {
-                foreach ($rule->getIncidents() as $name => $incident) {
-                    $incident_params = $incident->getParameters();
-                    $errors[$attribute->getName()]['@incidents'][] = [
-                        'path' => $attribute->getPath(),
-                        'incidents' => [ $name => $incident_params ]
-                    ];
-                }
-            }
+        try {
+            $result = Success::unit($attribute->createValue($value)->toNative());
+        } catch (\Exception $error) {
+            $result =  Error::unit($error);
         }
 
-        return empty($errors) ? Success::unit($value_holder->toNative()) : Error::unit($errors);
+        return $result;
     }
 
+    /**
+     * @param EntityInterface $entity
+     * @param array $payload
+     *
+     * @return mixed[]
+     */
     protected function filterUnmodifiedValues(EntityInterface $entity, array $payload)
     {
-        $modified_values = [];
-        foreach ($entity->getType()->getAttributes() as $attribute_name => $attribute) {
-            if (!array_key_exists($attribute_name, $payload)) {
-                continue;
-            }
-            $value_holder = $attribute->createValueHolder();
-            $payload_value = $payload[$attribute_name];
-            $attribute_value = $entity->get($attribute_name);
-            $result = $value_holder->setValue($payload_value, $entity);
-            if ($result->getSeverity() <= IncidentInterface::NOTICE) {
-                if (!$value_holder->sameValueAs($attribute_value)) {
-                    $modified_values[$attribute_name] = $value_holder->toNative();
-                }
-            } else {
-                error_log(
-                    sprintf(
-                        '[%s] Invalid values given for "%s": %s',
-                        __METHOD__,
-                        $attribute->getPath(),
-                        var_export($payload_value, true)
-                    )
-                );
-            }
-        }
-
-        return $modified_values;
+        return $entity->withValues($payload)->diff($entity, true);
     }
 }

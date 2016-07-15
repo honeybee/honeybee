@@ -35,7 +35,7 @@ class AggregateRootTypeTest extends TestCase
     }
 
     /**
-     * @expectedException Honeybee\Common\Error\RuntimeError
+     * @expectedException \Honeybee\Common\Error\RuntimeError
      */
     public function testAggregateRootCreationWithState()
     {

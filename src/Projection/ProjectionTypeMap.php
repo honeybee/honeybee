@@ -2,14 +2,16 @@
 
 namespace Honeybee\Projection;
 
-use Trellis\Runtime\EntityTypeMap;
-use Trellis\Common\Collection\MandatoryKeyInterface;
+use Trellis\EntityType\EntityTypeMap;
 
-class ProjectionTypeMap extends EntityTypeMap implements MandatoryKeyInterface
+class ProjectionTypeMap extends EntityTypeMap
 {
-    public function getItemImplementor()
+    /**
+     * @param ProjectionTypeInterface[] $projection_types
+     */
+    public function __construct(array $projection_types = [])
     {
-        return ProjectionTypeInterface::CLASS;
+        parent::__construct($projection_types, ProjectionTypeInterface::CLASS);
     }
 
     public function filterByVendorPackage($vendor, $package)

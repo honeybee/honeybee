@@ -2,9 +2,8 @@
 
 namespace Honeybee\Tests\Fixture\BookSchema\Projection\Author\Reference;
 
-use Honeybee\EntityTypeInterface;
 use Honeybee\Projection\ReferencedEntityType;
-use Honeybee\Tests\Fixture\BookSchema\Model\Book\BookType;
+use Honeybee\Tests\Fixture\BookSchema\Model\Book\BookType as ReferencedBookType;
 use Trellis\EntityType\Attribute\AttributeInterface;
 
 class BookType extends ReferencedEntityType
@@ -15,7 +14,7 @@ class BookType extends ReferencedEntityType
             'Book',
             [],
             [
-                'referenced_type' => BookType::CLASS,
+                'referenced_type' => ReferencedBookType::CLASS,
                 'identifying_attribute' => 'identifier',
             ],
             $parent_attribute

@@ -138,7 +138,7 @@ class ProjectionUpdaterTest extends TestCase
         $mock_storage_reader->shouldReceive('read')->once()->with($subject->getIdentifier())->andReturn($subject);
         $mock_data_access_service->shouldReceive('getStorageReader')
             ->once()
-            ->with($subject->getType()->getPrefix() . '::projection.standard::view_store::reader')
+            ->with($subject->getEntityType()->getPrefix() . '::projection.standard::view_store::reader')
             ->andReturn($mock_storage_reader);
 
         $mock_query_service_map = Mockery::mock(QueryServiceMap::CLASS);
@@ -214,7 +214,7 @@ class ProjectionUpdaterTest extends TestCase
         $mock_storage_reader->shouldReceive('read')->once()->with($subject->getIdentifier())->andReturn($subject);
         $mock_data_access_service->shouldReceive('getStorageReader')
             ->once()
-            ->with($subject->getType()->getPrefix() . '::projection.standard::view_store::reader')
+            ->with($subject->getEntityType()->getPrefix() . '::projection.standard::view_store::reader')
             ->andReturn($mock_storage_reader);
 
         // expectation for loading parent when necessary
@@ -226,7 +226,7 @@ class ProjectionUpdaterTest extends TestCase
                 ->andReturn($parent);
             $mock_data_access_service->shouldReceive('getStorageReader')
                 ->once()
-                ->with($parent->getType()->getPrefix() . '::projection.standard::view_store::reader')
+                ->with($parent->getEntityType()->getPrefix() . '::projection.standard::view_store::reader')
                 ->andReturn($mock_storage_reader);
         }
 

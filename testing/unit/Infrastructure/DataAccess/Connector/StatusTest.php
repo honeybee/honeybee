@@ -16,7 +16,7 @@ class StatusTest extends TestCase
     }
 
     /**
-     * @expectedException Honeybee\Common\Error\RuntimeError
+     * @expectedException \Honeybee\Common\Error\RuntimeError
      */
     public function testCreationThrowsOnInvalidStatusString()
     {
@@ -25,7 +25,7 @@ class StatusTest extends TestCase
     }
 
     /**
-     * @expectedException Honeybee\Common\Error\RuntimeError
+     * @expectedException \Honeybee\Common\Error\RuntimeError
      */
     public function testCreationThrowsOnNonStringStatus()
     {

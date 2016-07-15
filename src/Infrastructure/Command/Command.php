@@ -69,7 +69,10 @@ abstract class Command implements CommandInterface
 
     public function toArray()
     {
-        return get_object_vars($this);
+        $array = get_object_vars($this);
+        $array['@type'] = static::CLASS;
+
+        return $array;
     }
 
     protected function guardRequiredState()
