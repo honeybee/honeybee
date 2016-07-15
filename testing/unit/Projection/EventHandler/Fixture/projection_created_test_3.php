@@ -52,7 +52,7 @@ return [
     ],
     'projections' => [
         [
-            '@type' => 'honeybee-tests.game_schema.player',
+            '@type' => 'honeybee-tests.game_schema.player::projection.standard',
             'identifier' => 'honeybee.fixtures.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
             'revision' => 1,
             'uuid' => 'a726301d-dbae-4fb6-91e9-a19188a17e71',
@@ -99,7 +99,7 @@ return [
     ],
     'expectations' => [
         [
-            '@type' => 'honeybee-tests.game_schema.game',
+            '@type' => 'honeybee-tests.game_schema.game::projection.standard',
             'identifier' => 'honeybee.fixtures.game-49c5a3b7-8127-4169-8676-a9ebb5229142-de_DE-1',
             'revision' => 1,
             'uuid' => '49c5a3b7-8127-4169-8676-a9ebb5229142',

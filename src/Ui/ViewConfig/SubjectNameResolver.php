@@ -5,6 +5,8 @@ namespace Honeybee\Ui\ViewConfig;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Common\Util\StringToolkit;
 use Honeybee\Entity;
+use Honeybee\Projection\Projection;
+use Honeybee\Projection\ProjectionTypeInterface;
 use Honeybee\Ui\Activity\ActivityInterface;
 use ReflectionClass;
 
@@ -37,6 +39,12 @@ class SubjectNameResolver implements NameResolverInterface
         $renderer_config_name = null;
         if ($subject instanceof Entity) {
             $renderer_config_name = $subject->getType()->getScopeKey();
+            if ($subject instanceof Projection) {
+                $variant = $subject->getType()->getVariant();
+                if ($variant !== ProjectionTypeInterface::DEFAULT_VARIANT) {
+                    $renderer_config_name .= '.' . StringToolkit::asSnakeCase($variant);
+                }
+            }
         } else {
             $subject_name = gettype($subject);
             if (is_object($subject)) {

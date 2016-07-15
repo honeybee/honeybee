@@ -6,6 +6,8 @@ use Workflux\StateMachine\StateMachineInterface;
 
 interface ProjectionTypeInterface
 {
+    const DEFAULT_VARIANT = 'Standard';
+
     /**
      * @return StateMachineInterface
      */

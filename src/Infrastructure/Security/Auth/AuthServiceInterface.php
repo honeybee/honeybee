@@ -10,5 +10,5 @@ interface AuthServiceInterface
 {
     public function getTypeKey();
 
-    public function authenticate($username, $password, $options = array());
+    public function authenticate($username, $password, $options = []);
 }

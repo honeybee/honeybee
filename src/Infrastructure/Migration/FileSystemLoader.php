@@ -32,7 +32,7 @@ class FileSystemLoader implements MigrationLoaderInterface
             throw new RuntimeError(sprintf('Given migration path is not a directory: %s', $migration_dir));
         }
 
-        $migration_list = new MigrationList();
+        $migration_list = new MigrationList;
         $glob_expression = sprintf(
             '%1$s%2$s[0-9]*%2$s%3$s',
             $migration_dir,
@@ -41,7 +41,7 @@ class FileSystemLoader implements MigrationLoaderInterface
         );
 
         foreach (glob($glob_expression) as $migration_file) {
-            $class_parser = new PhpClassParser();
+            $class_parser = new PhpClassParser;
             $migration_class_info = $class_parser->parse($migration_file);
             $migration_class = $migration_class_info->getFullyQualifiedClassName();
 
@@ -56,12 +56,14 @@ class FileSystemLoader implements MigrationLoaderInterface
             }
 
             $class_name_parts = explode('_', $migration_class_info->getClassName());
+            $name = $class_name_parts[2] . (isset($class_name_parts[3]) ? $class_name_parts[3] : '');
+            $version = $class_name_parts[1];
             $migration = $this->injector->make(
                 $migration_class,
                 [
                     ':state' => [
-                        'name' => StringToolkit::asSnakeCase($class_name_parts[2]),
-                        'version' => $class_name_parts[1]
+                        'name' => StringToolkit::asSnakeCase($name),
+                        'version' => $version
                     ]
                 ]
             );

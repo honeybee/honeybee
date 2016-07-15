@@ -4,7 +4,7 @@ return [
     'event' => [
         '@type' => 'Honeybee\Projection\Event\ProjectionUpdatedEvent',
         'uuid' => '44c4597c-f463-4916-a330-2db87ef36547',
-        'projection_type' => 'honeybee-tests.game_schema.player',
+        'projection_type' => 'honeybee-tests.game_schema.player::projection.standard',
         'projection_identifier' => 'honeybee.fixtures.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
         'data' => [
             '@type' => 'honeybee-tests.game_schema.player',
@@ -83,7 +83,7 @@ return [
     ],
     'projections' => [
         [
-            '@type' => 'honeybee-tests.game_schema.game',
+            '@type' => 'honeybee-tests.game_schema.game::projection.standard',
             'identifier' => 'honeybee.fixtures.game-49c5a3b7-8127-4169-8676-a9ebb5229142-de_DE-1',
             'revision' => 3,
             'uuid' => '49c5a3b7-8127-4169-8676-a9ebb5229142',

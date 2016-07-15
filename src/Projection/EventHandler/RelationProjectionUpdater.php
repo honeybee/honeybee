@@ -137,7 +137,7 @@ class RelationProjectionUpdater extends EventHandler
                 [
                     'uuid' => Uuid::uuid4()->toString(),
                     'projection_identifier' => $identifier,
-                    'projection_type' => $modified_relative->getType()->getPrefix(),
+                    'projection_type' => $modified_relative->getType()->getVariantPrefix(),
                     'data' => $modified_relative->toArray()
                 ]
             );
@@ -227,7 +227,7 @@ class RelationProjectionUpdater extends EventHandler
     {
         $query_service_default = sprintf(
             '%s::query_service',
-            $this->getRelativeProjectionType()->getPrefix()
+            $this->getRelativeProjectionType()->getVariantPrefix()
         );
 
         $query_service_key = $this->config->get('query_service', $query_service_default);
@@ -237,8 +237,8 @@ class RelationProjectionUpdater extends EventHandler
     protected function getStorageWriter()
     {
         $storage_writer_default = sprintf(
-            '%s::projection.standard::view_store::writer',
-            $this->getRelativeProjectionType()->getPrefix()
+            '%s::view_store::writer',
+            $this->getRelativeProjectionType()->getVariantPrefix()
         );
 
         $storage_writer_key = $this->config->get('storage_writer', $storage_writer_default);

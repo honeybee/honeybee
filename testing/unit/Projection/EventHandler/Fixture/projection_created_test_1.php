@@ -25,7 +25,7 @@ return [
     'projections' => [],
     'expectations' => [
         [
-            '@type' => 'honeybee-tests.game_schema.game',
+            '@type' => 'honeybee-tests.game_schema.game::projection.standard',
             'identifier' => 'honeybee.fixtures.game-49c5a3b7-8127-4169-8676-a9ebb5229142-de_DE-1',
             'revision' => 1,
             'uuid' => '49c5a3b7-8127-4169-8676-a9ebb5229142',

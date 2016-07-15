@@ -43,7 +43,7 @@ abstract class ProjectionEvent extends Event implements ProjectionEventInterface
         Assertion::regex(
             $this->projection_type,
             // @todo improve regex to match double underscores/hyphens
-            '#^([a-z][a-z_-]+(?<![_-])\.){2}[a-z][a-z_-]+(?<![_-])$#'
+            '#^([a-z][a-z_-]+(?<!_-)\.){2}[a-z][a-z_]+(?<!_)::projection\.[a-z][a-z_]+(?<!_)$#'
         );
         Assertion::isArray($this->data);
         Assertion::regex(

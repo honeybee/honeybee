@@ -86,6 +86,49 @@ class ProjectionTypeTest extends TestCase
         $this->assertCount(1, $mandatory_attributes);
     }
 
+    public function testGetVendor()
+    {
+        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
+        $test_entity_type = new GameType($state_machine);
+
+        $this->assertEquals('Honeybee-Tests', $test_entity_type->getVendor());
+    }
+
+    public function testGetPackage()
+    {
+        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
+        $test_entity_type = new GameType($state_machine);
+
+        $this->assertEquals('GameSchema', $test_entity_type->getPackage());
+    }
+
+    public function testGetVariant()
+    {
+        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
+        $test_entity_type = new GameType($state_machine);
+
+        $this->assertEquals('Standard', $test_entity_type->getVariant());
+    }
+
+    public function testGetPrefix()
+    {
+        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
+        $test_entity_type = new GameType($state_machine);
+
+        $this->assertEquals('honeybee-tests.game_schema.game', $test_entity_type->getPrefix());
+    }
+
+    public function testGetVariantPrefix()
+    {
+        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
+        $test_entity_type = new GameType($state_machine);
+
+        $this->assertEquals(
+            'honeybee-tests.game_schema.game::projection.standard',
+            $test_entity_type->getVariantPrefix()
+        );
+    }
+
     public function testCreateMirroredEntity()
     {
         $this->markTestIncomplete(

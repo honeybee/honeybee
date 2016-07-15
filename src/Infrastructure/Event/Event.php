@@ -54,12 +54,7 @@ abstract class Event extends Object implements EventInterface
 
     protected function guardRequiredState()
     {
-        // @todo as soon as the Assertion::date is released, use the below comment, instead of the Assertion::true
-        // Assertion::date($this->iso_date, self::DATE_ISO8601_WITH_MICROS, static::CLASS . ' - Iso-Date is invalid.');
-        $iso_date = DateTimeImmutable::createFromFormat(self::DATE_ISO8601_WITH_MICROS, $this->iso_date);
-        $valid_date = (false !== $iso_date) && ($this->iso_date === $iso_date->format(self::DATE_ISO8601_WITH_MICROS));
-        Assertion::true($valid_date, 'given "iso_date": ' . print_r($valid_date, true));
-
+        Assertion::date($this->iso_date, self::DATE_ISO8601_WITH_MICROS);
         Assertion::uuid($this->uuid);
         Assertion::isArray($this->metadata);
     }

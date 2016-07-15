@@ -4,8 +4,8 @@ namespace Honeybee\Model\Task\CreateAggregateRoot;
 
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Model\Aggregate\AggregateRootInterface;
-use Honeybee\Infrastructure\Command\CommandInterface;
 use Honeybee\Model\Command\AggregateRootCommandHandler;
+use Honeybee\Infrastructure\Command\CommandInterface;
 
 class CreateAggregateRootCommandHandler extends AggregateRootCommandHandler
 {

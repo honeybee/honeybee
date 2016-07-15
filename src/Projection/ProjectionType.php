@@ -23,6 +23,11 @@ abstract class ProjectionType extends EntityType implements ProjectionTypeInterf
         return $this->getOption('package', '');
     }
 
+    public function getVariant()
+    {
+        return $this->getOption('variant', self::DEFAULT_VARIANT);
+    }
+
     public function getPrefix()
     {
         return sprintf(
@@ -30,6 +35,15 @@ abstract class ProjectionType extends EntityType implements ProjectionTypeInterf
             strtolower($this->getVendor()),
             StringToolkit::asSnakeCase($this->getPackage()),
             StringToolkit::asSnakeCase($this->getName())
+        );
+    }
+
+    public function getVariantPrefix()
+    {
+        return sprintf(
+            '%s::projection.%s',
+            $this->getPrefix(),
+            StringToolkit::asSnakeCase($this->getVariant())
         );
     }
 

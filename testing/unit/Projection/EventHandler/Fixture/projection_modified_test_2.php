@@ -57,7 +57,7 @@ return [
         'metadata' => []
     ],
     'subject' => [
-        '@type' => 'honeybee-tests.game_schema.game',
+        '@type' => 'honeybee-tests.game_schema.game::projection.standard',
         'identifier' => 'honeybee.fixtures.game-a7cec777-d932-4bbd-8156-261138d3fe39-de_DE-1',
         'revision' => 2,
         'uuid' => 'a7cec777-d932-4bbd-8156-261138d3fe39',
@@ -90,7 +90,7 @@ return [
     ],
     'projections' => [
         [
-            '@type' => 'honeybee-tests.game_schema.player',
+            '@type' => 'honeybee-tests.game_schema.player::projection.standard',
             'identifier' => 'honeybee.fixtures.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
             'revision' => 1,
             'uuid' => 'a726301d-dbae-4fb6-91e9-a19188a17e71',
@@ -109,7 +109,7 @@ return [
     ],
     'expected' => [
         [
-            '@type' => 'honeybee-tests.game_schema.game',
+            '@type' => 'honeybee-tests.game_schema.game::projection.standard',
             'identifier' => 'honeybee.fixtures.game-a7cec777-d932-4bbd-8156-261138d3fe39-de_DE-1',
             'revision' => 3,
             'uuid' => 'a7cec777-d932-4bbd-8156-261138d3fe39',

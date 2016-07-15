@@ -38,7 +38,9 @@ abstract class EntityType extends BaseEntityType
         }
 
         // override default mirrored values
-        $mirrored_values['@type'] = $source_entity->getType()->getPrefix();
+        $mirrored_values['@type'] = $this instanceof ProjectionInterface
+            ? $this->getVariantPrefix()
+            : $source_entity->getType()->getPrefix();
         $mirrored_values['identifier'] = $source_entity->getIdentifier();
         if ($source_entity instanceof EntityReferenceInterface) {
             $mirrored_values['referenced_identifier'] = $source_entity->getReferencedIdentifier();

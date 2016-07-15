@@ -80,7 +80,7 @@ class ProjectionUpdater extends EventHandler
             $projection_event_state = [
                 'uuid' => Uuid::uuid4()->toString(),
                 'projection_identifier' => $affected_projection->getIdentifier(),
-                'projection_type' => $affected_projection->getType()->getPrefix(),
+                'projection_type' => $affected_projection->getType()->getVariantPrefix(),
                 'data' => $affected_projection->toArray()
             ];
 
@@ -109,6 +109,7 @@ class ProjectionUpdater extends EventHandler
         $projection_data['metadata'] = $event->getMetaData();
 
         $projection_type = $this->getProjectionType($event);
+
         if ($projection_type->isHierarchical()) {
             $parent_projection = null;
             if (isset($projection_data['parent_node_id'])) {
@@ -116,6 +117,7 @@ class ProjectionUpdater extends EventHandler
             }
             $projection_data['materialized_path'] = $this->calculateMaterializedPath($parent_projection);
         }
+
         $new_projection = $projection_type->createEntity($projection_data);
         $this->handleEmbeddedEntityEvents($new_projection, $event->getEmbeddedEntityEvents());
 
@@ -382,12 +384,14 @@ class ProjectionUpdater extends EventHandler
 
     protected function getProjectionType(AggregateRootEventInterface $event)
     {
-        return $this->projection_type_map->getItem($event->getAggregateRootType());
+        return $this->projection_type_map->getByAggregateRootType(
+            $this->aggregate_root_type_map->getItem($event->getAggregateRootType())
+        );
     }
 
     protected function getQueryService(ProjectionTypeInterface $projection_type)
     {
-        $query_service_default = $projection_type->getPrefix() . '::query_service';
+        $query_service_default = $projection_type->getVariantPrefix() . '::query_service';
         $query_service_key = $this->config->get('query_service', $query_service_default);
         return $this->query_service_map->getItem($query_service_key);
     }
@@ -411,8 +415,8 @@ class ProjectionUpdater extends EventHandler
     protected function getDataAccessComponent(ProjectionTypeInterface $projection_type, $component = 'reader')
     {
         $default_component_name = sprintf(
-            '%s::projection.standard::view_store::%s',
-            $projection_type->getPrefix(),
+            '%s::view_store::%s',
+            $projection_type->getVariantPrefix(),
             $component
         );
         $custom_component_option = $projection_type->getPrefix() . '.' . $component;

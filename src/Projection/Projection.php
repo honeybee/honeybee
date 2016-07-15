@@ -115,4 +115,11 @@ abstract class Projection extends Entity implements ProjectionInterface
         }
         return $this->getValue('materialized_path');
     }
+
+    public function toArray()
+    {
+        $attribute_values = parent::toArray();
+        $attribute_values[self::OBJECT_TYPE] = $this->getType()->getVariantPrefix();
+        return $attribute_values;
+    }
 }

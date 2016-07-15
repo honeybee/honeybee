@@ -54,9 +54,9 @@ class ProjectionUpdaterTest extends TestCase
         $team_projection_type = new TeamProjectionType($state_machine);
         $this->projection_type_map = new ProjectionTypeMap(
             [
-                $game_projection_type->getPrefix() => $game_projection_type,
-                $player_projection_type->getPrefix() => $player_projection_type,
-                $team_projection_type->getPrefix() => $team_projection_type
+                $game_projection_type->getVariantPrefix() => $game_projection_type,
+                $player_projection_type->getVariantPrefix() => $player_projection_type,
+                $team_projection_type->getVariantPrefix() => $team_projection_type
             ]
         );
     }
@@ -138,7 +138,7 @@ class ProjectionUpdaterTest extends TestCase
         $mock_storage_reader->shouldReceive('read')->once()->with($subject->getIdentifier())->andReturn($subject);
         $mock_data_access_service->shouldReceive('getStorageReader')
             ->once()
-            ->with($subject->getType()->getPrefix() . '::projection.standard::view_store::reader')
+            ->with($subject->getType()->getVariantPrefix() . '::view_store::reader')
             ->andReturn($mock_storage_reader);
 
         $mock_query_service_map = Mockery::mock(QueryServiceMap::CLASS);
@@ -180,7 +180,7 @@ class ProjectionUpdaterTest extends TestCase
         $mock_query_service = Mockery::mock(QueryServiceInterface::CLASS);
         $mock_query_service_map->shouldReceive('getItem')
             ->once()
-            ->with('honeybee-tests.game_schema.team::query_service')
+            ->with('honeybee-tests.game_schema.team::projection.standard::query_service')
             ->andReturn($mock_query_service);
         $mock_query_service->shouldReceive('find')
             ->once()
@@ -214,7 +214,7 @@ class ProjectionUpdaterTest extends TestCase
         $mock_storage_reader->shouldReceive('read')->once()->with($subject->getIdentifier())->andReturn($subject);
         $mock_data_access_service->shouldReceive('getStorageReader')
             ->once()
-            ->with($subject->getType()->getPrefix() . '::projection.standard::view_store::reader')
+            ->with($subject->getType()->getVariantPrefix() . '::view_store::reader')
             ->andReturn($mock_storage_reader);
 
         // expectation for loading parent when necessary
@@ -226,7 +226,7 @@ class ProjectionUpdaterTest extends TestCase
                 ->andReturn($parent);
             $mock_data_access_service->shouldReceive('getStorageReader')
                 ->once()
-                ->with($parent->getType()->getPrefix() . '::projection.standard::view_store::reader')
+                ->with($parent->getType()->getVariantPrefix() . '::view_store::reader')
                 ->andReturn($mock_storage_reader);
         }
 

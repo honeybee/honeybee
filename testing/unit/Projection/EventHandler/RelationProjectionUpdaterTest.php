@@ -24,8 +24,6 @@ use Workflux\StateMachine\StateMachineInterface;
 
 class RelationProjectionUpdaterTest extends TestCase
 {
-    protected $aggregate_root_type_map;
-
     protected $projection_type_map;
 
     public function setUp()
@@ -37,9 +35,9 @@ class RelationProjectionUpdaterTest extends TestCase
         $team_type = new TeamType($state_machine);
         $this->projection_type_map = new ProjectionTypeMap(
             [
-                $game_type->getPrefix() => $game_type,
-                $player_type->getPrefix() => $player_type,
-                $team_type->getPrefix() => $team_type
+                $game_type->getVariantPrefix() => $game_type,
+                $player_type->getVariantPrefix() => $player_type,
+                $team_type->getVariantPrefix() => $team_type
             ]
         );
     }
@@ -53,6 +51,7 @@ class RelationProjectionUpdaterTest extends TestCase
         foreach ($projections as $projection) {
             $projection_type = $this->projection_type_map->getItem($projection['@type']);
             $projection_type_prefix = $projection_type->getPrefix();
+            $projection_type_variant_prefix = $projection_type->getVariantPrefix();
             $related_projections[] = $projection_type->createEntity($projection);
         }
 
@@ -61,7 +60,7 @@ class RelationProjectionUpdaterTest extends TestCase
         $mock_query_service_map = Mockery::mock(QueryServiceMap::CLASS);
         $mock_finder_result = Mockery::mock(FinderResult::CLASS);
         $mock_finder_result->shouldReceive('getResults')->once()->withNoArgs()->andReturn($related_projections);
-        $service_name = $projection_type_prefix . '::query_service';
+        $service_name = $projection_type_variant_prefix . '::query_service';
         $mock_query_service_map->shouldReceive('getItem')->once()->with($service_name)->andReturn($mock_query_service);
         $mock_query_service->shouldReceive('find')
             ->once()
@@ -79,7 +78,7 @@ class RelationProjectionUpdaterTest extends TestCase
         $mock_storage_writer_map = Mockery::mock(StorageWriterMap::CLASS);
         $mock_storage_writer_map->shouldReceive('getItem')
             ->once()
-            ->with($projection_type_prefix . '::projection.standard::view_store::writer')
+            ->with($projection_type_variant_prefix . '::view_store::writer')
             ->andReturn($mock_storage_writer);
 
         if (!empty($expectations)) {
@@ -118,7 +117,7 @@ class RelationProjectionUpdaterTest extends TestCase
 
         // prepare and test subject
         $relation_projection_updater = new RelationProjectionUpdater(
-            new ArrayConfig([ 'projection_type' => $projection_type_prefix ]),
+            new ArrayConfig([ 'projection_type' => $projection_type_variant_prefix ]),
             new NullLogger,
             $mock_storage_writer_map,
             $mock_query_service_map,
@@ -150,7 +149,7 @@ class RelationProjectionUpdaterTest extends TestCase
         $event = $this->buildEvent([
             '@type' => 'Honeybee\Projection\Event\ProjectionCreatedEvent',
             'uuid' => '44c4597c-f463-4916-a330-2db87ef36547',
-            'projection_type' => 'honeybee-tests.game_schema.player',
+            'projection_type' => 'honeybee-tests.game_schema.player::projection.standard',
             'projection_identifier' => 'honeybee.fixtures.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
             'data' => []
         ]);
