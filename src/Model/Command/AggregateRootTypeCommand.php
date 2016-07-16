@@ -55,4 +55,15 @@ abstract class AggregateRootTypeCommand extends Command implements AggregateRoot
         );
         Assertion::notNull($this->embedded_entity_commands);
     }
+
+    public function toArray()
+    {
+        return array_merge(
+            parent::toArray(),
+            [
+                'aggregate_root_type' => $this->aggregate_root_type,
+                'embedded_entity_commands'  => $this->embedded_entity_commands->toArray()
+            ]
+        );
+    }
 }

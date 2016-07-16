@@ -3,6 +3,7 @@
 namespace Honeybee\Tests\Fixture\GameSchema\Projection\Game\Reference;
 
 use Honeybee\Projection\ReferencedEntityType;
+use Honeybee\Tests\Fixture\GameSchema\Projection\Player\PlayerType as ReferencedPlayerType;
 use Honeybee\Tests\Fixture\GameSchema\Projection\Game\Embed\ProfileType;
 use Trellis\EntityType\Attribute\AttributeInterface;
 use Trellis\EntityType\Attribute\EntityList\EntityListAttribute;
@@ -38,7 +39,7 @@ class PlayerType extends ReferencedEntityType
                 ),
             ],
             [
-                'referenced_type' => PlayerType::CLASS,
+                'referenced_type' => ReferencedPlayerType::CLASS,
                 'identifying_attribute' => 'identifier'
             ],
             $parent_attribute

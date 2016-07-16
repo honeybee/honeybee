@@ -213,7 +213,7 @@ class RelationProjectionUpdater extends EventHandler
         // build filter criteria to load projections where references may need to be updated
         $reference_filter_list = new CriteriaList([], CriteriaList::OP_OR);
         foreach ($referenced_attributes_map as $ref_attribute) {
-            $reference_filter_list->push(
+            $reference_filter_list = $reference_filter_list->push(
                 new AttributeCriteria(
                     $this->buildFieldFilterSpec($ref_attribute),
                     new Equals($event->getProjectionIdentifier())
@@ -238,11 +238,9 @@ class RelationProjectionUpdater extends EventHandler
         if (!empty($reference_filter_list)) {
             // prevent circular self reference loading
             $filter_criteria_list = new CriteriaList;
-            $filter_criteria_list->push(
-                new AttributeCriteria('identifier', new Equals($identifier, true))
-            );
-            $filter_criteria_list->push($reference_filter_list);
-
+            $filter_criteria_list = $filter_criteria_list
+                ->push(new AttributeCriteria('identifier', new Equals($identifier, true)))
+                ->push($reference_filter_list);
             // @todo scan and scroll support
             $query_result = $this->getQueryService()->find(
                 new Query(

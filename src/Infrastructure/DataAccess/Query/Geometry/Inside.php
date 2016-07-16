@@ -20,4 +20,12 @@ class Inside implements PositionInterface
     {
         return 'INSIDE ' . $this->geometry;
     }
+
+    public function toArray()
+    {
+        return [
+            '@type' => static::CLASS,
+            'geometry' => $this->geometry->toArray()
+        ];
+    }
 }

@@ -41,4 +41,14 @@ class Annulus implements GeometryInterface
             $this->outer_radius
         );
     }
+
+    public function toArray()
+    {
+        return [
+            '@type' => static::CLASS,
+            'center' => $this->center,
+            'inner_radius' => $this->inner_radius,
+            'outer_radius' => $this->outer_radius
+        ];
+    }
 }

@@ -15,4 +15,12 @@ class Polygon extends TypedList implements GeometryInterface
     {
         return 'POLYGON ' . implode(';', $this->items);
     }
+
+    public function toArray()
+    {
+        $array = parent::toArray();
+        $array['@type'] = static::CLASS;
+
+        return $array;
+    }
 }

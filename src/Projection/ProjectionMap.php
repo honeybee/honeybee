@@ -7,9 +7,12 @@ use Trellis\Collection\UniqueItemInterface;
 
 class ProjectionMap extends TypedMap implements UniqueItemInterface
 {
-    public function __construct(array $projection_types = [])
+    /**
+     * @param ProjectionInterface[] $projections
+     */
+    public function __construct(array $projections = [])
     {
-        parent::__construct(ProjectionInterface::CLASS, $projection_types);
+        parent::__construct(ProjectionInterface::CLASS, $projections);
     }
 
     /**

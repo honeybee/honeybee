@@ -59,6 +59,6 @@ abstract class Entity extends BaseEntity implements ResourceInterface, ScopeKeyI
 
     public function __toString()
     {
-        return $this->getIdentifier();
+        return $this->getIdentifier()->toNative();
     }
 }

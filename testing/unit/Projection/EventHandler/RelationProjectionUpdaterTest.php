@@ -3,6 +3,7 @@
 namespace Honeybee\Tests\Projection\EventHandler;
 
 use Honeybee\Projection\Event\ProjectionUpdatedEvent;
+use Honeybee\Projection\ProjectionInterface;
 use Honeybee\Projection\ProjectionMap;
 use Honeybee\Projection\ProjectionTypeMap;
 use Honeybee\Projection\EventHandler\RelationProjectionUpdater;
@@ -24,8 +25,9 @@ use Workflux\StateMachine\StateMachineInterface;
 
 class RelationProjectionUpdaterTest extends TestCase
 {
-    protected $aggregate_root_type_map;
-
+    /**
+     * @var ProjectionTypeMap $projection_type_map
+     */
     protected $projection_type_map;
 
     public function setUp()
@@ -46,10 +48,17 @@ class RelationProjectionUpdaterTest extends TestCase
 
     /**
      * @dataProvider provideTestUpdateEvents
+     *
+     * @param mixed[] $event
+     * @param mixed[] $query
+     * @param ProjectionInterface[] $projections
+     * @param array $expectations
      */
     public function testHandleUpdateEvents(array $event, array $query, array $projections, array $expectations)
     {
+        $related_projections = [];
         // build projection finder results
+        /* @var ProjectionInterface $projection */
         foreach ($projections as $projection) {
             $projection_type = $this->projection_type_map->getItem($projection['@type']);
             $projection_type_prefix = $projection_type->getPrefix();

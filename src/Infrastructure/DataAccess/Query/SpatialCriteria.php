@@ -30,4 +30,13 @@ class SpatialCriteria implements CriteriaInterface
     {
         return sprintf('ATTRIBUTE %s SPATIAL %s', $this->attribute_path, $this->position);
     }
+
+    public function toArray()
+    {
+        return [
+            '@type' => static::CLASS,
+            'attribute_path' => $this->attribute_path,
+            'position' => $this->position->toArray()
+        ];
+    }
 }

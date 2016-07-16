@@ -2,14 +2,13 @@
 
 namespace Honeybee\Projection;
 
-use Trellis\Collection\TypedList;
-use Trellis\Collection\UniqueItemInterface;
+use Trellis\EntityType\Attribute\EntityList\EntityList;
 
-class ProjectionList extends TypedList implements UniqueItemInterface
+class ProjectionList extends EntityList
 {
     public function __construct(array $projection_types = [])
     {
-        parent::__construct(ProjectionInterface::CLASS, $projection_types);
+        parent::__construct($projection_types, ProjectionInterface::CLASS);
     }
 
     /**
@@ -19,6 +18,11 @@ class ProjectionList extends TypedList implements UniqueItemInterface
      */
     public function toMap()
     {
-        return new ProjectionMap($this->items);
+        $maped_items = [];
+        /* @var \Honeybee\Projection\ProjectionInterface $item */
+        foreach ($this->items as $item) {
+            $maped_items[$item->getIdentifier()] = $item;
+        }
+        return new ProjectionMap($maped_items);
     }
 }

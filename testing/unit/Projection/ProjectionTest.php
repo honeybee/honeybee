@@ -2,6 +2,7 @@
 
 namespace Honeybee\Tests\Projection;
 
+use Honeybee\Tests\Fixture\BookSchema\Projection\Author\Author;
 use Honeybee\Tests\Fixture\BookSchema\Projection\Author\AuthorType;
 use Honeybee\Tests\TestCase;
 use Workflux\StateMachine\StateMachineInterface;
@@ -9,7 +10,15 @@ use Mockery;
 
 class ProjectionTest extends TestCase
 {
-    protected $projection_type = AuthorType::CLASS;
+    /**
+     * @var AuthorType $author_type
+     */
+    protected $author_type;
+
+    /**
+     * @var Author $author
+     */
+    protected $author;
 
     protected $data = [
         'firstname' => 'Mark',
@@ -18,26 +27,25 @@ class ProjectionTest extends TestCase
 
     public function setUp()
     {
-        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
-        $projection_type = new $this->projection_type($state_machine);
-        $this->projection = $projection_type->createEntity($this->data);
+        $this->author_type = new AuthorType(Mockery::mock(StateMachineInterface::CLASS));
+        $this->author = $this->author_type->createEntity($this->data);
     }
 
     public function testInterface()
     {
-        $this->assertEquals('Mark', $this->projection->getFirstname());
-        $this->assertEquals('Twain', $this->projection->getLastname());
-        $this->assertNull($this->projection->getCreatedAt());
-        $this->assertNull($this->projection->getModifiedAt());
-        $this->assertNull($this->projection->getUuid());
+        $this->assertInstanceOf(Author::CLASS, $this->author);
+        $this->assertEquals('Mark', $this->author->getFirstname()->toNative());
+        $this->assertEquals('Twain', $this->author->getLastname()->toNative());
+        $this->assertTrue($this->author->getCreatedAt()->isEmpty());
+        $this->assertTrue($this->author->getModifiedAt()->isEmpty());
+        $this->assertTrue($this->author->getUuid()->isEmpty());
         // UUID self-generated
-        $this->assertNull($this->projection->getUuid());
-        $this->assertEquals(0, $this->projection->getRevision());
-        $this->assertEquals('de_DE', $this->projection->getLanguage());
-        $this->assertEmpty($this->projection->getWorkflowState());
-        $this->assertInternalType('array', $this->projection->getWorkflowParameters());
-        $this->assertEmpty($this->projection->getWorkflowParameters());
-        $this->assertInternalType('string', $this->projection->__toString());
-        $this->assertEquals($this->projection->getIdentifier(), $this->projection->__toString());
+        $this->assertEquals(0, $this->author->getRevision()->toNative());
+        $this->assertEquals('', $this->author->getLanguage()->toNative());
+        $this->assertTrue($this->author->getWorkflowState()->isEmpty());
+        $this->assertInternalType('array', $this->author->getWorkflowParameters()->toNative());
+        $this->assertTrue($this->author->getWorkflowParameters()->isEmpty());
+        $this->assertInternalType('string', $this->author->__toString());
+        $this->assertEquals($this->author->getIdentifier()->toNative(), $this->author->__toString());
     }
 }

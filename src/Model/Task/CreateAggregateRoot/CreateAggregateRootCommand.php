@@ -20,4 +20,14 @@ abstract class CreateAggregateRootCommand extends AggregateRootTypeCommand
 
         Assertion::isArray($this->values);
     }
+
+    public function toArray()
+    {
+        return array_merge(
+            parent::toArray(),
+            [
+                'values' => $this->values
+            ]
+        );
+    }
 }

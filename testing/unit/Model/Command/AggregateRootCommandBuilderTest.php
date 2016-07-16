@@ -95,24 +95,9 @@ class AggregateRootCommandBuilderTest extends TestCase
         $this->assertInstanceOf(Error::CLASS, $build_result);
         $this->assertEquals(
             [
-                'firstname' => [
-                    [
-                        'path' => 'firstname',
-                        'incidents' => [ 'non_string_value' => [ 'value' => 123 ] ]
-                    ]
-                ],
-                'lastname' => [
-                    [
-                        'path' => 'lastname',
-                        'incidents' => [ 'non_string_value' => [ 'value' => 456 ] ]
-                    ]
-                ],
-                'email' => [
-                    [
-                        'path' => 'email',
-                        'incidents' => [ 'invalid_format' => [ 'reason' => 'ERR_NODOMAIN' ] ]
-                    ]
-                ]
+                'firstname' => 'Text may only be constructed from string.',
+                'lastname' =>  'Text may only be constructed from string.',
+                'email' => 'Email format is invalid.'
             ],
             $build_result->get()
         );
@@ -161,72 +146,15 @@ class AggregateRootCommandBuilderTest extends TestCase
         $this->assertInstanceOf(Error::CLASS, $build_result);
         $this->assertEquals(
             [
-                'firstname' => [
-                    [
-                        'path' => 'firstname',
-                        'incidents' => [ 'non_string_value' => [ 'value' => 123 ] ]
-                    ]
-                ],
-                'email' => [
-                    [
-                        'path' => 'email',
-                        'incidents' => [ 'mandatory' => [ 'reason' => 'missing' ] ]
-                    ]
-                ],
-                'lastname' => [
-                    [
-                        'path' => 'lastname',
-                        'incidents' => [ 'mandatory' => [ 'reason' => 'missing' ] ]
-                    ]
-                ],
-                'products.0.title' => [
-                    [
-                        'path' => 'products.highlight.title',
-                        'incidents' => [ 'non_string_value' => [ 'value' => 456 ] ]
-                    ]
-                ],
-                'products.0.description' => [
-                    [
-                        'path' => 'products.highlight.description',
-                        'incidents' => [ 'non_string_value' => [ 'value' => 789 ] ]
-                    ]
-                ],
-                'products.1.title' => [
-                    [
-                        'path' => 'products.highlight.title',
-                        'incidents' => [ 'non_string_value' => [ 'value' => 890 ] ]
-                    ]
-                ],
-                'products.1.description' => [
-                    [
-                        'path' => 'products.highlight.description',
-                        'incidents' => [ 'non_string_value' => [ 'value' => 321 ] ]
-                    ]
-                ],
-                'products.2.title' => [
-                    [
-                        'path' => 'products.highlight.title',
-                        'incidents' => [ 'mandatory' => [ 'reason' => 'missing' ] ]
-                    ]
-                ],
-                'products.2.description' => [
-                    [
-                        'path' => 'products.highlight.description',
-                        'incidents' => [ 'non_string_value' => [ 'value' => 222 ] ]
-                    ]
-                ],
-                'products.3.@type' => [
-                    [
-                        'path' => 'products',
-                        'incidents' => [ 'invalid_type' => [ 'reason' => 'missing' ] ]
-                    ]
-                ],
-                'products.4.@type' => [
-                    [
-                        'path' => 'products',
-                        'incidents' => [ 'invalid_type' => [ 'reason' => 'unknown' ] ]
-                    ]
-                ]
+                'firstname' => 'Text may only be constructed from string.',
+                'email' => 'missing',
+                'lastname' => 'Text may only be constructed from string.',
+                'products.0.title' => 'Text may only be constructed from string.',
+                'products.0.description' => 'Text may only be constructed from string.',
+                'products.1.title' => 'Text may only be constructed from string.',
+                'products.1.description' => 'Text may only be constructed from string.',
+                'products.2.title' => 'Text may only be constructed from string.',
+                'products.2.description' => 'Text may only be constructed from string.'
             ],
             $build_result->get()
         );

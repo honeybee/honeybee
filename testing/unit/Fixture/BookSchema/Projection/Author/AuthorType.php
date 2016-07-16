@@ -42,7 +42,8 @@ class AuthorType extends ProjectionType
                         ]
                     ]
                 )
-            ]
+            ],
+            [ 'default_lang' => 'de_DE' ]
         );
     }
 

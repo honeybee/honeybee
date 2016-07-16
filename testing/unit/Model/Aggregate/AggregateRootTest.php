@@ -424,7 +424,7 @@ class AggregateRootTest extends TestCase
     {
         $aggregate_root = $this->getCreatedAggregateRoot();
 
-        $this->assertEquals(self::AGGREGATE_ROOT_UUID, $aggregate_root->getUuid());
+        $this->assertEquals(self::AGGREGATE_ROOT_UUID, $aggregate_root->getUuid()->toNative());
     }
 
     /**
@@ -434,7 +434,7 @@ class AggregateRootTest extends TestCase
     {
         $aggregate_root = $this->getCreatedAggregateRoot();
 
-        $this->assertEquals(self::AGGREGATE_ROOT_LANGUAGE, $aggregate_root->getLanguage());
+        $this->assertEquals(self::AGGREGATE_ROOT_LANGUAGE, $aggregate_root->getLanguage()->toNative());
     }
 
     /**
@@ -446,7 +446,7 @@ class AggregateRootTest extends TestCase
         $events_history = $this->getHistoryFixture();
         $aggregate_root->reconstituteFrom($events_history);
 
-        $this->assertEquals(1, $aggregate_root->getVersion());
+        $this->assertEquals(1, $aggregate_root->getVersion()->toNative());
     }
 
     /**
@@ -458,7 +458,7 @@ class AggregateRootTest extends TestCase
         $events_history = $this->getHistoryFixture();
         $aggregate_root->reconstituteFrom($events_history);
 
-        $this->assertEquals(4, $aggregate_root->getRevision());
+        $this->assertEquals(4, $aggregate_root->getRevision()->toNative());
     }
 
     /**
@@ -469,7 +469,7 @@ class AggregateRootTest extends TestCase
     {
         $aggregate_root = $this->getCreatedAggregateRoot();
 
-        $this->assertEquals('inactive', $aggregate_root->getWorkflowState());
+        $this->assertEquals('inactive', $aggregate_root->getWorkflowState()->toNative());
     }
 
     /**

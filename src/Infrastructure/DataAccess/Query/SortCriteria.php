@@ -39,6 +39,10 @@ class SortCriteria implements CriteriaInterface
 
     public function toArray()
     {
-        return get_object_vars($this);
+        return [
+            '@type' => static::CLASS,
+            'attribute_path' => $this->attribute_path,
+            'direction' => $this->direction
+        ];
     }
 }

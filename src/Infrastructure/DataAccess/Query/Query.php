@@ -93,6 +93,13 @@ class Query implements QueryInterface
 
     public function toArray()
     {
-        return get_object_vars($this);
+        return [
+            'search_criteria_list' => $this->search_criteria_list->toArray(),
+            'filter_criteria_list' => $this->filter_criteria_list->toArray(),
+            'sort_criteria_list' => $this->sort_criteria_list->toArray(),
+            'offset' => $this->offset,
+            'limit' => $this->limit,
+            '@type' => get_class($this)
+        ];
     }
 }

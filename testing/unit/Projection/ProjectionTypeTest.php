@@ -44,7 +44,9 @@ class ProjectionTypeTest extends TestCase
 
         $this->assertInstanceOf(AttributeMap::CLASS, $default_attributes);
         $this->assertCount(10, $default_attributes);
-        $this->assertEquals($expected_attributes, $default_attributes->toArray());
+        foreach ($expected_attributes as $name => $class) {
+            $this->assertInstanceOf($class, $default_attributes->getItem($name));
+        }
     }
 
     public function testGetDefaultAttributesHierarchicalType()
@@ -57,7 +59,9 @@ class ProjectionTypeTest extends TestCase
 
         $this->assertInstanceOf(AttributeMap::CLASS, $default_attributes);
         $this->assertCount(12, $default_attributes);
-        $this->assertEquals($expected_attributes, $default_attributes->toArray());
+        foreach ($expected_attributes as $name => $class) {
+            $this->assertInstanceOf($class, $default_attributes->getItem($name));
+        }
     }
 
     public function testIsHierarchical()

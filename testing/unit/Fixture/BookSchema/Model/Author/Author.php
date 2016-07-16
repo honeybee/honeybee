@@ -11,18 +11,8 @@ class Author extends AggregateRoot
         return $this->get('firstname');
     }
 
-    public function setFirstname($firstname)
-    {
-        return $this->setValue('firstname', $firstname);
-    }
-
     public function getLastname()
     {
         return $this->get('lastname');
-    }
-
-    public function setLastname($lastname)
-    {
-        return $this->setValue('lastname', $lastname);
     }
 }

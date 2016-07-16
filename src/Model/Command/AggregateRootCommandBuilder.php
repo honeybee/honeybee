@@ -12,8 +12,15 @@ use Shrink0r\Monatic\Success;
 
 class AggregateRootCommandBuilder extends EmbeddedEntityCommandBuilder
 {
+    /**
+     * @var EntityInterface $entity
+     */
     protected $entity;
 
+    /**
+     * @param AggregateRootTypeInterface $aggregate_root_type
+     * @param string $command_class
+     */
     public function __construct(AggregateRootTypeInterface $aggregate_root_type, $command_class)
     {
         parent::__construct($aggregate_root_type, $command_class);
@@ -21,6 +28,9 @@ class AggregateRootCommandBuilder extends EmbeddedEntityCommandBuilder
         $this->command_state['aggregate_root_type'] = $aggregate_root_type->getPrefix();
     }
 
+    /**
+     * @return \Shrink0r\Monatic\Result
+     */
     public function build()
     {
         $result = parent::build();
@@ -31,11 +41,16 @@ class AggregateRootCommandBuilder extends EmbeddedEntityCommandBuilder
         return $result;
     }
 
+    /**
+     * @param EntityInterface $entity
+     *
+     * @return $this
+     *
+     * @throws RuntimeError
+     */
     public function fromEntity(EntityInterface $entity)
     {
-        if (!$entity instanceof ProjectionInterface &&
-            !$entity instanceof AggregateRootInterface
-        ) {
+        if (!$entity instanceof ProjectionInterface && !$entity instanceof AggregateRootInterface) {
             throw new RuntimeError(sprintf(
                 'Provided %s must implement %s or %s.',
                 get_class($entity),
@@ -51,7 +66,9 @@ class AggregateRootCommandBuilder extends EmbeddedEntityCommandBuilder
     }
 
     /**
-     * @return Result
+     * @param mixed $values
+     *
+     * @return \Shrink0r\Monatic\Result
      */
     protected function validateValues(array $values)
     {
@@ -69,6 +86,12 @@ class AggregateRootCommandBuilder extends EmbeddedEntityCommandBuilder
         return $result;
     }
 
+    /**
+     * @param mixed $array
+     * @param string $parent_prefix
+     *
+     * @return mixed
+     */
     protected static function flatten(array $array, $parent_prefix = '')
     {
         $flattened = [];

@@ -58,7 +58,12 @@ class CommandBuilder implements CommandBuilderInterface
     }
 
     /**
+     * @param string $command_class
+     * @param mixed $command_state
+     *
      * @return Result
+     *
+     * @throws RuntimeError
      */
     protected function sanitizeCommandState($command_class, array $command_state)
     {
@@ -83,7 +88,9 @@ class CommandBuilder implements CommandBuilderInterface
     }
 
     /**
-     * @return array
+     * @param string $command_class
+     *
+     * @return mixed[]
      */
     protected function getCommandProperties($command_class)
     {
@@ -98,6 +105,9 @@ class CommandBuilder implements CommandBuilderInterface
     }
 
     /**
+     * @param string $prop_name
+     * @param mixed $prop_value
+     *
      * @return Result
      */
     protected function adoptPropertyValue($prop_name, $prop_value)

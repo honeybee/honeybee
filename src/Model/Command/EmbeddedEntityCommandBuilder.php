@@ -78,12 +78,11 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
 
             $embed_type_prefix = $embedded_values['@type'];
             unset($embedded_values['@type']);
-            $embed_type = $attribute->getEmbeddedTypeByPrefix($embed_type_prefix);
-
+            $embed_type = $attribute->getEntityTypeMap()->byPrefix($embed_type_prefix);
             if (!$embed_type) {
                 $value_path = sprintf('%s.%d.@type', $attribute_name, $position);
                 $errors[$value_path]['@incidents'][] = [
-                    'path' => $attribute->getPath(),
+                    'path' => $attribute->toTypePath(),
                     'incidents' => [ 'invalid_type' => [ 'reason' => 'unknown' ] ]
                 ];
                 continue;
@@ -102,7 +101,7 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
             )->getFirst();
 
             if (!$affected_entity) {
-                $builder_list->push(
+                $builder_list = $builder_list->push(
                     (new self($embed_type, AddEmbeddedEntityCommand::CLASS))
                     ->withParentAttributeName($attribute_name)
                     ->withPosition($position)
@@ -115,7 +114,7 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
                 if (!empty($modified_values)
                     || $embedded_entity_list->getKey($affected_entity) != $position
                 ) {
-                    $builder_list->push(
+                    $builder_list = $builder_list->push(
                         (new self($embed_type, ModifyEmbeddedEntityCommand::CLASS))
                         ->withParentAttributeName($attribute_name)
                         ->withEmbeddedEntityIdentifier($affected_entity->getIdentifier())
@@ -147,10 +146,10 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
                 }
                 if (!is_null($command_key)) {
                     // remove the unnecessary add command if the entity already exists in the entity
-                    $builder_list->splice($command_key);
+                    $builder_list = $builder_list->splice($command_key);
                 } else {
                     // the entity was not found in the payload so we can prepare removal
-                    $builder_list->push(
+                    $builder_list= $builder_list->push(
                         (new self($embedded_entity->getType(), RemoveEmbeddedEntityCommand::CLASS))
                         ->withParentAttributeName($attribute_name)
                         ->withEmbeddedEntityIdentifier($embedded_entity->getIdentifier())
@@ -211,7 +210,7 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
                 if ($result instanceof Success) {
                     $sanitized_values[$attribute_name] = $result->get();
                 } elseif ($result instanceof Error) {
-                    $errors[] = $result->get();
+                    $errors[$attribute_name] = $result->get()->getMessage();
                 }
             } else {
                 // weak assumption that mandatory option only applies to creation/add commands

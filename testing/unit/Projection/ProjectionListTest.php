@@ -22,12 +22,6 @@ class ProjectionListTest extends TestCase
     public function testGetItemImplementor()
     {
         $projection = Mockery::mock(ProjectionInterface::CLASS);
-        $projection->shouldReceive('addEntityChangedListener')->once()->with(Mockery::on(
-            function ($listener) {
-                $this->assertInstanceOf(ProjectionList::CLASS, $listener);
-                return true;
-            }
-        ));
         $projection_list = new ProjectionList([ $projection ]);
 
         $this->assertInstanceOf(EntityList::CLASS, $projection_list);
@@ -59,7 +53,7 @@ class ProjectionListTest extends TestCase
         $this->assertInstanceOf(ProjectionMap::CLASS, $projection_map);
         $this->assertCount(1, $projection_map);
         $this->assertEquals([ 'projection1' ], $projection_map->getKeys());
+        $this->assertEquals([ 'projection1' => $projection ], iterator_to_array($projection_map));
         $this->assertEquals([ 'projection1' => $projection ], $projection_map->getItems());
-        $this->assertEquals([ $projection ], $projection_map->getValues());
     }
 }

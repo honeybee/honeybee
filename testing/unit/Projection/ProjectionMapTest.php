@@ -22,11 +22,10 @@ class ProjectionMapTest extends TestCase
     {
         $projection = Mockery::mock(ProjectionInterface::CLASS);
         $projection->shouldReceive('getIdentifier')->once()->withNoArgs()->andReturn('projection1');
-        $projection_map = new ProjectionMap([ $projection ]);
+        $projection_map = new ProjectionMap([ 'projection1' => $projection ]);
 
         $this->assertCount(1, $projection_map);
-        $this->assertEquals([ 'projection1' ], $projection_map->getKeys());
-        $this->assertEquals([ $projection ], $projection_map->getValues());
+        $this->assertEquals([ 'projection1' =>  $projection ], $projection_map->getItems());
     }
 
     /**

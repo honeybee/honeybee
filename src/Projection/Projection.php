@@ -2,6 +2,7 @@
 
 namespace Honeybee\Projection;
 
+use Assert\Assertion;
 use Honeybee\Common\Error\RuntimeError;
 
 abstract class Projection extends Entity implements ProjectionInterface
@@ -9,7 +10,7 @@ abstract class Projection extends Entity implements ProjectionInterface
     /**
      * Return a projection uuid.
      *
-     * @return string
+     * @return \Trellis\EntityType\Attribute\Uuid\Uuid
      */
     public function getUuid()
     {
@@ -19,7 +20,7 @@ abstract class Projection extends Entity implements ProjectionInterface
     /**
      * Returns an projection language.
      *
-     * @return string
+     * @return \Trellis\EntityType\Attribute\Text\Text
      */
     public function getLanguage()
     {
@@ -29,7 +30,7 @@ abstract class Projection extends Entity implements ProjectionInterface
     /**
      * Returns an projection current (known)revision.
      *
-     * @return string
+     * @return \Trellis\EntityType\Attribute\Integer\Integer
      */
     public function getRevision()
     {
@@ -47,19 +48,9 @@ abstract class Projection extends Entity implements ProjectionInterface
     }
 
     /**
-     * Returns an projection slug.
-     *
-     * @return string
-     */
-    public function getSlug()
-    {
-        return $this->get('slug');
-    }
-
-    /**
      * Returns current workflow state name.
      *
-     * @return string
+     * @return \Trellis\EntityType\Attribute\Text\Text
      */
     public function getWorkflowState()
     {
@@ -69,7 +60,7 @@ abstract class Projection extends Entity implements ProjectionInterface
     /**
      * Returns current workflow parameters.
      *
-     * @return string
+     * @return \Trellis\EntityType\Attribute\KeyValueList\KeyValueList
      */
     public function getWorkflowParameters()
     {
@@ -79,7 +70,7 @@ abstract class Projection extends Entity implements ProjectionInterface
     /**
      * Returns the projection created date.
      *
-     * @return string
+     * @return \Trellis\EntityType\Attribute\Timestamp\Timestamp
      */
     public function getCreatedAt()
     {
@@ -89,30 +80,38 @@ abstract class Projection extends Entity implements ProjectionInterface
     /**
      * Returns the projections modified date.
      *
-     * @return string
+     * @return \Trellis\EntityType\Attribute\Timestamp\Timestamp
      */
     public function getModifiedAt()
     {
         return $this->get('modified_at');
     }
 
+    /**
+     * @return \Trellis\EntityType\Attribute\Text\Text
+     *
+     * @throws RuntimeError
+     */
     public function getParentNodeId()
     {
-        if (!$this->getType()->isHierarchical()) {
-            throw new RuntimeError(
-                sprintf('"is_hierarchical" option not enabled on type: %s', $this->getType()->getName())
-            );
-        }
+        Assertion::true(
+            $this->getEntityType()->isHierarchical(),
+            sprintf('"is_hierarchical" option not enabled on type: %s', $this->getEntityType()->getName())
+        );
         return $this->get('parent_node_id');
     }
 
+    /**
+     * @return \Trellis\EntityType\Attribute\Text\Text
+     *
+     * @throws RuntimeError
+     */
     public function getMaterializedPath()
     {
-        if (!$this->getType()->isHierarchical()) {
-            throw new RuntimeError(
-                sprintf('"is_hierarchical" option not enabled on type: %s', $this->getType()->getName())
-            );
-        }
+        Assertion::true(
+            $this->getEntityType()->isHierarchical(),
+            sprintf('"is_hierarchical" option not enabled on type: %s', $this->getEntityType()->getName())
+        );
         return $this->get('materialized_path');
     }
 }

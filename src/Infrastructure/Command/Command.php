@@ -3,15 +3,25 @@
 namespace Honeybee\Infrastructure\Command;
 
 use Assert\Assertion;
+use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Common\Util\StringToolkit;
 use Ramsey\Uuid\Uuid;
 
 abstract class Command implements CommandInterface
 {
+    /**
+     * @var string $uuid
+     */
     protected $uuid;
 
+    /**
+     * @var mixed $metadata
+     */
     protected $metadata;
 
+    /**
+     * @param mixed[] $state
+     */
     public function __construct(array $state = [])
     {
         $this->metadata = [];
@@ -25,26 +35,45 @@ abstract class Command implements CommandInterface
         $this->guardRequiredState();
     }
 
+    /**
+     * @return string
+     */
     public function getUuid()
     {
         return $this->uuid;
     }
 
+    /**
+     * @return mixed[]
+     */
     public function getMetadata()
     {
         return $this->metadata;
     }
 
+    /**
+     * @param Metadata $metadata
+     *
+     * @return CommandInterface
+     */
     public function withMetadata(Metadata $metadata)
     {
         return $this->createCopyWith([ 'metadata' => $metadata->toArray() ]);
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return static::CLASS . '@' . $this->uuid;
     }
 
+    /**
+     * @return string
+     *
+     * @throws RuntimeError
+     */
     public static function getType()
     {
         $fqcn_parts = explode('\\', static::CLASS);
@@ -67,12 +96,16 @@ abstract class Command implements CommandInterface
         return sprintf('%s.%s.%s.%s', $vendor, $package, $type, $command);
     }
 
+    /**
+     * @return mixed[]
+     */
     public function toArray()
     {
-        $array = get_object_vars($this);
-        $array['@type'] = static::CLASS;
-
-        return $array;
+       return [
+            '@type' => static::CLASS,
+           'uuid' => $this->uuid,
+           'metadata' => $this->metadata
+       ];
     }
 
     protected function guardRequiredState()

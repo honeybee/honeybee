@@ -32,4 +32,13 @@ class Circle implements GeometryInterface
             $this->radius
         );
     }
+
+    public function toArray()
+    {
+        return [
+            '@type' => static::CLASS,
+            'center' => $this->center,
+            'radius' => $this->radius
+        ];
+    }
 }

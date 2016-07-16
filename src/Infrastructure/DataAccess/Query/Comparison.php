@@ -54,6 +54,11 @@ class Comparison
 
     public function toArray()
     {
-        return get_object_vars($this);
+        return [
+            '@type' => static::CLASS,
+            'comparator' => $this->comparator,
+            'comparand' => $this->comparand,
+            'inverted' => $this->inverted
+        ];
     }
 }

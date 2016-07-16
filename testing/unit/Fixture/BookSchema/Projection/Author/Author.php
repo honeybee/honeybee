@@ -6,23 +6,19 @@ use Honeybee\Projection\Projection;
 
 class Author extends Projection
 {
+    /**
+     * @return \Trellis\EntityType\Attribute\Text\Text
+     */
     public function getFirstname()
     {
         return $this->get('firstname');
     }
 
-    public function setFirstname($firstname)
-    {
-        return $this->setValue('firstname', $firstname);
-    }
-
+    /**
+     * @return \Trellis\EntityType\Attribute\Text\Text
+     */
     public function getLastname()
     {
         return $this->get('lastname');
-    }
-
-    public function setLastname($lastname)
-    {
-        return $this->setValue('lastname', $lastname);
     }
 }
