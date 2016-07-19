@@ -4,7 +4,7 @@ namespace Honeybee\Infrastructure\DataAccess\Query;
 
 use Trellis\Common\Object;
 
-class Comparison extends Object
+class Comparison extends Object implements ComparisonInterface
 {
     const EQUALS = 'eq';
 
@@ -15,6 +15,8 @@ class Comparison extends Object
     const GREATER_THAN_EQUAL = 'gte';
 
     const LESS_THAN_EQUAL = 'lte';
+
+    const IN = 'in';
 
     protected $comparator;
 
@@ -48,7 +50,7 @@ class Comparison extends Object
     {
         $string = strtoupper($this->comparator) . ' ' . $this->comparand;
         if ($this->inverted) {
-            $string = 'not ' . $string;
+            $string = 'NOT ' . $string;
         }
 
         return $string;

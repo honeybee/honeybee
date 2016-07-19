@@ -1,23 +1,23 @@
 <?php
 
 use Honeybee\Infrastructure\DataAccess\Query\AttributeCriteria;
-use Honeybee\Infrastructure\DataAccess\Query\CriteriaList;
-use Honeybee\Infrastructure\DataAccess\Query\Query;
-use Honeybee\Infrastructure\DataAccess\Query\SearchCriteria;
-use Honeybee\Infrastructure\DataAccess\Query\SortCriteria;
-use Honeybee\Infrastructure\DataAccess\Query\RangeCriteria;
-use Honeybee\Infrastructure\DataAccess\Query\Comparison\LessThan;
+use Honeybee\Infrastructure\DataAccess\Query\Comparison\Equals;
 use Honeybee\Infrastructure\DataAccess\Query\Comparison\GreaterThan;
 use Honeybee\Infrastructure\DataAccess\Query\Comparison\GreaterThanOrEquals;
-use Honeybee\Infrastructure\DataAccess\Query\Comparison\Equals;
-use Honeybee\Infrastructure\DataAccess\Query\SpatialCriteria;
-use Honeybee\Infrastructure\DataAccess\Query\Geometry\Inside;
-use Honeybee\Infrastructure\DataAccess\Query\Geometry\Circle;
-use Honeybee\Infrastructure\DataAccess\Query\Geography\GeoPoint;
+use Honeybee\Infrastructure\DataAccess\Query\Comparison\In;
+use Honeybee\Infrastructure\DataAccess\Query\Comparison\LessThan;
+use Honeybee\Infrastructure\DataAccess\Query\CriteriaList;
 use Honeybee\Infrastructure\DataAccess\Query\Geography\GeoHash;
-use Honeybee\Infrastructure\DataAccess\Query\Geometry\Box;
-use Honeybee\Infrastructure\DataAccess\Query\Geometry\Polygon;
+use Honeybee\Infrastructure\DataAccess\Query\Geography\GeoPoint;
 use Honeybee\Infrastructure\DataAccess\Query\Geometry\Annulus;
+use Honeybee\Infrastructure\DataAccess\Query\Geometry\Box;
+use Honeybee\Infrastructure\DataAccess\Query\Geometry\Circle;
+use Honeybee\Infrastructure\DataAccess\Query\Geometry\Polygon;
+use Honeybee\Infrastructure\DataAccess\Query\Query;
+use Honeybee\Infrastructure\DataAccess\Query\RangeCriteria;
+use Honeybee\Infrastructure\DataAccess\Query\SearchCriteria;
+use Honeybee\Infrastructure\DataAccess\Query\SortCriteria;
+use Honeybee\Infrastructure\DataAccess\Query\SpatialCriteria;
 
 return [
     //
@@ -300,7 +300,7 @@ return [
             new CriteriaList,
             new CriteriaList(
                 [
-                    new RangeCriteria('created_at', new LessThan('2016-03-02')),
+                    new RangeCriteria('created_at', new LessThan('today')),
                     new RangeCriteria('modified_at', new GreaterThanOrEquals('2016-03-02'))
                 ]
             ),
@@ -321,12 +321,18 @@ return [
                             'and' => [
                                 [
                                     'range' => [
-                                        'created_at' => [ 'lt' => '2016-03-02' ]
+                                        'created_at' => [
+                                            'lt' => date('Y-m-d') . 'T00:00:00+00:00',
+                                            'format' => 'yyyy-MM-dd\'T\'HH:mm:ssZ'
+                                        ]
                                      ]
                                 ],
                                 [
                                     'range' => [
-                                        'modified_at' => [ 'gte' => '2016-03-02' ]
+                                        'modified_at' => [
+                                            'gte' => '2016-03-02T00:00:00+00:00',
+                                            'format' => 'yyyy-MM-dd\'T\'HH:mm:ssZ'
+                                        ]
                                      ]
                                 ]
                             ]
@@ -349,8 +355,8 @@ return [
                 [
                     new RangeCriteria(
                         'created_at',
-                        new GreaterThan('2016-02-02'),
-                        new LessThan('2016-03-02')
+                        new GreaterThan('2016-02-02T00:00:00'),
+                        new LessThan('2016-03-02T00:00:00')
                     )
                 ]
             ),
@@ -372,8 +378,9 @@ return [
                                 [
                                     'range' => [
                                         'created_at' => [
-                                            'gt' => '2016-02-02',
-                                            'lt' => '2016-03-02'
+                                            'gt' => '2016-02-02T00:00:00+00:00',
+                                            'lt' => '2016-03-02T00:00:00+00:00',
+                                            'format' => 'yyyy-MM-dd\'T\'HH:mm:ssZ'
                                         ]
                                     ]
                                 ]
@@ -397,15 +404,15 @@ return [
                 [
                     new SpatialCriteria(
                         'location',
-                        new Inside(new Circle(new GeoPoint(-70, 40), '12km'))
+                        new In(new Circle(new GeoPoint(-70, 40), '12km'))
                     ),
                     new SpatialCriteria(
                         'location',
-                        new Inside(new Annulus(new GeoHash('drn5x1g8cu2y'), '6km', '12km'))
+                        new In(new Annulus(new GeoHash('drn5x1g8cu2y'), '6km', '12km'))
                     ),
                     new SpatialCriteria(
                         'location',
-                        new Inside(
+                        new In(
                             new Polygon(
                                 [
                                     new GeoHash('drn5x1g8cu2y'),
@@ -417,7 +424,7 @@ return [
                     ),
                     new SpatialCriteria(
                         'location',
-                        new Inside(new Box(new GeoPoint(1, 2), new GeoPoint(2, 3.4)))
+                        new In(new Box(new GeoPoint(1, 2), new GeoPoint(2, 3.4)))
                     )
                 ]
             ),

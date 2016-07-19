@@ -4,20 +4,20 @@ namespace Honeybee\Infrastructure\DataAccess\Finder\Elasticsearch;
 
 use Honeybee\Infrastructure\Config\ConfigInterface;
 use Honeybee\Infrastructure\DataAccess\Query\AttributeCriteria;
+use Honeybee\Infrastructure\DataAccess\Query\Comparison\Equals;
+use Honeybee\Infrastructure\DataAccess\Query\Comparison\In;
 use Honeybee\Infrastructure\DataAccess\Query\CriteriaContainerInterface;
 use Honeybee\Infrastructure\DataAccess\Query\CriteriaInterface;
 use Honeybee\Infrastructure\DataAccess\Query\CriteriaList;
+use Honeybee\Infrastructure\DataAccess\Query\Geometry\Annulus;
+use Honeybee\Infrastructure\DataAccess\Query\Geometry\Box;
+use Honeybee\Infrastructure\DataAccess\Query\Geometry\Circle;
+use Honeybee\Infrastructure\DataAccess\Query\Geometry\Polygon;
 use Honeybee\Infrastructure\DataAccess\Query\QueryInterface;
 use Honeybee\Infrastructure\DataAccess\Query\QueryTranslationInterface;
 use Honeybee\Infrastructure\DataAccess\Query\RangeCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\SearchCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\SpatialCriteria;
-use Honeybee\Infrastructure\DataAccess\Query\Geometry\Inside;
-use Honeybee\Infrastructure\DataAccess\Query\Geometry\Circle;
-use Honeybee\Infrastructure\DataAccess\Query\Geometry\Annulus;
-use Honeybee\Infrastructure\DataAccess\Query\Geometry\Polygon;
-use Honeybee\Infrastructure\DataAccess\Query\Geometry\Box;
-use Honeybee\Infrastructure\DataAccess\Query\Comparison\Equals;
 
 class ElasticsearchQueryTranslation implements QueryTranslationInterface
 {
@@ -172,7 +172,14 @@ class ElasticsearchQueryTranslation implements QueryTranslationInterface
         $attribute_path = $criteria->getAttributePath();
 
         foreach ($criteria->getItems() as $comparison) {
-            $comparisons[$comparison->getComparator()] = $comparison->getComparand();
+            $comparand = $comparison->getComparand();
+            // format date range queries
+            if (!is_numeric($comparand) && $ts = strtotime($comparand)) {
+                // @todo support for date ranges beyond unix timestamp range
+                $comparand = date('c', $ts);
+                $comparisons['format'] = "yyyy-MM-dd'T'HH:mm:ssZ";
+            }
+            $comparisons[$comparison->getComparator()] = $comparand;
         }
 
         return [
@@ -183,10 +190,10 @@ class ElasticsearchQueryTranslation implements QueryTranslationInterface
     protected function buildSpatialFilterFor(CriteriaInterface $criteria)
     {
         $attribute_path = $criteria->getAttributePath();
-        $position = $criteria->getPosition();
-        $geometry = $position->getGeometry();
+        $comparison = $criteria->getComparison();
+        $geometry = $comparison->getComparand();
 
-        if ($position instanceof Inside) {
+        if ($comparison instanceof In) {
             if ($geometry instanceof Circle) {
                 $filter = [
                     'geo_distance' => [
@@ -221,12 +228,12 @@ class ElasticsearchQueryTranslation implements QueryTranslationInterface
                 ];
             } else {
                 throw new RuntimeError(
-                    sprintf('Invalid geometry %s given to %s', get_class($criteria), static::CLASS)
+                    sprintf('Invalid comparand %s given to %s', get_class($criteria), static::CLASS)
                 );
             }
         } else {
             throw new RuntimeError(
-                sprintf('Invalid spatial query position %s given to %s', get_class($criteria), static::CLASS)
+                sprintf('Invalid spatial query comparator %s given to %s', get_class($criteria), static::CLASS)
             );
         }
 

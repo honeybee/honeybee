@@ -7,10 +7,6 @@ use Honeybee\Ui\ValueObjects\Pagination;
 
 class PaginationTest extends TestCase
 {
-    public function setUp()
-    {
-    }
-
     public function testCreateByOffsetForFirstPage()
     {
         $results = 13;

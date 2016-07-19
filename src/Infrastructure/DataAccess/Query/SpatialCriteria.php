@@ -3,18 +3,17 @@
 namespace Honeybee\Infrastructure\DataAccess\Query;
 
 use Trellis\Common\Object;
-use Honeybee\Infrastructure\DataAccess\Query\Geometry\PositionInterface;
 
 class SpatialCriteria extends Object implements CriteriaInterface
 {
     protected $attribute_path;
 
-    protected $position;
+    protected $comparison;
 
-    public function __construct($attribute_path, PositionInterface $position)
+    public function __construct($attribute_path, Comparison $comparison)
     {
         $this->attribute_path = $attribute_path;
-        $this->position = $position;
+        $this->comparison = $comparison;
     }
 
     public function getAttributePath()
@@ -22,9 +21,9 @@ class SpatialCriteria extends Object implements CriteriaInterface
         return $this->attribute_path;
     }
 
-    public function getPosition()
+    public function getComparison()
     {
-        return $this->position;
+        return $this->comparison;
     }
 
     public function __toString()
@@ -32,7 +31,7 @@ class SpatialCriteria extends Object implements CriteriaInterface
         return sprintf(
             'ATTRIBUTE %s SPATIAL %s',
             $this->attribute_path,
-            $this->position
+            $this->comparison
         );
     }
 }

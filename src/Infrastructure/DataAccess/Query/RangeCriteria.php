@@ -2,8 +2,8 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Query;
 
-use Trellis\Common\Collection\TypedList;
 use Honeybee\Infrastructure\DataAccess\Query\CriteriaInterface;
+use Trellis\Common\Collection\TypedList;
 
 class RangeCriteria extends TypedList implements CriteriaInterface
 {
@@ -12,10 +12,11 @@ class RangeCriteria extends TypedList implements CriteriaInterface
     public function __construct($attribute_path, Comparison $first, Comparison $second = null)
     {
         $this->attribute_path = $attribute_path;
-        parent::__construct([ $first ]);
+        $items = [ $first ];
         if (!is_null($second)) {
-            $this->addItem($second);
+            $items[] = $second;
         }
+        parent::__construct($items);
     }
 
     public function getAttributePath()
