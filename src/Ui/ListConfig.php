@@ -50,8 +50,11 @@ class ListConfig extends Object implements ListConfigInterface
         $filter_criteria = [];
         if ($this->hasFilter()) {
             foreach ($this->getFilter() as $attribute_path => $value) {
-                if (!preg_match_all('#(?<criteria>\w+)\((?<value>.+)\)(?:;|$)#U', $value, $matches, PREG_SET_ORDER)) {
-                    $filter_criteria[] = $this->buildAttributeFilterFor($attribute_path, $value);
+                if (!preg_match_all('#(?<criteria>\w+)\((?<value>.+)\)(?:,|$)#U', $value, $matches, PREG_SET_ORDER)) {
+                    $matches = explode(',', $value);
+                    foreach ($matches as $match) {
+                        $filter_criteria[] = $this->buildAttributeFilterFor($attribute_path, $match);
+                    }
                 } else {
                     foreach ($matches as $match) {
                         switch ($match['criteria']) {
@@ -106,7 +109,11 @@ class ListConfig extends Object implements ListConfigInterface
 
     protected function buildAttributeFilterFor($attribute_path, $value)
     {
-        return new AttributeCriteria($attribute_path, new Equals($value));
+        $comparison = 0 === strpos($value, '!')
+            ? new Equals(ltrim($value, '!'), true)
+            : new Equals($value);
+
+        return new AttributeCriteria($attribute_path, $comparison);
     }
 
     protected function buildRangeFilterFor($attribute_path, $value)

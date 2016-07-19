@@ -72,7 +72,7 @@ return [
             'search' => 'test string',
             'filter' => [
                 'test_filter' => 'test_value',
-                'another_filter' => '!another value'
+                'another_filter' => '!another value,yes sir'
             ],
             'sort' => 'created_at:desc',
             'limit' => 20,
@@ -82,7 +82,8 @@ return [
             new CriteriaList([ new SearchCriteria('test string') ]),
             new CriteriaList([
                 new AttributeCriteria('test_filter', new Equals('test_value')),
-                new AttributeCriteria('another_filter', new Equals('!another value')) // @todo invert equals
+                new AttributeCriteria('another_filter', new Equals('another value', true)),
+                new AttributeCriteria('another_filter', new Equals('yes sir'))
             ]),
             new CriteriaList([ new SortCriteria('created_at', SortCriteria::SORT_DESC) ]),
             40,
@@ -124,11 +125,11 @@ return [
         'list_config' => new ListConfig([
             'search' => 'test string',
             'filter' => [
-                'range' => 'range(lt:2016-07-08,gte:2016-07-05);range(!eq:2016-07-06)',
-                'spatial' => 'spatial(in:circle([12.1,12.2],2.5km));spatial(!in:box([1,2],[2,1]))',
-                'spatial_alt' => 'spatial(in:polygon([12.1,2.2],[1,2],[2,1]));spatial(!in:annulus([1,2.1],4,5))'
+                'range' => 'range(lt:2016-07-08,gte:2016-07-05),range(!eq:2016-07-06)',
+                'spatial' => 'spatial(in:circle([12.1,12.2],2.5km)),spatial(!in:box([1,2],[2,1]))',
+                'spatial_alt' => 'spatial(in:polygon([12.1,2.2],[1,2],[2,1])),spatial(!in:annulus([1,2.1],4,5))'
             ],
-            'sort' => 'created_at:desc',
+            'sort' => 'created_at:desc,modified_at:asc',
             'limit' => 20,
             'offset' => 40
         ]),
@@ -158,7 +159,10 @@ return [
                     new In(new Annulus(new Point(1, 2.1), '4', '5'), true)
                 )
             ]),
-            new CriteriaList([ new SortCriteria('created_at', SortCriteria::SORT_DESC) ]),
+            new CriteriaList([
+                new SortCriteria('created_at', SortCriteria::SORT_DESC),
+                new SortCriteria('modified_at', SortCriteria::SORT_ASC)
+            ]),
             40,
             20
         )
