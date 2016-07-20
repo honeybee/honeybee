@@ -238,7 +238,7 @@ return [
             new CriteriaList,
             new CriteriaList(
                 [
-                    new AttributeCriteria('workflow_state', new Equals('deleted')),
+                    new AttributeCriteria('workflow_state', new Equals('deleted', true)),
                     new CriteriaList([], CriteriaList::OP_OR)
                 ]
             ),
@@ -257,7 +257,11 @@ return [
                         ],
                         'filter' => [
                             'and' => [
-                                [ 'term' => [ 'workflow_state' => 'deleted' ] ],
+                                [
+                                    'not' => [
+                                        'term' => [ 'workflow_state' => 'deleted' ]
+                                    ]
+                                ],
                             ]
                         ]
                     ]
