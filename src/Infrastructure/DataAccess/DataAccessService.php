@@ -106,7 +106,7 @@ class DataAccessService implements DataAccessServiceInterface
 
     public function getProjectionQueryServiceByType(ProjectionTypeInterface $projection_type)
     {
-        $query_service_key = $projection_type->getPrefix() . '::query_service';
+        $query_service_key = $projection_type->getVariantPrefix() . '::query_service';
 
         return $this->getQueryService($query_service_key);
     }
