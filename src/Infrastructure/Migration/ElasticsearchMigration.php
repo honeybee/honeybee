@@ -187,6 +187,22 @@ abstract class ElasticsearchMigration extends Migration
         }
     }
 
+    protected function createSearchTemplates(MigrationTarget $migration_target, array $templates)
+    {
+        $client = $this->getConnection($migration_target);
+        foreach ($templates as $template_name => $template_file) {
+            if (!is_readable($template_file)) {
+                throw new RuntimeError(sprintf('Unable to read search template at: %s', $template_file));
+            }
+            $client->putTemplate(
+                [
+                    'id' => $template_name,
+                    'body' => file_get_contents($template_file)
+                ]
+            );
+        }
+    }
+
     protected function getIndexSettings(MigrationTarget $migration_target, $include_type_mapping = false)
     {
         $settings_json_file = $this->getIndexSettingsPath($migration_target);
