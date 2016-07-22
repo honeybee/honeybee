@@ -4,9 +4,9 @@ namespace Honeybee\Infrastructure\DataAccess\Finder;
 
 interface FinderInterface
 {
-    public function find(array $query);
+    public function find($query);
 
-    public function findByStored(array $query);
+    public function findByStored($query);
 
     public function getByIdentifier($identifier);
 

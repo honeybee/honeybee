@@ -2,6 +2,7 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Finder\Elasticsearch;
 
+use Assert\Assertion;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Honeybee\Infrastructure\Config\Settings;
 use Honeybee\Infrastructure\DataAccess\Finder\Finder;
@@ -58,8 +59,10 @@ abstract class ElasticsearchFinder extends Finder
         return new FinderResult($mapped_results, count($mapped_results));
     }
 
-    public function find(array $query)
+    public function find($query)
     {
+        Assertion::isArray($query);
+
         $query['index'] = $this->getIndex();
         $query['type'] = $this->getType();
 
@@ -76,8 +79,10 @@ abstract class ElasticsearchFinder extends Finder
         );
     }
 
-    public function findByStored(array $query)
+    public function findByStored($query)
     {
+        Assertion::isArray($query);
+
         $query['index'] = $this->getIndex();
         $query['type'] = $this->getType();
 
