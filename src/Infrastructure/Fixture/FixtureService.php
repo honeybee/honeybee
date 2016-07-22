@@ -41,8 +41,9 @@ class FixtureService implements FixtureServiceInterface
             }
         );
 
-        if (count($fixtures) !== 1) {
-            throw new RuntimeError(sprintf('Unexpected number of fixtures found for %s', $fixture_name));
+        $fixture_count = count($fixtures);
+        if ($fixture_count !== 1) {
+            throw new RuntimeError("Expected one fixture for name '$fixture_name', but found: " . $fixture_count);
         }
 
         $fixture = $fixtures->getFirst();

@@ -59,7 +59,7 @@ abstract class Fixture extends Object implements FixtureInterface
         );
 
         $command = new $command_class_name(
-            [ 'aggregate_root_type' => $type_class_name ] + $command_payload
+            [ 'aggregate_root_type' => $aggregate_root_type->getPrefix() ] + $command_payload
         );
 
         $this->command_bus->post($command);
