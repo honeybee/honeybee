@@ -2,9 +2,10 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Query;
 
+use Assert\Assertion;
 use Trellis\Common\Object;
 
-class Query extends Object implements QueryInterface
+class CriteriaQuery extends Object implements CriteriaQueryInterface
 {
     protected $search_criteria_list;
 
@@ -23,6 +24,11 @@ class Query extends Object implements QueryInterface
         $offset,
         $limit
     ) {
+        Assertion::integer($offset);
+        Assertion::min($offset, 0);
+        Assertion::integer($limit);
+        Assertion::min($limit, 1);
+
         $this->search_criteria_list = $search_criteria_list;
         $this->filter_criteria_list = $filter_criteria_list;
         $this->sort_criteria_list = $sort_criteria_list;
@@ -55,11 +61,6 @@ class Query extends Object implements QueryInterface
         return $this->sort_criteria_list;
     }
 
-    public function getSorting()
-    {
-        return $this->sorting;
-    }
-
     public function createCopyWith(array $new_state)
     {
         return new static(
@@ -84,7 +85,7 @@ class Query extends Object implements QueryInterface
     public function __toString()
     {
         return sprintf(
-            'QUERY: SEARCH %s FILTER %s SORT %s %s %s',
+            'CRITERIA QUERY: SEARCH %s FILTER %s SORT %s %s %s',
             $this->search_criteria_list,
             $this->filter_criteria_list,
             $this->sort_criteria_list,

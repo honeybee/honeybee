@@ -37,8 +37,15 @@ class ProjectionQueryService extends QueryService implements ProjectionQueryServ
 
     public function find(QueryInterface $query, $mapping_name = null)
     {
-        return $this->getFinder($mapping_name)->find(
-            $this->getQueryTranslation()->translate($query)
-        );
+        $finder = $this->getFinder($mapping_name);
+        $query_translation = $this->getQueryTranslation($mapping_name)->translate($query);
+
+        if ($query instanceof StoredQueryInterface) {
+            $finder_result = $finder->findByStored($query_translation);
+        } else {
+            $finder_result = $finder->find($query_translation);
+        }
+
+        return $finder_result;
     }
 }

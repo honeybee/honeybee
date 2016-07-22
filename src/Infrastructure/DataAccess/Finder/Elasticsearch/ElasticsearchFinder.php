@@ -2,10 +2,10 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Finder\Elasticsearch;
 
+use Elasticsearch\Common\Exceptions\Missing404Exception;
+use Honeybee\Infrastructure\Config\Settings;
 use Honeybee\Infrastructure\DataAccess\Finder\Finder;
 use Honeybee\Infrastructure\DataAccess\Finder\FinderResult;
-use Honeybee\Infrastructure\Config\Settings;
-use Elasticsearch\Common\Exceptions\Missing404Exception;
 
 abstract class ElasticsearchFinder extends Finder
 {
@@ -73,6 +73,24 @@ abstract class ElasticsearchFinder extends Finder
             $this->mapResultData($raw_result),
             $raw_result['hits']['total'],
             $query['from'] ?: 0
+        );
+    }
+
+    public function findByStored(array $query)
+    {
+        $query['index'] = $this->getIndex();
+        $query['type'] = $this->getType();
+
+        if ($this->config->get('log_search_query', false) === true) {
+            $this->logger->debug('['.__METHOD__.'] search query = ' . json_encode($query, JSON_PRETTY_PRINT));
+        }
+
+        $raw_result = $this->connector->getConnection()->searchTemplate($query);
+
+        return new FinderResult(
+            $this->mapResultData($raw_result),
+            $raw_result['hits']['total'],
+            $query['body']['params']['from'] ?: 0
         );
     }
 

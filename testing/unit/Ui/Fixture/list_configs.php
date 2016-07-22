@@ -8,12 +8,12 @@ use Honeybee\Infrastructure\DataAccess\Query\Comparison\In;
 use Honeybee\Infrastructure\DataAccess\Query\Comparison\LessThan;
 use Honeybee\Infrastructure\DataAccess\Query\Comparison\LessThanOrEquals;
 use Honeybee\Infrastructure\DataAccess\Query\CriteriaList;
+use Honeybee\Infrastructure\DataAccess\Query\CriteriaQuery;
 use Honeybee\Infrastructure\DataAccess\Query\Geometry\Annulus;
 use Honeybee\Infrastructure\DataAccess\Query\Geometry\Box;
 use Honeybee\Infrastructure\DataAccess\Query\Geometry\Circle;
 use Honeybee\Infrastructure\DataAccess\Query\Geometry\Point;
 use Honeybee\Infrastructure\DataAccess\Query\Geometry\Polygon;
-use Honeybee\Infrastructure\DataAccess\Query\Query;
 use Honeybee\Infrastructure\DataAccess\Query\RangeCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\SearchCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\SortCriteria;
@@ -24,7 +24,7 @@ return [
     // no arguments
     [
         'list_config' => new ListConfig,
-        'expectation' => new Query(
+        'expectation' => new CriteriaQuery(
             new CriteriaList,
             new CriteriaList,
             new CriteriaList([ new SortCriteria('modified_at') ]),
@@ -41,7 +41,7 @@ return [
             'limit' => 20,
             'offset' => 40
         ]),
-        'expectation' => new Query(
+        'expectation' => new CriteriaQuery(
             new CriteriaList,
             new CriteriaList,
             new CriteriaList([ new SortCriteria('modified_at') ]),
@@ -58,7 +58,7 @@ return [
             'limit' => 20,
             'offset' => 40
         ]),
-        'expectation' => new Query(
+        'expectation' => new CriteriaQuery(
             new CriteriaList([ new SearchCriteria('test string') ]),
             new CriteriaList([ new AttributeCriteria('test_filter', new Equals('test_value')) ]),
             new CriteriaList([ new SortCriteria('created_at', SortCriteria::SORT_DESC) ]),
@@ -78,7 +78,7 @@ return [
             'limit' => 20,
             'offset' => 40
         ]),
-        'expectation' => new Query(
+        'expectation' => new CriteriaQuery(
             new CriteriaList([ new SearchCriteria('test string') ]),
             new CriteriaList([
                 new AttributeCriteria('test_filter', new Equals('test_value')),
@@ -102,7 +102,7 @@ return [
             'limit' => 20,
             'offset' => 40
         ]),
-        'expectation' => new Query(
+        'expectation' => new CriteriaQuery(
             new CriteriaList([ new SearchCriteria('test string') ]),
             new CriteriaList([
                 new RangeCriteria(
@@ -133,7 +133,7 @@ return [
             'limit' => 20,
             'offset' => 40
         ]),
-        'expectation' => new Query(
+        'expectation' => new CriteriaQuery(
             new CriteriaList([ new SearchCriteria('test string') ]),
             new CriteriaList([
                 new RangeCriteria(

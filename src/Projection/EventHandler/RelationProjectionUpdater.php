@@ -6,7 +6,7 @@ use Honeybee\EntityInterface;
 use Honeybee\Infrastructure\Config\ConfigInterface;
 use Honeybee\Infrastructure\DataAccess\Query\AttributeCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\CriteriaList;
-use Honeybee\Infrastructure\DataAccess\Query\Query;
+use Honeybee\Infrastructure\DataAccess\Query\CriteriaQuery;
 use Honeybee\Infrastructure\DataAccess\Query\QueryServiceMap;
 use Honeybee\Infrastructure\DataAccess\Query\Comparison\Equals;
 use Honeybee\Infrastructure\DataAccess\Storage\StorageWriterMap;
@@ -187,7 +187,7 @@ class RelationProjectionUpdater extends EventHandler
 
             // @todo scan and scroll support
             $query_result = $this->getQueryService()->find(
-                new Query(
+                new CriteriaQuery(
                     new CriteriaList,
                     $filter_criteria_list,
                     new CriteriaList,

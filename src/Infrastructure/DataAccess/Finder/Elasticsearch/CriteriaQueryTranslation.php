@@ -2,12 +2,14 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Finder\Elasticsearch;
 
+use Assert\Assertion;
 use Honeybee\Infrastructure\Config\ConfigInterface;
 use Honeybee\Infrastructure\DataAccess\Query\AttributeCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\Comparison\Equals;
 use Honeybee\Infrastructure\DataAccess\Query\Comparison\In;
 use Honeybee\Infrastructure\DataAccess\Query\CriteriaContainerInterface;
 use Honeybee\Infrastructure\DataAccess\Query\CriteriaInterface;
+use Honeybee\Infrastructure\DataAccess\Query\CriteriaQueryInterface;
 use Honeybee\Infrastructure\DataAccess\Query\CriteriaList;
 use Honeybee\Infrastructure\DataAccess\Query\Geometry\Annulus;
 use Honeybee\Infrastructure\DataAccess\Query\Geometry\Box;
@@ -19,7 +21,7 @@ use Honeybee\Infrastructure\DataAccess\Query\RangeCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\SearchCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\SpatialCriteria;
 
-class ElasticsearchQueryTranslation implements QueryTranslationInterface
+class CriteriaQueryTranslation implements QueryTranslationInterface
 {
     const QUERY_FOR_EMPTY = '__empty';
 
@@ -32,6 +34,8 @@ class ElasticsearchQueryTranslation implements QueryTranslationInterface
 
     public function translate(QueryInterface $query)
     {
+        Assertion::isInstanceOf($query, CriteriaQueryInterface::CLASS);
+
         $es_query = [
             'from' => $query->getOffset(),
             'size' => $query->getLimit(),
@@ -41,6 +45,7 @@ class ElasticsearchQueryTranslation implements QueryTranslationInterface
         if ($this->config->has('index')) {
             $es_query['index'] = $this->config->get('index');
         }
+
         if ($this->config->has('type')) {
             $es_query['type'] = $this->config->get('type');
         }

@@ -2,6 +2,7 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Query;
 
+use Assert\Assertion;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Config\ConfigInterface;
 use Psr\Log\LoggerInterface;
@@ -27,6 +28,9 @@ abstract class QueryService implements QueryServiceInterface
     protected function getFinder($mapping_name = null)
     {
         $mapping_name = $mapping_name ?: $this->config->get('default_mapping', 'default');
+
+        Assertion::string($mapping_name);
+
         if (!isset($this->finder_mappings[$mapping_name])) {
             throw new RuntimeError('No finder mapping configured for key: ' . $mapping_name);
         }
@@ -36,6 +40,9 @@ abstract class QueryService implements QueryServiceInterface
     protected function getQueryTranslation($mapping_name = null)
     {
         $mapping_name = $mapping_name ?: $this->config->get('default_mapping', 'default');
+
+        Assertion::string($mapping_name);
+
         if (!isset($this->finder_mappings[$mapping_name])) {
             throw new RuntimeError('No finder mapping configured for key: ' . $mapping_name);
         }

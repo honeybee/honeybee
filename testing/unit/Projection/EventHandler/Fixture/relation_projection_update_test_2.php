@@ -51,7 +51,7 @@ return [
         'metadata' => []
     ],
     'query' => [
-        '@type' => 'Honeybee\Infrastructure\DataAccess\Query\Query',
+        '@type' => 'Honeybee\Infrastructure\DataAccess\Query\CriteriaQuery',
         'search_criteria_list' => [],
         'filter_criteria_list' => [
             [

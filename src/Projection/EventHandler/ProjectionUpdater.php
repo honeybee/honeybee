@@ -9,7 +9,7 @@ use Honeybee\Infrastructure\DataAccess\DataAccessServiceInterface;
 use Honeybee\Infrastructure\DataAccess\Query\AttributeCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\Comparison\Equals;
 use Honeybee\Infrastructure\DataAccess\Query\CriteriaList;
-use Honeybee\Infrastructure\DataAccess\Query\Query;
+use Honeybee\Infrastructure\DataAccess\Query\CriteriaQuery;
 use Honeybee\Infrastructure\DataAccess\Query\QueryServiceMap;
 use Honeybee\Infrastructure\Event\Bus\Channel\ChannelMap;
 use Honeybee\Infrastructure\Event\Bus\EventBusInterface;
@@ -193,7 +193,7 @@ class ProjectionUpdater extends EventHandler
         $parent_identifier = $parent->getIdentifier();
         $affected_children = $this->getQueryService($projection_type)->find(
             // @todo scan and scroll support
-            new Query(
+            new CriteriaQuery(
                 new CriteriaList,
                 new CriteriaList(
                     [ new AttributeCriteria('materialized_path', new Equals($parent_identifier)) ]

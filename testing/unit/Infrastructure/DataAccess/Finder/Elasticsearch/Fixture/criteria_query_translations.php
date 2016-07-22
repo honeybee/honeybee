@@ -13,7 +13,7 @@ use Honeybee\Infrastructure\DataAccess\Query\Geometry\Annulus;
 use Honeybee\Infrastructure\DataAccess\Query\Geometry\Box;
 use Honeybee\Infrastructure\DataAccess\Query\Geometry\Circle;
 use Honeybee\Infrastructure\DataAccess\Query\Geometry\Polygon;
-use Honeybee\Infrastructure\DataAccess\Query\Query;
+use Honeybee\Infrastructure\DataAccess\Query\CriteriaQuery;
 use Honeybee\Infrastructure\DataAccess\Query\RangeCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\SearchCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\SortCriteria;
@@ -24,7 +24,7 @@ return [
     // "match_all" query, that is filtered by a single attribute criteria.
     //
     [
-        'query' => new Query(
+        'query' => new CriteriaQuery(
             new CriteriaList,
             new CriteriaList([ new AttributeCriteria('username', new Equals('honeybee-tester')) ]),
             new CriteriaList([ new SortCriteria('created_at') ]),
@@ -57,7 +57,7 @@ return [
     // "match_all" query, that is filtered by several attribute criterias using "and" to chain them.
     //
     [
-        'query' => new Query(
+        'query' => new CriteriaQuery(
             new CriteriaList,
             new CriteriaList(
                 [
@@ -99,7 +99,7 @@ return [
     // "match_all" query, that is filtered by several attribute criterias using "or" to chain them.
     //
     [
-        'query' => new Query(
+        'query' => new CriteriaQuery(
             new CriteriaList,
             new CriteriaList(
                 [
@@ -142,7 +142,7 @@ return [
     // search for foobar.
     //
     [
-        'query' => new Query(
+        'query' => new CriteriaQuery(
             new CriteriaList([ new SearchCriteria('foobar') ]),
             new CriteriaList,
             new CriteriaList([ new SortCriteria('created_at') ]),
@@ -166,7 +166,7 @@ return [
     // "match_all" query, that is filtered by several attribute criterias using "and" and "or" to chain them.
     //
     [
-        'query' => new Query(
+        'query' => new CriteriaQuery(
             new CriteriaList,
             new CriteriaList(
                 [
@@ -234,7 +234,7 @@ return [
     // "match_all" query, that is filtered by several attribute criterias with empty nested list.
     //
     [
-        'query' => new Query(
+        'query' => new CriteriaQuery(
             new CriteriaList,
             new CriteriaList(
                 [
@@ -276,7 +276,7 @@ return [
     // "match_all" query with no criteria
     //
     [
-        'query' => new Query(
+        'query' => new CriteriaQuery(
             new CriteriaList,
             new CriteriaList,
             new CriteriaList,
@@ -300,7 +300,7 @@ return [
     // "match_all" with "range" filter
     //
     [
-        'query' => new Query(
+        'query' => new CriteriaQuery(
             new CriteriaList,
             new CriteriaList(
                 [
@@ -353,7 +353,7 @@ return [
     // "match_all" with multiple "range" filters on same attribute
     //
     [
-        'query' => new Query(
+        'query' => new CriteriaQuery(
             new CriteriaList,
             new CriteriaList(
                 [
@@ -402,7 +402,7 @@ return [
     // "match_all" with various geo filters
     //
     [
-        'query' => new Query(
+        'query' => new CriteriaQuery(
             new CriteriaList,
             new CriteriaList(
                 [

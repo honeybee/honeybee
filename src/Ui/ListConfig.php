@@ -12,12 +12,12 @@ use Honeybee\Infrastructure\DataAccess\Query\Comparison\In;
 use Honeybee\Infrastructure\DataAccess\Query\Comparison\LessThan;
 use Honeybee\Infrastructure\DataAccess\Query\Comparison\LessThanOrEquals;
 use Honeybee\Infrastructure\DataAccess\Query\CriteriaList;
+use Honeybee\Infrastructure\DataAccess\Query\CriteriaQuery;
 use Honeybee\Infrastructure\DataAccess\Query\Geometry\Annulus;
 use Honeybee\Infrastructure\DataAccess\Query\Geometry\Box;
 use Honeybee\Infrastructure\DataAccess\Query\Geometry\Circle;
 use Honeybee\Infrastructure\DataAccess\Query\Geometry\Point;
 use Honeybee\Infrastructure\DataAccess\Query\Geometry\Polygon;
-use Honeybee\Infrastructure\DataAccess\Query\Query;
 use Honeybee\Infrastructure\DataAccess\Query\RangeCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\SearchCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\SortCriteria;
@@ -98,7 +98,7 @@ class ListConfig extends Object implements ListConfigInterface
             $sort_criteria_list->push(new SortCriteria('modified_at'));
         }
 
-        return new Query(
+        return new CriteriaQuery(
             $search_criteria_list,
             $filter_criteria_list,
             $sort_criteria_list,

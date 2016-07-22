@@ -3,11 +3,12 @@
 namespace Honeybee\Tests\DataAccess\Finder\Elasticsearch;
 
 use Honeybee\Infrastructure\Config\ArrayConfig;
-use Honeybee\Infrastructure\DataAccess\Finder\Elasticsearch\ElasticsearchQueryTranslation;
+use Honeybee\Infrastructure\DataAccess\Finder\Elasticsearch\CriteriaQueryTranslation;
+use Honeybee\Infrastructure\DataAccess\Query\StoredQuery;
 use Honeybee\Infrastructure\DataAccess\Query\QueryInterface;
 use Honeybee\Tests\TestCase;
 
-class ElasticsearchQueryTranslationTest extends TestCase
+class CriteriaQueryTranslationTest extends TestCase
 {
     /**
      * @dataProvider provideQueryFixture
@@ -15,15 +16,24 @@ class ElasticsearchQueryTranslationTest extends TestCase
     public function testTranslate(QueryInterface $query, array $expected_es_query)
     {
         $es_query = (
-            new ElasticsearchQueryTranslation($this->getQueryTranslationConfig())
+            new CriteriaQueryTranslation($this->getQueryTranslationConfig())
         )->translate($query);
 
         $this->assertEquals($expected_es_query, $es_query);
     }
 
+    /**
+     * @expectedException Assert\InvalidArgumentException
+     */
+    public function testTranslateUnsupportedQuery()
+    {
+        $query = new StoredQuery('invalid', [], 0, 1);
+        (new CriteriaQueryTranslation($this->getQueryTranslationConfig()))->translate($query);
+    }
+
     public function provideQueryFixture()
     {
-        return include __DIR__ . '/Fixture/query_translations.php';
+        return include __DIR__ . '/Fixture/criteria_query_translations.php';
     }
 
     protected function getQueryTranslationConfig()
