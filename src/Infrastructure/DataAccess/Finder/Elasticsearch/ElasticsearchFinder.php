@@ -75,7 +75,7 @@ abstract class ElasticsearchFinder extends Finder
         return new FinderResult(
             $this->mapResultData($raw_result),
             $raw_result['hits']['total'],
-            $query['from'] ?: 0
+            isset($query['from']) ? $query['from'] : 0
         );
     }
 
@@ -95,7 +95,7 @@ abstract class ElasticsearchFinder extends Finder
         return new FinderResult(
             $this->mapResultData($raw_result),
             $raw_result['hits']['total'],
-            $query['body']['params']['from'] ?: 0
+            isset($query['body']['params']['from']) ? $query['body']['params']['from'] : 0
         );
     }
 
@@ -117,6 +117,6 @@ abstract class ElasticsearchFinder extends Finder
 
     protected function getParameters($method)
     {
-        return (array)$this->config->get('parameters', new Settings())->get($method);
+        return (array)$this->config->get('parameters', new Settings)->get($method);
     }
 }
