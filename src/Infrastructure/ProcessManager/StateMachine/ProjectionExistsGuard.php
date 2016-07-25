@@ -6,7 +6,7 @@ use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\DataAccess\DataAccessServiceInterface;
 use Honeybee\Infrastructure\DataAccess\Query\AttributeCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\CriteriaList;
-use Honeybee\Infrastructure\DataAccess\Query\Query;
+use Honeybee\Infrastructure\DataAccess\Query\CriteriaQuery;
 use Honeybee\Infrastructure\DataAccess\Query\Comparison\Equals;
 use Honeybee\Infrastructure\ProcessManager\ProcessStateInterface;
 use Honeybee\Projection\ProjectionTypeMap;
@@ -106,7 +106,7 @@ class ProjectionExistsGuard extends VariableGuard
 
     protected function buildQuery($attribute_path, $identifier)
     {
-        return new Query(
+        return new CriteriaQuery(
             new CriteriaList,
             new CriteriaList([ new AttributeCriteria($attribute_path, new Equals($identifier)) ]),
             new CriteriaList,
