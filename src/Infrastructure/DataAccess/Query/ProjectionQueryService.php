@@ -37,6 +37,11 @@ class ProjectionQueryService extends QueryService implements ProjectionQueryServ
 
     public function find(QueryInterface $query, $mapping_name = null)
     {
+        // default custom query mapping name
+        if (empty($mapping_name) && $query instanceof CustomQueryInterface) {
+            $mapping_name = 'custom';
+        }
+
         $finder = $this->getFinder($mapping_name);
         $query_translation = $this->getQueryTranslation($mapping_name)->translate($query);
 
