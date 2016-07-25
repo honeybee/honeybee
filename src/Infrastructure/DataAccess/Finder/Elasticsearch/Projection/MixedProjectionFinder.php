@@ -2,6 +2,7 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Finder\Elasticsearch\Projection;
 
+use Assert\Assertion;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Config\ConfigInterface;
 use Honeybee\Infrastructure\DataAccess\Connector\ConnectorInterface;
@@ -122,8 +123,10 @@ class MixedProjectionFinder extends ElasticSearchFinder
      *
      * @return FinderResult result with zero or more actual results
      */
-    public function find(array $query)
+    public function find($query)
     {
+        Assertion::isArray($query);
+
         $query['index'] = $this->getIndex();
         $query['type'] = $this->getType();
 
