@@ -1,6 +1,6 @@
 <?php
 
-namespace Honeybee\Tests\Fixture\BookSchema\Task\CreateAuthor;
+namespace Honeybee\Tests\Fixture\BookSchema\Model\Task\CreateAuthor;
 
 use Honeybee\Model\Task\CreateAggregateRoot\CreateAggregateRootCommand;
 

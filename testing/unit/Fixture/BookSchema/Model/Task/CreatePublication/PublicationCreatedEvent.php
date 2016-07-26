@@ -1,6 +1,6 @@
 <?php
 
-namespace Honeybee\Tests\Fixture\BookSchema\Task\CreatePublication;
+namespace Honeybee\Tests\Fixture\BookSchema\Model\Task\CreatePublication;
 
 use Honeybee\Model\Task\CreateAggregateRoot\AggregateRootCreatedEvent;
 

@@ -19,7 +19,7 @@ return [
             ],
         ],
         'expected_command' => [
-            '@type' => 'Honeybee\Tests\Fixture\BookSchema\Task\ModifyAuthor\ModifyAuthorCommand',
+            '@type' => 'Honeybee\Tests\Fixture\BookSchema\Model\Task\ModifyAuthor\ModifyAuthorCommand',
             'values' => [
                 'firstname' => 'Vatima',
                 'lastname' => 'Hsog',
@@ -76,7 +76,7 @@ return [
             ]
         ],
         'expected_command' => [
-            '@type' => 'Honeybee\Tests\Fixture\BookSchema\Task\ModifyAuthor\ModifyAuthorCommand',
+            '@type' => 'Honeybee\Tests\Fixture\BookSchema\Model\Task\ModifyAuthor\ModifyAuthorCommand',
             'values' => [
                 'lastname' => 'OhMyGosh'
             ],
@@ -166,7 +166,7 @@ return [
             ]
         ],
         'expected_command' => [
-            '@type' => 'Honeybee\Tests\Fixture\BookSchema\Task\ModifyAuthor\ModifyAuthorCommand',
+            '@type' => 'Honeybee\Tests\Fixture\BookSchema\Model\Task\ModifyAuthor\ModifyAuthorCommand',
             'values' => [],
             'aggregate_root_identifier' => $aggregate_root_identifier,
             'aggregate_root_type' => 'honeybee-cmf.aggregate_fixtures.author',

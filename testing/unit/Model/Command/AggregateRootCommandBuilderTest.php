@@ -7,9 +7,9 @@ use Honeybee\Model\Command\AggregateRootCommandBuilder;
 use Honeybee\Tests\Fixture\BookSchema\Model\Author\AuthorType;
 use Honeybee\Tests\Fixture\BookSchema\Model\Publication\PublicationType;
 use Honeybee\Tests\Fixture\BookSchema\Projection\Author\AuthorType  as AuthorProjectionType;
-use Honeybee\Tests\Fixture\BookSchema\Task\CreateAuthor\CreateAuthorCommand;
-use Honeybee\Tests\Fixture\BookSchema\Task\CreatePublication\CreatePublicationCommand;
-use Honeybee\Tests\Fixture\BookSchema\Task\ModifyAuthor\ModifyAuthorCommand;
+use Honeybee\Tests\Fixture\BookSchema\Model\Task\CreateAuthor\CreateAuthorCommand;
+use Honeybee\Tests\Fixture\BookSchema\Model\Task\CreatePublication\CreatePublicationCommand;
+use Honeybee\Tests\Fixture\BookSchema\Model\Task\ModifyAuthor\ModifyAuthorCommand;
 use Honeybee\Tests\TestCase;
 use Shrink0r\Monatic\Result;
 use Shrink0r\Monatic\Success;
@@ -67,7 +67,7 @@ class AggregateRootCommandBuilderTest extends TestCase
         $this->assertInstanceOf(CreatePublicationCommand::CLASS, $result);
         $this->assertArraySubset(
             [
-                '@type' => 'Honeybee\Tests\Fixture\BookSchema\Task\CreatePublication\CreatePublicationCommand',
+                '@type' => 'Honeybee\Tests\Fixture\BookSchema\Model\Task\CreatePublication\CreatePublicationCommand',
                 'values' => [],
                 'aggregate_root_type' => 'honeybee-cmf.aggregate_fixtures.publication',
                 'embedded_entity_commands' => [],

@@ -1,0 +1,18 @@
+{
+    "honeybee-cmf.aggregate_fixtures.author": [
+        {
+            "identifier": "honeybee-cmf.aggregate_fixtures.author-39249423-1dd3-3ded-a199-930ed6813060-de_DE-9490",
+            "@type": "honeybee-cmf.aggregate_fixtures.author",
+            "revision": 1,
+            "uuid": "39249423-1dd3-3ded-a199-930ed6813060",
+            "language": "de_DE",
+            "version": 9490,
+            "firstname": "Donald",
+            "lastname": "Drumpf",
+            "email": "win@me.com",
+            "blurb": "Making America great again",
+            "products": [],
+            "books": []
+        }
+    ]
+}

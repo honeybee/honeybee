@@ -13,7 +13,7 @@ return [
             ]
         ],
         'expected_command' => [
-            '@type' => 'Honeybee\Tests\Fixture\BookSchema\Task\CreateAuthor\CreateAuthorCommand',
+            '@type' => 'Honeybee\Tests\Fixture\BookSchema\Model\Task\CreateAuthor\CreateAuthorCommand',
             'values' => [
                 'firstname' => 'Amitav',
                 'lastname' => 'Gosh',
@@ -41,7 +41,7 @@ return [
             ]
         ],
         'expected_command' => [
-            '@type' => 'Honeybee\Tests\Fixture\BookSchema\Task\CreateAuthor\CreateAuthorCommand',
+            '@type' => 'Honeybee\Tests\Fixture\BookSchema\Model\Task\CreateAuthor\CreateAuthorCommand',
             'values' => [
                 'firstname' => 'Amitav',
                 'lastname' => 'Gosh',
@@ -92,7 +92,7 @@ return [
             ]
         ],
         'expected_command' => [
-            '@type' => 'Honeybee\Tests\Fixture\BookSchema\Task\CreateAuthor\CreateAuthorCommand',
+            '@type' => 'Honeybee\Tests\Fixture\BookSchema\Model\Task\CreateAuthor\CreateAuthorCommand',
             'values' => [
                 'firstname' => 'Amitav',
                 'lastname' => '',
@@ -158,7 +158,7 @@ return [
             ]
         ],
         'expected_command' => [
-            '@type' => 'Honeybee\Tests\Fixture\BookSchema\Task\CreateAuthor\CreateAuthorCommand',
+            '@type' => 'Honeybee\Tests\Fixture\BookSchema\Model\Task\CreateAuthor\CreateAuthorCommand',
             'values' => [
                 'firstname' => 'Amitav',
                 'lastname' => 'Gosh',

@@ -38,7 +38,7 @@ class ProjectionUpdaterTest extends TestCase
 
     public function setUp()
     {
-        $state_machine =  Mockery::mock(StateMachineInterface::CLASS);
+        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
 
         $game_aggregate_root_type = new GameType($state_machine);
         $team_aggregate_root_type = new TeamType($state_machine);

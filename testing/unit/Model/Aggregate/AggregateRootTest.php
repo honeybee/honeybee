@@ -4,12 +4,12 @@ namespace Honeybee\Tests\Model\Aggregate;
 
 use Honeybee\Model\Event\AggregateRootEventList;
 use Honeybee\Tests\Fixture\BookSchema\Model\Author\AuthorType;
-use Honeybee\Tests\Fixture\BookSchema\Task\CreateAuthor\AuthorCreatedEvent;
-use Honeybee\Tests\Fixture\BookSchema\Task\CreateAuthor\CreateAuthorCommand;
-use Honeybee\Tests\Fixture\BookSchema\Task\ModifyAuthor\AuthorModifiedEvent;
-use Honeybee\Tests\Fixture\BookSchema\Task\ModifyAuthor\ModifyAuthorCommand;
-use Honeybee\Tests\Fixture\BookSchema\Task\ProceedAuthorWorkflow\AuthorWorkflowProceededEvent;
-use Honeybee\Tests\Fixture\BookSchema\Task\ProceedAuthorWorkflow\ProceedAuthorWorkflowCommand;
+use Honeybee\Tests\Fixture\BookSchema\Model\Task\CreateAuthor\AuthorCreatedEvent;
+use Honeybee\Tests\Fixture\BookSchema\Model\Task\CreateAuthor\CreateAuthorCommand;
+use Honeybee\Tests\Fixture\BookSchema\Model\Task\ModifyAuthor\AuthorModifiedEvent;
+use Honeybee\Tests\Fixture\BookSchema\Model\Task\ModifyAuthor\ModifyAuthorCommand;
+use Honeybee\Tests\Fixture\BookSchema\Model\Task\ProceedAuthorWorkflow\AuthorWorkflowProceededEvent;
+use Honeybee\Tests\Fixture\BookSchema\Model\Task\ProceedAuthorWorkflow\ProceedAuthorWorkflowCommand;
 use Honeybee\Tests\TestCase;
 use Workflux\Builder\XmlStateMachineBuilder;
 
