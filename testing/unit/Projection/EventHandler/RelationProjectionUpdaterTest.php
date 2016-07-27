@@ -18,6 +18,8 @@ use Honeybee\Tests\TestCase;
 use Honeybee\Tests\Fixture\GameSchema\Projection\Game\GameType;
 use Honeybee\Tests\Fixture\GameSchema\Projection\Player\PlayerType;
 use Honeybee\Tests\Fixture\GameSchema\Projection\Team\TeamType;
+use Honeybee\Tests\Fixture\TopicSchema\Projection\Topic\TopicType;
+use Honeybee\Tests\Fixture\TopicSchema\Projection\TopicOption\TopicOptionType;
 use Mockery;
 use Psr\Log\NullLogger;
 use Workflux\StateMachine\StateMachineInterface;
@@ -33,11 +35,15 @@ class RelationProjectionUpdaterTest extends TestCase
         $game_type = new GameType($state_machine);
         $player_type = new PlayerType($state_machine);
         $team_type = new TeamType($state_machine);
+        $topic_type = new TopicType($state_machine);
+        $topic_option_type = new TopicOptionType($state_machine);
         $this->projection_type_map = new ProjectionTypeMap(
             [
                 $game_type->getVariantPrefix() => $game_type,
                 $player_type->getVariantPrefix() => $player_type,
-                $team_type->getVariantPrefix() => $team_type
+                $team_type->getVariantPrefix() => $team_type,
+                $topic_type->getVariantPrefix() => $topic_type,
+                $topic_option_type->getVariantPrefix() => $topic_option_type
             ]
         );
     }

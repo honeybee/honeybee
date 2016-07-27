@@ -91,8 +91,10 @@ class RelationProjectionUpdater extends EventHandler
             foreach ($affected_entities as $affected_entity_value_path => $affected_entity) {
                 $affected_entity_type = $affected_entity->getType();
                 $affected_entity_prefix = $affected_entity_type->getPrefix();
-                $mirrored_values =
-                    $affected_entity_type->createMirroredEntity($source_projection, $affected_entity)->toArray();
+                $mirrored_values = $affected_entity_type->createMirroredEntity(
+                    $source_projection,
+                    $affected_entity
+                )->toArray();
                 // @todo if the current affected entity type has no mirrored attributes we can cache the
                 // mirrored values and improve performance by skipping additional unecessary recursion
                 $mirrored_values['@type'] = $affected_entity_prefix;
@@ -100,7 +102,7 @@ class RelationProjectionUpdater extends EventHandler
                 $mirrored_values['referenced_identifier'] = $affected_entity->getReferencedIdentifier();
                 // insert the mirrored values in the correct position in our updated state
                 preg_match_all(
-                    '#(?<parent>[a-z]+)\.[a-z]+\[(?<position>\d+)\]\.?#',
+                    '#(?<parent>[\w-]+)\.[\w-]+\[(?<position>\d+)\]\.?#',
                     $affected_entity_value_path,
                     $value_path_parts,
                     PREG_SET_ORDER
