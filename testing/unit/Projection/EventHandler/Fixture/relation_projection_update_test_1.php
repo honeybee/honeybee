@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @codeCoverageIgnore
+ */
 return [
     'event' => [
         '@type' => 'Honeybee\Projection\Event\ProjectionUpdatedEvent',

@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @codeCoverageIgnore
+ */
 use Honeybee\Infrastructure\DataAccess\Query\AttributeCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\Comparison\Equals;
 use Honeybee\Infrastructure\DataAccess\Query\Comparison\GreaterThan;
@@ -484,5 +486,5 @@ return [
             'size' => 100,
             'from' => 0
         ]
-    ],
+    ]
 ];

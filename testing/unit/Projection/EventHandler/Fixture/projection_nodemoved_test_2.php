@@ -1,7 +1,8 @@
 <?php
 
-/*
- *  Aggregate root node moved test
+/**
+ * Aggregate root node moved test
+ * @codeCoverageIgnore
  */
 return [
     'event_state' => [

@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @codeCoverageIgnore
+ */
 return [
     '@type' => 'Honeybee\Tests\Fixture\BookSchema\Model\Task\CreateAuthor\CreateAuthorCommand',
     'values' => [

@@ -1,7 +1,8 @@
 <?php
 
-/*
- *  Test cases are described by related flow chart images
+/**
+ * Test cases are described by related flow chart images
+ * @codeCoverageIgnore
  */
 return [
     'event_state' => [
