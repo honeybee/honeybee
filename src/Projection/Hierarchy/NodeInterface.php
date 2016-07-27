@@ -1,6 +1,6 @@
 <?php
 
-namespace Honeybee\Infrastructure\Domain\Tree;
+namespace Honeybee\Projection\Hierarchy;
 
 interface NodeInterface
 {
