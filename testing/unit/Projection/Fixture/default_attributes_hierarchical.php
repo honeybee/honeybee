@@ -1,7 +1,5 @@
 <?php
-/**
- * @codeCoverageIgnore
- */
+
 return [
     'identifier' => [
         '@type' => 'Trellis\Runtime\Attribute\Text\TextAttribute',

@@ -45,6 +45,14 @@
         <whitelist>
             <directory suffix=".php">src</directory>
             <directory suffix=".php">testing/unit</directory>
+            <exclude>
+                <directory>testing/unit/Infrastructure/DataAccess/Finder/Elasticsearch/Fixture</directory>
+                <directory>testing/unit/Infrastructure/Fixture/Fixture</directory>
+                <directory>testing/unit/Model/Command/Fixture</directory>
+                <directory>testing/unit/Projection/EventHandler/Fixture</directory>
+                <directory>testing/unit/Projection/Fixture</directory>
+                <directory>testing/unit/Ui/Fixture</directory>
+            </exclude>
         </whitelist>
     </filter>
 </phpunit>

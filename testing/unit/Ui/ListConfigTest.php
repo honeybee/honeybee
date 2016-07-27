@@ -55,6 +55,9 @@ class ListConfigTest extends TestCase
         $this->assertEquals($expected_query, $list_config->asQuery());
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function provideListConfig()
     {
         return include __DIR__ . '/Fixture/list_configs.php';

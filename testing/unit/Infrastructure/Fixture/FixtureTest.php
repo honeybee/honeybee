@@ -122,6 +122,9 @@ class FixtureTest extends TestCase
         $this->markTestIncomplete('Test copying of files to temp location');
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function provideFixtureData()
     {
         $fixtures = [];

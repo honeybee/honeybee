@@ -31,6 +31,9 @@ class CriteriaQueryTranslationTest extends TestCase
         (new CriteriaQueryTranslation($this->getQueryTranslationConfig()))->translate($query);
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function provideQueryFixture()
     {
         return include __DIR__ . '/Fixture/criteria_query_translations.php';

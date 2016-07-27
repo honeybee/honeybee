@@ -46,6 +46,9 @@ class AggregateRootTypeTest extends TestCase
         $aggregate_root = $aggregate_root_type->createEntity([ 'invalid' => 'state' ]);
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function provideDefaultAttributeFixture()
     {
         $state_machine = Mockery::mock(StateMachineInterface::CLASS);

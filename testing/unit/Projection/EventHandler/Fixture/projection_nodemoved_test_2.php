@@ -2,7 +2,6 @@
 
 /**
  * Aggregate root node moved test
- * @codeCoverageIgnore
  */
 return [
     'event_state' => [

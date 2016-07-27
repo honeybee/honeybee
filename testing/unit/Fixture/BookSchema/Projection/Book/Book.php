@@ -2,27 +2,8 @@
 
 namespace Honeybee\Tests\Fixture\BookSchema\Projection\Book;
 
-use Honeybee\Projection\Resource\Resource;
+use Honeybee\Projection\Projection;
 
-class Book extends Resource
+class Book extends Projection
 {
-    public function getTitle()
-    {
-        return $this->getValue('title');
-    }
-
-    public function setTitle($title)
-    {
-        return $this->setValue('title', $title);
-    }
-
-    public function getDescription()
-    {
-        return $this->getValue('description');
-    }
-
-    public function setDescription($description)
-    {
-        return $this->setValue('description', $description);
-    }
 }

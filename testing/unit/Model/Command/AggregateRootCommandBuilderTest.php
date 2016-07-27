@@ -21,11 +21,17 @@ class AggregateRootCommandBuilderTest extends TestCase
 {
     const AGGREGATE_ROOT_IDENTIFIER = 'honeybee.fixtures.author-fa44c523-592f-404f-bcd5-00f04ff5ce61-de_DE-1';
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function provideCreateCommands()
     {
         return include __DIR__ . '/Fixture/create_commands.php';
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function provideModifyCommands()
     {
         return include __DIR__ . '/Fixture/modify_commands.php';
