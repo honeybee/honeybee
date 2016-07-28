@@ -83,6 +83,7 @@ class Worker implements WorkerInterface
         try {
             $job->run();
         } catch (Exception $error) {
+            error_log(__METHOD__.': '.$error->getMessage().PHP_EOL.$error->getTraceAsString());
             if ($job->getStrategy()->canRetry()) {
                 $this->job_service->retry($job, $delivery_info['exchange'] . JobService::WAIT_SUFFIX);
             } else {
