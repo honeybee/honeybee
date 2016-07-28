@@ -197,15 +197,8 @@ class MixedProjectionFinder extends ElasticSearchFinder
     {
         $source = $document_data['_source'];
 
-        $fqcn = isset($source[self::OBJECT_TYPE]) ? $source[self::OBJECT_TYPE] : false;
-        if (!$fqcn || !class_exists($fqcn, true)) {
-            throw new RuntimeError(
-                'Invalid or corrupt type information within document data. "_source[@type]" given is: ' . $fqcn
-            );
-        }
-        unset($source[self::OBJECT_TYPE]);
-
-        $projection_type = $this->projection_type_map->getByEntityImplementor($fqcn);
+        $type_prefix = isset($source[self::OBJECT_TYPE]) ? $source[self::OBJECT_TYPE] : false;
+        $projection_type = $this->projection_type_map->getItem($type_prefix);
 
         return $projection_type->createEntity($source);
     }
