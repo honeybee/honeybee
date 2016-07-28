@@ -1,19 +1,7 @@
-engines:
-  csslint:
-    enabled: false
-  duplication:
-    enabled: true
-    config:
-      languages:
-      - php
-  eslint:
-    enabled: false
-  fixme:
-    enabled: true
-  phpmd:
-    enabled: true
-ratings:
-  paths:
-  - "**.php"
+JavaScript: false
+Ruby: false
+Python: false
+PHP: true
+
 exclude_paths:
 - testing/**/*
