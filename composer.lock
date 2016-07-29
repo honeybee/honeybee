@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "b931e1fc51ec882f9a3a98c7a0737ccf",
-    "content-hash": "9b46ce72ac28ac6595b537caf20ebbe2",
+    "hash": "45af8b1fa67b2910b1fdfece851c93a4",
+    "content-hash": "958ac9a8c82f8230cee6f9736f7d9796",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -658,12 +658,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/honeybee/trellis.git",
-                "reference": "025483a31c2443713cbc578f11e59d9676b5838b"
+                "reference": "9fbe21ada707a484091122fd67e2886cbd3b7265"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/honeybee/trellis/zipball/025483a31c2443713cbc578f11e59d9676b5838b",
-                "reference": "025483a31c2443713cbc578f11e59d9676b5838b",
+                "url": "https://api.github.com/repos/honeybee/trellis/zipball/9fbe21ada707a484091122fd67e2886cbd3b7265",
+                "reference": "9fbe21ada707a484091122fd67e2886cbd3b7265",
                 "shasum": ""
             },
             "require": {
@@ -680,11 +680,11 @@
             },
             "require-dev": {
                 "mockery/mockery": "master@dev",
-                "phpmd/phpmd": "^2.3",
-                "phpunit/phpunit": "^5.0.5",
-                "sami/sami": "^3.2",
+                "phpmd/phpmd": "~2.3",
+                "phpunit/phpunit": "~5.0",
+                "sami/sami": "~3.2",
                 "satooshi/php-coveralls": "master@dev",
-                "squizlabs/php_codesniffer": "^2.3"
+                "squizlabs/php_codesniffer": "~2.3"
             },
             "bin": [
                 "bin/trellis"
@@ -720,7 +720,7 @@
                 "entity",
                 "validation"
             ],
-            "time": "2016-07-29 18:07:47"
+            "time": "2016-07-29 18:17:57"
         },
         {
             "name": "league/flysystem",
