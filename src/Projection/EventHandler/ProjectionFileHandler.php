@@ -102,7 +102,7 @@ class ProjectionFileHandler extends EventHandler
                     'error' => $copy_error->getMessage()
                 ]
             );
-            throw new FilesystemError('File could not be copied to final storage.');
+            return false;
         }
 
         // source file deletion failure is acceptable so the deletion process is done separately.
