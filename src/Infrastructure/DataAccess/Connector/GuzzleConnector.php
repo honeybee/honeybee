@@ -34,14 +34,18 @@ class GuzzleConnector extends Connector
         }
 
         if ($this->config->has('auth')) {
-            $auth = $this->config->get('auth');
+            $auth = (array)$this->config->get('auth');
             if (!isset($auth['username'])) {
                 throw new RuntimeError('Missing required "username" setting within given auth config.');
             }
             if (!isset($auth['password'])) {
                 throw new RuntimeError('Missing required "password" setting within given auth config.');
             }
-            $client_options['auth'] = [ $auth['username'], $auth['password'], $auth['type'] ?: 'basic' ];
+            $client_options['auth'] = [
+                $auth['username'],
+                $auth['password'],
+                isset($auth['type']) ? $auth['type'] : 'basic'
+            ];
         }
 
         if ($this->config->has('default_headers')) {
