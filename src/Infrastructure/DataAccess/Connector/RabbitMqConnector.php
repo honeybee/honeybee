@@ -72,4 +72,59 @@ class RabbitMqConnector extends Connector
 
         parent::disconnect();
     }
+
+    /**
+     * @return array
+     */
+    public function getFromAdminApi($endpoint)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $this->buildAdminUrl($endpoint));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 3);
+        curl_setopt($ch, CURLOPT_USERPWD, $this->getAdminCredentials());
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        return json_decode($result, true);
+    }
+
+    /**
+     * @return array
+     */
+    public function putToAdminApi($endpoint, array $body)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $this->buildAdminUrl($endpoint));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [ 'content-type:application/json' ]);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($body));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 3);
+        curl_setopt($ch, CURLOPT_USERPWD, $this->getAdminCredentials());
+        $result = curl_exec($ch);
+        curl_close($ch);
+
+        return json_decode($result, true);
+    }
+
+    protected function buildAdminUrl($endpoint)
+    {
+        return sprintf(
+            "%s://%s:%s%s",
+            $this->config->get('transport', 'http'),
+            $this->config->get('host', 'localhost'),
+            $this->config->get('admin_port', '15672'),
+            $endpoint
+        );
+    }
+
+    protected function getAdminCredentials()
+    {
+        return sprintf(
+            '%s:%s',
+            $this->config->get('admin_user', $this->config->get('user')),
+            $this->config->get('admin_password', $this->config->get('password'))
+        );
+    }
 }

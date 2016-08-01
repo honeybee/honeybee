@@ -2,22 +2,19 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Storage\CouchDb\StructureVersionList;
 
+use Assert\Assertion;
+use GuzzleHttp\Exception\RequestException;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Config\SettingsInterface;
 use Honeybee\Infrastructure\DataAccess\Storage\CouchDb\CouchDbStorage;
 use Honeybee\Infrastructure\DataAccess\Storage\StorageWriterInterface;
 use Honeybee\Infrastructure\Migration\StructureVersionList;
-use GuzzleHttp\Exception\RequestException;
 
 class StructureVersionListWriter extends CouchDbStorage implements StorageWriterInterface
 {
     public function write($structure_version_list, SettingsInterface $settings = null)
     {
-        if (!$structure_version_list instanceof StructureVersionList) {
-            throw new RuntimeError(
-                sprintf('Invalid payload given to %s, expected type of %s', __METHOD__, StructureVersionList::CLASS)
-            );
-        }
+        Assertion::isInstanceOf($structure_version_list, StructureVersionList::CLASS);
 
         $data = [
             'identifier' => $structure_version_list->getIdentifier(),

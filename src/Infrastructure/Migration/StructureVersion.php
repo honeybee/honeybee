@@ -12,7 +12,7 @@ class StructureVersion extends Object implements StructureVersionInterface
 
     protected $created_date;
 
-    public function __construct(array $state = array())
+    public function __construct(array $state = [])
     {
         $this->created_date = date(DATE_ISO8601);
 
