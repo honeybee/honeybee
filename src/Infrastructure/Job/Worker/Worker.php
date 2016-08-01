@@ -2,10 +2,9 @@
 
 namespace Honeybee\Infrastructure\Job\Worker;
 
+use Assert\Assertion;
 use Exception;
-use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Common\Util\JsonToolkit;
-use Honeybee\Infrastructure\Job\JobService;
 use Honeybee\Infrastructure\Job\JobServiceInterface;
 use Honeybee\Infrastructure\Config\ConfigInterface;
 
@@ -42,28 +41,20 @@ class Worker implements WorkerInterface
 
     protected function validateSetup()
     {
-        $exchange_name = $this->config->get('exchange');
         $job = $this->config->get('job');
 
-        if (!$exchange_name) {
-            throw new RuntimeError("Missing required 'exchange' config setting.");
-        }
-
-        if (!$job) {
-            throw new RuntimeError("Missing required 'job' config setting.");
-        }
+        Assertion::string($job);
+        Assertion::notEmpty($job);
     }
 
     protected function connectChannel()
     {
-        $exchange_name = $this->config->get('exchange');
         $job_name = $this->config->get('job');
         $job_settings = $this->job_service->getJob($job_name)->get('settings');
         $queue_name = $job_settings->get('queue');
-        $routing_key = $job_settings->get('routing_key');
 
-        $this->job_service->initialize($exchange_name);
-        $this->job_service->initializeQueue($exchange_name, $queue_name, $routing_key);
+        Assertion::string($queue_name);
+        Assertion::notEmpty($queue_name);
 
         $message_callback = function ($message) {
             $this->onJobScheduledForExecution($message);
@@ -83,11 +74,16 @@ class Worker implements WorkerInterface
         try {
             $job->run();
         } catch (Exception $error) {
-            error_log(__METHOD__.': '.$error->getMessage().PHP_EOL.$error->getTraceAsString());
             if ($job->getStrategy()->canRetry()) {
-                $this->job_service->retry($job, $delivery_info['exchange'] . JobService::WAIT_SUFFIX);
+                $this->job_service->retry($job, $delivery_info['exchange'] . '.waiting');
             } else {
-                $this->job_service->fail($job, $delivery_info['exchange'], $error);
+                $this->job_service->fail(
+                    $job,
+                    [
+                        'error_message' => $error->getMessage(),
+                        'error_trace' => $error->getTraceAsString()
+                    ]
+                );
             }
         }
 

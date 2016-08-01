@@ -4,12 +4,12 @@ namespace Honeybee\Infrastructure\Job\Bundle;
 
 use Closure;
 use Honeybee\Common\Error\RuntimeError;
+use Honeybee\Infrastructure\Config\Settings;
+use Honeybee\Infrastructure\Config\SettingsInterface;
 use Honeybee\Infrastructure\Event\Bus\EventBusInterface;
 use Honeybee\Infrastructure\Event\EventInterface;
 use Honeybee\Infrastructure\Job\Job;
 use Honeybee\Infrastructure\Job\Strategy\JobStrategy;
-use Honeybee\Infrastructure\Config\Settings;
-use Honeybee\Infrastructure\Config\SettingsInterface;
 
 class ExecuteEventHandlersJob extends Job
 {
@@ -24,10 +24,19 @@ class ExecuteEventHandlersJob extends Job
      */
     protected $event_bus;
 
+    /**
+     * @hiddenProperty
+     */
     protected $strategy;
 
+    /**
+     * @hiddenProperty
+     */
     protected $strategy_callback;
 
+    /**
+     * @hiddenProperty
+     */
     protected $settings;
 
     public function __construct(
@@ -82,7 +91,7 @@ class ExecuteEventHandlersJob extends Job
         if (!$strategy instanceof JobStrategy) {
             throw new RuntimeError(
                 sprintf(
-                    "Invalid strategy type given: %s, expected instance of %s",
+                    'Invalid strategy type given: %s, expected instance of %s',
                     get_class($strategy),
                     JobStrategy::CLASS
                 )
