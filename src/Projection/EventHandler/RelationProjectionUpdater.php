@@ -14,6 +14,7 @@ use Honeybee\Infrastructure\Event\EventHandler;
 use Honeybee\Infrastructure\Event\EventInterface;
 use Honeybee\Infrastructure\Event\Bus\EventBusInterface;
 use Honeybee\Infrastructure\Event\Bus\Channel\ChannelMap;
+use Honeybee\Projection\Event\ProjectionEvent;
 use Honeybee\Projection\Event\ProjectionUpdatedEvent;
 use Honeybee\Projection\ProjectionInterface;
 use Honeybee\Projection\ProjectionMap;
@@ -147,7 +148,7 @@ class RelationProjectionUpdater extends EventHandler
         }
     }
 
-    protected function loadAffectedRelativesFromProjectionEvent(ProjectionUpdatedEvent $event)
+    protected function loadAffectedRelativesFromProjectionEvent(ProjectionEvent $event)
     {
         // we don't know what exactly has changed in the source projection so first we filter out
         // reference attributes not referencing the type of the updated projection
