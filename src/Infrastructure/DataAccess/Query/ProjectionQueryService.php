@@ -17,21 +17,40 @@ class ProjectionQueryService extends QueryService implements ProjectionQueryServ
         return $this->getFinder($mapping_name)->getByIdentifiers($identifiers);
     }
 
-    public function walkResources(QueryInterface $query, Closure $callback, $mapping_name = null)
+    public function walk(QueryInterface $query, Closure $callback, $mapping_name = null)
     {
         $query_result = $this->find($query, $mapping_name);
         $offset = $query_result->getOffset();
-        $resources = $query_result->getResults();
 
-        // @todo scan and scroll support
-        while (count($resources) > 0) {
-            foreach ($resources as $resource) {
-                $callback($resource, $offset++, $query_result->getTotalCount());
+        while ($query_result->getCount() > 0) {
+            $projections = $query_result->getResults();
+            foreach ($projections as $projection) {
+                $callback($projection, $offset++, $query_result->getTotalCount());
             }
             $query = $query->createCopyWith([ 'offset' => $query->getOffset() + $query->getLimit() ]);
             $query_result = $this->find($query, $mapping_name);
             $offset = $query->getOffset();
-            $resources = $query_result->getResults();
+            $projections = $query_result->getResults();
+        }
+    }
+
+    public function scroll(QueryInterface $query, Closure $callback, $mapping_name = null, $cursor = null)
+    {
+        $finder = $this->getFinder($mapping_name);
+        $query_translation = $this->getQueryTranslation($mapping_name)->translate($query);
+        $query_result = $finder->scrollStart($query_translation, $cursor);
+        $offset = 0;
+
+        while (true) {
+            $query_result = $finder->scrollNext($query_result->getCursor(), $query->getLimit());
+            if ($query_result->getCount() > 0) {
+                $projections = $query_result->getResults();
+                foreach ($projections as $projection) {
+                    $callback($projection, $offset++, $query_result->getTotalCount());
+                }
+            } else {
+                $finder->scrollEnd($query_result->getCursor());
+            }
         }
     }
 

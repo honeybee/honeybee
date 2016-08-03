@@ -42,14 +42,6 @@ class CriteriaQueryTranslation implements QueryTranslationInterface
             'body' => $this->buildBody($query)
         ];
 
-        if ($this->config->has('index')) {
-            $es_query['index'] = $this->config->get('index');
-        }
-
-        if ($this->config->has('type')) {
-            $es_query['type'] = $this->config->get('type');
-        }
-
         return $es_query;
     }
 

@@ -32,8 +32,6 @@ return [
             100
         ),
         'expected_es_query' => [
-            'index' => 'honeybee-system_account',
-            'type' => 'user',
             'body' => [
                 'query' => [
                     'filtered' => [
@@ -73,8 +71,6 @@ return [
             100
         ),
         'expected_es_query' => [
-            'index' => 'honeybee-system_account',
-            'type' => 'user',
             'body' => [
                 'query' => [
                     'filtered' => [
@@ -116,8 +112,6 @@ return [
             100
         ),
         'expected_es_query' => [
-            'index' => 'honeybee-system_account',
-            'type' => 'user',
             'body' => [
                 'query' => [
                     'filtered' => [
@@ -150,8 +144,6 @@ return [
             100
         ),
         'expected_es_query' => [
-            'index' => 'honeybee-system_account',
-            'type' => 'user',
             'body' => [
                 'query' => [
                     'match' => [ '_all' => [ 'query' => 'foobar', 'type' => 'phrase_prefix' ] ]
@@ -194,8 +186,6 @@ return [
             100
         ),
         'expected_es_query' => [
-            'index' => 'honeybee-system_account',
-            'type' => 'user',
             'body' => [
                 'query' => [
                     'filtered' => [
@@ -247,8 +237,6 @@ return [
             100
         ),
         'expected_es_query' => [
-            'index' => 'honeybee-system_account',
-            'type' => 'user',
             'body' => [
                 'query' => [
                     'filtered' => [
@@ -284,8 +272,6 @@ return [
             100
         ),
         'expected_es_query' => [
-            'index' => 'honeybee-system_account',
-            'type' => 'user',
             'body' => [
                 'query' => [
                     'match_all' => []
@@ -313,8 +299,6 @@ return [
             1000
         ),
         'expected_es_query' => [
-            'index' => 'honeybee-system_account',
-            'type' => 'user',
             'body' => [
                 'query' => [
                     'filtered' => [
@@ -369,8 +353,6 @@ return [
             100
         ),
         'expected_es_query' => [
-            'index' => 'honeybee-system_account',
-            'type' => 'user',
             'body' => [
                 'query' => [
                     'filtered' => [
@@ -437,8 +419,6 @@ return [
             100
         ),
         'expected_es_query' => [
-            'index' => 'honeybee-system_account',
-            'type' => 'user',
             'body' => [
                 'query' => [
                     'filtered' => [

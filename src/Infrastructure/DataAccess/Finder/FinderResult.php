@@ -2,6 +2,8 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Finder;
 
+use Assert\Assertion;
+
 class FinderResult implements FinderResultInterface
 {
     protected $results;
@@ -10,11 +12,17 @@ class FinderResult implements FinderResultInterface
 
     protected $offset;
 
-    public function __construct(array $results = [], $total_count = 0, $offset = 0)
+    protected $cursor;
+
+    public function __construct(array $results = [], $total_count = 0, $offset = 0, $cursor = null)
     {
+        Assertion::integer($total_count);
+        Assertion::integer($offset);
+
         $this->results = $results;
         $this->total_count = $total_count;
-        $this->offset = 0;
+        $this->offset = $offset;
+        $this->cursor = $cursor;
     }
 
     public function getResults()
@@ -22,9 +30,19 @@ class FinderResult implements FinderResultInterface
         return $this->results;
     }
 
+    public function getCount()
+    {
+        return count($this->results);
+    }
+
     public function getOffset()
     {
         return $this->offset;
+    }
+
+    public function getCursor()
+    {
+        return $this->cursor;
     }
 
     public function hasResults()

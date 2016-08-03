@@ -145,7 +145,7 @@ class MixedProjectionFinder extends ElasticSearchFinder
         return new FinderResult(
             $this->mapResultData($raw_result),
             $raw_result['hits']['total'],
-            $query['from'] ?: 0
+            isset($query['from']) ? $query['from'] : 0
         );
     }
 

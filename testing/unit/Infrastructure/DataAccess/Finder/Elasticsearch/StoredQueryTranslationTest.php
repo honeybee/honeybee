@@ -53,8 +53,6 @@ class StoredQueryTranslationTest extends TestCase
 
         $this->assertEquals(
             [
-                'index' => 'test_index',
-                'type' => 'test_type',
                 'body' => [ 'id' => 'test', 'params' => [ 'from' => 50, 'size' => 10 ] ]
             ],
             $translation

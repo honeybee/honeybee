@@ -4,9 +4,9 @@ namespace Honeybee\Infrastructure\DataAccess\Finder\Elasticsearch;
 
 use Assert\Assertion;
 use Honeybee\Infrastructure\Config\ConfigInterface;
-use Honeybee\Infrastructure\DataAccess\Query\StoredQueryInterface;
 use Honeybee\Infrastructure\DataAccess\Query\QueryInterface;
 use Honeybee\Infrastructure\DataAccess\Query\QueryTranslationInterface;
+use Honeybee\Infrastructure\DataAccess\Query\StoredQueryInterface;
 
 class StoredQueryTranslation implements QueryTranslationInterface
 {
@@ -34,14 +34,6 @@ class StoredQueryTranslation implements QueryTranslationInterface
                 )
             ]
         ];
-
-        if ($this->config->has('index')) {
-            $es_query['index'] = $this->config->get('index');
-        }
-
-        if ($this->config->has('type')) {
-            $es_query['type'] = $this->config->get('type');
-        }
 
         return $es_query;
     }

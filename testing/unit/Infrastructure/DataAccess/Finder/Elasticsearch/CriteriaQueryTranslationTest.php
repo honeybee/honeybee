@@ -41,12 +41,8 @@ class CriteriaQueryTranslationTest extends TestCase
 
     protected function getQueryTranslationConfig()
     {
-        return new ArrayConfig(
-            [
-                'index' => 'honeybee-system_account',
-                'type' => 'user',
-                'multi_fields' => [ 'username' ]
-            ]
-        );
+        return new ArrayConfig([
+            'multi_fields' => [ 'username' ]
+        ]);
     }
 }

@@ -14,6 +14,9 @@ abstract class ElasticsearchFinder extends Finder
 
     public function getByIdentifier($identifier)
     {
+        Assertion::string($identifier);
+        Assertion::notBlank($identifier);
+
         $data = [
             'index' => $this->getIndex(),
             'type' => $this->getType(),
@@ -87,7 +90,7 @@ abstract class ElasticsearchFinder extends Finder
         $query['type'] = $this->getType();
 
         if ($this->config->get('log_search_query', false) === true) {
-            $this->logger->debug('['.__METHOD__.'] search query = ' . json_encode($query, JSON_PRETTY_PRINT));
+            $this->logger->debug('['.__METHOD__.'] stored query = ' . json_encode($query, JSON_PRETTY_PRINT));
         }
 
         $raw_result = $this->connector->getConnection()->searchTemplate($query);
@@ -97,6 +100,56 @@ abstract class ElasticsearchFinder extends Finder
             $raw_result['hits']['total'],
             isset($query['body']['params']['from']) ? $query['body']['params']['from'] : 0
         );
+    }
+
+    public function scrollStart($query, $cursor = null)
+    {
+        Assertion::isArray($query);
+
+        $query['index'] = $this->getIndex();
+        $query['type'] = $this->getType();
+        $query['search_type'] = 'scan';
+        $query['scroll'] = $this->config->get('scroll_timeout', '1m');
+        $query['sort'] = [ '_doc' ];
+
+        if ($this->config->get('log_scroll_query', false) === true) {
+            $this->logger->debug('['.__METHOD__.'] scroll start = ' . json_encode($query, JSON_PRETTY_PRINT));
+        }
+
+        $raw_result = $this->connector->getConnection()->search($query);
+        return new FinderResult([], 0, 0, $raw_result['_scroll_id']);
+    }
+
+    public function scrollNext($cursor, $size = null)
+    {
+        Assertion::notEmpty($cursor);
+
+        $query['scroll_id'] = $cursor;
+        $query['scroll'] = $this->config->get('scroll_timeout', '1m');
+
+        if ($this->config->get('log_scroll_query', false) === true) {
+            $this->logger->debug('['.__METHOD__.'] scroll next = ' . json_encode($query, JSON_PRETTY_PRINT));
+        }
+
+        $raw_result = $this->connector->getConnection()->scroll($query);
+
+        return new FinderResult(
+            $this->mapResultData($raw_result),
+            $raw_result['hits']['total'],
+            0, // unknown offset during scroll
+            $raw_result['_scroll_id']
+        );
+    }
+
+    public function scrollEnd($cursor)
+    {
+        Assertion::notEmpty($cursor);
+
+        if ($this->config->get('log_scroll_query', false) === true) {
+            $this->logger->debug('['.__METHOD__.'] scroll end ' . $cursor);
+        }
+
+        $this->connector->getConnection()->clearScroll([ 'scroll_id' => $cursor ]);
     }
 
     protected function getIndex()

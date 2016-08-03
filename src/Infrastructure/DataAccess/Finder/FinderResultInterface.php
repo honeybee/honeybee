@@ -13,4 +13,8 @@ interface FinderResultInterface
     public function getFirstResult();
 
     public function getTotalCount();
+
+    public function getCount();
+
+    public function getCursor();
 }
