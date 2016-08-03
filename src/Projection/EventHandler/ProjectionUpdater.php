@@ -191,8 +191,10 @@ class ProjectionUpdater extends EventHandler
         // find all existing children of the moved parent node
         $projection_type = $parent->getType();
         $parent_identifier = $parent->getIdentifier();
-        $affected_children = $this->getQueryService($projection_type)->find(
-            // @todo scan and scroll support
+        $path = $this->calculateMaterializedPath($parent);
+
+        $affected_relatives = [];
+        $this->getQueryService($projection_type)->scroll(
             new CriteriaQuery(
                 new CriteriaList,
                 new CriteriaList(
@@ -200,20 +202,25 @@ class ProjectionUpdater extends EventHandler
                 ),
                 new CriteriaList,
                 0,
-                10000
-            )
+                $this->config->get('batch_size', 1000)
+            ),
+            function (
+                ProjectionInterface $projection
+            ) use (
+                &$affected_relatives,
+                $parent_identifier,
+                $projection_type,
+                $path
+            ) {
+                // @note if there are many affected relatives this could consume memory
+                $child_data = $projection->toArray();
+                $pattern = '#.*' . $parent_identifier . '#';
+                $child_data['materialized_path'] = preg_replace($pattern, $path, $projection->getMaterializedPath());
+                $affected_relatives[] = $projection_type->createEntity($child_data);
+            }
         );
 
-        $updated_projections = [];
-        $path = $this->calculateMaterializedPath($parent);
-        foreach ($affected_children->getResults() as $affected_child) {
-            $child_data = $affected_child->toArray();
-            $pattern = '#.*' . $parent_identifier . '#';
-            $child_data['materialized_path'] = preg_replace($pattern, $path, $affected_child->getMaterializedPath());
-            $updated_projections[] = $projection_type->createEntity($child_data);
-        }
-
-        return $updated_projections;
+        return $affected_relatives;
     }
 
     protected function calculateMaterializedPath(ProjectionInterface $parent = null)

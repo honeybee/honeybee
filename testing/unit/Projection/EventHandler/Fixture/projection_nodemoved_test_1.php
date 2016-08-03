@@ -51,7 +51,7 @@ return [
         ],
         'sort_criteria_list' => [],
         'offset' => 0,
-        'limit' => 10000
+        'limit' => 1000
     ],
     'projections' => [
         [

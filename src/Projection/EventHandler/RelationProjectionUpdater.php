@@ -188,19 +188,19 @@ class RelationProjectionUpdater extends EventHandler
             );
             $filter_criteria_list->push($reference_filter_list);
 
-            // @todo scan and scroll support
-            $query_result = $this->getQueryService()->find(
+            $this->getQueryService()->scroll(
                 new CriteriaQuery(
                     new CriteriaList,
                     $filter_criteria_list,
                     new CriteriaList,
                     0,
-                    10000
-                )
+                    $this->config->get('batch_size', 1000)
+                ),
+                function (ProjectionInterface $projection) use (&$affected_relatives) {
+                    // @note if there are many affected relatives this could consume memory
+                    $affected_relatives[] = $projection;
+                }
             );
-            foreach ($query_result->getResults() as $affected_relative) {
-                $affected_relatives[] = $affected_relative;
-            }
         }
 
         return new ProjectionMap($affected_relatives);

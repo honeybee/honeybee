@@ -64,19 +64,27 @@ class RelationProjectionUpdaterTest extends TestCase
         // prepare mock query responses
         $mock_query_service = Mockery::mock(QueryServiceInterface::CLASS);
         $mock_query_service_map = Mockery::mock(QueryServiceMap::CLASS);
-        $mock_finder_result = Mockery::mock(FinderResult::CLASS);
-        $mock_finder_result->shouldReceive('getResults')->once()->withNoArgs()->andReturn($related_projections);
         $service_name = $projection_type_variant_prefix . '::query_service';
         $mock_query_service_map->shouldReceive('getItem')->once()->with($service_name)->andReturn($mock_query_service);
-        $mock_query_service->shouldReceive('find')
+        $mock_query_service->shouldReceive('scroll')
             ->once()
-            ->with(Mockery::on(
-                function (QueryInterface $search_query) use ($query) {
-                    $this->assertEquals($query, $search_query->toArray());
-                    return true;
-                }
-            ))
-            ->andReturn($mock_finder_result);
+            ->with(
+                Mockery::on(
+                    function (QueryInterface $search_query) use ($query) {
+                        $this->assertEquals($query, $search_query->toArray());
+                        return true;
+                    }
+                ),
+                Mockery::on(
+                    function (\Closure $callback) use ($related_projections) {
+                        foreach ($related_projections as $index => $projection) {
+                            $callback($projection, $index);
+                        }
+                        return true;
+                    }
+                )
+            )
+            ->andReturnNull();
 
         // prepare storage writer and event bus expectations
         $mock_event_bus = Mockery::mock(EventBus::CLASS);

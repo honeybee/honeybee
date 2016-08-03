@@ -26,9 +26,9 @@ use Honeybee\Tests\Fixture\GameSchema\Model\Team\TeamType;
 use Honeybee\Tests\Fixture\GameSchema\Projection\Game\GameType as GameProjectionType;
 use Honeybee\Tests\Fixture\GameSchema\Projection\Player\PlayerType as PlayerProjectionType;
 use Honeybee\Tests\Fixture\GameSchema\Projection\Team\TeamType as TeamProjectionType;
-use Workflux\StateMachine\StateMachineInterface;
 use Psr\Log\NullLogger;
 use Mockery;
+use Workflux\StateMachine\StateMachineInterface;
 
 class ProjectionUpdaterTest extends TestCase
 {
@@ -173,7 +173,6 @@ class ProjectionUpdaterTest extends TestCase
         foreach ($projections as $projection) {
             $related_projections[] = $this->createProjection($projection);
         }
-        $mock_finder_result->shouldReceive('getResults')->once()->andReturn($related_projections);
 
         // query execution expectations for moved nodes
         $mock_query_service_map = Mockery::mock(QueryServiceMap::CLASS);
@@ -182,15 +181,26 @@ class ProjectionUpdaterTest extends TestCase
             ->once()
             ->with('honeybee-tests.game_schema.team::projection.standard::query_service')
             ->andReturn($mock_query_service);
-        $mock_query_service->shouldReceive('find')
+
+        $mock_query_service->shouldReceive('scroll')
             ->once()
-            ->with(Mockery::on(
-                function (QueryInterface $search_query) use ($query) {
-                    $this->assertEquals($query, $search_query->toArray());
-                    return true;
-                }
-            ))
-            ->andReturn($mock_finder_result);
+            ->with(
+                Mockery::on(
+                    function (QueryInterface $search_query) use ($query) {
+                        $this->assertEquals($query, $search_query->toArray());
+                        return true;
+                    }
+                ),
+                Mockery::on(
+                    function (\Closure $callback) use ($related_projections) {
+                        foreach ($related_projections as $index => $projection) {
+                            $callback($projection, $index);
+                        }
+                        return true;
+                    }
+                )
+            )
+            ->andReturnNull();
 
         $mock_finder = Mockery::mock(FinderInterface::CLASS);
         $this->addEmdeddedEventsToMockFinder(
