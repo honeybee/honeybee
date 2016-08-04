@@ -24,7 +24,7 @@ class DomainEventFinder extends ElasticsearchFinder
             if (!$domain_event instanceof AggregateRootEventInterface) {
                 throw new RuntimeError(
                     sprintf(
-                        'Non-event object given within result data. %s only supports instancesof %s.',
+                        'Non-event object given within result data. %s only supports instances of %s.',
                         __CLASS__,
                         AggregateRootEventInterface::CLASS
                     )

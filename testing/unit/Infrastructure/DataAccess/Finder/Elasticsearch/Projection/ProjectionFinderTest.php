@@ -2,21 +2,23 @@
 
 namespace Honeybee\Tests\DataAccess\Finder\Elasticsearch\Projection;
 
+use Elasticsearch\Client;
+use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Honeybee\Infrastructure\Config\ArrayConfig;
 use Honeybee\Infrastructure\DataAccess\Connector\ConnectorInterface;
 use Honeybee\Infrastructure\DataAccess\Finder\Elasticsearch\Projection\ProjectionFinder;
+use Honeybee\Infrastructure\DataAccess\Finder\FinderResult;
+use Honeybee\Projection\ProjectionTypeMap;
+use Honeybee\Tests\Fixture\BookSchema\Projection\Author\AuthorType;
 use Honeybee\Tests\Fixture\BookSchema\Projection\Book\BookType;
 use Honeybee\Tests\TestCase;
 use Psr\Log\NullLogger;
 use Mockery;
 use Workflux\StateMachine\StateMachineInterface;
-use Honeybee\Infrastructure\DataAccess\Finder\FinderResult;
-use Elasticsearch\Client;
-use Elasticsearch\Common\Exceptions\Missing404Exception;
 
 class ProjectionFinderTest extends TestCase
 {
-    protected $projection_type;
+    protected $projection_type_map;
 
     protected $mock_connector;
 
@@ -25,7 +27,13 @@ class ProjectionFinderTest extends TestCase
     public function setUp()
     {
         $state_machine = Mockery::mock(StateMachineInterface::CLASS);
-        $this->projection_type = new BookType($state_machine);
+        $book_type = new BookType($state_machine);
+        $author_type = new AuthorType($state_machine);
+        $this->projection_type_map = new ProjectionTypeMap([
+            $book_type->getVariantPrefix() => $book_type,
+            $author_type->getVariantPrefix() => $author_type
+        ]);
+
         $this->mock_connector = Mockery::mock(ConnectorInterface::CLASS);
         $this->mock_client = Mockery::mock(Client::CLASS);
     }
@@ -47,7 +55,7 @@ class ProjectionFinderTest extends TestCase
             $this->mock_connector,
             new ArrayConfig([ 'index' => 'index', 'type' => 'type' ]),
             new NullLogger,
-            $this->projection_type
+            $this->projection_type_map
         );
 
         $projections = $this->createProjections([ $test_data['raw_result'] ]);
@@ -75,12 +83,55 @@ class ProjectionFinderTest extends TestCase
                 'parameters' => [ 'get' => [ 'key' => 'value' ] ]
             ]),
             new NullLogger,
-            $this->projection_type
+            $this->projection_type_map
         );
 
         $finder_result = new FinderResult([], 0);
 
         $this->assertEquals($finder_result, $projection_finder->getByIdentifier('missing'));
+    }
+
+    /**
+     * @expectedException Trellis\Common\Error\RuntimeException
+     */
+    public function testGetByIdentifierUnknownProjectionType()
+    {
+        $test_data = include(__DIR__ . '/Fixture/projection_finder_test_01.php');
+        $identifier = 'honeybee-cmf.projection_fixtures.book-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1';
+
+        $this->mock_connector->shouldReceive('getConfig')->once()->andReturn(new ArrayConfig([]));
+        $this->mock_connector->shouldReceive('getConnection')->once()->andReturn($this->mock_client);
+        $this->mock_client->shouldReceive('get')->once()->with([
+            'index' => 'index',
+            'type' => 'type',
+            'id' => $identifier
+        ])->andReturn($test_data['invalid_result']);
+
+        $projection_finder = new ProjectionFinder(
+            $this->mock_connector,
+            new ArrayConfig([ 'index' => 'index', 'type' => 'type' ]),
+            new NullLogger,
+            $this->projection_type_map
+        );
+
+        $projection_finder->getByIdentifier($identifier);
+    }
+
+    /**
+     * @expectedException Honeybee\Common\Error\RuntimeError
+     */
+    public function testGetByIdentifierMissingIndex()
+    {
+        $this->mock_connector->shouldReceive('getConfig')->once()->andReturn(new ArrayConfig([]));
+
+        $projection_finder = new ProjectionFinder(
+            $this->mock_connector,
+            new ArrayConfig([ 'type' => 'type' ]),
+            new NullLogger,
+            $this->projection_type_map
+        );
+
+        $projection_finder->getByIdentifier('id1');
     }
 
     public function testGetByIdentifiers()
@@ -105,7 +156,7 @@ class ProjectionFinderTest extends TestCase
             $this->mock_connector,
             new ArrayConfig([ 'index' => 'index', 'type' => 'type' ]),
             new NullLogger,
-            $this->projection_type
+            $this->projection_type_map
         );
 
         $projections = $this->createProjections($test_data['raw_result']['docs']);
@@ -141,13 +192,47 @@ class ProjectionFinderTest extends TestCase
                 'parameters' => [ 'mget' => ['key' => 'value' ] ]
             ]),
             new NullLogger,
-            $this->projection_type
+            $this->projection_type_map
         );
 
         $projections = $this->createProjections([ $test_data['raw_result']['docs'][0] ]);
         $finder_result = new FinderResult($projections, 1);
 
         $this->assertEquals($finder_result, $projection_finder->getByIdentifiers($identifiers));
+    }
+
+    /**
+     * @expectedException Honeybee\Common\Error\RuntimeError
+     */
+    public function testGetByIdentifiersMissingIndex()
+    {
+        $identifiers = [ 'id1', 'id2' ];
+
+        $this->mock_connector->shouldReceive('getConfig')->once()->andReturn(new ArrayConfig([]));
+
+        $projection_finder = new ProjectionFinder(
+            $this->mock_connector,
+            new ArrayConfig([ 'type' => 'type' ]),
+            new NullLogger,
+            $this->projection_type_map
+        );
+
+        $projection_finder->getByIdentifiers($identifiers);
+    }
+
+    /**
+     * @expectedException Assert\InvalidArgumentException
+     */
+    public function testGetByIdentifiersMissingIds()
+    {
+        $projection_finder = new ProjectionFinder(
+            $this->mock_connector,
+            new ArrayConfig([ 'type' => 'type' ]),
+            new NullLogger,
+            $this->projection_type_map
+        );
+
+        $projection_finder->getByIdentifiers([]);
     }
 
     public function testFind()
@@ -166,7 +251,32 @@ class ProjectionFinderTest extends TestCase
             $this->mock_connector,
             new ArrayConfig([ 'index' => 'index', 'type' => 'type' ]),
             new NullLogger,
-            $this->projection_type
+            $this->projection_type_map
+        );
+
+        $projections = $this->createProjections($test_data['raw_result']['hits']['hits']);
+        $finder_result = new FinderResult($projections, 2);
+
+        $this->assertEquals($finder_result, $projection_finder->find($query));
+    }
+
+    public function testFindMixedResults()
+    {
+        $test_data = include(__DIR__ . '/Fixture/projection_finder_test_05.php');
+        $query = [ 'from' => 0, 'size' => 10, 'body' => [ 'query' => [ 'match_all' => [] ] ] ];
+
+        $this->mock_connector->shouldReceive('getConfig')->once()->andReturn(new ArrayConfig([]));
+        $this->mock_connector->shouldReceive('getConnection')->once()->andReturn($this->mock_client);
+        $this->mock_client->shouldReceive('search')
+        ->once()
+        ->with(array_merge($query, [ 'index' => 'index', 'type' => 'type1,type2' ]))
+        ->andReturn($test_data['raw_result']);
+
+        $projection_finder = new ProjectionFinder(
+            $this->mock_connector,
+            new ArrayConfig([ 'index' => 'index', 'type' => 'type1,type2' ]),
+            new NullLogger,
+            $this->projection_type_map
         );
 
         $projections = $this->createProjections($test_data['raw_result']['hits']['hits']);
@@ -190,7 +300,7 @@ class ProjectionFinderTest extends TestCase
             $this->mock_connector,
             new ArrayConfig([ 'index' => 'index', 'type' => 'type' ]),
             new NullLogger,
-            $this->projection_type
+            $this->projection_type_map
         );
 
         $finder_result = new FinderResult([]);
@@ -200,6 +310,7 @@ class ProjectionFinderTest extends TestCase
 
     public function testScrollStart()
     {
+        $test_data = include(__DIR__ . '/Fixture/projection_finder_test_04.php');
         $query = [ 'from' => 0, 'size' => 10, 'body' => [ 'query' => [ 'match_all' => [] ] ] ];
 
         $this->mock_connector->shouldReceive('getConfig')->once()->andReturn(new ArrayConfig([]));
@@ -211,22 +322,22 @@ class ProjectionFinderTest extends TestCase
                 [
                     'index' => 'index',
                     'type' => 'type',
-                    'search_type' => 'scan',
                     'scroll' => '1m',
                     'sort' => [ '_doc' ],
                     'size' => 10
                 ]
             ))
-            ->andReturn([ '_scroll_id' => 'test_scroll_id', 'hits' => [ 'hits' => [] ] ]);
+            ->andReturn(array_merge($test_data['raw_result'], [ '_scroll_id' => 'test_scroll_id' ]));
 
         $projection_finder = new ProjectionFinder(
             $this->mock_connector,
             new ArrayConfig([ 'index' => 'index', 'type' => 'type' ]),
             new NullLogger,
-            $this->projection_type
+            $this->projection_type_map
         );
 
-        $finder_result = new FinderResult([], 0, 0, 'test_scroll_id');
+        $projections = $this->createProjections($test_data['raw_result']['hits']['hits']);
+        $finder_result = new FinderResult($projections, 2, 0, 'test_scroll_id');
 
         $this->assertEquals($finder_result, $projection_finder->scrollStart($query));
     }
@@ -245,7 +356,7 @@ class ProjectionFinderTest extends TestCase
             $this->mock_connector,
             new ArrayConfig([ 'index' => 'index', 'type' => 'type' ]),
             new NullLogger,
-            $this->projection_type
+            $this->projection_type_map
         );
 
         $projections = $this->createProjections($test_data['raw_result']['hits']['hits']);
@@ -266,7 +377,7 @@ class ProjectionFinderTest extends TestCase
             $this->mock_connector,
             new ArrayConfig([ 'index' => 'index', 'type' => 'type' ]),
             new NullLogger,
-            $this->projection_type
+            $this->projection_type_map
         );
 
         $this->assertNull($projection_finder->scrollEnd('last_scroll_id'));
@@ -276,7 +387,9 @@ class ProjectionFinderTest extends TestCase
     {
         $projections = [];
         foreach ($results as $result) {
-            $projections[] = $this->projection_type->createEntity($result['_source']);
+            $projections[] = $this->projection_type_map
+                ->getItem($result['_source']['@type'])
+                ->createEntity($result['_source']);
         }
         return $projections;
     }

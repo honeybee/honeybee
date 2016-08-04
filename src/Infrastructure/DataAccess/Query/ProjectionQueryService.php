@@ -41,14 +41,11 @@ class ProjectionQueryService extends QueryService implements ProjectionQueryServ
         $query_result = $finder->scrollStart($query_translation, $cursor);
         $offset = 0;
 
-        while (true) {
-            $query_result = $finder->scrollNext($query_result->getCursor(), $query->getLimit());
-            if (!$query_result->hasResults()) {
-                break;
-            }
+        while ($query_result->hasResults()) {
             foreach ($query_result->getResults() as $projection) {
                 $callback($projection, $offset++, $query_result->getTotalCount());
             }
+            $query_result = $finder->scrollNext($query_result->getCursor(), $query->getLimit());
         }
 
         $finder->scrollEnd($query_result->getCursor());

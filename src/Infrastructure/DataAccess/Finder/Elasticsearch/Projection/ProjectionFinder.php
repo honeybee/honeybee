@@ -6,7 +6,7 @@ use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Config\ConfigInterface;
 use Honeybee\Infrastructure\DataAccess\Connector\ConnectorInterface;
 use Honeybee\Infrastructure\DataAccess\Finder\Elasticsearch\ElasticsearchFinder;
-use Honeybee\Projection\ProjectionTypeInterface;
+use Honeybee\Projection\ProjectionTypeMap;
 use Psr\Log\LoggerInterface;
 
 class ProjectionFinder extends ElasticsearchFinder
@@ -15,11 +15,11 @@ class ProjectionFinder extends ElasticsearchFinder
         ConnectorInterface $connector,
         ConfigInterface $config,
         LoggerInterface $logger,
-        ProjectionTypeInterface $projection_type
+        ProjectionTypeMap $projection_type_map
     ) {
         parent::__construct($connector, $config, $logger);
 
-        $this->projection_type = $projection_type;
+        $this->projection_type_map = $projection_type_map;
     }
 
     private function createResult(array $document_data)
@@ -31,19 +31,15 @@ class ProjectionFinder extends ElasticsearchFinder
         }
         unset($source[self::OBJECT_TYPE]);
 
-        if ($this->projection_type->getVariantPrefix() !== $event_type) {
-            throw new RuntimeError(sprintf(
-                'Unexpected type "%s" within projection data. Expecting "%s".',
-                $event_type,
-                $this->projection_type->getVariantPrefix()
-            ));
-        }
-
-        return $this->projection_type->createEntity($source);
+        return $this->projection_type_map->getItem($event_type)->createEntity($source);
     }
 
     protected function mapResultData(array $result_data)
     {
+        if ($this->config->get('log_result_data', false) === true) {
+            $this->logger->debug('['.__METHOD__.'] raw result = ' . json_encode($result_data, JSON_PRETTY_PRINT));
+        }
+
         $results = [];
 
         if (isset($result_data['_source'])) {
@@ -66,10 +62,5 @@ class ProjectionFinder extends ElasticsearchFinder
         }
 
         return $results;
-    }
-
-    protected function getType()
-    {
-        return $this->config->get('type', $this->projection_type->getPrefix());
     }
 }

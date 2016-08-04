@@ -4,6 +4,7 @@ namespace Honeybee\Infrastructure\DataAccess\Finder\Elasticsearch;
 
 use Assert\Assertion;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
+use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Config\Settings;
 use Honeybee\Infrastructure\DataAccess\Finder\Finder;
 use Honeybee\Infrastructure\DataAccess\Finder\FinderResult;
@@ -17,8 +18,22 @@ abstract class ElasticsearchFinder extends Finder
         Assertion::string($identifier);
         Assertion::notBlank($identifier);
 
+        $index = $this->getIndex();
+
+        if (empty($index) || $index == '_all' ||
+            (is_array($index) && count($index) > 1) ||
+            (is_string($index) && strpos($index, ',') !== false)
+        ) {
+            throw new RuntimeError(
+                sprintf(
+                    'Elasticsearch single index APIs do not support multiple indices: %s',
+                    var_export($index, true)
+                )
+            );
+        }
+
         $data = [
-            'index' => $this->getIndex(),
+            'index' => $index,
             'type' => $this->getType(),
             'id' => $identifier
         ];
@@ -41,8 +56,24 @@ abstract class ElasticsearchFinder extends Finder
 
     public function getByIdentifiers(array $identifiers)
     {
+        Assertion::notEmpty($identifiers);
+
+        $index = $this->getIndex();
+
+        if (empty($index) || $index == '_all' ||
+            (is_array($index) && count($index) > 1) ||
+            (is_string($index) && strpos($index, ',') !== false)
+        ) {
+            throw new RuntimeError(
+                sprintf(
+                    'Elasticsearch single index APIs do not support multiple indices: %s',
+                    var_export($index, true)
+                )
+            );
+        }
+
         $data = [
-            'index' => $this->getIndex(),
+            'index' => $index,
             'type' => $this->getType(),
             'body' => [
                 'ids' => $identifiers
@@ -108,7 +139,6 @@ abstract class ElasticsearchFinder extends Finder
 
         $query['index'] = $this->getIndex();
         $query['type'] = $this->getType();
-        $query['search_type'] = 'scan';
         $query['scroll'] = $this->config->get('scroll_timeout', '1m');
         $query['sort'] = [ '_doc' ];
 
@@ -116,8 +146,15 @@ abstract class ElasticsearchFinder extends Finder
             $this->logger->debug('['.__METHOD__.'] scroll start = ' . json_encode($query, JSON_PRETTY_PRINT));
         }
 
+        // Elasticsearch returns results on scroll start
         $raw_result = $this->connector->getConnection()->search($query);
-        return new FinderResult([], 0, 0, $raw_result['_scroll_id']);
+
+        return new FinderResult(
+            $this->mapResultData($raw_result),
+            $raw_result['hits']['total'],
+            0,  // unknown offset during scroll
+            $raw_result['_scroll_id']
+        );
     }
 
     public function scrollNext($cursor, $size = null)
@@ -154,7 +191,7 @@ abstract class ElasticsearchFinder extends Finder
 
     protected function getIndex()
     {
-        $fallback_index = $this->connector->getConfig()->get('index');
+        $fallback_index = $this->connector->getConfig()->get('index', '_all');
 
         if (is_array($fallback_index)) {
             $fallback_index = array_values($fallback_index);
@@ -165,7 +202,7 @@ abstract class ElasticsearchFinder extends Finder
 
     protected function getType()
     {
-        return $this->config->get('type');
+        return $this->config->get('type', '_all');
     }
 
     protected function getParameters($method)
