@@ -31,7 +31,6 @@ class Worker implements WorkerInterface
         }
         $this->running = true;
 
-        $this->validateSetup();
         $channel = $this->connectChannel();
         while ($this->running && count($channel->callbacks)) {
             $channel->wait();
@@ -39,28 +38,18 @@ class Worker implements WorkerInterface
         $this->running = false;
     }
 
-    protected function validateSetup()
-    {
-        $job = $this->config->get('job');
-
-        Assertion::string($job);
-        Assertion::notEmpty($job);
-    }
-
     protected function connectChannel()
     {
-        $job_name = $this->config->get('job');
-        $job_settings = $this->job_service->getJob($job_name)->get('settings');
-        $queue_name = $job_settings->get('queue');
+        $queue = $this->config->get('queue');
 
-        Assertion::string($queue_name);
-        Assertion::notEmpty($queue_name);
+        Assertion::string($queue);
+        Assertion::notEmpty($queue);
 
         $message_callback = function ($message) {
             $this->onJobScheduledForExecution($message);
         };
 
-        return $this->job_service->consume($queue_name, $message_callback);
+        return $this->job_service->consume($queue, $message_callback);
     }
 
     protected function onJobScheduledForExecution($job_message)
@@ -69,9 +58,9 @@ class Worker implements WorkerInterface
         $channel = $delivery_info['channel'];
         $delivery_tag = $delivery_info['delivery_tag'];
         $job_state = JsonToolkit::parse($job_message->body);
-        $job = $this->job_service->createJob($job_state, $this->config->get('job'));
 
         try {
+            $job = $this->job_service->createJob($job_state);
             $job->run();
         } catch (Exception $error) {
             if ($job->getStrategy()->canRetry()) {

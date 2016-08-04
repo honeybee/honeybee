@@ -17,8 +17,6 @@ use Psr\Log\LoggerInterface;
 
 class JobService implements JobServiceInterface
 {
-    const DEFAULT_JOB = 'honeybee.jobs.execute_handlers';
-
     protected $connector;
 
     protected $service_locator;
@@ -119,8 +117,14 @@ class JobService implements JobServiceInterface
      * @todo Job building and JobMap should be provisioned and injected where required, and
      * so the following public methods are not specified on the interface.
      */
-    public function createJob(array $job_state, $job_name = self::DEFAULT_JOB)
+    public function createJob(array $job_state)
     {
+        if (!isset($job_state['metadata']['job_name']) || empty($job_state['metadata']['job_name'])) {
+            throw new RuntimeError('Unable to get job name from metadata.');
+        }
+
+        $job_name = $job_state['metadata']['job_name'];
+
         $job_config = $this->getJob($job_name);
         $strategy_config = $job_config['strategy'];
         $service_locator = $this->service_locator;

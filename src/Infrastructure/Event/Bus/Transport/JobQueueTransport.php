@@ -38,9 +38,9 @@ class JobQueueTransport extends EventTransport
             [
                 'event' => $event,
                 'channel' => $channel_name,
-                'subscription_index' => $subscription_index
-            ],
-            $job_name
+                'subscription_index' => $subscription_index,
+                'metadata' => [ 'job_name' => $job_name ]
+            ]
         );
 
         $this->job_service->dispatch($job, $this->exchange);

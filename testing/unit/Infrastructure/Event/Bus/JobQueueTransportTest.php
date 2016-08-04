@@ -57,9 +57,9 @@ class JobQueueTransportTest extends TestCase
                 [
                     'event' => $mock_event_interface,
                     'channel' => 'channel',
-                    'subscription_index' => 1
-                ],
-                'myjob'
+                    'subscription_index' => 1,
+                    'metadata' => [ 'job_name' => 'myjob' ]
+                ]
             )
             ->andReturn($mock_job);
         $mock_job_service->shouldReceive('dispatch')->once()->with($mock_job, 'exchange');
