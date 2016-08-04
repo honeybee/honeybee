@@ -43,15 +43,15 @@ class ProjectionQueryService extends QueryService implements ProjectionQueryServ
 
         while (true) {
             $query_result = $finder->scrollNext($query_result->getCursor(), $query->getLimit());
-            if ($query_result->getCount() > 0) {
-                $projections = $query_result->getResults();
-                foreach ($projections as $projection) {
-                    $callback($projection, $offset++, $query_result->getTotalCount());
-                }
-            } else {
-                $finder->scrollEnd($query_result->getCursor());
+            if (!$query_result->hasResults()) {
+                break;
+            }
+            foreach ($query_result->getResults() as $projection) {
+                $callback($projection, $offset++, $query_result->getTotalCount());
             }
         }
+
+        $finder->scrollEnd($query_result->getCursor());
     }
 
     public function find(QueryInterface $query, $mapping_name = null)
