@@ -59,11 +59,11 @@ class Worker implements WorkerInterface
         $delivery_tag = $delivery_info['delivery_tag'];
         $job_state = JsonToolkit::parse($job_message->body);
 
+        $job = $this->job_service->createJob($job_state);
+
         try {
-            $job = $this->job_service->createJob($job_state);
             $job->run();
         } catch (Exception $error) {
-            // @todo handling job creation exceptions
             if ($job->getStrategy()->canRetry()) {
                 $this->job_service->retry($job, $delivery_info['exchange'] . '.waiting');
             } else {
