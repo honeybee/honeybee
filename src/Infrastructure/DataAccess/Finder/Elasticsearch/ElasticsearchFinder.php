@@ -152,7 +152,7 @@ abstract class ElasticsearchFinder extends Finder
         return new FinderResult(
             $this->mapResultData($raw_result),
             $raw_result['hits']['total'],
-            0,  // unknown offset during scroll
+            0, // unknown offset during scroll
             $raw_result['_scroll_id']
         );
     }
