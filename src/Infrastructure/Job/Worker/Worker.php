@@ -63,6 +63,7 @@ class Worker implements WorkerInterface
             $job = $this->job_service->createJob($job_state);
             $job->run();
         } catch (Exception $error) {
+            // @todo handling job creation exceptions
             if ($job->getStrategy()->canRetry()) {
                 $this->job_service->retry($job, $delivery_info['exchange'] . '.waiting');
             } else {

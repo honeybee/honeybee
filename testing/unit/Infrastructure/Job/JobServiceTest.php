@@ -219,7 +219,6 @@ class JobServiceTest extends TestCase
             'failed_job_state' => [ 'job' => 'state' ],
             'metadata' => [ 'message' => 'fail' ]
         ]);
-        $this->mock_job->shouldReceive('getSettings')->once()->andReturn(new Settings([ 'routing_key' => 'route' ]));
         $this->mock_job->shouldReceive('toArray')->once()->andReturn([ 'job' => 'state' ]);
         $this->mock_event_bus
             ->shouldReceive('distribute')

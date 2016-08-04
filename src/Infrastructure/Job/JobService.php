@@ -101,10 +101,6 @@ class JobService implements JobServiceInterface
 
     public function fail(JobInterface $job, array $metadata = [])
     {
-        $routing_key = $job->getSettings()->get('routing_key', '');
-
-        Assertion::string($routing_key);
-
         $event = new FailedJobEvent([
             'failed_job_state' => $job->toArray(),
             'metadata' => $metadata
