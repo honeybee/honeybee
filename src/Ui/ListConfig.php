@@ -50,6 +50,10 @@ class ListConfig extends Object implements ListConfigInterface
         $filter_criteria = [];
         if ($this->hasFilter()) {
             foreach ($this->getFilter() as $attribute_path => $value) {
+                if (!is_string($value)) {
+                    throw new RuntimeError('Only strings are supported as filter values at the moment.');
+                }
+
                 if (!preg_match_all('#(?<criteria>\w+)\((?<value>.+)\)(?:,|$)#U', $value, $matches, PREG_SET_ORDER)) {
                     $matches = explode(',', $value);
                     foreach ($matches as $match) {
