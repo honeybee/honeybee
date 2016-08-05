@@ -62,7 +62,7 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
         $errors = [];
         $affected_identifiers = [];
         $attribute_name = $attribute->getName();
-        $embedded_entity_list = $this->entity ? $this->entity->getValue($attribute_name) : new EntityList;
+        $embedded_entity_list = isset($this->entity) ? $this->entity->getValue($attribute_name) : new EntityList;
         $builder_list = new CommandBuilderList;
 
         foreach ($values as $position => $embedded_values) {
