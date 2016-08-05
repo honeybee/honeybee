@@ -202,7 +202,7 @@ abstract class ElasticsearchFinder extends Finder
 
     protected function getType()
     {
-        return $this->config->get('type', '_all');
+        return $this->config->get('type');
     }
 
     protected function getParameters($method)
