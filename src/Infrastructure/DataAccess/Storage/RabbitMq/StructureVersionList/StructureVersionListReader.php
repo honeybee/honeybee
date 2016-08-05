@@ -29,7 +29,7 @@ class StructureVersionListReader extends RabbitMqStorage implements StorageReade
         return $this->createStructureVersionList($identifier, $versions);
     }
 
-    public function readAll(SettingsInterface $settings)
+    public function readAll(SettingsInterface $settings = null)
     {
         $bindings = $this->getExchangeBindings();
 
