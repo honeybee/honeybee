@@ -48,6 +48,7 @@
             <exclude>
                 <directory>testing/unit/Infrastructure/DataAccess/Finder/Elasticsearch/Fixture</directory>
                 <directory>testing/unit/Infrastructure/DataAccess/Finder/Elasticsearch/Projection/Fixture</directory>
+                <directory>testing/unit/Infrastructure/DataAccess/Storage/Elasticsearch/Fixture</directory>
                 <directory>testing/unit/Infrastructure/Fixture/Fixture</directory>
                 <directory>testing/unit/Model/Command/Fixture</directory>
                 <directory>testing/unit/Projection/EventHandler/Fixture</directory>

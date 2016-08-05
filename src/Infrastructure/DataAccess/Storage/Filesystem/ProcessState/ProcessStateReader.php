@@ -3,6 +3,7 @@
 namespace Honeybee\Infrastructure\DataAccess\Storage\Filesystem\ProcessState;
 
 use Honeybee\Common\Error\RuntimeError;
+use Honeybee\Infrastructure\Config\Settings;
 use Honeybee\Infrastructure\Config\SettingsInterface;
 use Honeybee\Infrastructure\DataAccess\Storage\Storage;
 use Honeybee\Infrastructure\DataAccess\Storage\StorageReaderInterface;
@@ -17,8 +18,10 @@ class ProcessStateReader extends Storage implements StorageReaderInterface
 
     protected $identifier_list;
 
-    public function readAll(SettingsInterface $settings)
+    public function readAll(SettingsInterface $settings = null)
     {
+        $settings = $settings ?: new Settings;
+
         if ($settings->get('first', true)) {
             $this->identifier_list = $this->fetchProcessStateIdentifiers();
         }

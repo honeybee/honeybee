@@ -2,14 +2,16 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Storage\Elasticsearch\Projection;
 
+use Assert\Assertion;
 use Elasticsearch\Common\Exceptions\Missing404Exception;
 use Honeybee\Infrastructure\Config\ConfigInterface;
+use Honeybee\Infrastructure\Config\Settings;
 use Honeybee\Infrastructure\Config\SettingsInterface;
 use Honeybee\Infrastructure\DataAccess\Connector\ConnectorInterface;
 use Honeybee\Infrastructure\DataAccess\Storage\Elasticsearch\ElasticsearchStorage;
 use Honeybee\Infrastructure\DataAccess\Storage\StorageReaderInterface;
 use Honeybee\Infrastructure\DataAccess\Storage\StorageReaderIterator;
-use Honeybee\Projection\ProjectionTypeInterface;
+use Honeybee\Projection\ProjectionTypeMap;
 use Psr\Log\LoggerInterface;
 
 class ProjectionReader extends ElasticsearchStorage implements StorageReaderInterface
@@ -18,26 +20,32 @@ class ProjectionReader extends ElasticsearchStorage implements StorageReaderInte
 
     protected $offset = 0;
 
+    protected $projection_type_map;
+
     public function __construct(
         ConnectorInterface $connector,
         ConfigInterface $config,
         LoggerInterface $logger,
-        ProjectionTypeInterface $projection_type
+        ProjectionTypeMap $projection_type_map
     ) {
         parent::__construct($connector, $config, $logger);
 
-        $this->projection_type = $projection_type;
+        $this->projection_type_map = $projection_type_map;
     }
 
-    public function readAll(SettingsInterface $settings)
+    public function readAll(SettingsInterface $settings = null)
     {
+        $settings = $settings ?: new Settings;
+
         $data = [];
 
         $default_limit = $this->config->get('limit', self::READ_ALL_LIMIT);
+        $limit = $settings->get('limit', $default_limit);
+
         $query_params = [
             'index' => $this->getIndex(),
             'type' => $this->getType(),
-            'size' => $settings->get('limit', $default_limit),
+            'size' => $limit,
             'body' => [ 'query' => [ 'match_all' => [] ] ]
         ];
 
@@ -49,9 +57,10 @@ class ProjectionReader extends ElasticsearchStorage implements StorageReaderInte
         }
 
         $raw_result = $this->connector->getConnection()->search($query_params);
+
         $result_hits = $raw_result['hits'];
         foreach ($result_hits['hits'] as $data_row) {
-            $data[] = $this->projection_type->createEntity($data_row['_source']);
+            $data[] = $this->createResult($data_row['_source']);
         }
 
         if ($result_hits['total'] === $this->offset + 1) {
@@ -77,7 +86,7 @@ class ProjectionReader extends ElasticsearchStorage implements StorageReaderInte
             return null;
         }
 
-        return $this->projection_type->createEntity($result['_source']);
+        return $this->createResult($result['_source']);
     }
 
     public function getIterator()
@@ -85,8 +94,12 @@ class ProjectionReader extends ElasticsearchStorage implements StorageReaderInte
         return new StorageReaderIterator($this);
     }
 
-    protected function getType()
+    private function createResult(array $result_data)
     {
-        return $this->config->get('type', $this->projection_type->getPrefix());
+        Assertion::notEmptyKey($result_data, self::OBJECT_TYPE);
+
+        return $this->projection_type_map
+            ->getItem($result_data[self::OBJECT_TYPE])
+            ->createEntity($result_data);
     }
 }

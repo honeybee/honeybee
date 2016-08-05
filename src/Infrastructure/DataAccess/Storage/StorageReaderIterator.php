@@ -11,7 +11,7 @@ class StorageReaderIterator extends Object implements StorageReaderIteratorInter
 
     protected $current_data = [];
 
-    protected $is_rewinded;
+    protected $is_rewound;
 
     protected $reader_settings;
 
@@ -45,12 +45,12 @@ class StorageReaderIterator extends Object implements StorageReaderIteratorInter
             $this->current_data = $this->storage_reader->readAll($this->reader_settings);
         }
 
-        $this->is_rewinded = false;
+        $this->is_rewound = false;
     }
 
     public function rewind()
     {
-        if ($this->is_rewinded) {
+        if ($this->is_rewound) {
             return;
         }
 
@@ -62,7 +62,7 @@ class StorageReaderIterator extends Object implements StorageReaderIteratorInter
         $this->reader_settings = new Settings($reader_settings);
         reset($this->current_data);
 
-        $this->is_rewinded = true;
+        $this->is_rewound = true;
     }
 
     public function valid()

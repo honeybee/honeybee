@@ -3,6 +3,7 @@
 namespace Honeybee\Infrastructure\DataAccess\Storage\CouchDb\StructureVersionList;
 
 use Honeybee\Infrastructure\DataAccess\Storage\StorageReaderInterface;
+use Honeybee\Infrastructure\Config\Settings;
 use Honeybee\Infrastructure\Config\SettingsInterface;
 use Honeybee\Infrastructure\DataAccess\Storage\StorageReaderIterator;
 use Honeybee\Infrastructure\DataAccess\Storage\CouchDb\CouchDbStorage;
@@ -16,8 +17,10 @@ class StructureVersionListReader extends CouchDbStorage implements StorageReader
 
     protected $next_start_key = null;
 
-    public function readAll(SettingsInterface $settings)
+    public function readAll(SettingsInterface $settings = null)
     {
+        $settings = $settings ?: new Settings;
+
         $data = [];
 
         $default_limit = $this->config->get('limit', self::READ_ALL_LIMIT);

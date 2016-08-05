@@ -177,7 +177,7 @@ class ProjectionFinderTest extends TestCase
         $this->mock_connector->shouldReceive('getConnection')->once()->andReturn($this->mock_client);
         $this->mock_client->shouldReceive('mget')->once()->with([
             'index' => 'index',
-            'type' => 'type',
+            'type' => null,
             'key' => 'value',
             'body' => [
                 'ids' => $identifiers
@@ -188,7 +188,6 @@ class ProjectionFinderTest extends TestCase
             $this->mock_connector,
             new ArrayConfig([
                 'index' => 'index',
-                'type' => 'type',
                 'parameters' => [ 'mget' => ['key' => 'value' ] ]
             ]),
             new NullLogger,
@@ -269,12 +268,12 @@ class ProjectionFinderTest extends TestCase
         $this->mock_connector->shouldReceive('getConnection')->once()->andReturn($this->mock_client);
         $this->mock_client->shouldReceive('search')
         ->once()
-        ->with(array_merge($query, [ 'index' => 'index', 'type' => 'type1,type2' ]))
+        ->with(array_merge($query, [ 'index' => '_all', 'type' => 'type1,type2' ]))
         ->andReturn($test_data['raw_result']);
 
         $projection_finder = new ProjectionFinder(
             $this->mock_connector,
-            new ArrayConfig([ 'index' => 'index', 'type' => 'type1,type2' ]),
+            new ArrayConfig([ 'type' => 'type1,type2' ]),
             new NullLogger,
             $this->projection_type_map
         );

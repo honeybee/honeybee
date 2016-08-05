@@ -9,7 +9,7 @@ use Honeybee\Infrastructure\DataAccess\Storage\StorageReaderIterator;
 
 class ProcessStateReader extends ArrayStorage implements StorageReaderInterface
 {
-    public function readAll(SettingsInterface $settings)
+    public function readAll(SettingsInterface $settings = null)
     {
         return $this->connector->getConnection()->getItems();
     }

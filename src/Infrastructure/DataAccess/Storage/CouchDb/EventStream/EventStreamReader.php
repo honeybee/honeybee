@@ -6,6 +6,7 @@ use GuzzleHttp\Exception\RequestException;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Model\Event\AggregateRootEventList;
 use Honeybee\Model\Event\EventStream;
+use Honeybee\Infrastructure\Config\Settings;
 use Honeybee\Infrastructure\Config\SettingsInterface;
 use Honeybee\Infrastructure\DataAccess\Storage\CouchDb\CouchDbStorage;
 use Honeybee\Infrastructure\DataAccess\Storage\StorageReaderInterface;
@@ -60,8 +61,10 @@ class EventStreamReader extends CouchDbStorage implements StorageReaderInterface
         return null;
     }
 
-    public function readAll(SettingsInterface $settings)
+    public function readAll(SettingsInterface $settings = null)
     {
+        $settings = $settings ?: new Settings;
+
         if ($settings->get('first', true)) {
             $this->identifier_list = $this->fetchEventStreamIdentifiers();
         }

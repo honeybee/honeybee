@@ -4,6 +4,7 @@ namespace Honeybee\Infrastructure\DataAccess\Storage\CouchDb\DomainEvent;
 
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\DataAccess\Storage\StorageReaderInterface;
+use Honeybee\Infrastructure\Config\Settings;
 use Honeybee\Infrastructure\Config\SettingsInterface;
 use Honeybee\Infrastructure\DataAccess\Storage\StorageReaderIterator;
 use Honeybee\Infrastructure\DataAccess\Storage\CouchDb\CouchDbStorage;
@@ -30,8 +31,10 @@ class DomainEventReader extends CouchDbStorage implements StorageReaderInterface
         return $this->createDomainEvent($result_data['doc']);
     }
 
-    public function readAll(SettingsInterface $settings)
+    public function readAll(SettingsInterface $settings = null)
     {
+        $settings = $settings ?: new Settings;
+
         if ($settings->get('first', true)) {
             $this->last_key = null;
         }

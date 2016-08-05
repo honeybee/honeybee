@@ -9,5 +9,5 @@ interface StorageReaderInterface extends IteratorAggregate
 {
     public function read($identifier, SettingsInterface $settings = null);
 
-    public function readAll(SettingsInterface $settings);
+    public function readAll(SettingsInterface $settings = null);
 }

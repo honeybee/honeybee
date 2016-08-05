@@ -3,6 +3,7 @@
 namespace Honeybee\Infrastructure\DataAccess\Storage\Elasticsearch\StructureVersionList;
 
 use Elasticsearch\Common\Exceptions\Missing404Exception;
+use Honeybee\Infrastructure\Config\Settings;
 use Honeybee\Infrastructure\Config\SettingsInterface;
 use Honeybee\Infrastructure\DataAccess\Storage\Elasticsearch\ElasticsearchStorage;
 use Honeybee\Infrastructure\DataAccess\Storage\StorageReaderInterface;
@@ -16,8 +17,10 @@ class StructureVersionListReader extends ElasticsearchStorage implements Storage
 
     protected $offset = 0;
 
-    public function readAll(SettingsInterface $settings)
+    public function readAll(SettingsInterface $settings = null)
     {
+        $settings = $settings ?: new Settings;
+
         $data = [];
 
         $default_limit = $this->config->get('limit', self::READ_ALL_LIMIT);
