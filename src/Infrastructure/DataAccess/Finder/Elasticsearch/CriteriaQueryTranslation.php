@@ -11,6 +11,7 @@ use Honeybee\Infrastructure\DataAccess\Query\CriteriaContainerInterface;
 use Honeybee\Infrastructure\DataAccess\Query\CriteriaInterface;
 use Honeybee\Infrastructure\DataAccess\Query\CriteriaQueryInterface;
 use Honeybee\Infrastructure\DataAccess\Query\CriteriaList;
+use Honeybee\Infrastructure\DataAccess\Query\CustomCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\Geometry\Annulus;
 use Honeybee\Infrastructure\DataAccess\Query\Geometry\Box;
 use Honeybee\Infrastructure\DataAccess\Query\Geometry\Circle;
@@ -124,6 +125,8 @@ class CriteriaQueryTranslation implements QueryTranslationInterface
                 $elasticsearch_filters[] = $this->buildRangeFilterFor($criteria);
             } elseif ($criteria instanceof SpatialCriteria) {
                 $elasticsearch_filters[] = $this->buildSpatialFilterFor($criteria);
+            } elseif ($criteria instanceof CustomCriteria) {
+                $elasticsearch_filters[] = $criteria->getQueryPart();
             } else {
                 throw new RuntimeError(
                     sprintf('Invalid criteria type %s given to %s', get_class($criteria), static::CLASS)

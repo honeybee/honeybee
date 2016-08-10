@@ -7,13 +7,14 @@ use Honeybee\Infrastructure\DataAccess\Query\Comparison\GreaterThanOrEquals;
 use Honeybee\Infrastructure\DataAccess\Query\Comparison\In;
 use Honeybee\Infrastructure\DataAccess\Query\Comparison\LessThan;
 use Honeybee\Infrastructure\DataAccess\Query\CriteriaList;
+use Honeybee\Infrastructure\DataAccess\Query\CriteriaQuery;
+use Honeybee\Infrastructure\DataAccess\Query\CustomCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\Geography\GeoHash;
 use Honeybee\Infrastructure\DataAccess\Query\Geography\GeoPoint;
 use Honeybee\Infrastructure\DataAccess\Query\Geometry\Annulus;
 use Honeybee\Infrastructure\DataAccess\Query\Geometry\Box;
 use Honeybee\Infrastructure\DataAccess\Query\Geometry\Circle;
 use Honeybee\Infrastructure\DataAccess\Query\Geometry\Polygon;
-use Honeybee\Infrastructure\DataAccess\Query\CriteriaQuery;
 use Honeybee\Infrastructure\DataAccess\Query\RangeCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\SearchCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\SortCriteria;
@@ -464,5 +465,74 @@ return [
             'size' => 100,
             'from' => 0
         ]
-    ]
+    ],
+    //
+    // "match_all" query, that is filtered by a single attribute criteria and uses CustomCriteria for a query part
+    //
+    [
+        'query' => new CriteriaQuery(
+            new CriteriaList,
+            new CriteriaList([
+                new AttributeCriteria('username', new Equals('honeybee-tester')),
+                new CustomCriteria([
+                    'bool' => [
+                        'should' => [
+                            [
+                                'term' => [
+                                    'username' => 'honeybee-tester'
+                                ]
+                            ],
+                            [
+                                'term' => [
+                                    'username' => 'another'
+                                ]
+                            ]
+                        ],
+                        'minimum_should_match' => 1
+                    ]
+                ])
+            ]),
+            new CriteriaList([ new SortCriteria('created_at') ]),
+            0,
+            100
+        ),
+        'expected_es_query' => [
+            'body' => [
+                'query' => [
+                    'filtered' => [
+                        'query' => [
+                            'match_all' => []
+                        ],
+                        'filter' => [
+                            'and' => [
+                                [
+                                    'term' => [ 'username.filter' => 'honeybee-tester' ]
+                                ],
+                                [
+                                    'bool' => [
+                                        'should' => [
+                                            [
+                                                'term' => [
+                                                    'username' => 'honeybee-tester'
+                                                ]
+                                            ],
+                                            [
+                                                'term' => [
+                                                    'username' => 'another'
+                                                ]
+                                            ]
+                                        ],
+                                        'minimum_should_match' => 1
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+                'sort' => [ [ 'created_at' => [ 'order' => 'asc', 'unmapped_type' => 'date' ] ] ]
+            ],
+            'size' => 100,
+            'from' => 0
+        ]
+    ],
 ];
