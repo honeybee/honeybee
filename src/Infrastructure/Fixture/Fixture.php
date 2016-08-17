@@ -2,6 +2,7 @@
 
 namespace Honeybee\Infrastructure\Fixture;
 
+use Honeybee\Common\Error\ParseError;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Command\Bus\CommandBusInterface;
 use Honeybee\Infrastructure\Filesystem\FilesystemServiceInterface;
@@ -80,8 +81,12 @@ abstract class Fixture extends Object implements FixtureInterface
 
         $json = file_get_contents($filename);
         $data = json_decode($json, true);
+        $last_error = json_last_error();
+        if ($last_error !== JSON_ERROR_NONE) {
+            throw new ParseError('Failed to parse json from "' . $filename . '": ' . json_last_error_msg());
+        }
         if (empty($data) || !is_array($data)) {
-            throw new RuntimeError(sprintf('Fixture data is invalid at "%s"', $filename));
+            throw new RuntimeError('Fixture data is empty/invalid at: ' . $filename);
         }
 
         foreach ($data as $type_name => $fixtures) {
