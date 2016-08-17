@@ -4,6 +4,7 @@ namespace Honeybee\Infrastructure\Fixture;
 
 use Honeybee\Common\Error\ParseError;
 use Honeybee\Common\Error\RuntimeError;
+use Honeybee\Common\Util\StringToolkit;
 use Honeybee\Infrastructure\Command\Bus\CommandBusInterface;
 use Honeybee\Infrastructure\Filesystem\FilesystemServiceInterface;
 use Honeybee\Model\Aggregate\AggregateRootTypeMap;
@@ -52,18 +53,26 @@ abstract class Fixture extends Object implements FixtureInterface
     {
         $aggregate_root_type = $this->aggregate_root_type_map->getItem($type_name);
 
-        // @todo get the command class from the fixture itself
         $type_class_name = get_class($aggregate_root_type);
         $command_namespace = array_slice(explode('\\', $type_class_name), 0, -2);
-        $command_class = sprintf(
-            '%1$s\\Task\\Create%2$s\\Create%2$sCommand',
-            implode('\\', $command_namespace),
-            $aggregate_root_type->getName()
-        );
+        $command_class = isset($fixture['@command'])
+            ? $fixture['@command']
+            : sprintf(
+                '%1$s\\Task\\Create%2$s\\Create%2$sCommand',
+                implode('\\', $command_namespace),
+                $aggregate_root_type->getName()
+            );
 
-        $result = (new AggregateRootCommandBuilder($aggregate_root_type, $command_class))
-            ->withValues($fixture)
-            ->build();
+        $builder = new AggregateRootCommandBuilder($aggregate_root_type, $command_class);
+        if (isset($fixture['@command'])) {
+            unset($fixture['@command']);
+            foreach ($fixture as $command_property => $command_data) {
+                $builder->{'with' . StringToolkit::asCamelCase($command_property)}($command_data);
+            }
+        } else {
+            $builder->withValues($fixture);
+        }
+        $result = $builder->build();
 
         if (!$result instanceof Success) {
             $this->logger->error('Error importing fixtures:' . print_r($result->get(), true));

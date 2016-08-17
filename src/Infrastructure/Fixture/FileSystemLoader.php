@@ -32,7 +32,7 @@ class FileSystemLoader implements FixtureLoaderInterface
             throw new RuntimeError(sprintf('Given fixture path is not a directory: %s', $fixture_dir));
         }
 
-        $fixture_list = new FixtureList();
+        $fixture_list = new FixtureList;
         $glob_expression = sprintf(
             '%1$s%2$s[0-9]*%2$s%3$s',
             $fixture_dir,
@@ -41,7 +41,7 @@ class FileSystemLoader implements FixtureLoaderInterface
         );
 
         foreach (glob($glob_expression) as $fixture_file) {
-            $class_parser = new PhpClassParser();
+            $class_parser = new PhpClassParser;
             $fixture_class_info = $class_parser->parse($fixture_file);
             $fixture_class = $fixture_class_info->getFullyQualifiedClassName();
 
@@ -65,6 +65,7 @@ class FileSystemLoader implements FixtureLoaderInterface
                     ]
                 ]
             );
+
             $fixture_list->addItem($fixture);
         }
 
