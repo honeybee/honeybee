@@ -4,6 +4,7 @@ namespace Honeybee\Ui\Renderer;
 
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Common\Util\ArrayToolkit;
+use Honeybee\EnvironmentInterface;
 use Honeybee\Infrastructure\Config\ArrayConfig;
 use Honeybee\Infrastructure\Config\ConfigInterface;
 use Honeybee\Infrastructure\Config\Settings;
@@ -43,6 +44,7 @@ abstract class Renderer implements RendererInterface
     protected $logger;
     protected $payload;
     protected $settings;
+    protected $environment;
 
     abstract protected function validate();
     abstract protected function doRender();
@@ -61,6 +63,7 @@ abstract class Renderer implements RendererInterface
         ExpressionServiceInterface $expression_service,
         NameResolverInterface $name_resolver,
         ProjectionTypeMap $resource_type_map,
+        EnvironmentInterface $environment,
         LoggerInterface $logger
     ) {
         $this->renderer_service = $renderer_service;
@@ -76,6 +79,7 @@ abstract class Renderer implements RendererInterface
         $this->expression_service = $expression_service;
         $this->name_resolver = $name_resolver;
         $this->resource_type_map = $resource_type_map;
+        $this->environment = $environment;
         $this->logger = $logger;
     }
 
