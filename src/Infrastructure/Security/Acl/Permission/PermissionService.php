@@ -35,7 +35,7 @@ class PermissionService extends Configurable implements PermissionServiceInterfa
 
     public function getRolePermissions($role_id)
     {
-        if (in_array($role_id, [ AclService::ROLE_ADMIN, AclService::ROLE_NON_PRIV ])) {
+        if (in_array($role_id, [ AclService::ROLE_FULL_PRIV, AclService::ROLE_NON_PRIV ])) {
             throw new RuntimeError(
                 'Role "' . $role_id . '" is an internal role and not explicitely handled by the ' .
                 'permission provider. Please use only configured roles from access_control.xml.'

@@ -15,7 +15,13 @@ use Zend\Permissions\Acl\Acl;
 
 class AclService extends Object implements AclServiceInterface
 {
-    protected static $default_roles = array(self::ROLE_ADMIN, self::ROLE_NON_PRIV);
+    /**
+     * @var array ids of roles defined by default
+     */
+    protected static $default_roles = [
+        self::ROLE_FULL_PRIV,
+        self::ROLE_NON_PRIV
+    ];
 
     protected $roles_configuration;
 
@@ -37,12 +43,26 @@ class AclService extends Object implements AclServiceInterface
         $this->roles_configuration = $roles_configuration;
     }
 
+    /**
+     * @return array ids of roles always available by default
+     */
     public static function getDefaultRoles()
     {
         return self::$default_roles;
     }
 
-    public function getAclForRole($role_id, array $parent_roles = array())
+    /**
+     * @return array ids of configured roles
+     */
+    public function getRoles()
+    {
+        return array_keys($this->roles_configuration['roles']);
+    }
+
+    /**
+     * @return Zend\Permissions\Acl\Acl access control list for the given role id
+     */
+    public function getAclForRole($role_id)
     {
         $default_acl = $this->createDefaultAcl();
 
@@ -54,6 +74,11 @@ class AclService extends Object implements AclServiceInterface
         return $default_acl;
     }
 
+    /**
+     * @param string $role_id
+     *
+     * @return array ids of parent roles of the given role
+     */
     public function getRoleParents($role_id)
     {
         $parents = [];
@@ -81,15 +106,19 @@ class AclService extends Object implements AclServiceInterface
     protected function createDefaultAcl()
     {
         $access_control_list = new Acl();
+
         // add resources
         $all_permissions = $this->permission_service->getGlobalPermissions();
         foreach ($all_permissions as $access_scope => $permissions) {
             $access_control_list->addResource(new GenericResource($access_scope));
         }
-        // add administrator; allow all on all resource
-        $admin_role = new GenericRole(self::ROLE_ADMIN);
+
+        // add full-privileged administrator; allow all on all resource
+        $admin_role = new GenericRole(self::ROLE_FULL_PRIV);
+
         $access_control_list->addRole($admin_role);
         $access_control_list->allow($admin_role);
+
         // add non-privileged role; allow nothing nowhere
         $access_control_list->addRole(new GenericRole(self::ROLE_NON_PRIV));
 
