@@ -2,13 +2,13 @@
 
 namespace Honeybee\Infrastructure\Command\Bus;
 
-use Trellis\Common\Object;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Command\Bus\Subscription\CommandSubscriptionInterface;
 use Honeybee\Infrastructure\Command\Bus\Subscription\CommandSubscriptionMap;
+use Honeybee\Infrastructure\Command\CommandEnricherInterface;
 use Honeybee\Infrastructure\Command\CommandInterface;
-use Honeybee\Infrastructure\Command\CommandEnricher;
 use Psr\Log\LoggerInterface;
+use Trellis\Common\Object;
 
 class CommandBus extends Object implements CommandBusInterface
 {
@@ -18,7 +18,7 @@ class CommandBus extends Object implements CommandBusInterface
 
     protected $logger;
 
-    public function __construct(CommandEnricher $command_enricher, LoggerInterface $logger)
+    public function __construct(CommandEnricherInterface $command_enricher, LoggerInterface $logger)
     {
         $this->subscriptions = new CommandSubscriptionMap;
         $this->command_enricher = $command_enricher;
