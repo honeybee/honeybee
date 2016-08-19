@@ -266,6 +266,10 @@ class ProjectionUpdater extends EventHandler
 
     protected function onEmbeddedEntityAdded(EntityInterface $projection, EmbeddedEntityAddedEvent $event)
     {
+        if(!$projection->getType()->hasAttribute($event->getParentAttributeName())){
+            return false;
+        }
+
         $embedded_projection_attr = $projection->getType()->getAttribute($event->getParentAttributeName());
         $embedded_projection_type = $this->getEmbeddedEntityTypeFor($projection, $event);
         $embedded_projection = $embedded_projection_type->createEntity($event->getData(), $projection);
@@ -310,6 +314,10 @@ class ProjectionUpdater extends EventHandler
 
     protected function onEmbeddedEntityRemoved(EntityInterface $projection, EmbeddedEntityRemovedEvent $event)
     {
+        if(!$projection->getType()->hasAttribute($event->getParentAttributeName())){
+            return false;
+        }
+
         $projection_list = $projection->getValue($event->getParentAttributeName());
         $projection_to_remove = null;
 
