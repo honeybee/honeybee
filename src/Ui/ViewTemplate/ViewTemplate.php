@@ -11,15 +11,21 @@ class ViewTemplate extends Object implements ViewTemplateInterface
 
     protected $tab_list;
 
-    public function __construct($name, TabList $tab_list)
+    public function __construct($name, TabList $tab_list, $css = '')
     {
         $this->name = $name;
+        $this->css = $css;
         $this->tab_list = $tab_list;
     }
 
     public function getName()
     {
         return $this->name;
+    }
+
+    public function getCss()
+    {
+        return $this->css;
     }
 
     public function getTabList()

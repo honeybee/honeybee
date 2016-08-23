@@ -6,6 +6,8 @@ interface ViewTemplateInterface
 {
     public function getName();
 
+    public function getCss();
+
     public function getTabList();
 
     public function getTab($name);
