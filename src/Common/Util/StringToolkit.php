@@ -43,22 +43,31 @@ class StringToolkit
 
     public static function endsWith($haystack, $needle)
     {
-        $length = mb_strlen($needle);
-        if ($length == 0) {
-            return true;
+        $needles = (array)$needle;
+
+        foreach ($needles as $needle) {
+            $length = mb_strlen($needle);
+
+            if ($length == 0 || mb_substr($haystack, -$length, $length) === $needle) {
+                return true;
+            }
         }
 
-        return (mb_substr($haystack, -$length, $length) === $needle);
+        return false;
     }
 
     public static function startsWith($haystack, $needle)
     {
-        $length = mb_strlen($needle);
-        if ($length == 0) {
-            return true;
+        $needles = (array)$needle;
+
+        foreach ($needles as $needle) {
+            $length = mb_strlen($needle);
+            if ($length == 0 || mb_substr($haystack, 0, $length) === $needle) {
+                return true;
+            }
         }
 
-        return (mb_substr($haystack, 0, $length) === $needle);
+        return false;
     }
 
     /**
