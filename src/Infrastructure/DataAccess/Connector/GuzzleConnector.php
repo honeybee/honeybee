@@ -7,6 +7,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Uri;
+use GuzzleHttp\TransferStats;
 use Honeybee\Common\Error\RuntimeError;
 use Psr\Http\Message\RequestInterface;
 
@@ -90,20 +91,35 @@ class GuzzleConnector extends Connector
 
         $path = $this->config->get('status_test');
         try {
-            $info = $this->config->get('status_verbose', true)
-                ? [] // @todo collect info using http://docs.guzzlephp.org/en/latest/request-options.html?#on-stats
-                : [];
+            $info = [];
+            $verbose = $this->config->get('status_verbose', true);
 
-            $response = $this->getConnection()->get($path);
-
-            if ($status_code >= 200 && $status_code < 300) {
-                $info = [
-                    'message' => 'GET succeeded: ' . $path
-                ];
-                if (!empty($info)) {
-                    $info['info'] = $info;
+            $response = $this->getConnection()->get($path, [
+                'on_stats' => function (TransferStats $stats) use (&$info, $verbose) {
+                    if (!$verbose) {
+                        return;
+                    }
+                    $info['effective_uri'] = (string)$stats->getEffectiveUri();
+                    $info['transfer_time'] = $stats->getTransferTime();
+                    $info = array_merge($info, $stats->getHandlerStats());
+                    if ($stats->hasResponse()) {
+                        $info['status_code'] = $stats->getResponse()->getStatusCode();
+                    } else {
+                        $error_data = $stats->getHandlerErrorData();
+                        if (is_array($error_data) || is_string($error_data)) {
+                            $info['handler_error_data'] = $error_data;
+                        }
+                    }
                 }
-                return Status::working($this, $info);
+            ]);
+
+            $status_code = $response->getStatusCode();
+            if ($status_code >= 200 && $status_code < 300) {
+                $msg['message'] = 'GET succeeded: ' . $path;
+                if (!empty($info)) {
+                    $msg['info'] = $info;
+                }
+                return Status::working($this, $msg);
             }
 
             return Status::failing(
