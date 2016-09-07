@@ -65,6 +65,7 @@ class WorkflowActivityService extends Object
         return new Activity(
             [
                 'name' => $action_name,
+                'scope' => $aggregate_root_type->getPrefix(),
                 'label' => sprintf('%s.label', $action_name),
                 'type' => Activity::TYPE_WORKFLOW,
                 'description' => sprintf('%s.description', $action_name),
@@ -95,6 +96,7 @@ class WorkflowActivityService extends Object
         return new Activity(
             [
                 'name' => $workflow_event,
+                'scope' => $aggregate_root_type->getPrefix(),
                 'label' => sprintf('%s.label', $workflow_event),
                 'type' => Activity::TYPE_WORKFLOW,
                 'description' => sprintf('%s.description', $workflow_event),

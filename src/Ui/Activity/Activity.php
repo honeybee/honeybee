@@ -69,7 +69,7 @@ class Activity extends Configurable implements ActivityInterface
         return $this->url;
     }
 
-    public function getScopeKey()
+    public function getScope()
     {
         return $this->scope;
     }
