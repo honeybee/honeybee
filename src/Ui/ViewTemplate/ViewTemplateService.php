@@ -2,7 +2,6 @@
 
 namespace Honeybee\Ui\ViewTemplate;
 
-use Trellis\Common\Object;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Config\ConfigInterface;
 use Honeybee\Projection\ProjectionTypeInterface;
@@ -19,6 +18,8 @@ use Honeybee\Ui\ViewTemplate\Part\Row;
 use Honeybee\Ui\ViewTemplate\Part\RowList;
 use Honeybee\Ui\ViewTemplate\Part\Tab;
 use Honeybee\Ui\ViewTemplate\Part\TabList;
+use Honeybee\EnvironmentInterface;
+use Trellis\Common\Object;
 
 class ViewTemplateService extends Object implements ViewTemplateServiceInterface
 {
@@ -26,16 +27,30 @@ class ViewTemplateService extends Object implements ViewTemplateServiceInterface
 
     protected $view_templates_container_map;
 
-    public function __construct(ConfigInterface $config, ViewTemplatesContainerMap $view_templates_container_map)
-    {
+    public function __construct(
+        ConfigInterface $config,
+        ViewTemplatesContainerMap $view_templates_container_map,
+        EnvironmentInterface $environment
+    ) {
         $this->config = $config;
         $this->view_templates_container_map = $view_templates_container_map;
+        $this->environment = $environment;
     }
 
     /**
      * Returns the ViewTemplate instance for the given scope and name. In case an OutputFormat
      * is given and a output format specific view template exists for the given scope that
-     * view template is returned.
+     * view template is returned. If user role id based view templates are defined those are
+     * preferred. View templates that are role based and output format specific have the highest
+     * priority.
+     *
+     * Convention is to add role id and output format name as suffixes separated by a dot.
+     *
+     * Priority (highest to lowest) of view template returned:
+     * - [view.template.name].[role_role-id].[output_format_name]
+     * - [view.template.name].[role_role-id]
+     * - [view.template.name].[output_format_name]
+     * - [view.template.name]
      *
      * @param string $scope scope name of view template to get
      * @param string $view_template_name name non-empty view template name
@@ -47,23 +62,32 @@ class ViewTemplateService extends Object implements ViewTemplateServiceInterface
      */
     public function getViewTemplate($scope, $view_template_name, OutputFormatInterface $output_format = null)
     {
-        if (!is_string($view_template_name) || (is_string($view_template_name) && empty($view_template_name))) {
+        if (!is_string($view_template_name) || (is_string($view_template_name) && empty(trim($view_template_name)))) {
             throw new RuntimeError('View template name must be a non-empty string.');
         }
 
         if (!$this->view_templates_container_map->hasKey($scope)) {
-            throw new RuntimeError('Unable to load view_templates-container for scope: ' . $scope);
+            throw new RuntimeError('Unable to load view_templates container for scope: ' . $scope);
         }
         $container = $this->view_templates_container_map->getItem($scope);
-        // use output format specific view template name if output format was given and such a template exists
-        if ($output_format !== null) {
-            $specific_view_template_name = $view_template_name . '.' . $output_format->getName();
-            if ($container->getViewTemplateMap()->hasKey($specific_view_template_name)) {
-                $view_template_name = $specific_view_template_name;
+
+        $role_name = '.role_' . $this->environment->getUser()->getRoleId();
+        $output_format_name = ($output_format !== null) ? '.' . $output_format->getName() : '';
+
+        $lookups = [
+            $view_template_name . $role_name . $output_format_name,
+            $view_template_name . $role_name,
+            $view_template_name . $output_format_name,
+            $view_template_name
+        ];
+
+        foreach ($lookups as $vtn) {
+            if ($container->getViewTemplateMap()->hasKey($vtn)) {
+                return $container->getViewTemplateByName($vtn);
             }
         }
 
-        return $container->getViewTemplateByName($view_template_name);
+        throw new RuntimeError("View template not found. Tried the following names:\n- " . implode("\n- ", $lookups));
     }
 
     /**
