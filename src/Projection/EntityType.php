@@ -38,9 +38,7 @@ abstract class EntityType extends BaseEntityType
         }
 
         // override default mirrored values
-        $mirrored_values['@type'] = $this instanceof ProjectionInterface
-            ? $this->getVariantPrefix()
-            : $source_entity->getType()->getPrefix();
+        $mirrored_values['@type'] = $source_entity->getType()->getPrefix();
         $mirrored_values['identifier'] = $source_entity->getIdentifier();
         if ($source_entity instanceof EntityReferenceInterface) {
             $mirrored_values['referenced_identifier'] = $source_entity->getReferencedIdentifier();
@@ -54,10 +52,7 @@ abstract class EntityType extends BaseEntityType
         );
 
         // extract our reference path which may be aliased
-        $reference_prefix = $this instanceof ReferencedEntityTypeInterface
-            ? $this->getPrefix()
-            : $source_entity->getType()->getPrefix();
-        $path_parts = explode('.', $reference_prefix);
+        $path_parts = explode('.', $this->getPrefix());
         $type_prefix = end($path_parts);
 
         // iterate the source attributes and extract the required mirrored values
@@ -86,7 +81,7 @@ abstract class EntityType extends BaseEntityType
                                     $source_embedded_entity,
                                     $reference_embedded_entity
                                 )->toArray(),
-                                $source_embedded_entity->getParent()
+                                $reference_entity
                             );
                             $mirrored_values[$mirrored_attr_name][$position] = $mirrored_embedded_entity->toArray();
                         }
