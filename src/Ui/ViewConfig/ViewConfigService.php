@@ -69,7 +69,7 @@ class ViewConfigService extends Object implements ViewConfigServiceInterface
         $view_config = $this->getViewConfig($view_scope);
 
         $renderer_config_name = $this->name_resolver->resolve($subject_or_name);
-
+//error_log($renderer_config_name);
         $renderer_config = $view_config->getRendererConfig($renderer_config_name, $output_format, $default_data);
 
         return $renderer_config;

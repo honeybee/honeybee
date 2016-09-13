@@ -208,6 +208,11 @@ class ServiceLocator implements ServiceLocatorInterface
         return $this->di_container->make($implementor, $state);
     }
 
+    public function getDic()
+    {
+        return $this->di_container;
+    }
+
     protected function resolveAggregateRootType($aggregate_root_type)
     {
         if (is_string($aggregate_root_type)) {

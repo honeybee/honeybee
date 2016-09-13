@@ -21,6 +21,8 @@ class ProceedWorkflowCommandHandler extends AggregateRootCommandHandler
             );
         }
 
-        return $aggregate_root->proceedWorkflow($proceed_workflow_command);
+        $state_machine = $this->workflow_service->getStateMachine($aggregate_root);
+
+        return $aggregate_root->proceedWorkflow($proceed_workflow_command, $state_machine);
     }
 }

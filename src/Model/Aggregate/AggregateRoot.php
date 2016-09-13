@@ -32,11 +32,6 @@ use Workflux\StateMachine\StateMachineInterface;
 abstract class AggregateRoot extends Entity implements AggregateRootInterface
 {
     /**
-     * @var StateMachineInterface $state_machine
-     */
-    protected $state_machine;
-
-    /**
      * @var AggregateRootEventList $history
      */
     protected $history;
@@ -51,14 +46,10 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
      * Maybe we dont want to extend but to compose the generated trellis entities??
      * And maybe the problem will fix itself, once we have separate models for reading and writing.
      */
-    public function __construct(
-        AggregateRootTypeInterface $aggregate_root_type,
-        StateMachineInterface $state_machine,
-        array $data = []
-    ) {
+    public function __construct(AggregateRootTypeInterface $aggregate_root_type, array $data = [])
+    {
         parent::__construct($aggregate_root_type, $data);
 
-        $this->state_machine = $state_machine;
         $this->history = new AggregateRootEventList;
         $this->uncomitted_events_list = new AggregateRootEventList;
     }
@@ -213,10 +204,11 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
      * Start a new life-cycle for the current aggregate-root.
      *
      * @param CreateAggreagteRootCommand $create_command
+     * @param StateMachineInterface $state_machine
      */
-    public function create(CreateAggregateRootCommand $create_command)
+    public function create(CreateAggregateRootCommand $create_command, StateMachineInterface $state_machine)
     {
-        $initial_data = $this->createInitialData($create_command);
+        $initial_data = $this->createInitialData($create_command, $state_machine);
 
         $created_event = $this->processCommand(
             $create_command,
@@ -265,8 +257,9 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
      * Transition to the next workflow state (hence next state of the statemachine based on the command paylaod).
      *
      * @param ProceedWorkflowCommand $workflow_command
+     * @param StateMachineInterface $state_machine
      */
-    public function proceedWorkflow(ProceedWorkflowCommand $workflow_command)
+    public function proceedWorkflow(ProceedWorkflowCommand $workflow_command, StateMachineInterface $state_machine)
     {
         $this->guardCommandPreConditions($workflow_command);
 
@@ -281,8 +274,8 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
             );
         }
 
-        $workflow_subject = new WorkflowSubject($this->state_machine->getName(), $this);
-        $this->state_machine->execute($workflow_subject, $workflow_command->getEventName());
+        $workflow_subject = new WorkflowSubject($state_machine->getName(), $this);
+        $state_machine->execute($workflow_subject, $workflow_command->getEventName());
 
         $workflow_data = [
             'workflow_state' => $workflow_subject->getCurrentStateName(),
@@ -333,11 +326,14 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
      * Create the data used to initialize a new aggregate-root.
      *
      * @param CreateAggregateRootCommand $create_command
+     * @param StateMachineInterface $state_machine
      *
      * @return array
      */
-    protected function createInitialData(CreateAggregateRootCommand $create_command)
-    {
+    protected function createInitialData(
+        CreateAggregateRootCommand $create_command,
+        StateMachineInterface $state_machine
+    ) {
         $type = $this->getType();
         $type_prefix = $type->getPrefix();
 
@@ -376,7 +372,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
                 'uuid' => $uuid,
                 'language' => $language,
                 'version' => $version,
-                'workflow_state' => $this->state_machine->getInitialState()->getName(),
+                'workflow_state' => $state_machine->getInitialState()->getName(),
                 'workflow_parameters' => []
             ]
         );

@@ -9,6 +9,7 @@ use Honeybee\Infrastructure\DataAccess\DataAccessServiceInterface;
 use Honeybee\Infrastructure\Event\Bus\EventBusInterface;
 use Honeybee\Infrastructure\Event\Bus\Channel\ChannelMap;
 use Honeybee\Infrastructure\Event\NoOpSignal;
+use Honeybee\Infrastructure\Workflow\WorkflowServiceInterface;
 use Honeybee\Model\Aggregate\AggregateRootInterface;
 use Honeybee\Model\Aggregate\AggregateRootTypeInterface;
 use Honeybee\Model\Event\AggregateRootEventList;
@@ -23,19 +24,23 @@ abstract class AggregateRootCommandHandler extends CommandHandler
 
     protected $data_access_service;
 
+    protected $workflow_service;
+
     abstract protected function doExecute(CommandInterface $command, AggregateRootInterface $aggregate_root);
 
     public function __construct(
         AggregateRootTypeInterface $aggregate_root_type,
         DataAccessServiceInterface $data_access_service,
         EventBusInterface $event_bus,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        WorkflowServiceInterface $workflow_service
     ) {
         parent::__construct($logger);
 
         $this->event_bus = $event_bus;
         $this->aggregate_root_type = $aggregate_root_type;
         $this->data_access_service = $data_access_service;
+        $this->workflow_service = $workflow_service;
     }
 
     protected function tryToExecute(CommandInterface $command, $retry_count = 0)

@@ -21,6 +21,8 @@ class CreateAggregateRootCommandHandler extends AggregateRootCommandHandler
             );
         }
 
-        return $aggregate_root->create($create_command);
+        $state_machine = $this->workflow_service->getStateMachine($aggregate_root->getPrefix(). '.standard.workflow');
+
+        return $aggregate_root->create($create_command, $state_machine);
     }
 }
