@@ -254,7 +254,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
     }
 
     /**
-     * Transition to the next workflow state (hence next state of the statemachine based on the command paylaod).
+     * Transition to the next workflow state (next state of the state machine based on the command paylaod).
      *
      * @param ProceedWorkflowCommand $workflow_command
      * @param StateMachineInterface $state_machine

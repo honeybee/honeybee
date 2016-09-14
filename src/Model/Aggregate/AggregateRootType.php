@@ -73,7 +73,7 @@ abstract class AggregateRootType extends EntityType implements AggregateRootType
             );
         }
 
-        return new $implementor($this, $this->getWorkflowStateMachine());
+        return new $implementor($this);
     }
 
     /**

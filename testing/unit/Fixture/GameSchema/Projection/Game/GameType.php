@@ -3,17 +3,14 @@
 namespace Honeybee\Tests\Fixture\GameSchema\Projection\Game;
 
 use Honeybee\Tests\Fixture\GameSchema\Projection\ProjectionType;
-use Workflux\StateMachine\StateMachineInterface;
 use Trellis\Runtime\Attribute\Text\TextAttribute as Text;
 use Trellis\Runtime\Attribute\EntityReferenceList\EntityReferenceListAttribute;
 use Trellis\Runtime\Attribute\EmbeddedEntityList\EmbeddedEntityListAttribute;
 
 class GameType extends ProjectionType
 {
-    public function __construct(StateMachineInterface $state_machine)
+    public function __construct()
     {
-        $this->workflow_state_machine = $state_machine;
-
         parent::__construct(
             'Game',
             [

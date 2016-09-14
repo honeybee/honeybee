@@ -3,17 +3,14 @@
 namespace Honeybee\Tests\Fixture\GameSchema\Projection\Player;
 
 use Honeybee\Tests\Fixture\GameSchema\Projection\ProjectionType;
-use Workflux\StateMachine\StateMachineInterface;
 use Trellis\Runtime\Attribute\Text\TextAttribute as Text;
 use Trellis\Runtime\Attribute\GeoPoint\GeoPointAttribute;
 use Trellis\Runtime\Attribute\EmbeddedEntityList\EmbeddedEntityListAttribute;
 
 class PlayerType extends ProjectionType
 {
-    public function __construct(StateMachineInterface $state_machine)
+    public function __construct()
     {
-        $this->workflow_state_machine = $state_machine;
-
         parent::__construct(
             'Player',
             [

@@ -4,12 +4,14 @@ namespace Honeybee\Infrastructure\Workflow;
 
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Config\ConfigInterface;
-use Honeybee\Infrastructure\Expression\ExpressionServiceInterface;
 use Honeybee\Projection\ProjectionInterface;
 use Honeybee\Projection\WorkflowSubject;
 use Psr\Log\LoggerInterface;
 use Workflux\StateMachine\StateMachine;
 use Workflux\StateMachine\StateMachineInterface;
+use Honeybee\Model\Aggregate\AggregateRootTypeInterface;
+use Honeybee\Model\Aggregate\AggregateRootInterface;
+use Honeybee\Projection\ProjectionTypeInterface;
 
 class WorkflowService implements WorkflowServiceInterface
 {
@@ -17,23 +19,63 @@ class WorkflowService implements WorkflowServiceInterface
 
     protected $logger;
 
-    protected $expression_service;
+    protected $state_machine_builder;
 
     public function __construct(
         ConfigInterface $config,
-        ExpressionServiceInterface $expression_service,
         StateMachineBuilderInterface $state_machine_builder,
         LoggerInterface $logger
     ) {
         $this->config = $config;
-        $this->expression_service = $expression_service;
-        $this->service_locator = $service_locator;
+        $this->state_machine_builder = $state_machine_builder;
         $this->logger = $logger;
     }
 
+    /**
+     * Builds and returns the state machine for the given name. As a name an object the resolveStateMachineName()
+     * method supports can be given.
+     *
+     * @param mixed $name_name of state machine to build and return.
+     *
+     * @return StateMachineInterface state machine built/found
+     */
     public function getStateMachine($name)
     {
-        return $this->state_machine_builder->build($name);
+        return $this->state_machine_builder->build($this->resolveStateMachineName($name));
+    }
+
+    /**
+     * Resolves a name for the given item that can be used to build or lookup an already built state machine.
+     *
+     * @param mixed $arg object to resolve a name for
+     *
+     * @return string name to use for state machine lookups/building
+     *
+     * @throws RuntimeError when no name can be resolved
+     */
+    public function resolveStateMachineName($arg)
+    {
+        if (is_string($arg) && empty(trim($arg))) {
+            throw new RuntimeError('State machine name must be a non-empty string.');
+        }
+
+        if (is_string($arg)) {
+            return $arg;
+        }
+
+        $default_suffix = $this->config->get('state_machine_name_suffix', 'default_workflow');
+
+        if ($arg instanceof AggregateRootTypeInterface || $arg instanceof ProjectionTypeInterface) {
+            return $arg->getPrefix() . '.' . $default_suffix;
+        } elseif ($arg instanceof AggregateRootInterface || $arg instanceof ProjectionInterface) {
+            return $arg->getType()->getPrefix() . '.' . $default_suffix;
+        } elseif (is_object($arg) && is_callable($arg, 'getStateMachineName')) {
+            return $arg->getStateMachineName();
+        } elseif (is_object($arg) && is_callable($arg, '__toString')) {
+            return (string)$arg;
+        }
+
+        throw new RuntimeError('Could not resolve a state machine name for given argument.');
     }
 
     public function getTaskByStateAndEvent(
@@ -72,6 +114,6 @@ class WorkflowService implements WorkflowServiceInterface
 
     public function getWriteEventNames()
     {
-        return $this->config->get('write_event_names', [ 'promote', 'demote', 'delete' ]);
+        return (array)$this->config->get('write_event_names', [ 'promote', 'demote', 'delete' ]);
     }
 }

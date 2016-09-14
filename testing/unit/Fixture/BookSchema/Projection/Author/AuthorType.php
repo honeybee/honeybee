@@ -7,14 +7,11 @@ use Trellis\Runtime\Attribute\EntityReferenceList\EntityReferenceListAttribute;
 use Trellis\Runtime\Attribute\Email\EmailAttribute;
 use Trellis\Runtime\Attribute\Text\TextAttribute;
 use Honeybee\Tests\Fixture\BookSchema\Projection\ProjectionType;
-use Workflux\StateMachine\StateMachineInterface;
 
 class AuthorType extends ProjectionType
 {
-    public function __construct(StateMachineInterface $state_machine)
+    public function __construct()
     {
-        $this->workflow_state_machine = $state_machine;
-
         parent::__construct(
             'Author',
             [

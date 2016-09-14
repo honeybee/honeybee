@@ -5,14 +5,11 @@ namespace Honeybee\Tests\Fixture\TopicSchema\Projection\Topic;
 use Honeybee\Tests\Fixture\TopicSchema\Projection\ProjectionType;
 use Trellis\Runtime\Attribute\EntityReferenceList\EntityReferenceListAttribute;
 use Trellis\Runtime\Attribute\Text\TextAttribute;
-use Workflux\StateMachine\StateMachineInterface;
 
 class TopicType extends ProjectionType
 {
-    public function __construct(StateMachineInterface $state_machine)
+    public function __construct()
     {
-        $this->workflow_state_machine = $state_machine;
-
         parent::__construct(
             'Topic',
             [

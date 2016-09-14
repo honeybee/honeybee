@@ -6,6 +6,7 @@ use Honeybee\Model\Event\AggregateRootEventList;
 use Honeybee\Model\Task\CreateAggregateRoot\CreateAggregateRootCommand;
 use Honeybee\Model\Task\ModifyAggregateRoot\ModifyAggregateRootCommand;
 use Honeybee\Model\Task\ProceedWorkflow\ProceedWorkflowCommand;
+use Workflux\StateMachine\StateMachineInterface;
 
 interface AggregateRootInterface
 {
@@ -22,11 +23,23 @@ interface AggregateRootInterface
 
     public function reconstituteFrom(AggregateRootEventList $history);
 
-    public function create(CreateAggregateRootCommand $create_command);
+    /**
+     * Start a new life-cycle for the current aggregate-root.
+     *
+     * @param CreateAggreagteRootCommand $create_command
+     * @param StateMachineInterface $state_machine
+     */
+    public function create(CreateAggregateRootCommand $create_command, StateMachineInterface $state_machine);
 
     public function modify(ModifyAggregateRootCommand $modify_command);
 
-    public function proceedWorkflow(ProceedWorkflowCommand $workflow_command);
+    /**
+     * Transition to the next workflow state (next state of the state machine based on the command paylaod).
+     *
+     * @param ProceedWorkflowCommand $workflow_command
+     * @param StateMachineInterface $state_machine
+     */
+    public function proceedWorkflow(ProceedWorkflowCommand $workflow_command, StateMachineInterface $state_machine);
 
     public function getUuid();
 

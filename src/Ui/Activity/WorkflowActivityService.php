@@ -4,7 +4,6 @@ namespace Honeybee\Ui\Activity;
 
 use Honeybee\Infrastructure\Config\Settings;
 use Honeybee\Model\Aggregate\AggregateRootTypeInterface;
-use Honeybee\Projection\WorkflowSubject;
 use Honeybee\ServiceLocatorInterface;
 use Honeybee\Ui\Activity\ActivityContainerMap;
 use Trellis\Common\Object;
@@ -25,7 +24,7 @@ class WorkflowActivityService extends Object
     {
         $workflow_activities = [];
 
-        $state_machine = $aggregate_root_type->getWorkflowStateMachine();
+        $state_maching = $this->service_locator->getWorkflowService()->getStateMachine($aggregate_root_type);
         foreach ($state_machine->getStates() as $state) {
             if (preg_match('/_task$/', $state->getName())) {
                 continue; // final states can't have activities
@@ -84,7 +83,7 @@ class WorkflowActivityService extends Object
 
     protected function createWorkflowActivity(AggregateRootTypeInterface $aggregate_root_type, $workflow_event)
     {
-        $write_events = WorkflowSubject::getWriteEventNames();
+        $write_events = $this->service_locator->getWorkflowService()->getWriteEventNames();
         if (in_array($workflow_event, $write_events)) {
             $request_method = 'write';
             $activity_route = $aggregate_root_type->getPrefix() . '.resource.task.proceed';

@@ -10,8 +10,6 @@ abstract class AggregateRootType extends BaseAggregateRootType
 
     const PACKAGE = 'AggregateFixtures';
 
-    protected $workflow_state_machine;
-
     public function getPackage()
     {
         return self::PACKAGE;
@@ -20,10 +18,5 @@ abstract class AggregateRootType extends BaseAggregateRootType
     public function getVendor()
     {
         return self::VENDOR;
-    }
-
-    public function getWorkflowStateMachine()
-    {
-        return $this->workflow_state_machine;
     }
 }

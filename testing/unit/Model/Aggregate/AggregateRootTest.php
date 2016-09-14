@@ -2,7 +2,9 @@
 
 namespace Honeybee\Tests\Model\Aggregate;
 
+use Honeybee\Infrastructure\Workflow\XmlStateMachineBuilder;
 use Honeybee\Model\Event\AggregateRootEventList;
+use Honeybee\ServiceLocatorInterface;
 use Honeybee\Tests\Fixture\BookSchema\Model\Author\AuthorType;
 use Honeybee\Tests\Fixture\BookSchema\Model\Task\CreateAuthor\AuthorCreatedEvent;
 use Honeybee\Tests\Fixture\BookSchema\Model\Task\CreateAuthor\CreateAuthorCommand;
@@ -11,7 +13,7 @@ use Honeybee\Tests\Fixture\BookSchema\Model\Task\ModifyAuthor\ModifyAuthorComman
 use Honeybee\Tests\Fixture\BookSchema\Model\Task\ProceedAuthorWorkflow\AuthorWorkflowProceededEvent;
 use Honeybee\Tests\Fixture\BookSchema\Model\Task\ProceedAuthorWorkflow\ProceedAuthorWorkflowCommand;
 use Honeybee\Tests\TestCase;
-use Workflux\Builder\XmlStateMachineBuilder;
+use Workflux\Guard\GuardInterface;
 
 class AggregateRootTest extends TestCase
 {
@@ -31,7 +33,7 @@ class AggregateRootTest extends TestCase
     public function setUp()
     {
         // @todo mock the state machine instead of loading from a file
-        $this->aggregate_root_type = new AuthorType($this->getDefaultStateMachine());
+        $this->aggregate_root_type = new AuthorType();
     }
 
     /**
@@ -56,7 +58,7 @@ class AggregateRootTest extends TestCase
             ]
         );
 
-        $aggregate_root->create($create_command);
+        $aggregate_root->create($create_command, $this->getDefaultStateMachine());
 
         $this->assertTrue($aggregate_root->isValid());
         $this->assertEquals('Mark', $aggregate_root->getFirstname());
@@ -353,7 +355,7 @@ class AggregateRootTest extends TestCase
             ]
         );
 
-        $aggregate_root->proceedWorkflow($workflow_command);
+        $aggregate_root->proceedWorkflow($workflow_command, $this->getDefaultStateMachine());
 
         $this->assertTrue($aggregate_root->isValid());
         $this->assertEquals('active', $aggregate_root->getWorkflowState());
@@ -380,7 +382,7 @@ class AggregateRootTest extends TestCase
             ]
         );
 
-        $aggregate_root->proceedWorkflow($workflow_command);
+        $aggregate_root->proceedWorkflow($workflow_command, $this->getDefaultStateMachine());
     }
 
     /**
@@ -403,7 +405,7 @@ class AggregateRootTest extends TestCase
             ]
         );
 
-        $aggregate_root->proceedWorkflow($workflow_command);
+        $aggregate_root->proceedWorkflow($workflow_command, $this->getDefaultStateMachine());
     }
 
     /**
@@ -427,7 +429,7 @@ class AggregateRootTest extends TestCase
             ]
         );
 
-        $aggregate_root->proceedWorkflow($workflow_command);
+        $aggregate_root->proceedWorkflow($workflow_command, $this->getDefaultStateMachine());
     }
 
     /**
@@ -514,7 +516,7 @@ class AggregateRootTest extends TestCase
             ]
         );
 
-        $aggregate_root->proceedWorkflow($workflow_command);
+        $aggregate_root->proceedWorkflow($workflow_command, $this->getDefaultStateMachine());
 
         $this->assertTrue($aggregate_root->isValid());
         $this->assertEquals($expected_workflow_parameters, $aggregate_root->getWorkflowParameters());
@@ -535,12 +537,19 @@ class AggregateRootTest extends TestCase
 
     protected function getDefaultStateMachine()
     {
+        $guard_stub = $this->createMock(GuardInterface::CLASS);
+
+        $service_locator_stub = $this->createMock(ServiceLocatorInterface::CLASS);
+        $service_locator_stub->method('createEntity')->willReturn($guard_stub);
+
         $workflows_file_path = __DIR__ . '/../../Fixture/BookSchema/Model/workflows.xml';
+
         $workflow_builder = new XmlStateMachineBuilder(
             [
-                'name' => 'author_workflow_default',
+                'name' => self::AGGREGATE_ROOT_TYPE . '.default_workflow',
                 'state_machine_definition' => $workflows_file_path
-            ]
+            ],
+            $service_locator_stub
         );
 
         return $workflow_builder->build();

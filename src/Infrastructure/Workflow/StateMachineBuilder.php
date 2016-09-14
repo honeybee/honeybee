@@ -22,12 +22,15 @@ class StateMachineBuilder implements StateMachineBuilderInterface
     }
 
     /**
+     * @param string $name name of state machine to build
+     *
      * @return Workflux\StateMachine\StateMachineInterface
      */
-    protected function buildStateMachineFor($name)
+    public function buildStateMachineFor($name)
     {
         $state_machine_config = $this->state_machine_config_map->getItem($name);
 
+        // name is necessary as option here, as there may be multiple state machines in the definition xml file
         $builder = new XmlStateMachineBuilder(
             [
                 'name' => $name,

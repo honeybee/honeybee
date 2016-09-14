@@ -2,8 +2,8 @@
 
 namespace Honeybee\Infrastructure\Workflow;
 
-use Trellis\Common\Collection\TypedMap;
 use Honeybee\Infrastructure\Config\ConfigInterface;
+use Trellis\Common\Collection\TypedMap;
 
 class StateMachineConfigMap extends TypedMap
 {
