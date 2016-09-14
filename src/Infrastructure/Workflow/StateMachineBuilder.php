@@ -7,18 +7,18 @@ use Honeybee\ServiceLocatorInterface;
 
 class StateMachineBuilder implements StateMachineBuilderInterface
 {
-    protected $state_machine_config_map;
+    protected $state_machine_definitions;
     protected $service_locator;
 
     /**
-     * @param StateMachineConfigMap $state_machine_config_map
+     * @param array $state_machine_definitions
      * @param ServiceLocatorInterface $service_locator
      */
     public function __construct(
-        StateMachineConfigMap $state_machine_config_map,
+        array $state_machine_definitions,
         ServiceLocatorInterface $service_locator
     ) {
-        $this->state_machine_config_map = $state_machine_config_map;
+        $this->state_machine_definitions = $state_machine_definitions;
         $this->service_locator = $service_locator;
     }
 
@@ -29,8 +29,7 @@ class StateMachineBuilder implements StateMachineBuilderInterface
      */
     public function build($name)
     {
-        $state_machine_config = $this->state_machine_config_map->getItem($name);
-        if (!$state_machine_config) {
+        if (!isset($this->state_machine_definitions[$name])) {
             throw new RuntimeError('State machine not configured: ' . $name);
         }
 
@@ -38,7 +37,7 @@ class StateMachineBuilder implements StateMachineBuilderInterface
         $builder = new XmlStateMachineBuilder(
             [
                 'name' => $name,
-                'state_machine_definition' => $state_machine_config
+                'state_machine_definition' => $this->state_machine_definitions
             ],
             $this->service_locator
         );

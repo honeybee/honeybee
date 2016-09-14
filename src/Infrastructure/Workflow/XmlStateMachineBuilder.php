@@ -4,9 +4,11 @@ namespace Honeybee\Infrastructure\Workflow;
 
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\ServiceLocatorInterface;
+use Params\Immutable\ImmutableOptionsInterface;
 use Workflux\Builder\XmlStateMachineBuilder as BaseXmlStateMachineBuilder;
 use Workflux\Error\VerificationError;
 use Workflux\Guard\GuardInterface;
+use Workflux\Parser\Xml\StateMachineDefinitionParser;
 use Workflux\Transition\Transition;
 
 /**
@@ -27,6 +29,31 @@ class XmlStateMachineBuilder extends BaseXmlStateMachineBuilder
         parent::__construct($options);
 
         $this->service_locator = $service_locator;
+    }
+
+    /**
+     * Parses the configured state machine definition file and returns all parsed state machine definitions.
+     *
+     * @return array An assoc array with name of a state machine as key and the state machine def as value.
+     */
+    protected function parseStateMachineDefitions()
+    {
+        $defs = $this->getOption('state_machine_definition');
+        if ($defs instanceof ImmutableOptionsInterface) {
+            return $defs->toArray();
+        } elseif (is_array($defs)) {
+            return $defs;
+        }
+
+        if (!is_string($defs)) {
+            throw new RuntimeError(
+                'Option "state_machine_definition" must be a path to an xml file ' .
+                'or already parsed definitions provided as an array.'
+            );
+        }
+        $parser = new StateMachineDefinitionParser();
+
+        return $parser->parse($defs);
     }
 
     /**
