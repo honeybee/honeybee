@@ -193,6 +193,11 @@ class ServiceLocator implements ServiceLocatorInterface
         return $this->getService('honeybee.infrastructure.fixture_service');
     }
 
+    public function getWorkflowService()
+    {
+        return $this->getService('honeybee.infrastructure.workflow_service');
+    }
+
     public function getProjectionTypeMap()
     {
         return $this->projection_type_map;

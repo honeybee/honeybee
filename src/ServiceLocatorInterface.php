@@ -43,6 +43,7 @@ interface ServiceLocatorInterface
     public function getTemplateRenderer();
     public function getViewConfigService();
     public function getViewTemplateService();
+    public function getWorkflowService();
 
     public function createEntity($implementor, array $state = []);
     public function getLogger();
