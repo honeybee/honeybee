@@ -6,8 +6,8 @@ use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Command\CommandHandler;
 use Honeybee\Infrastructure\Command\CommandInterface;
 use Honeybee\Infrastructure\DataAccess\DataAccessServiceInterface;
-use Honeybee\Infrastructure\Event\Bus\EventBusInterface;
 use Honeybee\Infrastructure\Event\Bus\Channel\ChannelMap;
+use Honeybee\Infrastructure\Event\Bus\EventBusInterface;
 use Honeybee\Infrastructure\Event\NoOpSignal;
 use Honeybee\Infrastructure\Workflow\WorkflowServiceInterface;
 use Honeybee\Model\Aggregate\AggregateRootInterface;
@@ -32,8 +32,8 @@ abstract class AggregateRootCommandHandler extends CommandHandler
         AggregateRootTypeInterface $aggregate_root_type,
         DataAccessServiceInterface $data_access_service,
         EventBusInterface $event_bus,
-        LoggerInterface $logger,
-        WorkflowServiceInterface $workflow_service
+        WorkflowServiceInterface $workflow_service,
+        LoggerInterface $logger
     ) {
         parent::__construct($logger);
 
