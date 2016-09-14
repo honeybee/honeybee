@@ -24,7 +24,7 @@ class WorkflowActivityService extends Object
     {
         $workflow_activities = [];
 
-        $state_maching = $this->service_locator->getWorkflowService()->getStateMachine($aggregate_root_type);
+        $state_machine = $this->service_locator->getWorkflowService()->getStateMachine($aggregate_root_type);
         foreach ($state_machine->getStates() as $state) {
             if (preg_match('/_task$/', $state->getName())) {
                 continue; // final states can't have activities
