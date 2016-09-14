@@ -7,5 +7,5 @@ interface StateMachineBuilderInterface
     /**
      * @return Workflux\StateMachine\StateMachineInterface
      */
-    public function buildStateMachineFor($name);
+    public function build($name);
 }

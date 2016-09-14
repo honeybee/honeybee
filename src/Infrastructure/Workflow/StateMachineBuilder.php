@@ -2,6 +2,7 @@
 
 namespace Honeybee\Infrastructure\Workflow;
 
+use Honeybee\Common\Error\RuntimeError;
 use Honeybee\ServiceLocatorInterface;
 
 class StateMachineBuilder implements StateMachineBuilderInterface
@@ -26,9 +27,12 @@ class StateMachineBuilder implements StateMachineBuilderInterface
      *
      * @return Workflux\StateMachine\StateMachineInterface
      */
-    public function buildStateMachineFor($name)
+    public function build($name)
     {
         $state_machine_config = $this->state_machine_config_map->getItem($name);
+        if (!$state_machine_config) {
+            throw new RuntimeError('State machine not configured: ' . $name);
+        }
 
         // name is necessary as option here, as there may be multiple state machines in the definition xml file
         $builder = new XmlStateMachineBuilder(
