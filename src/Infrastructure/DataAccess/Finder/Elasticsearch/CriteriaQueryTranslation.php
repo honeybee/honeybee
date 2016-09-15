@@ -84,7 +84,14 @@ class CriteriaQueryTranslation implements QueryTranslationInterface
             $phrase = $search_criteria->getPhrase();
 
             if (preg_match('~^suggest:([\.\w]+)=(.+)~', $phrase, $matches)) {
-                $suggest_field = $matches[1];
+                $suggest_field_parts = [];
+                // strip the 'type' portion of the attribute-path, to address props the way ES expects
+                foreach (explode('.', $matches[1]) as $i => $field_part) {
+                    if ($i % 2 === 0) {
+                        $suggest_field_parts[] = $field_part;
+                    }
+                }
+                $suggest_field = implode('.', $suggest_field_parts);
                 $suggest_term = $matches[2];
 
                 return [
