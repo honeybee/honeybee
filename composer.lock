@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "d6eade6a42847eb436ce5af106240b87",
-    "content-hash": "f1d04f3c97c40d293a781393481cff24",
+    "hash": "0ff7fc79bea3a5e04d72fb3c470cec39",
+    "content-hash": "e9160e283b4516ecdb70d1b043772f25",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -1289,12 +1289,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Roave/SecurityAdvisories.git",
-                "reference": "15b8f286a8a0ffe7c19c7c09344b7707c66ac233"
+                "reference": "1fd74f8f5102adb4eabda9a2a372bca3143f11e6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/15b8f286a8a0ffe7c19c7c09344b7707c66ac233",
-                "reference": "15b8f286a8a0ffe7c19c7c09344b7707c66ac233",
+                "url": "https://api.github.com/repos/Roave/SecurityAdvisories/zipball/1fd74f8f5102adb4eabda9a2a372bca3143f11e6",
+                "reference": "1fd74f8f5102adb4eabda9a2a372bca3143f11e6",
                 "shasum": ""
             },
             "conflict": {
@@ -1303,7 +1303,7 @@
                 "bugsnag/bugsnag-laravel": ">=2,<2.0.2",
                 "cakephp/cakephp": ">=3,<3.0.15|>=2,<2.4.99|>=2.5,<2.5.99|>=2.6,<2.6.12|>=1.3,<1.3.18|>=2.7,<2.7.6|>=3.1,<3.1.4",
                 "cartalyst/sentry": "<2.1",
-                "codeigniter/framework": "<3.0.3",
+                "codeigniter/framework": "<=3.0.6",
                 "composer/composer": "<=1.0.0-alpha11",
                 "contao-components/mediaelement": ">=2.14.2,<2.21.1",
                 "contao/core": ">=2.11,<3|>=3,<3.5.15",
@@ -1362,7 +1362,7 @@
                 "thelia/backoffice-default-template": ">=2.1,<2.1.2",
                 "thelia/thelia": ">=2.1.0-beta1,<2.1.3|>=2.1,<2.1.2",
                 "twig/twig": "<1.20",
-                "typo3/cms": ">=6.2,<6.2.26|>=8,<8.2|>=8.2,<8.2.1|>=7.6,<7.6.10|>=7,<7.1|>=7.1,<7.2|>=7.2,<7.3|>=7.3,<7.4|>=7.4,<7.5|>=7.5,<7.6",
+                "typo3/cms": ">=6.2,<6.2.27|>=8,<8.2|>=8.2,<8.3|>=7.6,<7.6.11|>=7,<7.1|>=7.1,<7.2|>=7.2,<7.3|>=7.3,<7.4|>=7.4,<7.5|>=7.5,<7.6|>=8.3,<8.3.1",
                 "typo3/flow": ">=1,<1.0.4|>=1.1,<1.1.1|>=2,<2.0.1|>=2.3,<2.3.7|>=3,<3.0.1",
                 "typo3/neos": ">=1.1,<1.1.3|>=1.2,<1.2.13|>=2,<2.0.4",
                 "willdurand/js-translation-bundle": "<2.1.1",
@@ -1408,7 +1408,7 @@
                 }
             ],
             "description": "Prevents installation of composer packages with known security vulnerabilities: no API, simply require it",
-            "time": "2016-09-08 18:37:03"
+            "time": "2016-09-14 21:32:40"
         },
         {
             "name": "shrink0r/monatic",
@@ -2231,16 +2231,16 @@
         },
         {
             "name": "myclabs/deep-copy",
-            "version": "1.5.2",
+            "version": "1.5.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/myclabs/DeepCopy.git",
-                "reference": "da8529775f14f4fdae33f916eb0cf65f6afbddbc"
+                "reference": "94e5ca3e90aa5b34663780393e10914f7438f991"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/da8529775f14f4fdae33f916eb0cf65f6afbddbc",
-                "reference": "da8529775f14f4fdae33f916eb0cf65f6afbddbc",
+                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/94e5ca3e90aa5b34663780393e10914f7438f991",
+                "reference": "94e5ca3e90aa5b34663780393e10914f7438f991",
                 "shasum": ""
             },
             "require": {
@@ -2269,7 +2269,7 @@
                 "object",
                 "object graph"
             ],
-            "time": "2016-09-06 16:07:05"
+            "time": "2016-09-07 15:34:10"
         },
         {
             "name": "nikic/php-parser",
