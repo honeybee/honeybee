@@ -2,9 +2,10 @@
 
 namespace Honeybee\Common\Util;
 
+use Honeybee\Common\Error\ParseError;
+use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Config\Settings;
 use Honeybee\Infrastructure\Config\SettingsInterface;
-use Honeybee\Common\Error\ParseError;
 
 /**
  * Class with various useful methods for dealing with json.
@@ -34,5 +35,21 @@ class JsonToolkit
         }
 
         return $parsed_data;
+    }
+
+    public static function load($json_file)
+    {
+        if (!file_exists($json_file)) {
+            throw new RuntimeError('Json file does not exist at: ' . $json_file);
+        }
+        if (!is_readable($json_file)) {
+            throw new RuntimeError('Json file is not readable at: ' . $json_file);
+        }
+        $json_string = file_get_contents($json_file);
+        if (false === $json_string) {
+            throw new RuntimeError('Failed to load json from: ' . $json_file);
+        }
+
+        return self::parse($json_string);
     }
 }
