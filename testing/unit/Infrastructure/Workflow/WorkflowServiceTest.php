@@ -2,7 +2,7 @@
 
 namespace Honeybee\Tests\Infrastructure\Workflow;
 
-use Honeybee\Infrastructure\Config\ConfigInterface;
+use Honeybee\Infrastructure\Config\ArrayConfig;
 use Honeybee\Infrastructure\Workflow\StateMachineBuilderInterface;
 use Honeybee\Infrastructure\Workflow\WorkflowService;
 use Honeybee\Infrastructure\Workflow\WorkflowServiceInterface;
@@ -12,8 +12,6 @@ use Honeybee\Tests\Fixture\BookSchema\Projection\Author\Author as AuthorProjecti
 use Honeybee\Tests\Fixture\BookSchema\Projection\Author\AuthorType as AuthorProjectionType;
 use Honeybee\Tests\TestCase;
 use Psr\Log\LoggerInterface;
-use Workflux\StateMachine\StateMachineInterface;
-use Honeybee\Infrastructure\Config\ArrayConfig;
 
 class WorkflowServiceTest extends TestCase
 {

@@ -14,7 +14,6 @@ use Mockery;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\Finder\Finder;
-use Workflux\StateMachine\StateMachineInterface;
 
 class FixtureTest extends TestCase
 {
@@ -22,9 +21,7 @@ class FixtureTest extends TestCase
 
     public function setUp()
     {
-        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
-
-        $author_aggregate_root_type = new AuthorType($state_machine);
+        $author_aggregate_root_type = new AuthorType();
         $this->aggregate_root_type_map = new AggregateRootTypeMap(
             [
                 $author_aggregate_root_type->getPrefix() => $author_aggregate_root_type

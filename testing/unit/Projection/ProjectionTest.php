@@ -4,7 +4,6 @@ namespace Honeybee\Tests\Projection;
 
 use Honeybee\Tests\Fixture\BookSchema\Projection\Author\AuthorType;
 use Honeybee\Tests\TestCase;
-use Workflux\StateMachine\StateMachineInterface;
 use Mockery;
 
 class ProjectionTest extends TestCase
@@ -18,8 +17,7 @@ class ProjectionTest extends TestCase
 
     public function setUp()
     {
-        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
-        $projection_type = new $this->projection_type($state_machine);
+        $projection_type = new $this->projection_type();
         $this->projection = $projection_type->createEntity($this->data);
     }
 

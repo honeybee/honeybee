@@ -2,33 +2,32 @@
 
 namespace Honeybee\Tests\Projection\EventHandler;
 
-use Honeybee\Tests\TestCase;
+use Honeybee\Infrastructure\Config\ArrayConfig;
+use Honeybee\Infrastructure\DataAccess\DataAccessServiceInterface;
+use Honeybee\Infrastructure\DataAccess\Finder\FinderInterface;
+use Honeybee\Infrastructure\DataAccess\Finder\FinderResultInterface;
+use Honeybee\Infrastructure\DataAccess\Query\QueryInterface;
+use Honeybee\Infrastructure\DataAccess\Query\QueryServiceInterface;
+use Honeybee\Infrastructure\DataAccess\Query\QueryServiceMap;
+use Honeybee\Infrastructure\DataAccess\Storage\Elasticsearch\Projection\ProjectionReader;
+use Honeybee\Infrastructure\DataAccess\Storage\Elasticsearch\Projection\ProjectionWriter;
+use Honeybee\Infrastructure\Event\Bus\EventBusInterface;
 use Honeybee\Model\Aggregate\AggregateRootTypeMap;
 use Honeybee\Model\Event\EmbeddedEntityEventList;
+use Honeybee\Projection\EventHandler\ProjectionUpdater;
 use Honeybee\Projection\Event\ProjectionCreatedEvent;
 use Honeybee\Projection\Event\ProjectionUpdatedEvent;
 use Honeybee\Projection\ProjectionInterface;
 use Honeybee\Projection\ProjectionMap;
 use Honeybee\Projection\ProjectionTypeMap;
-use Honeybee\Projection\EventHandler\ProjectionUpdater;
-use Honeybee\Infrastructure\Config\ArrayConfig;
-use Honeybee\Infrastructure\Event\Bus\EventBusInterface;
-use Honeybee\Infrastructure\DataAccess\Finder\FinderInterface;
-use Honeybee\Infrastructure\DataAccess\Finder\FinderResultInterface;
-use Honeybee\Infrastructure\DataAccess\Storage\Elasticsearch\Projection\ProjectionWriter;
-use Honeybee\Infrastructure\DataAccess\Storage\Elasticsearch\Projection\ProjectionReader;
-use Honeybee\Infrastructure\DataAccess\DataAccessServiceInterface;
-use Honeybee\Infrastructure\DataAccess\Query\QueryInterface;
-use Honeybee\Infrastructure\DataAccess\Query\QueryServiceMap;
-use Honeybee\Infrastructure\DataAccess\Query\QueryServiceInterface;
 use Honeybee\Tests\Fixture\GameSchema\Model\Game\GameType;
 use Honeybee\Tests\Fixture\GameSchema\Model\Team\TeamType;
 use Honeybee\Tests\Fixture\GameSchema\Projection\Game\GameType as GameProjectionType;
 use Honeybee\Tests\Fixture\GameSchema\Projection\Player\PlayerType as PlayerProjectionType;
 use Honeybee\Tests\Fixture\GameSchema\Projection\Team\TeamType as TeamProjectionType;
-use Psr\Log\NullLogger;
+use Honeybee\Tests\TestCase;
 use Mockery;
-use Workflux\StateMachine\StateMachineInterface;
+use Psr\Log\NullLogger;
 
 class ProjectionUpdaterTest extends TestCase
 {
@@ -38,10 +37,8 @@ class ProjectionUpdaterTest extends TestCase
 
     public function setUp()
     {
-        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
-
-        $game_aggregate_root_type = new GameType($state_machine);
-        $team_aggregate_root_type = new TeamType($state_machine);
+        $game_aggregate_root_type = new GameType();
+        $team_aggregate_root_type = new TeamType();
         $this->aggregate_root_type_map = new AggregateRootTypeMap(
             [
                 $game_aggregate_root_type->getPrefix() => $game_aggregate_root_type,
@@ -49,9 +46,9 @@ class ProjectionUpdaterTest extends TestCase
             ]
         );
 
-        $game_projection_type = new GameProjectionType($state_machine);
-        $player_projection_type = new PlayerProjectionType($state_machine);
-        $team_projection_type = new TeamProjectionType($state_machine);
+        $game_projection_type = new GameProjectionType();
+        $player_projection_type = new PlayerProjectionType();
+        $team_projection_type = new TeamProjectionType();
         $this->projection_type_map = new ProjectionTypeMap(
             [
                 $game_projection_type->getVariantPrefix() => $game_projection_type,

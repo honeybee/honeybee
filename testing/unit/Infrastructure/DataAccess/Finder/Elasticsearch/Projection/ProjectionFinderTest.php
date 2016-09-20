@@ -14,7 +14,6 @@ use Honeybee\Tests\Fixture\BookSchema\Projection\Book\BookType;
 use Honeybee\Tests\TestCase;
 use Psr\Log\NullLogger;
 use Mockery;
-use Workflux\StateMachine\StateMachineInterface;
 
 class ProjectionFinderTest extends TestCase
 {
@@ -26,9 +25,8 @@ class ProjectionFinderTest extends TestCase
 
     public function setUp()
     {
-        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
-        $book_type = new BookType($state_machine);
-        $author_type = new AuthorType($state_machine);
+        $book_type = new BookType();
+        $author_type = new AuthorType();
         $this->projection_type_map = new ProjectionTypeMap([
             $book_type->getVariantPrefix() => $book_type,
             $author_type->getVariantPrefix() => $author_type

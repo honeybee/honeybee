@@ -6,16 +6,15 @@ use Honeybee\EntityInterface;
 use Honeybee\Model\Command\AggregateRootCommandBuilder;
 use Honeybee\Tests\Fixture\BookSchema\Model\Author\AuthorType;
 use Honeybee\Tests\Fixture\BookSchema\Model\Publication\PublicationType;
-use Honeybee\Tests\Fixture\BookSchema\Projection\Author\AuthorType  as AuthorProjectionType;
 use Honeybee\Tests\Fixture\BookSchema\Model\Task\CreateAuthor\CreateAuthorCommand;
 use Honeybee\Tests\Fixture\BookSchema\Model\Task\CreatePublication\CreatePublicationCommand;
 use Honeybee\Tests\Fixture\BookSchema\Model\Task\ModifyAuthor\ModifyAuthorCommand;
+use Honeybee\Tests\Fixture\BookSchema\Projection\Author\AuthorType  as AuthorProjectionType;
 use Honeybee\Tests\TestCase;
+use Mockery;
+use Shrink0r\Monatic\Error;
 use Shrink0r\Monatic\Result;
 use Shrink0r\Monatic\Success;
-use Shrink0r\Monatic\Error;
-use Workflux\StateMachine\StateMachineInterface;
-use Mockery;
 
 class AggregateRootCommandBuilderTest extends TestCase
 {
@@ -42,8 +41,7 @@ class AggregateRootCommandBuilderTest extends TestCase
      */
     public function testBuildCreateCommand(array $payload, array $expected_command)
     {
-        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
-        $author_type = new AuthorType($state_machine);
+        $author_type = new AuthorType();
 
         $builder = new AggregateRootCommandBuilder($author_type, CreateAuthorCommand::CLASS);
         $build_result = $builder
@@ -59,8 +57,7 @@ class AggregateRootCommandBuilderTest extends TestCase
 
     public function testBuildCreateCommandWithEmptyValues()
     {
-        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
-        $publication_type = new PublicationType($state_machine);
+        $publication_type = new PublicationType();
 
         $builder = new AggregateRootCommandBuilder($publication_type, CreatePublicationCommand::CLASS);
         $build_result = $builder
@@ -85,8 +82,7 @@ class AggregateRootCommandBuilderTest extends TestCase
 
     public function testBuildCreateCommandWithInvalidValues()
     {
-        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
-        $author_type = new AuthorType($state_machine);
+        $author_type = new AuthorType();
 
         $builder = new AggregateRootCommandBuilder($author_type, CreateAuthorCommand::CLASS);
         $build_result = $builder
@@ -126,8 +122,7 @@ class AggregateRootCommandBuilderTest extends TestCase
 
     public function testBuildCreateCommandWithInvalidCommands()
     {
-        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
-        $author_type = new AuthorType($state_machine);
+        $author_type = new AuthorType();
 
         $builder = new AggregateRootCommandBuilder($author_type, CreateAuthorCommand::CLASS);
         $build_result = $builder
@@ -243,8 +238,7 @@ class AggregateRootCommandBuilderTest extends TestCase
      */
     public function testCreateCommandWithMissingValues()
     {
-        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
-        $author_type = new AuthorType($state_machine);
+        $author_type = new AuthorType();
 
         $builder = new AggregateRootCommandBuilder($author_type, CreateAuthorCommand::CLASS);
         $build_result = $builder->build();
@@ -255,9 +249,8 @@ class AggregateRootCommandBuilderTest extends TestCase
      */
     public function testBuildModifyCommand(array $projection, array $payload, array $expected_command)
     {
-        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
-        $author_type = new AuthorType($state_machine);
-        $projection_type = new AuthorProjectionType($state_machine);
+        $author_type = new AuthorType();
+        $projection_type = new AuthorProjectionType();
         $projection = $projection_type->createEntity($projection);
 
         $builder = new AggregateRootCommandBuilder($author_type, ModifyAuthorCommand::CLASS);
@@ -292,8 +285,7 @@ class AggregateRootCommandBuilderTest extends TestCase
      */
     public function testModifyCommandWithInvalidEntity()
     {
-        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
-        $author_type = new AuthorType($state_machine);
+        $author_type = new AuthorType();
 
         $builder = new AggregateRootCommandBuilder($author_type, ModifyAuthorCommand::CLASS);
         $build_result = $builder
@@ -307,8 +299,7 @@ class AggregateRootCommandBuilderTest extends TestCase
      */
     public function testModifyCommandWithMissingIdentifier()
     {
-        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
-        $author_type = new AuthorType($state_machine);
+        $author_type = new AuthorType();
 
         $builder = new AggregateRootCommandBuilder($author_type, ModifyAuthorCommand::CLASS);
         $build_result = $builder

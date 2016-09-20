@@ -2,27 +2,26 @@
 
 namespace Honeybee\Tests\Projection\EventHandler;
 
+use Honeybee\Infrastructure\Config\ArrayConfig;
+use Honeybee\Infrastructure\DataAccess\Finder\FinderResult;
+use Honeybee\Infrastructure\DataAccess\Query\QueryInterface;
+use Honeybee\Infrastructure\DataAccess\Query\QueryServiceInterface;
+use Honeybee\Infrastructure\DataAccess\Query\QueryServiceMap;
+use Honeybee\Infrastructure\DataAccess\Storage\Elasticsearch\Projection\ProjectionWriter;
+use Honeybee\Infrastructure\DataAccess\Storage\StorageWriterMap;
+use Honeybee\Infrastructure\Event\Bus\EventBus;
+use Honeybee\Projection\EventHandler\RelationProjectionUpdater;
 use Honeybee\Projection\Event\ProjectionUpdatedEvent;
 use Honeybee\Projection\ProjectionMap;
 use Honeybee\Projection\ProjectionTypeMap;
-use Honeybee\Projection\EventHandler\RelationProjectionUpdater;
-use Honeybee\Infrastructure\Config\ArrayConfig;
-use Honeybee\Infrastructure\DataAccess\Query\QueryInterface;
-use Honeybee\Infrastructure\DataAccess\Query\QueryServiceMap;
-use Honeybee\Infrastructure\DataAccess\Finder\FinderResult;
-use Honeybee\Infrastructure\DataAccess\Storage\StorageWriterMap;
-use Honeybee\Infrastructure\DataAccess\Storage\Elasticsearch\Projection\ProjectionWriter;
-use Honeybee\Infrastructure\DataAccess\Query\QueryServiceInterface;
-use Honeybee\Infrastructure\Event\Bus\EventBus;
-use Honeybee\Tests\TestCase;
 use Honeybee\Tests\Fixture\GameSchema\Projection\Game\GameType;
 use Honeybee\Tests\Fixture\GameSchema\Projection\Player\PlayerType;
 use Honeybee\Tests\Fixture\GameSchema\Projection\Team\TeamType;
-use Honeybee\Tests\Fixture\TopicSchema\Projection\Topic\TopicType;
 use Honeybee\Tests\Fixture\TopicSchema\Projection\TopicOption\TopicOptionType;
+use Honeybee\Tests\Fixture\TopicSchema\Projection\Topic\TopicType;
+use Honeybee\Tests\TestCase;
 use Mockery;
 use Psr\Log\NullLogger;
-use Workflux\StateMachine\StateMachineInterface;
 
 class RelationProjectionUpdaterTest extends TestCase
 {
@@ -30,13 +29,11 @@ class RelationProjectionUpdaterTest extends TestCase
 
     public function setUp()
     {
-        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
-
-        $game_type = new GameType($state_machine);
-        $player_type = new PlayerType($state_machine);
-        $team_type = new TeamType($state_machine);
-        $topic_type = new TopicType($state_machine);
-        $topic_option_type = new TopicOptionType($state_machine);
+        $game_type = new GameType();
+        $player_type = new PlayerType();
+        $team_type = new TeamType();
+        $topic_type = new TopicType();
+        $topic_option_type = new TopicOptionType();
         $this->projection_type_map = new ProjectionTypeMap(
             [
                 $game_type->getVariantPrefix() => $game_type,

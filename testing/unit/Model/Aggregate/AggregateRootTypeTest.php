@@ -9,7 +9,6 @@ use Honeybee\Tests\Fixture\BookSchema\Model\Publication\PublicationType;
 use Honeybee\Tests\Fixture\BookSchema\Model\Author\Author;
 use Honeybee\Tests\Fixture\BookSchema\Model\Author\AuthorType;
 use Honeybee\Tests\Fixture\BookSchema\Model\Publisher\PublisherType;
-use Workflux\StateMachine\StateMachineInterface;
 use Mockery;
 
 class AggregateRootTypeTest extends TestCase
@@ -26,8 +25,7 @@ class AggregateRootTypeTest extends TestCase
 
     public function testAggregateRootCreation()
     {
-        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
-        $aggregate_root_type = new AuthorType($state_machine);
+        $aggregate_root_type = new AuthorType();
 
         $aggregate_root = $aggregate_root_type->createEntity();
 
@@ -40,8 +38,7 @@ class AggregateRootTypeTest extends TestCase
      */
     public function testAggregateRootCreationWithState()
     {
-        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
-        $aggregate_root_type = new AuthorType($state_machine);
+        $aggregate_root_type = new AuthorType();
 
         $aggregate_root = $aggregate_root_type->createEntity([ 'invalid' => 'state' ]);
     }
@@ -51,8 +48,6 @@ class AggregateRootTypeTest extends TestCase
      */
     public function provideDefaultAttributeFixture()
     {
-        $state_machine = Mockery::mock(StateMachineInterface::CLASS);
-
         $honeybee_default_attributes = [
             'identifier',
             'revision',
@@ -65,28 +60,28 @@ class AggregateRootTypeTest extends TestCase
 
         return [
             [
-                'aggregate_root_type' => new AuthorType($state_machine),
+                'aggregate_root_type' => new AuthorType(),
                 'expected_attribute_names' => array_merge(
                     $honeybee_default_attributes,
                     [ 'firstname', 'lastname', 'email', 'birth_date', 'blurb', 'products', 'books' ]
                 )
             ],
             [
-                'aggregate_root_type' => new BookType($state_machine),
+                'aggregate_root_type' => new BookType(),
                 'expected_attribute_names' => array_merge(
                     $honeybee_default_attributes,
                     [ 'title', 'description' ]
                 )
             ],
             [
-                'aggregate_root_type' => new PublisherType($state_machine),
+                'aggregate_root_type' => new PublisherType(),
                 'expected_attribute_names' => array_merge(
                     $honeybee_default_attributes,
                     [ 'name', 'description' ]
                 )
             ],
             [
-                'aggregate_root_type' => new PublicationType($state_machine),
+                'aggregate_root_type' => new PublicationType(),
                 'expected_attribute_names' => array_merge(
                     $honeybee_default_attributes,
                     [ 'year', 'description' ]
