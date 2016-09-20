@@ -2,11 +2,12 @@
 
 namespace Honeybee\Tests\Fixture\BookSchema\Projection\Author;
 
+use Honeybee\Tests\Fixture\BookSchema\Projection\ProjectionType;
+use Trellis\Runtime\Attribute\Email\EmailAttribute;
 use Trellis\Runtime\Attribute\EmbeddedEntityList\EmbeddedEntityListAttribute;
 use Trellis\Runtime\Attribute\EntityReferenceList\EntityReferenceListAttribute;
-use Trellis\Runtime\Attribute\Email\EmailAttribute;
 use Trellis\Runtime\Attribute\Text\TextAttribute;
-use Honeybee\Tests\Fixture\BookSchema\Projection\ProjectionType;
+use Trellis\Runtime\Attribute\Timestamp\TimestampAttribute;
 
 class AuthorType extends ProjectionType
 {
@@ -18,6 +19,7 @@ class AuthorType extends ProjectionType
                 new TextAttribute('firstname', $this, [ 'mandatory' => true, 'min_length' => 2 ]),
                 new TextAttribute('lastname', $this, [ 'mandatory' => true ]),
                 new EmailAttribute('email', $this, [ 'mandatory' => true ]),
+                new TimestampAttribute('birth_date', $this),
                 new TextAttribute('blurb', $this, [ 'default_value' =>  'the grinch' ]),
                 new EmbeddedEntityListAttribute(
                     'products',

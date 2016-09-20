@@ -11,6 +11,7 @@ use Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\AddEmbeddedEntityC
 use Honeybee\Model\Task\ModifyAggregateRoot\ModifyEmbeddedEntity\ModifyEmbeddedEntityCommand;
 use Honeybee\Model\Task\ModifyAggregateRoot\RemoveEmbeddedEntity\RemoveEmbeddedEntityCommand;
 use Shrink0r\Monatic\Error;
+use Shrink0r\Monatic\None;
 use Shrink0r\Monatic\Result;
 use Shrink0r\Monatic\Success;
 use Trellis\Runtime\Attribute\AttributeInterface;
@@ -206,6 +207,14 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
                     $sanitized_values[$attribute_name] = $result->get();
                 } elseif ($result instanceof Error) {
                     $errors[] = $result->get();
+                } elseif ($result instanceof None) {
+                    $sanitized_values[$attribute_name] = $result->get();
+                } else {
+                    error_log(
+                        __METHOD__ .
+                        ' – got unknown result for attribute ' . $attribute_name . ': ' .
+                        get_class($result)
+                    );
                 }
             } else {
                 // weak assumption that mandatory option only applies to creation/add commands

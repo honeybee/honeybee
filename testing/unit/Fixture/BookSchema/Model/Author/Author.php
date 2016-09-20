@@ -15,4 +15,9 @@ class Author extends AggregateRoot
     {
         return $this->getValue('lastname');
     }
+
+    public function getBirthDate()
+    {
+        return $this->getValue('birth_date');
+    }
 }

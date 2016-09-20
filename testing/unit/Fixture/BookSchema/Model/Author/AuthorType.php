@@ -8,6 +8,7 @@ use Trellis\Runtime\Attribute\Email\EmailAttribute;
 use Trellis\Runtime\Attribute\EmbeddedEntityList\EmbeddedEntityListAttribute;
 use Trellis\Runtime\Attribute\EntityReferenceList\EntityReferenceListAttribute;
 use Trellis\Runtime\Attribute\Text\TextAttribute;
+use Trellis\Runtime\Attribute\Timestamp\TimestampAttribute;
 
 class AuthorType extends AggregateRootType
 {
@@ -19,6 +20,7 @@ class AuthorType extends AggregateRootType
                 new TextAttribute('firstname', $this, [ 'mandatory' => true, 'min_length' => 2 ]),
                 new TextAttribute('lastname', $this, [ 'mandatory' => true ]),
                 new EmailAttribute('email', $this, [ 'mandatory' => true ]),
+                new TimestampAttribute('birth_date', $this),
                 new TextAttribute('blurb', $this, [ 'default_value' =>  'the grinch' ]),
                 new EmbeddedEntityListAttribute(
                     'products',
