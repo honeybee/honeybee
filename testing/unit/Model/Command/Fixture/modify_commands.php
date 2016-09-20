@@ -4,6 +4,32 @@ $aggregate_root_identifier = 'honeybee.fixtures.author-fa44c523-592f-404f-bcd5-0
 $type_namespace_prefix = 'Honeybee\\Model\\Task\\ModifyAggregateRoot\\';
 
 return [
+    // payload with empty date unsets existing timestamp
+    [
+        'projection' => [
+            'identifier' => $aggregate_root_identifier,
+            'revision' => 5,
+            'firstname' => 'Amitav',
+            'lastname' => 'Gosh',
+            'birth_date' => '2010-06-19T14:25:22.000000+00:00'
+        ],
+        'payload' => [
+            'author' => [
+                'birth_date' => ''
+            ],
+        ],
+        'expected_command' => [
+            '@type' => 'Honeybee\Tests\Fixture\BookSchema\Model\Task\ModifyAuthor\ModifyAuthorCommand',
+            'values' => [
+                'birth_date' => null
+            ],
+            'aggregate_root_identifier' => $aggregate_root_identifier,
+            'aggregate_root_type' => 'honeybee-cmf.aggregate_fixtures.author',
+            'known_revision' => 5,
+            'embedded_entity_commands' => [],
+            'metadata' => []
+        ]
+    ],
     // payload with empty no embeds or references
     [
         'projection' => [
