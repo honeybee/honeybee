@@ -175,7 +175,6 @@ class ProjectionFinderTest extends TestCase
         $this->mock_connector->shouldReceive('getConnection')->once()->andReturn($this->mock_client);
         $this->mock_client->shouldReceive('mget')->once()->with([
             'index' => 'index',
-            'type' => null,
             'key' => 'value',
             'body' => [
                 'ids' => $identifiers

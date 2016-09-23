@@ -48,4 +48,13 @@ abstract class QueryService implements QueryServiceInterface
         }
         return $this->finder_mappings[$mapping_name]['query_translation'];
     }
+
+    public function __call($method, array $args)
+    {
+        $callable = [ $this->finder, $method ];
+        if (is_callable($callable)) {
+            return call_user_func_array($callable, $args);
+        }
+        throw new RuntimeError('Call to undefined method ' . $method . ' on ' . static::CLASS);
+    }
 }

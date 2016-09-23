@@ -74,11 +74,13 @@ abstract class ElasticsearchFinder extends Finder
 
         $data = [
             'index' => $index,
-            'type' => $this->getType(),
             'body' => [
                 'ids' => $identifiers
             ]
         ];
+        if ($type = $this->getType()) {
+            $data['type'] = $type;
+        }
 
         $query = array_merge($data, $this->getParameters('mget'));
 
