@@ -18,7 +18,7 @@ class SubjectNameResolver implements NameResolverInterface
      *
      * @example some Some\Foo\ProjectionList => 'resource_collection'
      * @example some specific Honeybee\Entity => 'vendor.module.type_prefix'
-     * @example some specific Honeybee\Ui\Activity\ActivityInterface => 'resource_collection.activity'
+     * @example some specific Honeybee\Ui\Activity\ActivityInterface => 'resource_collection_activity'
      *
      * @param mixed $subject subject to resolve a name for
      *

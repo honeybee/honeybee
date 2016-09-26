@@ -75,11 +75,11 @@ class Guard implements GuardInterface
         $transition_acceptable = $this->expression_service->evaluate(
             $this->options->get('expression'),
             array_merge(
+                $params,
                 [
                     'subject' => $subject,
                     'current_user' => $this->environment->getUser(),
-                ],
-                $params
+                ]
             )
         );
 
@@ -87,7 +87,7 @@ class Guard implements GuardInterface
     }
 
     /**
-     * Returns a string represenation of the guard.
+     * Returns a string representation of the guard.
      *
      * @return string
      */
