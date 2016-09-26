@@ -91,6 +91,8 @@ abstract class Renderer implements RendererInterface
 
         $output = $this->doRender();
 
+        $this->tearDown();
+
         return $output;
     }
 
