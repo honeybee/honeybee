@@ -41,7 +41,7 @@ class RendererService implements RendererServiceInterface
             $renderer_config = new ArrayConfig([]);
         }
 
-        //return $this->createRenderer($subject, $output_format, $renderer_config);
+        return $this->createRenderer($subject, $output_format, $renderer_config);
 
         $cache_key = $this->buildCacheKeyFor($subject, $output_format, $renderer_config);
 

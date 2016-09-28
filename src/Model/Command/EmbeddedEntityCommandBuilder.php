@@ -21,6 +21,8 @@ use Trellis\Runtime\Validator\Result\IncidentInterface;
 
 class EmbeddedEntityCommandBuilder extends CommandBuilder
 {
+    protected $entity;
+
     protected $entity_type;
 
     public function __construct(EntityTypeInterface $entity_type, $command_class)
@@ -30,6 +32,23 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
         $this->entity_type = $entity_type;
         $this->command_state['embedded_entity_type'] = $entity_type->getPrefix();
         $this->command_state['embedded_entity_commands'] = new EmbeddedEntityTypeCommandList;
+    }
+
+    public function fromEntity(EntityInterface $entity)
+    {
+        if ($entity instanceof ProjectionInterface || $entity instanceof AggregateRootInterface) {
+            throw new RuntimeError(sprintf(
+                'Provided %s must not be a top-level/root entity(%s or %s).',
+                get_class($entity),
+                ProjectionInterface::CLASS,
+                AggregateRootInterface::CLASS
+            ));
+        }
+
+        $this->entity = $entity;
+        $this->command_state['embedded_entity_identifier'] = $entity->getIdentifier();
+        $this->command_state['@type'] = $entity->getType()->getPrefix();
+        return $this;
     }
 
     /**
@@ -58,12 +77,15 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
     /**
      * @return array
      */
-    protected function getEmbeddedCommands(EmbeddedEntityListAttribute $attribute, array $values)
-    {
+    protected function getEmbeddedCommands(
+        EmbeddedEntityListAttribute $attribute,
+        array $values,
+        EntityInterface $parent_entity = null
+    ) {
         $errors = [];
         $affected_identifiers = [];
         $attribute_name = $attribute->getName();
-        $embedded_entity_list = isset($this->entity) ? $this->entity->getValue($attribute_name) : new EntityList;
+        $embedded_entity_list = $parent_entity ? $parent_entity->getValue($attribute_name) : new EntityList;
         $builder_list = new CommandBuilderList;
 
         foreach ($values as $position => $embedded_values) {
@@ -104,9 +126,9 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
             if (!$affected_entity) {
                 $builder_list->push(
                     (new self($embed_type, AddEmbeddedEntityCommand::CLASS))
-                    ->withParentAttributeName($attribute_name)
-                    ->withPosition($position)
-                    ->withValues($embedded_values)
+                        ->withParentAttributeName($attribute_name)
+                        ->withPosition($position)
+                        ->withValues($embedded_values)
                 );
             } else {
                 $affected_identifiers[] = $affected_entity->getIdentifier();
@@ -117,10 +139,10 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
                 ) {
                     $builder_list->push(
                         (new self($embed_type, ModifyEmbeddedEntityCommand::CLASS))
-                        ->withParentAttributeName($attribute_name)
-                        ->withEmbeddedEntityIdentifier($affected_entity->getIdentifier())
-                        ->withPosition($position)
-                        ->withValues($modified_values)
+                            ->fromEntity($affected_entity)
+                            ->withParentAttributeName($attribute_name)
+                            ->withPosition($position)
+                            ->withValues($modified_values)
                     );
                 }
             }
@@ -152,8 +174,8 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
                     // the entity was not found in the payload so we can prepare removal
                     $builder_list->push(
                         (new self($embedded_entity->getType(), RemoveEmbeddedEntityCommand::CLASS))
-                        ->withParentAttributeName($attribute_name)
-                        ->withEmbeddedEntityIdentifier($embedded_entity->getIdentifier())
+                            ->fromEntity($embedded_entity)
+                            ->withParentAttributeName($attribute_name)
                     );
                 }
             }
@@ -194,7 +216,7 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
                      * prepare and build embedded commands on the fly and then add them to the global
                      * scope list which is validated later
                      */
-                    $result = $this->getEmbeddedCommands($attribute, $values[$attribute_name]);
+                    $result = $this->getEmbeddedCommands($attribute, $values[$attribute_name], $this->entity);
                     if ($result instanceof Success) {
                         $this->command_state['embedded_entity_commands']->addItems($result->get());
                         continue;

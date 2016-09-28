@@ -27,13 +27,11 @@ abstract class EntityType extends BaseEntityType
         // compile non-list attribute values from the reference entity if available
         if ($reference_entity) {
             foreach ($this->getAttributes() as $attribute) {
-                if (!$attribute instanceof EmbeddedEntityListAttribute) {
-                    $attribute_name = $attribute->getName();
-                    $attribute_value = $reference_entity->getValue($attribute_name);
-                    $mirrored_values[$attribute_name] = $attribute_value instanceof ObjectInterface
-                        ? $attribute_value->toArray()
-                        : $attribute_value;
-                }
+                $attribute_name = $attribute->getName();
+                $attribute_value = $reference_entity->getValue($attribute_name);
+                $mirrored_values[$attribute_name] = $attribute_value instanceof ObjectInterface
+                    ? $attribute_value->toArray()
+                    : $attribute_value;
             }
         }
 
@@ -66,25 +64,26 @@ abstract class EntityType extends BaseEntityType
             if ($mirrored_attribute instanceof EmbeddedEntityListAttribute) {
                 foreach ($source_attribute_value as $position => $source_embedded_entity) {
                     // skip entity mirroring if values already exist since we may traverse over paths repeatedly
-                    if (!isset($mirrored_values[$mirrored_attr_name][$position])) {
-                        $source_embed_prefix = $source_embedded_entity->getType()->getPrefix();
-                        $mirrored_embed_type = $mirrored_attribute instanceof EntityReferenceListAttribute
-                            ? $mirrored_attribute->getEmbeddedTypeByReferencedPrefix($source_embed_prefix)
-                            : $mirrored_attribute->getEmbeddedTypeByPrefix($source_embed_prefix);
-                        if ($mirrored_embed_type) {
-                            $reference_embedded_entity = $reference_entity
-                            ? $reference_entity->getValue($mirrored_attr_name)
-                                ->getEntityByIdentifier($source_embedded_entity->getIdentifier())
-                                : null;
-                            $mirrored_embedded_entity = $mirrored_embed_type->createEntity(
-                                $mirrored_embed_type->createMirroredEntity(
-                                    $source_embedded_entity,
-                                    $reference_embedded_entity
-                                )->toArray(),
-                                $reference_entity
-                            );
-                            $mirrored_values[$mirrored_attr_name][$position] = $mirrored_embedded_entity->toArray();
-                        }
+                    // if (!isset($mirrored_values[$mirrored_attr_name][$position])) {
+                    // 2016-09-28 shrink0r: when would this happen. commenting out if check,
+                    // as this seems to work fine without.
+                    $source_embed_prefix = $source_embedded_entity->getType()->getPrefix();
+                    $mirrored_embed_type = $mirrored_attribute instanceof EntityReferenceListAttribute
+                        ? $mirrored_attribute->getEmbeddedTypeByReferencedPrefix($source_embed_prefix)
+                        : $mirrored_attribute->getEmbeddedTypeByPrefix($source_embed_prefix);
+                    if ($mirrored_embed_type) {
+                        $reference_embedded_entity = $reference_entity
+                        ? $reference_entity->getValue($mirrored_attr_name)
+                            ->getEntityByIdentifier($source_embedded_entity->getIdentifier())
+                            : null;
+                        $mirrored_embedded_entity = $mirrored_embed_type->createEntity(
+                            $mirrored_embed_type->createMirroredEntity(
+                                $source_embedded_entity,
+                                $reference_embedded_entity
+                            )->toArray(),
+                            $reference_entity
+                        );
+                        $mirrored_values[$mirrored_attr_name][$position] = $mirrored_embedded_entity->toArray();
                     }
                 }
             } else {
