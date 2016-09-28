@@ -12,8 +12,6 @@ use Shrink0r\Monatic\Success;
 
 class AggregateRootCommandBuilder extends EmbeddedEntityCommandBuilder
 {
-    protected $entity;
-
     public function __construct(AggregateRootTypeInterface $aggregate_root_type, $command_class)
     {
         parent::__construct($aggregate_root_type, $command_class);
