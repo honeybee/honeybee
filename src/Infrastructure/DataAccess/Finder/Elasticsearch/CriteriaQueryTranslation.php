@@ -3,14 +3,15 @@
 namespace Honeybee\Infrastructure\DataAccess\Finder\Elasticsearch;
 
 use Assert\Assertion;
+use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Config\ConfigInterface;
 use Honeybee\Infrastructure\DataAccess\Query\AttributeCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\Comparison\Equals;
 use Honeybee\Infrastructure\DataAccess\Query\Comparison\In;
 use Honeybee\Infrastructure\DataAccess\Query\CriteriaContainerInterface;
 use Honeybee\Infrastructure\DataAccess\Query\CriteriaInterface;
-use Honeybee\Infrastructure\DataAccess\Query\CriteriaQueryInterface;
 use Honeybee\Infrastructure\DataAccess\Query\CriteriaList;
+use Honeybee\Infrastructure\DataAccess\Query\CriteriaQueryInterface;
 use Honeybee\Infrastructure\DataAccess\Query\CustomCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\Geometry\Annulus;
 use Honeybee\Infrastructure\DataAccess\Query\Geometry\Box;
@@ -56,7 +57,6 @@ class CriteriaQueryTranslation implements QueryTranslationInterface
 
         $es_filter = $this->translateFilters($filter_criteria_list);
         $es_query = $this->translateQueries($query->getSearchCriteriaList());
-
         if (!empty($es_filter)) {
             $es_query = [ 'filtered' => [ 'query' => $es_query, 'filter' => $es_filter ] ];
         }
