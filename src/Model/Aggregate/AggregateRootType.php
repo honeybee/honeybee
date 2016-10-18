@@ -27,7 +27,7 @@ abstract class AggregateRootType extends EntityType implements AggregateRootType
     {
         return sprintf(
             '%s.%s',
-            strtolower($this->getVendor()),
+            StringToolkit::asSnakeCase($this->getVendor()),
             StringToolkit::asSnakeCase($this->getPackage())
         );
     }

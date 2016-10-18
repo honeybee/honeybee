@@ -32,7 +32,7 @@ abstract class ProjectionType extends EntityType implements ProjectionTypeInterf
     {
         return sprintf(
             '%s.%s.%s',
-            strtolower($this->getVendor()),
+            StringToolkit::asSnakeCase($this->getVendor()),
             StringToolkit::asSnakeCase($this->getPackage()),
             StringToolkit::asSnakeCase($this->getName())
         );
