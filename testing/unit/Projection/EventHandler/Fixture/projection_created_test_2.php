@@ -15,7 +15,7 @@ return [
             'title' => 'Dan Dare'
         ],
         'aggregate_root_identifier' => 'honeybee.fixtures.game-49c5a3b7-8127-4169-8676-a9ebb5229142-de_DE-1',
-        'aggregate_root_type' => 'honeybee-tests.game_schema.game',
+        'aggregate_root_type' => 'honeybee_tests.game_schema.game',
         'embedded_entity_events' => [
             [
                 '@type' => 'Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\EmbeddedEntityAddedEvent',
@@ -51,7 +51,7 @@ return [
     ],
     'projections' => [
         [
-            '@type' => 'honeybee-tests.game_schema.player::projection.standard',
+            '@type' => 'honeybee_tests.game_schema.player::projection.standard',
             'identifier' => 'honeybee.fixtures.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
             'revision' => 1,
             'uuid' => 'a726301d-dbae-4fb6-91e9-a19188a17e71',
@@ -84,7 +84,7 @@ return [
             ]
         ],
         [
-            '@type' => 'honeybee-tests.game_schema.player::projection.standard',
+            '@type' => 'honeybee_tests.game_schema.player::projection.standard',
             'identifier' => 'honeybee.fixtures.player-48fde7c4-7889-42db-8522-6106bf85d58a-de_DE-1',
             'revision' => 1,
             'uuid' => '48fde7c4-7889-42db-8522-6106bf85d58a',
@@ -103,7 +103,7 @@ return [
     ],
     'expectations' => [
         [
-            '@type' => 'honeybee-tests.game_schema.game::projection.standard',
+            '@type' => 'honeybee_tests.game_schema.game::projection.standard',
             'identifier' => 'honeybee.fixtures.game-49c5a3b7-8127-4169-8676-a9ebb5229142-de_DE-1',
             'revision' => 1,
             'uuid' => '49c5a3b7-8127-4169-8676-a9ebb5229142',

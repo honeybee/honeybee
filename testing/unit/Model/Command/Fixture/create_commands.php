@@ -19,7 +19,7 @@ return [
                 'lastname' => 'Gosh',
                 'email' => 'test@honeybee.com'
             ],
-            'aggregate_root_type' => 'honeybee-cmf.aggregate_fixtures.author',
+            'aggregate_root_type' => 'honeybee_cmf.aggregate_fixtures.author',
             'embedded_entity_commands' => [],
             'metadata' => []
         ]
@@ -47,7 +47,7 @@ return [
                 'lastname' => 'Gosh',
                 'email' => 'test@honeybee.com'
             ],
-            'aggregate_root_type' => 'honeybee-cmf.aggregate_fixtures.author',
+            'aggregate_root_type' => 'honeybee_cmf.aggregate_fixtures.author',
             'embedded_entity_commands' => [
                 [
                     '@type' => 'Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\AddEmbeddedEntityCommand',
@@ -98,7 +98,7 @@ return [
                 'lastname' => '',
                 'email' => 'test@honeybee.com'
             ],
-            'aggregate_root_type' => 'honeybee-cmf.aggregate_fixtures.author',
+            'aggregate_root_type' => 'honeybee_cmf.aggregate_fixtures.author',
             'embedded_entity_commands' => [
                 [
                     '@type' => 'Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\AddEmbeddedEntityCommand',
@@ -164,7 +164,7 @@ return [
                 'lastname' => 'Gosh',
                 'email' => 'test@honeybee.com'
             ],
-            'aggregate_root_type' => 'honeybee-cmf.aggregate_fixtures.author',
+            'aggregate_root_type' => 'honeybee_cmf.aggregate_fixtures.author',
             'embedded_entity_commands' => [
                 [
                     '@type' => 'Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\AddEmbeddedEntityCommand',

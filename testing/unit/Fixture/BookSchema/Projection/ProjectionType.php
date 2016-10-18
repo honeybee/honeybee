@@ -6,7 +6,7 @@ use Honeybee\Projection\ProjectionType as BaseProjectionType;
 
 abstract class ProjectionType extends BaseProjectionType
 {
-    const VENDOR = 'Honeybee-CMF';
+    const VENDOR = 'HoneybeeCmf';
 
     const PACKAGE = 'ProjectionFixtures';
 

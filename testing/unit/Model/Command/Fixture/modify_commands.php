@@ -24,7 +24,7 @@ return [
                 'birth_date' => null
             ],
             'aggregate_root_identifier' => $aggregate_root_identifier,
-            'aggregate_root_type' => 'honeybee-cmf.aggregate_fixtures.author',
+            'aggregate_root_type' => 'honeybee_cmf.aggregate_fixtures.author',
             'known_revision' => 5,
             'embedded_entity_commands' => [],
             'metadata' => []
@@ -51,7 +51,7 @@ return [
                 'lastname' => 'Hsog',
             ],
             'aggregate_root_identifier' => $aggregate_root_identifier,
-            'aggregate_root_type' => 'honeybee-cmf.aggregate_fixtures.author',
+            'aggregate_root_type' => 'honeybee_cmf.aggregate_fixtures.author',
             'known_revision' => 1,
             'embedded_entity_commands' => [],
             'metadata' => []
@@ -107,7 +107,7 @@ return [
                 'lastname' => 'OhMyGosh'
             ],
             'aggregate_root_identifier' => $aggregate_root_identifier,
-            'aggregate_root_type' => 'honeybee-cmf.aggregate_fixtures.author',
+            'aggregate_root_type' => 'honeybee_cmf.aggregate_fixtures.author',
             'known_revision' => 3,
             'embedded_entity_commands' => [
                 [
@@ -195,7 +195,7 @@ return [
             '@type' => 'Honeybee\Tests\Fixture\BookSchema\Model\Task\ModifyAuthor\ModifyAuthorCommand',
             'values' => [],
             'aggregate_root_identifier' => $aggregate_root_identifier,
-            'aggregate_root_type' => 'honeybee-cmf.aggregate_fixtures.author',
+            'aggregate_root_type' => 'honeybee_cmf.aggregate_fixtures.author',
             'known_revision' => 7,
             'embedded_entity_commands' => [
                 [

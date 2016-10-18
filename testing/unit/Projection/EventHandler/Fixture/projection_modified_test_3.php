@@ -10,7 +10,7 @@ return [
             'title' => 'Doom 7'
         ],
         'aggregate_root_identifier' => 'honeybee.fixtures.game-a7cec777-d932-4bbd-8156-261138d3fe39-de_DE-1',
-        'aggregate_root_type' => 'honeybee-tests.game_schema.game',
+        'aggregate_root_type' => 'honeybee_tests.game_schema.game',
         'embedded_entity_events' => [
             [
                 '@type' => 'Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\EmbeddedEntityAddedEvent',
@@ -44,7 +44,7 @@ return [
         'metadata' => []
     ],
     'subject' => [
-        '@type' => 'honeybee-tests.game_schema.game::projection.standard',
+        '@type' => 'honeybee_tests.game_schema.game::projection.standard',
         'identifier' => 'honeybee.fixtures.game-a7cec777-d932-4bbd-8156-261138d3fe39-de_DE-1',
         'revision' => 4,
         'uuid' => 'a7cec777-d932-4bbd-8156-261138d3fe39',
@@ -82,7 +82,7 @@ return [
     ],
     'projections' => [
         [
-            '@type' => 'honeybee-tests.game_schema.player::projection.standard',
+            '@type' => 'honeybee_tests.game_schema.player::projection.standard',
             'identifier' => 'honeybee.fixtures.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
             'revision' => 1,
             'uuid' => 'a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
@@ -140,7 +140,7 @@ return [
     ],
     'expected' => [
         [
-            '@type' => 'honeybee-tests.game_schema.game::projection.standard',
+            '@type' => 'honeybee_tests.game_schema.game::projection.standard',
             'identifier' => 'honeybee.fixtures.game-a7cec777-d932-4bbd-8156-261138d3fe39-de_DE-1',
             'revision' => 5,
             'uuid' => 'a7cec777-d932-4bbd-8156-261138d3fe39',

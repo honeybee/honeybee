@@ -15,7 +15,7 @@ return [
             'title' => 'Quake 9'
         ],
         'aggregate_root_identifier' => 'honeybee.fixtures.game-49c5a3b7-8127-4169-8676-a9ebb5229142-de_DE-1',
-        'aggregate_root_type' => 'honeybee-tests.game_schema.game',
+        'aggregate_root_type' => 'honeybee_tests.game_schema.game',
         'embedded_entity_events' => [],
         'seq_number' => 1,
         'uuid' => '44c4597c-f463-4916-a330-2db87ef36547',
@@ -25,7 +25,7 @@ return [
     'projections' => [],
     'expectations' => [
         [
-            '@type' => 'honeybee-tests.game_schema.game::projection.standard',
+            '@type' => 'honeybee_tests.game_schema.game::projection.standard',
             'identifier' => 'honeybee.fixtures.game-49c5a3b7-8127-4169-8676-a9ebb5229142-de_DE-1',
             'revision' => 1,
             'uuid' => '49c5a3b7-8127-4169-8676-a9ebb5229142',

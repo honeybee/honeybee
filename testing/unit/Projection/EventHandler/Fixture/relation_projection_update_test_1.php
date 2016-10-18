@@ -4,11 +4,11 @@ return [
     'event' => [
         '@type' => 'Honeybee\Projection\Event\ProjectionUpdatedEvent',
         'uuid' => '44c4597c-f463-4916-a330-2db87ef36547',
-        'projection_type' => 'honeybee-tests.game_schema.player::projection.standard',
-        'projection_identifier' => 'honeybee-tests.game_schema.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
+        'projection_type' => 'honeybee_tests.game_schema.player::projection.standard',
+        'projection_identifier' => 'honeybee_tests.game_schema.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
         'data' => [
-            '@type' => 'honeybee-tests.game_schema.player::projection.standard',
-            'identifier' => 'honeybee-tests.game_schema.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
+            '@type' => 'honeybee_tests.game_schema.player::projection.standard',
+            'identifier' => 'honeybee_tests.game_schema.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
             'revision' => 5,
             'uuid' => 'a726301d-dbae-4fb6-91e9-a19188a17e71',
             'language' => 'de_DE',
@@ -31,14 +31,14 @@ return [
                             '@type' => 'team',
                             'identifier' => 'f0420515-46fc-410a-929b-3abcfce6995f',
                             'referenced_identifier' =>
-                                'honeybee-tests.game_schema.team-2b4dcd5f-672b-4135-8668-dd8efd0abfe3-de_DE-1',
+                                'honeybee_tests.game_schema.team-2b4dcd5f-672b-4135-8668-dd8efd0abfe3-de_DE-1',
                             'name' => 'Power Shower'
                         ],
                         [
                             '@type' => 'clan',
                             'identifier' => 'd8668418-719e-4c09-886c-c49f45d3ee97',
                             'referenced_identifier' =>
-                                'honeybee-tests.game_schema.team-8355decf-6a6f-475f-abce-8cc38ee4ccf9-de_DE-1',
+                                'honeybee_tests.game_schema.team-8355decf-6a6f-475f-abce-8cc38ee4ccf9-de_DE-1',
                             'name' => 'Wu-Tang Clan'
                         ]
                     ],
@@ -75,7 +75,7 @@ return [
                 'comparison' => [
                     '@type' => 'Honeybee\Infrastructure\DataAccess\Query\Comparison\Equals',
                     'comparator' => 'eq',
-                    'comparand' => 'honeybee-tests.game_schema.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
+                    'comparand' => 'honeybee_tests.game_schema.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
                     'inverted' => true
                 ]
             ],
@@ -86,7 +86,7 @@ return [
                     'comparison' => [
                         '@type' => 'Honeybee\Infrastructure\DataAccess\Query\Comparison\Equals',
                         'comparator' => 'eq',
-                        'comparand' => 'honeybee-tests.game_schema.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
+                        'comparand' => 'honeybee_tests.game_schema.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
                         'inverted' => false
                     ]
                 ]
@@ -98,8 +98,8 @@ return [
     ],
     'projections' => [
         [
-            '@type' => 'honeybee-tests.game_schema.game::projection.standard',
-            'identifier' => 'honeybee-tests.game_schema.game-49c5a3b7-8127-4169-8676-a9ebb5229142-de_DE-1',
+            '@type' => 'honeybee_tests.game_schema.game::projection.standard',
+            'identifier' => 'honeybee_tests.game_schema.game-49c5a3b7-8127-4169-8676-a9ebb5229142-de_DE-1',
             'revision' => 3,
             'uuid' => '49c5a3b7-8127-4169-8676-a9ebb5229142',
             'language' => 'de_DE',
@@ -122,7 +122,7 @@ return [
                     '@type' => 'player',
                     'identifier' => '2b4dcd5f-672b-4135-8668-dd8efd0abfe3',
                     'referenced_identifier' =>
-                        'honeybee-tests.game_schema.player-c9a1fd68-e6e5-462c-a544-c86f0812cf6c-de_DE-1',
+                        'honeybee_tests.game_schema.player-c9a1fd68-e6e5-462c-a544-c86f0812cf6c-de_DE-1',
                     'tagline' => '',
                     'name' => 'Mr Bean',
                     'area' => [ 'lon' => 2.313, 'lat' => 2.09 ],
@@ -132,7 +132,7 @@ return [
                     '@type' => 'player',
                     'identifier' => '95c5ff31-8eca-41d5-95a0-0eb4ac35904b',
                     'referenced_identifier' =>
-                        'honeybee-tests.game_schema.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
+                        'honeybee_tests.game_schema.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
                     'tagline' => '',
                     'name' => 'Anatoly Karpov',
                     'area' => [ 'lon' => 1.2, 'lat' => 2.1 ],
@@ -157,8 +157,8 @@ return [
             ]
         ],
         [
-            '@type' => 'honeybee-tests.game_schema.game::projection.standard',
-            'identifier' => 'honeybee-tests.game_schema.game-5382bd85-3a94-40d1-8745-96ce33e03919-de_DE-1',
+            '@type' => 'honeybee_tests.game_schema.game::projection.standard',
+            'identifier' => 'honeybee_tests.game_schema.game-5382bd85-3a94-40d1-8745-96ce33e03919-de_DE-1',
             'revision' => 5,
             'uuid' => '5382bd85-3a94-40d1-8745-96ce33e03919',
             'language' => 'de_DE',
@@ -175,7 +175,7 @@ return [
                     '@type' => 'player',
                     'identifier' => '0d679b3d-0541-463d-951d-96bd6d5fc0b4',
                     'referenced_identifier' =>
-                        'honeybee-tests.game_schema.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
+                        'honeybee_tests.game_schema.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
                     'tagline' => '',
                     'name' => 'Anatoly Karpov',
                     'area' => [ 'lon' => 1.2, 'lat' => 2.1 ],
@@ -201,7 +201,7 @@ return [
                     '@type' => 'player',
                     'identifier' => 'acf7818c-3ac5-4202-8f62-f7313fafb1fe',
                     'referenced_identifier' =>
-                        'honeybee-tests.game_schema.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
+                        'honeybee_tests.game_schema.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
                     'tagline' => '',
                     'name' => 'Anatoly Karpov',
                     'area' => [ 'lon' => 1.2, 'lat' => 2.1 ],
@@ -228,8 +228,8 @@ return [
     ],
     'expectations' => [
         [
-            '@type' => 'honeybee-tests.game_schema.game::projection.standard',
-            'identifier' => 'honeybee-tests.game_schema.game-49c5a3b7-8127-4169-8676-a9ebb5229142-de_DE-1',
+            '@type' => 'honeybee_tests.game_schema.game::projection.standard',
+            'identifier' => 'honeybee_tests.game_schema.game-49c5a3b7-8127-4169-8676-a9ebb5229142-de_DE-1',
             'revision' => 3,
             'uuid' => '49c5a3b7-8127-4169-8676-a9ebb5229142',
             'language' => 'de_DE',
@@ -252,7 +252,7 @@ return [
                     '@type' => 'player',
                     'identifier' => '2b4dcd5f-672b-4135-8668-dd8efd0abfe3',
                     'referenced_identifier' =>
-                        'honeybee-tests.game_schema.player-c9a1fd68-e6e5-462c-a544-c86f0812cf6c-de_DE-1',
+                        'honeybee_tests.game_schema.player-c9a1fd68-e6e5-462c-a544-c86f0812cf6c-de_DE-1',
                     'tagline' => '',
                     'name' => 'Mr Bean',
                     'area' => [ 'lon' => 2.313, 'lat' => 2.09 ],
@@ -262,7 +262,7 @@ return [
                     '@type' => 'player',
                     'identifier' => '95c5ff31-8eca-41d5-95a0-0eb4ac35904b',
                     'referenced_identifier' =>
-                        'honeybee-tests.game_schema.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
+                        'honeybee_tests.game_schema.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
                     'tagline' => '',
                     'name' => 'Garry Kasparov',
                     'area' => [ 'lon' => 1.23, 'lat' => 3.21 ],
@@ -285,7 +285,7 @@ return [
                                     '@type' => 'membership',
                                     'identifier' => 'f0420515-46fc-410a-929b-3abcfce6995f',
                                     'referenced_identifier' =>
-                                        'honeybee-tests.game_schema.team-2b4dcd5f-672b-4135-8668-dd8efd0abfe3-de_DE-1',
+                                        'honeybee_tests.game_schema.team-2b4dcd5f-672b-4135-8668-dd8efd0abfe3-de_DE-1',
                                     'name' => 'Power Shower'
                                 ]
                             ]
@@ -295,8 +295,8 @@ return [
             ]
         ],
         [
-            '@type' => 'honeybee-tests.game_schema.game::projection.standard',
-            'identifier' => 'honeybee-tests.game_schema.game-5382bd85-3a94-40d1-8745-96ce33e03919-de_DE-1',
+            '@type' => 'honeybee_tests.game_schema.game::projection.standard',
+            'identifier' => 'honeybee_tests.game_schema.game-5382bd85-3a94-40d1-8745-96ce33e03919-de_DE-1',
             'revision' => 5,
             'uuid' => '5382bd85-3a94-40d1-8745-96ce33e03919',
             'language' => 'de_DE',
@@ -313,7 +313,7 @@ return [
                     '@type' => 'player',
                     'identifier' => '0d679b3d-0541-463d-951d-96bd6d5fc0b4',
                     'referenced_identifier' =>
-                        'honeybee-tests.game_schema.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
+                        'honeybee_tests.game_schema.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
                     'tagline' => '',
                     'name' => 'Garry Kasparov',
                     'area' => [ 'lon' => 1.23, 'lat' => 3.21 ],
@@ -336,7 +336,7 @@ return [
                                     '@type' => 'membership',
                                     'identifier' => 'f0420515-46fc-410a-929b-3abcfce6995f',
                                     'referenced_identifier' =>
-                                        'honeybee-tests.game_schema.team-2b4dcd5f-672b-4135-8668-dd8efd0abfe3-de_DE-1',
+                                        'honeybee_tests.game_schema.team-2b4dcd5f-672b-4135-8668-dd8efd0abfe3-de_DE-1',
                                     'name' => 'Power Shower'
                                 ]
                             ]
@@ -347,7 +347,7 @@ return [
                     '@type' => 'player',
                     'identifier' => 'acf7818c-3ac5-4202-8f62-f7313fafb1fe',
                     'referenced_identifier' =>
-                        'honeybee-tests.game_schema.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
+                        'honeybee_tests.game_schema.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
                     'tagline' => '',
                     'name' => 'Garry Kasparov',
                     'area' => [ 'lon' => 1.23, 'lat' => 3.21 ],
@@ -370,7 +370,7 @@ return [
                                     '@type' => 'membership',
                                     'identifier' => 'f0420515-46fc-410a-929b-3abcfce6995f',
                                     'referenced_identifier' =>
-                                        'honeybee-tests.game_schema.team-2b4dcd5f-672b-4135-8668-dd8efd0abfe3-de_DE-1',
+                                        'honeybee_tests.game_schema.team-2b4dcd5f-672b-4135-8668-dd8efd0abfe3-de_DE-1',
                                     'name' => 'Power Shower'
                                 ]
                             ]

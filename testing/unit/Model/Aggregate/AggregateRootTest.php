@@ -18,11 +18,11 @@ use Workflux\Guard\GuardInterface;
 class AggregateRootTest extends TestCase
 {
     const AGGREGATE_ROOT_IDENTIFIER =
-        'honeybee-cms.aggregate_fixtures.author-fa44c523-592f-404f-bcd5-00f04ff5ce61-de_DE-1';
+        'honeybee_cmf.aggregate_fixtures.author-fa44c523-592f-404f-bcd5-00f04ff5ce61-de_DE-1';
 
     const AGGREGATE_ROOT_PREFIX = 'author';
 
-    const AGGREGATE_ROOT_TYPE = 'honeybee-cmf.aggregate_fixtures.author';
+    const AGGREGATE_ROOT_TYPE = 'honeybee_cmf.aggregate_fixtures.author';
 
     const AGGREGATE_ROOT_UUID = 'fa44c523-592f-404f-bcd5-00f04ff5ce61';
 
@@ -32,7 +32,6 @@ class AggregateRootTest extends TestCase
 
     public function setUp()
     {
-        // @todo mock the state machine instead of loading from a file
         $this->aggregate_root_type = new AuthorType();
     }
 

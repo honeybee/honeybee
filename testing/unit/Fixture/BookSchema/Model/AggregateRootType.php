@@ -6,7 +6,7 @@ use Honeybee\Model\Aggregate\AggregateRootType as BaseAggregateRootType;
 
 abstract class AggregateRootType extends BaseAggregateRootType
 {
-    const VENDOR = 'Honeybee-CMF';
+    const VENDOR = 'HoneybeeCmf';
 
     const PACKAGE = 'AggregateFixtures';
 

@@ -1,8 +1,8 @@
 {
-    "honeybee-cmf.aggregate_fixtures.author": [
+    "honeybee_cmf.aggregate_fixtures.author": [
         {
-            "identifier": "honeybee-cmf.aggregate_fixtures.author-39249423-1dd3-3ded-a199-930ed6813060-de_DE-4321",
-            "@type": "honeybee-cmf.aggregate_fixtures.author",
+            "identifier": "honeybee_cmf.aggregate_fixtures.author-39249423-1dd3-3ded-a199-930ed6813060-de_DE-4321",
+            "@type": "honeybee_cmf.aggregate_fixtures.author",
             "revision": 1,
             "uuid": "39249423-1dd3-3ded-a199-930ed6813060",
             "language": "de_DE",
@@ -21,7 +21,7 @@
             "books": [
                 {
                     "@type": "book",
-                    "referenced_identifier": "honeybee-cmf.aggregate_fixtures.book-29200952-0a52-41ea-ae41-50e73b4777da-de_DE-123"
+                    "referenced_identifier": "honeybee_cmf.aggregate_fixtures.book-29200952-0a52-41ea-ae41-50e73b4777da-de_DE-123"
                 }
             ]
         }

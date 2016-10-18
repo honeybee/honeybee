@@ -176,7 +176,7 @@ class ProjectionUpdaterTest extends TestCase
         $mock_query_service = Mockery::mock(QueryServiceInterface::CLASS);
         $mock_query_service_map->shouldReceive('getItem')
             ->once()
-            ->with('honeybee-tests.game_schema.team::projection.standard::query_service')
+            ->with('honeybee_tests.game_schema.team::projection.standard::query_service')
             ->andReturn($mock_query_service);
 
         $mock_query_service->shouldReceive('scroll')

@@ -107,7 +107,7 @@ class ProjectionReaderTest extends TestCase
     public function testRead()
     {
         $test_data = include(__DIR__ . '/Fixture/projection_reader_test_03.php');
-        $identifier = 'honeybee-cmf.projection_fixtures.book-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1';
+        $identifier = 'honeybee_cmf.projection_fixtures.book-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1';
 
         $this->mock_connector->shouldReceive('getConfig')->twice()->andReturn(new ArrayConfig([]));
         $this->mock_connector->shouldReceive('getConnection')->once()->andReturn($this->mock_client);
@@ -134,7 +134,7 @@ class ProjectionReaderTest extends TestCase
     public function testReadUnknownProjectionType()
     {
         $test_data = include(__DIR__ . '/Fixture/projection_reader_test_03.php');
-        $identifier = 'honeybee-cmf.projection_fixtures.book-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1';
+        $identifier = 'honeybee_cmf.projection_fixtures.book-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1';
 
         $this->mock_connector->shouldReceive('getConfig')->twice()->andReturn(new ArrayConfig([]));
         $this->mock_connector->shouldReceive('getConnection')->once()->andReturn($this->mock_client);

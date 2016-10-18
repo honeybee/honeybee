@@ -17,7 +17,7 @@ class FilesystemServiceTest extends TestCase
         // e.g. foo/bar/baz/95/8884e486-aa2f-4f91-a45f-f5f0e1c65c38
         $id = FilesystemService::generatePath($firstname_attribute);
 
-        $expected_prefix = 'honeybee-cmf.aggregate_fixtures.author/firstname/';
+        $expected_prefix = 'honeybee_cmf.aggregate_fixtures.author/firstname/';
         $this->assertStringStartsWith($expected_prefix, $id);
         $this->assertStringMatchesFormat($expected_prefix . '%x/%x-%x-%x-%x-%x', $id);
     }

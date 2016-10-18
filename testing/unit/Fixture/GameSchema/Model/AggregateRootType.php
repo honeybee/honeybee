@@ -6,7 +6,7 @@ use Honeybee\Model\Aggregate\AggregateRootType as BaseAggregateRootType;
 
 abstract class AggregateRootType extends BaseAggregateRootType
 {
-    const VENDOR = 'Honeybee-Tests';
+    const VENDOR = 'HoneybeeTests';
 
     const PACKAGE = 'GameSchema';
 

@@ -40,9 +40,9 @@ class WorkflowServiceTest extends TestCase
     public function testAggregateRootTypeStateMachineNameResolvingWorks()
     {
         $author_type = new AuthorType();
-        $this->assertEquals('honeybee-cmf.aggregate_fixtures.author', $author_type->getPrefix());
+        $this->assertEquals('honeybee_cmf.aggregate_fixtures.author', $author_type->getPrefix());
         $this->assertEquals(
-            'honeybee-cmf.aggregate_fixtures.author.default_workflow',
+            'honeybee_cmf.aggregate_fixtures.author.default_workflow',
             $this->getDefaultWorkflowService()->resolveStateMachineName($author_type)
         );
     }
@@ -51,7 +51,7 @@ class WorkflowServiceTest extends TestCase
     {
         $author = (new AuthorType())->createEntity();
         $this->assertEquals(
-            'honeybee-cmf.aggregate_fixtures.author.default_workflow',
+            'honeybee_cmf.aggregate_fixtures.author.default_workflow',
             $this->getDefaultWorkflowService()->resolveStateMachineName($author)
         );
     }
@@ -59,7 +59,7 @@ class WorkflowServiceTest extends TestCase
     public function testProjectionTypeStateMachineNameResolvingWorks()
     {
         $this->assertEquals(
-            'honeybee-cmf.projection_fixtures.author.default_workflow',
+            'honeybee_cmf.projection_fixtures.author.default_workflow',
             $this->getDefaultWorkflowService()->resolveStateMachineName(new AuthorProjectionType())
         );
     }
@@ -68,7 +68,7 @@ class WorkflowServiceTest extends TestCase
     {
         $author = (new AuthorProjectionType())->createEntity();
         $this->assertEquals(
-            'honeybee-cmf.projection_fixtures.author.default_workflow',
+            'honeybee_cmf.projection_fixtures.author.default_workflow',
             $this->getDefaultWorkflowService()->resolveStateMachineName($author)
         );
     }

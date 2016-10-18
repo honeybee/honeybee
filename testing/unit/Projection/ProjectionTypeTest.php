@@ -82,7 +82,7 @@ class ProjectionTypeTest extends TestCase
     {
         $test_entity_type = new GameType();
 
-        $this->assertEquals('Honeybee-Tests', $test_entity_type->getVendor());
+        $this->assertEquals('HoneybeeTests', $test_entity_type->getVendor());
     }
 
     public function testGetPackage()
@@ -103,7 +103,7 @@ class ProjectionTypeTest extends TestCase
     {
         $test_entity_type = new GameType();
 
-        $this->assertEquals('honeybee-tests.game_schema.game', $test_entity_type->getPrefix());
+        $this->assertEquals('honeybee_tests.game_schema.game', $test_entity_type->getPrefix());
     }
 
     public function testGetVariantPrefix()
@@ -111,7 +111,7 @@ class ProjectionTypeTest extends TestCase
         $test_entity_type = new GameType();
 
         $this->assertEquals(
-            'honeybee-tests.game_schema.game::projection.standard',
+            'honeybee_tests.game_schema.game::projection.standard',
             $test_entity_type->getVariantPrefix()
         );
     }

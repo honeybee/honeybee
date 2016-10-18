@@ -4,11 +4,11 @@ return [
     'event' => [
         '@type' => 'Honeybee\Projection\Event\ProjectionUpdatedEvent',
         'uuid' => '44c4597c-f463-4916-a330-2db87ef36547',
-        'projection_type' => 'honeybee-tests.game_schema.player::projection.standard',
-        'projection_identifier' => 'honeybee-tests.game_schema.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
+        'projection_type' => 'honeybee_tests.game_schema.player::projection.standard',
+        'projection_identifier' => 'honeybee_tests.game_schema.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
         'data' => [
-            '@type' => 'honeybee-tests.game_schema.player::projection.standard',
-            'identifier' => 'honeybee-tests.game_schema.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
+            '@type' => 'honeybee_tests.game_schema.player::projection.standard',
+            'identifier' => 'honeybee_tests.game_schema.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
             'revision' => 5,
             'uuid' => 'a726301d-dbae-4fb6-91e9-a19188a17e71',
             'language' => 'de_DE',
@@ -60,7 +60,7 @@ return [
                 'comparison' => [
                     '@type' => 'Honeybee\Infrastructure\DataAccess\Query\Comparison\Equals',
                     'comparator' => 'eq',
-                    'comparand' => 'honeybee-tests.game_schema.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
+                    'comparand' => 'honeybee_tests.game_schema.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
                     'inverted' => true
                 ]
             ],
@@ -71,7 +71,7 @@ return [
                     'comparison' => [
                         '@type' => 'Honeybee\Infrastructure\DataAccess\Query\Comparison\Equals',
                         'comparator' => 'eq',
-                        'comparand' => 'honeybee-tests.game_schema.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
+                        'comparand' => 'honeybee_tests.game_schema.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
                         'inverted' => false
                     ]
                 ]
@@ -83,8 +83,8 @@ return [
     ],
     'projections' => [
         [
-            '@type' => 'honeybee-tests.game_schema.game::projection.standard',
-            'identifier' => 'honeybee-tests.game_schema.game-49c5a3b7-8127-4169-8676-a9ebb5229142-de_DE-1',
+            '@type' => 'honeybee_tests.game_schema.game::projection.standard',
+            'identifier' => 'honeybee_tests.game_schema.game-49c5a3b7-8127-4169-8676-a9ebb5229142-de_DE-1',
             'revision' => 3,
             'uuid' => '49c5a3b7-8127-4169-8676-a9ebb5229142',
             'language' => 'de_DE',
@@ -107,7 +107,7 @@ return [
                     '@type' => 'player',
                     'identifier' => '95c5ff31-8eca-41d5-95a0-0eb4ac35904b',
                     'referenced_identifier' =>
-                        'honeybee-tests.game_schema.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
+                        'honeybee_tests.game_schema.player-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
                     'name' => 'Anatoly Karpov',
                     'area' => [ 'lon' => 1.2, 'lat' => 2.1 ],
                     'profiles' => [

@@ -39,7 +39,7 @@ class ProjectionFinderTest extends TestCase
     public function testGetByIdentifier()
     {
         $test_data = include(__DIR__ . '/Fixture/projection_finder_test_01.php');
-        $identifier = 'honeybee-cmf.projection_fixtures.book-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1';
+        $identifier = 'honeybee_cmf.projection_fixtures.book-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1';
 
         $this->mock_connector->shouldReceive('getConfig')->once()->andReturn(new ArrayConfig([]));
         $this->mock_connector->shouldReceive('getConnection')->once()->andReturn($this->mock_client);
@@ -95,7 +95,7 @@ class ProjectionFinderTest extends TestCase
     public function testGetByIdentifierUnknownProjectionType()
     {
         $test_data = include(__DIR__ . '/Fixture/projection_finder_test_01.php');
-        $identifier = 'honeybee-cmf.projection_fixtures.book-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1';
+        $identifier = 'honeybee_cmf.projection_fixtures.book-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1';
 
         $this->mock_connector->shouldReceive('getConfig')->once()->andReturn(new ArrayConfig([]));
         $this->mock_connector->shouldReceive('getConnection')->once()->andReturn($this->mock_client);
@@ -136,8 +136,8 @@ class ProjectionFinderTest extends TestCase
     {
         $test_data = include(__DIR__ . '/Fixture/projection_finder_test_02.php');
         $identifiers = [
-            'honeybee-cmf.projection_fixtures.book-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
-            'honeybee-cmf.projection_fixtures.book-61d8da68-0d56-4b8b-b393-21f1a650d092-de_DE-1'
+            'honeybee_cmf.projection_fixtures.book-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
+            'honeybee_cmf.projection_fixtures.book-61d8da68-0d56-4b8b-b393-21f1a650d092-de_DE-1'
         ];
 
         $this->mock_connector->shouldReceive('getConfig')->once()->andReturn(new ArrayConfig([]));
@@ -167,8 +167,8 @@ class ProjectionFinderTest extends TestCase
     {
         $test_data = include(__DIR__ . '/Fixture/projection_finder_test_03.php');
         $identifiers = [
-            'honeybee-cmf.projection_fixtures.book-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
-            'honeybee-cmf.projection_fixtures.book-61d8da68-0d56-4b8b-b393-21f1a650d092-de_DE-1'
+            'honeybee_cmf.projection_fixtures.book-a726301d-dbae-4fb6-91e9-a19188a17e71-de_DE-1',
+            'honeybee_cmf.projection_fixtures.book-61d8da68-0d56-4b8b-b393-21f1a650d092-de_DE-1'
         ];
 
         $this->mock_connector->shouldReceive('getConfig')->once()->andReturn(new ArrayConfig([]));

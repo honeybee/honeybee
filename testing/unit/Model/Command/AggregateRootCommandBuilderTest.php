@@ -72,7 +72,7 @@ class AggregateRootCommandBuilderTest extends TestCase
             [
                 '@type' => 'Honeybee\Tests\Fixture\BookSchema\Model\Task\CreatePublication\CreatePublicationCommand',
                 'values' => [],
-                'aggregate_root_type' => 'honeybee-cmf.aggregate_fixtures.publication',
+                'aggregate_root_type' => 'honeybee_cmf.aggregate_fixtures.publication',
                 'embedded_entity_commands' => [],
                 'metadata' => []
             ],
