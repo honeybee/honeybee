@@ -162,8 +162,9 @@ class CriteriaQueryTranslation implements QueryTranslationInterface
             return $filter;
         }
 
-        if ($criteria->getComparison()->isInverted() || strpos($attribute_value, '!') === 0) {
+        if ($criteria->getComparison()->isInverted() || $attribute_value{0} === '!') {
             $negate_filter = true;
+            $attribute_value = substr($attribute_value, 0);
         }
         if ($attribute_value === self::QUERY_FOR_EMPTY) {
             $attr_filter = $this->buildMissingFilter($criteria);
