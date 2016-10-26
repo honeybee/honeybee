@@ -654,12 +654,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/honeybee/trellis.git",
-                "reference": "253174a2d82a66c0fb1d67a4e834b3b51118b5e1"
+                "reference": "5d0b053fdd8a73d2f6551543584e50c2f6101c82"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/honeybee/trellis/zipball/253174a2d82a66c0fb1d67a4e834b3b51118b5e1",
-                "reference": "253174a2d82a66c0fb1d67a4e834b3b51118b5e1",
+                "url": "https://api.github.com/repos/honeybee/trellis/zipball/5d0b053fdd8a73d2f6551543584e50c2f6101c82",
+                "reference": "5d0b053fdd8a73d2f6551543584e50c2f6101c82",
                 "shasum": ""
             },
             "require": {
@@ -716,24 +716,24 @@
                 "entity",
                 "validation"
             ],
-            "time": "2016-09-12 15:48:47"
+            "time": "2016-10-26 10:59:34"
         },
         {
             "name": "league/flysystem",
-            "version": "1.0.29",
+            "version": "1.0.32",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "b732cc946c48cf102ddffd41ffcd54901a28ccdb"
+                "reference": "1b5c4a0031697f46e779a9d1b309c2e1b24daeab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/b732cc946c48cf102ddffd41ffcd54901a28ccdb",
-                "reference": "b732cc946c48cf102ddffd41ffcd54901a28ccdb",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/1b5c4a0031697f46e779a9d1b309c2e1b24daeab",
+                "reference": "1b5c4a0031697f46e779a9d1b309c2e1b24daeab",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.6.0"
+                "php": ">=5.5.9"
             },
             "conflict": {
                 "league/flysystem-sftp": "<1.0.6"
@@ -799,7 +799,7 @@
                 "sftp",
                 "storage"
             ],
-            "time": "2016-10-17 23:14:19"
+            "time": "2016-10-19 20:38:46"
         },
         {
             "name": "michelf/php-markdown",
@@ -1422,24 +1422,28 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/shrink0r/monatic.git",
-                "reference": "7ef7acb6f08489e842cc9caf0c721b3714d93e97"
+                "reference": "8e2683d52355688e900b355d14bd98f90d5fc976"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/shrink0r/monatic/zipball/7ef7acb6f08489e842cc9caf0c721b3714d93e97",
-                "reference": "7ef7acb6f08489e842cc9caf0c721b3714d93e97",
+                "url": "https://api.github.com/repos/shrink0r/monatic/zipball/8e2683d52355688e900b355d14bd98f90d5fc976",
+                "reference": "8e2683d52355688e900b355d14bd98f90d5fc976",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.6.0",
-                "symfony/property-access": "~2.7"
+                "symfony/property-access": "~3.1"
             },
             "require-dev": {
-                "phine/sami-github": "~1.0",
-                "phpunit/phpunit": "~5.0",
-                "sami/sami": "~3.0",
-                "satooshi/php-coveralls": "~0.6",
-                "squizlabs/php_codesniffer": "~2.3"
+                "jakub-onderka/php-console-highlighter": "^0.3",
+                "jakub-onderka/php-parallel-lint": "^0.9",
+                "phploc/phploc": "^3.0",
+                "phpmd/phpmd": "^2.4",
+                "phpunit/phpunit": "^5.5",
+                "sami/sami": "^3.3.0",
+                "satooshi/php-coveralls": "master@dev",
+                "sebastian/phpcpd": "^2.0",
+                "squizlabs/php_codesniffer": "^2.6"
             },
             "type": "library",
             "autoload": {
@@ -1451,13 +1455,11 @@
             "license": [
                 "MIT"
             ],
-            "authors": [
-                {
-                    "name": "Thorsten Schmitt-Rink",
-                    "email": "schmittrink@gmail.com"
-                }
+            "description": "Fiddling with the monad concept in php",
+            "keywords": [
+                "monad"
             ],
-            "time": "2016-05-20 13:40:41"
+            "time": "2016-10-21 21:27:12"
         },
         {
             "name": "shrink0r/workflux",
@@ -1783,6 +1785,63 @@
             "time": "2016-09-06 10:55:00"
         },
         {
+            "name": "symfony/inflector",
+            "version": "v3.1.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/inflector.git",
+                "reference": "1ea83acdd81053bdf35ccf3ee91f01b243664b61"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/inflector/zipball/1ea83acdd81053bdf35ccf3ee91f01b243664b61",
+                "reference": "1ea83acdd81053bdf35ccf3ee91f01b243664b61",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.9"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.1-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Inflector\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Bernhard Schussek",
+                    "email": "bschussek@gmail.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony Inflector Component",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "inflection",
+                "pluralize",
+                "singularize",
+                "string",
+                "symfony",
+                "words"
+            ],
+            "time": "2016-06-08 11:24:07"
+        },
+        {
             "name": "symfony/polyfill-mbstring",
             "version": "v1.2.0",
             "source": {
@@ -1842,26 +1901,87 @@
             "time": "2016-05-18 14:26:46"
         },
         {
-            "name": "symfony/property-access",
-            "version": "v2.8.12",
+            "name": "symfony/polyfill-php70",
+            "version": "v1.2.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/symfony/property-access.git",
-                "reference": "2dafa20e25cb964268ce3ed83fc9af9b9d2ae14d"
+                "url": "https://github.com/symfony/polyfill-php70.git",
+                "reference": "a42f4b6b05ed458910f8af4c4e1121b0101b2d85"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/property-access/zipball/2dafa20e25cb964268ce3ed83fc9af9b9d2ae14d",
-                "reference": "2dafa20e25cb964268ce3ed83fc9af9b9d2ae14d",
+                "url": "https://api.github.com/repos/symfony/polyfill-php70/zipball/a42f4b6b05ed458910f8af4c4e1121b0101b2d85",
+                "reference": "a42f4b6b05ed458910f8af4c4e1121b0101b2d85",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.9"
+                "paragonie/random_compat": "~1.0|~2.0",
+                "php": ">=5.3.3"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.8-dev"
+                    "dev-master": "1.2-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Polyfill\\Php70\\": ""
+                },
+                "files": [
+                    "bootstrap.php"
+                ],
+                "classmap": [
+                    "Resources/stubs"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Symfony polyfill backporting some PHP 7.0+ features to lower PHP versions",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "compatibility",
+                "polyfill",
+                "portable",
+                "shim"
+            ],
+            "time": "2016-05-18 14:26:46"
+        },
+        {
+            "name": "symfony/property-access",
+            "version": "v3.1.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/property-access.git",
+                "reference": "6d7212a9bcaacb2c46ed401d0bbaf56c975ab640"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/property-access/zipball/6d7212a9bcaacb2c46ed401d0bbaf56c975ab640",
+                "reference": "6d7212a9bcaacb2c46ed401d0bbaf56c975ab640",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.9",
+                "symfony/inflector": "~3.1",
+                "symfony/polyfill-php70": "~1.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.1-dev"
                 }
             },
             "autoload": {
@@ -1899,20 +2019,20 @@
                 "property path",
                 "reflection"
             ],
-            "time": "2016-07-30 07:20:35"
+            "time": "2016-08-15 13:15:28"
         },
         {
             "name": "twig/twig",
-            "version": "v1.26.1",
+            "version": "v1.27.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "a09d8ee17ac1cfea29ed60c83960ad685c6a898d"
+                "reference": "3c6c0033fd3b5679c6e1cb60f4f9766c2b424d97"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/a09d8ee17ac1cfea29ed60c83960ad685c6a898d",
-                "reference": "a09d8ee17ac1cfea29ed60c83960ad685c6a898d",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/3c6c0033fd3b5679c6e1cb60f4f9766c2b424d97",
+                "reference": "3c6c0033fd3b5679c6e1cb60f4f9766c2b424d97",
                 "shasum": ""
             },
             "require": {
@@ -1925,7 +2045,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.26-dev"
+                    "dev-master": "1.27-dev"
                 }
             },
             "autoload": {
@@ -1960,7 +2080,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2016-10-05 18:57:41"
+            "time": "2016-10-25 19:17:17"
         },
         {
             "name": "zendframework/zend-permissions-acl",
@@ -2234,12 +2354,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/padraic/mockery.git",
-                "reference": "900faf0a7be16fc4872e6d1843d0edbb954bf9f0"
+                "reference": "1d397a43389b58cdb9873f3403266cd110a84ba4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/padraic/mockery/zipball/900faf0a7be16fc4872e6d1843d0edbb954bf9f0",
-                "reference": "900faf0a7be16fc4872e6d1843d0edbb954bf9f0",
+                "url": "https://api.github.com/repos/padraic/mockery/zipball/1d397a43389b58cdb9873f3403266cd110a84ba4",
+                "reference": "1d397a43389b58cdb9873f3403266cd110a84ba4",
                 "shasum": ""
             },
             "require": {
@@ -2291,7 +2411,7 @@
                 "test double",
                 "testing"
             ],
-            "time": "2016-10-14 09:17:26"
+            "time": "2016-10-25 10:11:15"
         },
         {
             "name": "myclabs/deep-copy",
@@ -2920,16 +3040,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "5.6.1",
+            "version": "5.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "60c32c5b5e79c2248001efa2560f831da11cc2d7"
+                "reference": "cd13b23ac5a519a4708e00736c26ee0bb28b2e01"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/60c32c5b5e79c2248001efa2560f831da11cc2d7",
-                "reference": "60c32c5b5e79c2248001efa2560f831da11cc2d7",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/cd13b23ac5a519a4708e00736c26ee0bb28b2e01",
+                "reference": "cd13b23ac5a519a4708e00736c26ee0bb28b2e01",
                 "shasum": ""
             },
             "require": {
@@ -2998,7 +3118,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2016-10-07 13:03:26"
+            "time": "2016-10-25 07:40:25"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
