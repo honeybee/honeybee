@@ -112,7 +112,7 @@ class ArrayToolkit
      * lose query params when submitting a GET form (POST forms are working fine).
      *
      * Example: http://some.tld?limit=2&foo[0]=1&foo[1]=2&foo[2]=3 will be:
-     *          [ "limit" => 2, "foo[0]" => 1, "foo[1] => 2, "foo[2]" => 3 ]
+     *          [ "limit" => 2, "foo[0]" => 1, "foo[1]" => 2, "foo[2]" => 3 ]
      *
      * @param string $url URL with query parameters
      *
@@ -190,5 +190,27 @@ class ArrayToolkit
         }
 
         return $filtered;
+    }
+
+    /**
+     * @param array $needles values to search for
+     * @param array $haystack values to search through
+     *
+     * @return bool true if ANY of the needles exists in the haystack
+     */
+    public static function anyInArray(array $needles, array $haystack)
+    {
+        return !!array_intersect($needles, $haystack);
+    }
+
+    /**
+     * @param array $needles values to search for
+     * @param array $haystack values to search through
+     *
+     * @return bool true if ALL of the needles exist in the haystack
+     */
+    public static function allInArray(array $needles, array $haystack)
+    {
+        return !array_diff($needles, $haystack);
     }
 }
