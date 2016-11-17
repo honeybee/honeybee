@@ -100,11 +100,7 @@ class CriteriaQueryTranslation implements QueryTranslationInterface
                     ]
                 ];
             } else {
-                return [
-                    'match' => [
-                        '_all' => [ 'query' => $search_criteria->getPhrase(), 'type' => 'phrase_prefix' ]
-                    ]
-                ];
+                return $this->buildSearchQuery($search_criteria);
             }
         }
     }
@@ -305,6 +301,35 @@ class CriteriaQueryTranslation implements QueryTranslationInterface
         }
 
         return $sorts;
+    }
+
+    protected function buildSearchQuery(SearchCriteria $search_criteria)
+    {
+        $phrase = $search_criteria->getPhrase();
+        $field = trim($search_criteria->getAttributePath());
+        if (empty($field)) {
+            $field = '_all';
+        }
+
+        $search_query_settings = array_merge(
+            [
+                'query' => $phrase,
+                'type' => 'phrase_prefix',
+                // to get more search results you might want to configure e.g.:
+                // 'prefix_length' => 4,
+                // 'fuzziness' => 'auto',
+                // 'max_expansions' => 1000
+            ],
+            (array)$this->config->get('search_query_settings', [])
+        );
+
+        $search_query = [
+            'match' => [
+                $field => $search_query_settings
+            ]
+        ];
+
+        return $search_query;
     }
 
     protected function getDynamicMappings()
