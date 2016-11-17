@@ -68,7 +68,7 @@ abstract class AggregateRootCommandStateNode extends State
                 foreach ((array)$payload_key as $attribute_name => $reference_key) {
                     $command_payload[$attribute_name] = $payload[$reference_key];
                 }
-            } else if (isset($payload[$payload_key])) {
+            } elseif (isset($payload[$payload_key])) {
                 $command_payload[$attribute_name] = $payload[$payload_key];
             }
         }
