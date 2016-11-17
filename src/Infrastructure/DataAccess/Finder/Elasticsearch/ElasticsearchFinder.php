@@ -75,7 +75,8 @@ abstract class ElasticsearchFinder extends Finder
         $data = [
             'index' => $index,
             'body' => [
-                'ids' => $identifiers
+                'ids' => $identifiers,
+                'size' => 100000
             ]
         ];
         if ($type = $this->getType()) {
