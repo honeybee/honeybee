@@ -35,8 +35,8 @@ return [
         'expected_es_query' => [
             'body' => [
                 'query' => [
-                    'filtered' => [
-                        'query' => [
+                    'bool' => [
+                        'must' => [
                             'match_all' => []
                         ],
                         'filter' => [
@@ -74,8 +74,8 @@ return [
         'expected_es_query' => [
             'body' => [
                 'query' => [
-                    'filtered' => [
-                        'query' => [
+                    'bool' => [
+                        'must' => [
                             'match_all' => []
                         ],
                         'filter' => [
@@ -115,8 +115,8 @@ return [
         'expected_es_query' => [
             'body' => [
                 'query' => [
-                    'filtered' => [
-                        'query' => [
+                    'bool' => [
+                        'must' => [
                             'match_all' => []
                         ],
                         'filter' => [
@@ -189,8 +189,8 @@ return [
         'expected_es_query' => [
             'body' => [
                 'query' => [
-                    'filtered' => [
-                        'query' => [
+                    'bool' => [
+                        'must' => [
                             'match_all' => []
                         ],
                         'filter' => [
@@ -240,8 +240,8 @@ return [
         'expected_es_query' => [
             'body' => [
                 'query' => [
-                    'filtered' => [
-                        'query' => [
+                    'bool' => [
+                        'must' => [
                             'match_all' => []
                         ],
                         'filter' => [
@@ -302,8 +302,8 @@ return [
         'expected_es_query' => [
             'body' => [
                 'query' => [
-                    'filtered' => [
-                        'query' => [
+                    'bool' => [
+                        'must' => [
                             'match_all' => []
                         ],
                         'filter' => [
@@ -356,8 +356,8 @@ return [
         'expected_es_query' => [
             'body' => [
                 'query' => [
-                    'filtered' => [
-                        'query' => [
+                    'bool' => [
+                        'must' => [
                             'match_all' => []
                         ],
                         'filter' => [
@@ -422,8 +422,8 @@ return [
         'expected_es_query' => [
             'body' => [
                 'query' => [
-                    'filtered' => [
-                        'query' => [
+                    'bool' => [
+                        'must' => [
                             'match_all' => []
                         ],
                         'filter' => [
@@ -499,8 +499,8 @@ return [
         'expected_es_query' => [
             'body' => [
                 'query' => [
-                    'filtered' => [
-                        'query' => [
+                    'bool' => [
+                        'must' => [
                             'match_all' => []
                         ],
                         'filter' => [

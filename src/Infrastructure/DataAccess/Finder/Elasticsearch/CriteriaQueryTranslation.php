@@ -58,7 +58,12 @@ class CriteriaQueryTranslation implements QueryTranslationInterface
         $es_filter = $this->translateFilters($filter_criteria_list);
         $es_query = $this->translateQueries($query->getSearchCriteriaList());
         if (!empty($es_filter)) {
-            $es_query = [ 'filtered' => [ 'query' => $es_query, 'filter' => $es_filter ] ];
+            $es_query = [
+                'bool' => [
+                    'must' => $es_query,
+                    'filter' => $es_filter
+                ]
+            ];
         }
 
         return [
