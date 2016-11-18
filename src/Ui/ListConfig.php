@@ -98,8 +98,6 @@ class ListConfig extends Object implements ListConfigInterface
                 list($attribute_path, $direction) = explode(':', $sort_field);
                 $sort_criteria_list->push(new SortCriteria($attribute_path, $direction));
             }
-        } else {
-            $sort_criteria_list->push(new SortCriteria('modified_at'));
         }
 
         return new CriteriaQuery(
