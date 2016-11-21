@@ -21,24 +21,24 @@ class TranslatorExtension extends Twig_Extension
 
     public function getFilters()
     {
-        return array(
+        return [
             'translate' => new Twig_Filter_Method($this, 'translate'),
             'translateCurrency' => new Twig_Filter_Method($this, 'translateCurrency'),
             'translateNumber' => new Twig_Filter_Method($this, 'translateNumber'),
             'translateDate' => new Twig_Filter_Method($this, 'translateDate'),
             'translatePlural' => new Twig_Filter_Method($this, 'translatePlural'),
-        );
+        ];
     }
 
     public function getFunctions()
     {
-        return array(
+        return [
             '_' => new Twig_Function_Method($this, 'translate'),
             '_c' => new Twig_Function_Method($this, 'translateCurrency'),
             '_n' => new Twig_Function_Method($this, 'translateNumber'),
             '_d' => new Twig_Function_Method($this, 'translateDate'),
             '__' => new Twig_Function_Method($this, 'translatePlural'),
-        );
+        ];
     }
 
     /**

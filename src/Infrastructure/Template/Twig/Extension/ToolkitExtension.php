@@ -67,7 +67,6 @@ class ToolkitExtension extends Twig_Extension
         return StringToolkit::endsWith($haystack, $needle);
     }
 
-
     public function replace($subject, $search, $replace, $count = null)
     {
         if (is_null($count)) {
