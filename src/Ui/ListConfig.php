@@ -72,7 +72,10 @@ class ListConfig extends Object implements ListConfigInterface
                                 $filter_criteria[] = $this->buildMatchFilterFor($attribute_path, $match['value']);
                                 break;
                             default:
-                                throw new RuntimeError(sprintf('Unsupported query criteria "%s"', $match['criteria']));
+                                // better fallback for regex gone wrong
+                                $filter_criteria = [];
+                                $filter_criteria[] = $this->buildAttributeFilterFor($attribute_path, $value);
+                                //throw new RuntimeError('Unsupported query criteria: ' . $match['criteria']);
                         }
                     }
                 }
