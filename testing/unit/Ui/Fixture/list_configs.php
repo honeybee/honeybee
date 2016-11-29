@@ -27,7 +27,7 @@ return [
         'expectation' => new CriteriaQuery(
             new CriteriaList,
             new CriteriaList,
-            new CriteriaList([ new SortCriteria('modified_at') ]),
+            new CriteriaList,
             0,
             50
         )
@@ -44,7 +44,7 @@ return [
         'expectation' => new CriteriaQuery(
             new CriteriaList,
             new CriteriaList,
-            new CriteriaList([ new SortCriteria('modified_at') ]),
+            new CriteriaList,
             40,
             20
         )
