@@ -97,6 +97,7 @@ class CriteriaQueryTranslation implements QueryTranslationInterface
                     }
                 }
                 $suggest_field = implode('.', $suggest_field_parts);
+                $suggest_field .= '.suggest'; // convention: multi field for suggestions
                 $suggest_term = $matches[2];
 
                 return [

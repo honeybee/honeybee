@@ -535,4 +535,55 @@ return [
             'from' => 0
         ]
     ],
+    //
+    // "suggest" query, that is filtered
+    //
+    [
+        'query' => new CriteriaQuery(
+            new CriteriaList([ new SearchCriteria('suggest:name=foo') ]),
+            new CriteriaList([
+                new AttributeCriteria('language', new Equals('de_DE')),
+                new AttributeCriteria('workflow_state', new Equals('!deleted')),
+            ]),
+            new CriteriaList,
+            0,
+            50
+        ),
+        'expected_es_query' => [
+            'body' => [
+                'query' => [
+                    'bool' => [
+                        'must' => [
+                            'match_phrase_prefix' => [
+                                // HINT convention for suggest syntax is to have a ".suggest" multi field
+                                'name.suggest' => [
+                                    'query' => 'foo',
+                                    'max_expansions' => 15
+                                ]
+                            ]
+                        ],
+                        'filter' => [
+                            'and' => [
+                                [
+                                    'term' => [
+                                        'language' => 'de_DE'
+                                    ]
+                                ],
+                                [
+                                    'not' => [
+                                        'term' => [
+                                            'workflow_state' => 'deleted'
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+                'sort' => [ ]
+            ],
+            'size' => 50,
+            'from' => 0
+        ]
+    ],
 ];
