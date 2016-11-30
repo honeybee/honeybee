@@ -144,10 +144,11 @@ class ProjectionFinderTest extends TestCase
         $this->mock_connector->shouldReceive('getConnection')->once()->andReturn($this->mock_client);
         $this->mock_client->shouldReceive('mget')->once()->with([
             'index' => 'index',
-            'type' => 'type',
             'body' => [
-                'ids' => $identifiers
-            ]
+                'ids' => $identifiers,
+                'size' => 100000
+            ],
+            'type' => 'type',
         ])->andReturn($test_data['raw_result']);
 
         $projection_finder = new ProjectionFinder(
@@ -175,10 +176,11 @@ class ProjectionFinderTest extends TestCase
         $this->mock_connector->shouldReceive('getConnection')->once()->andReturn($this->mock_client);
         $this->mock_client->shouldReceive('mget')->once()->with([
             'index' => 'index',
-            'key' => 'value',
             'body' => [
-                'ids' => $identifiers
-            ]
+                'ids' => $identifiers,
+                'size' => 100000
+            ],
+            'key' => 'value',
         ])->andReturn($test_data['raw_result']);
 
         $projection_finder = new ProjectionFinder(
