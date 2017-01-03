@@ -117,7 +117,9 @@ class LoggingSwiftMailer implements MailServiceInterface
                 foreach ($this->swift_message_logger->getMessages() as $message) {
                     $this->logger->info($message);
                 }
+                $this->swift_message_logger->clear();
             }
+            $this->swift_array_logger->clear();
         }
 
         return [
