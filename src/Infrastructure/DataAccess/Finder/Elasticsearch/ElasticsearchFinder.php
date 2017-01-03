@@ -32,6 +32,8 @@ abstract class ElasticsearchFinder extends Finder
             );
         }
 
+        // @todo multiple type search is not supported unless _all
+
         $data = [
             'index' => $index,
             'type' => $this->getType(),
@@ -60,7 +62,7 @@ abstract class ElasticsearchFinder extends Finder
 
         $index = $this->getIndex();
 
-        if (empty($index) || $index == '_all' ||
+        if (empty($index) || $index === '_all' ||
             (is_array($index) && count($index) > 1) ||
             (is_string($index) && strpos($index, ',') !== false)
         ) {
@@ -101,7 +103,10 @@ abstract class ElasticsearchFinder extends Finder
         Assertion::isArray($query);
 
         $query['index'] = $this->getIndex();
-        $query['type'] = $this->getType();
+        $type = $this->getType();
+        if ($type && $type !== '_all') {
+            $query['type'] = $type;
+        }
 
         if ($this->config->get('log_search_query', false) === true) {
             $this->logger->debug('['.__METHOD__.'] search query = ' . json_encode($query, JSON_PRETTY_PRINT));
