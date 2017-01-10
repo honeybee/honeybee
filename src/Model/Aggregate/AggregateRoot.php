@@ -275,11 +275,18 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
         }
 
         $workflow_subject = new WorkflowSubject($state_machine->getName(), $this);
+        $previous_state = $this->getWorkflowState();
         $state_machine->execute($workflow_subject, $workflow_command->getEventName());
 
         $workflow_data = [
             'workflow_state' => $workflow_subject->getCurrentStateName(),
-            'workflow_parameters' => $workflow_subject->getWorkflowParameters()
+            'workflow_parameters' => array_merge(
+                $workflow_subject->getWorkflowParameters(),
+                [
+                    'previous_state' => $previous_state,
+                    'workflow_event' => $workflow_command->getEventName()
+                ]
+            )
         ];
 
         $proceeded_event = $this->processCommand($workflow_command, [ 'data' => $workflow_data ]);

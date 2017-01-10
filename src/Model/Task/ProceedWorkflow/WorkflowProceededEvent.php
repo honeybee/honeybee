@@ -17,6 +17,18 @@ abstract class WorkflowProceededEvent extends AggregateRootModifiedEvent
         return isset($this->data['workflow_parameters']) ? $this->data['workflow_parameters'] : [];
     }
 
+    public function getPreviousState()
+    {
+        $workflow_parameters = $this->getWorkflowParameters();
+        return isset($workflow_parameters['previous_state']) ? $workflow_parameters['previous_state'] : '';
+    }
+
+    public function getWorkflowEvent()
+    {
+        $workflow_parameters = $this->getWorkflowParameters();
+        return isset($workflow_parameters['workflow_event']) ? $workflow_parameters['workflow_event'] : '';
+    }
+
     protected function guardRequiredState()
     {
         parent::guardRequiredState();
