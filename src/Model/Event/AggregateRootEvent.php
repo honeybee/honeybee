@@ -84,7 +84,7 @@ abstract class AggregateRootEvent extends Event implements AggregateRootEventInt
                 )
             );
         }
-        $vendor = strtolower(array_shift($fqcn_parts));
+        $vendor = StringToolkit::asSnakeCase(array_shift($fqcn_parts));
         $package = StringToolkit::asSnakeCase(array_shift($fqcn_parts));
         $type = StringToolkit::asSnakeCase(array_shift($fqcn_parts));
         $event = str_replace('_event', '', StringToolkit::asSnakeCase(array_pop($fqcn_parts)));
