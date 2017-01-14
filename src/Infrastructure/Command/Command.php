@@ -57,7 +57,7 @@ abstract class Command extends Object implements CommandInterface
                 )
             );
         }
-        $vendor = strtolower(array_shift($fqcn_parts));
+        $vendor = StringToolkit::asSnakeCase(array_shift($fqcn_parts));
         $package = StringToolkit::asSnakeCase(array_shift($fqcn_parts));
         $type = StringToolkit::asSnakeCase(array_shift($fqcn_parts));
         $command = str_replace('_command', '', StringToolkit::asSnakeCase(array_pop($fqcn_parts)));
