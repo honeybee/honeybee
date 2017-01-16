@@ -31,16 +31,20 @@ class AclService extends Object implements AclServiceInterface
 
     protected $permission_service;
 
+    protected $additional_resources;
+
     public function __construct(
         ActivityServiceInterface $activity_service,
         PermissionServiceInterface $permission_service,
         ExpressionServiceInterface $expression_service,
-        array $roles_configuration
+        array $roles_configuration,
+        array $additional_resources
     ) {
         $this->activity_service = $activity_service;
         $this->permission_service = $permission_service;
         $this->expression_service = $expression_service;
         $this->roles_configuration = $roles_configuration;
+        $this->additional_resources = $additional_resources;
     }
 
     /**
@@ -110,7 +114,15 @@ class AclService extends Object implements AclServiceInterface
         // add resources
         $all_permissions = $this->permission_service->getGlobalPermissions();
         foreach ($all_permissions as $access_scope => $permissions) {
+            // error_log(var_export($permissions->toArray(), true));
             $access_control_list->addResource(new GenericResource($access_scope));
+        }
+
+        foreach ($this->additional_resources as $resource) {
+            $res = new GenericResource($resource);
+            if (!$access_control_list->hasResource($res)) {
+                $access_control_list->addResource($res);
+            }
         }
 
         // add full-privileged administrator; allow all on all resource

@@ -2,12 +2,14 @@
 
 namespace Honeybee\Infrastructure\Security\Acl\Permission;
 
-use Trellis\Common\Configurable;
 use Honeybee\Common\Error\RuntimeError;
-use Honeybee\Model\Aggregate\AggregateRootTypeMap;
-use Honeybee\Ui\Activity\ActivityServiceInterface;
-use Honeybee\Ui\Activity\ActivityContainer;
+use Honeybee\Common\Util\StringToolkit;
 use Honeybee\Infrastructure\Security\Acl\AclService;
+use Honeybee\Infrastructure\Security\Acl\Permission\PermissionListMap;
+use Honeybee\Model\Aggregate\AggregateRootTypeMap;
+use Honeybee\Ui\Activity\ActivityContainer;
+use Honeybee\Ui\Activity\ActivityServiceInterface;
+use Trellis\Common\Configurable;
 
 class PermissionService extends Configurable implements PermissionServiceInterface
 {
@@ -23,14 +25,18 @@ class PermissionService extends Configurable implements PermissionServiceInterfa
 
     protected $role_permission_cache;
 
+    protected $additional_permissions;
+
     public function __construct(
         ActivityServiceInterface $activity_service,
         AggregateRootTypeMap $aggregate_root_type_map,
-        array $access_config
+        array $access_config,
+        PermissionListMap $additional_permissions
     ) {
         $this->access_config = $access_config;
         $this->activity_service = $activity_service;
         $this->aggregate_root_type_map = $aggregate_root_type_map;
+        $this->additional_permissions = $additional_permissions;
     }
 
     public function getRolePermissions($role_id)
@@ -49,13 +55,16 @@ class PermissionService extends Configurable implements PermissionServiceInterfa
             $role_config = $this->access_config['roles'][$role_id];
             $permissions_map = new PermissionListMap();
             foreach ($role_config['acl'] as $scope => $acl_rules) {
-                $permission_list = $this->evaluateRules($this->expandScopeWildcard($acl_rules));
+                $actual_acl_rules = $this->expandScopeWildcard($acl_rules);
+error_log(__METHOD__ . ' scope ' . $scope . ' – ' . count($acl_rules) . ' rules expanded to ' . count($actual_acl_rules));
+                $permission_list = $this->evaluateRules($actual_acl_rules);
                 if ($permission_list) {
                     $permissions_map->setItem($scope, $permission_list);
                 } else {
                     // no specific permissions found ...
                 }
             }
+// error_log(var_export($permissions_map->toArray(), true));
             $this->role_permission_cache[$role_id] = $permissions_map;
         }
 
@@ -75,8 +84,27 @@ class PermissionService extends Configurable implements PermissionServiceInterfa
     {
         $permissions_map = new PermissionListMap();
 
+        $unused_additional_scopes = [];
         foreach ($this->activity_service->getContainers() as $scope => $container) {
-            $permissions_map->setItem($scope, $this->buildDefaultPermissions($container));
+            $permissions = $this->buildDefaultPermissions($container);
+            if ($this->additional_permissions->hasKey($scope)) {
+                foreach ($this->additional_permissions as $sc => $perms) {
+                    foreach ($perms as $perm) {
+                        $permissions->addItem($perm);
+                    }
+                }
+            } else {
+                $unused_additional_scopes[] = $scope;
+            }
+
+            $permissions_map->setItem($scope, $permissions);
+        }
+
+        foreach ($unused_additional_scopes as $scope) {
+            $perms = $this->additional_permissions->getItem($scope);
+            if ($perms) {
+                $permissions_map->setItem($scope, $this->additional_permissions->getItem($scope));
+            }
         }
 
         return $permissions_map;
@@ -135,11 +163,14 @@ class PermissionService extends Configurable implements PermissionServiceInterfa
     {
         $expanded_scope_rules = [];
 
+        $global_permissions = $this->getGlobalPermissions();
+        $scopes = $global_permissions->getKeys();
+
         foreach ($acl_rules as $acl_rule) {
             $permissions_map = [];
 
             if (preg_match('/\*$/', $acl_rule['scope'])) {
-                foreach ($this->getGlobalPermissions() as $scope => $permissions) {
+                foreach ($scopes as $scope) {
                     $regex_escaped_scope = str_replace('.', '\.', $acl_rule['scope']);
                     $scope_pattern = str_replace('*', '[\w_\d]+', '/'.$regex_escaped_scope.'/');
 
@@ -149,9 +180,11 @@ class PermissionService extends Configurable implements PermissionServiceInterfa
                         $expanded_scope_rules[] = $expanded_rule;
                     }
                 }
-            } elseif ($rule_permissions = $this->getGlobalPermissions()->getItem($acl_rule['scope'])) {
+            } elseif ($rule_permissions = $global_permissions->getItem($acl_rule['scope'])) {
                 $expanded_scope_rules[] = $acl_rule;
             } else {
+                error_log('ADDING UNKNOWN SCOPE ' . $acl_rule['scope']);
+                $expanded_scope_rules[] = $acl_rule;
                 // @todo log/exception: configured permission scope does not exist.
             }
         }
@@ -182,8 +215,13 @@ class PermissionService extends Configurable implements PermissionServiceInterfa
                     $affected_permissions->append($this->evaluateAttributeRule($acl_rule));
                     break;
 
+                case 'method':
+                    $affected_permissions->append($this->evaluateMethodRule($acl_rule));
+                    break;
+
                 default:
-                    throw new RuntimeError("Invalid credential type given: " . $acl_rule['type']);
+                    throw new RuntimeError('Invalid credential type given: "' . $acl_rule['type'] .
+                        '". Expected one of: "*", "activity", "plugin", "attribute" or "method".');
             }
         }
 
@@ -335,5 +373,45 @@ class PermissionService extends Configurable implements PermissionServiceInterfa
         }
 
         return $rule_permissions;
+    }
+
+    protected function evaluateMethodRule(array $rule)
+    {
+        if ($rule['type'] !== 'method') {
+            throw new RuntimeError('Only accepting ACL rule data where "type" is "method".');
+        }
+
+        $rule_permissions = new PermissionList();
+
+        $permission_tpl = [
+            'type' => 'method',
+            'name' => $rule['operation'],
+            'access_scope' => $rule['scope'],
+            'access_type' => $rule['access'],
+            'expression' => $rule['expression'],
+        ];
+
+        $default_methods = $this->getDefaultMethodsSupported();
+
+        if ('*' === $rule['operation']) {
+            foreach ($default_methods as $method) {
+                $permission_data = $permission_tpl;
+                $permission_data['name'] = $method;
+                $permission_data['operation'] = $method;
+                error_log('* => ' . var_export($permission_data, true));
+                $rule_permissions->addItem(new Permission($permission_data));
+            }
+        } else {
+            $permission_data = $permission_tpl;
+            error_log('… => ' . var_export($permission_data, true));
+            $rule_permissions->addItem(new Permission($permission_data));
+        }
+
+        return $rule_permissions;
+    }
+
+    protected function getDefaultMethodsSupported()
+    {
+        return ['read', 'write'];
     }
 }
