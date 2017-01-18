@@ -61,6 +61,11 @@ class WorkflowActivityService extends Object
         $action_name,
         array $action_options
     ) {
+        $route_params = [];
+        if (array_key_exists('route_params', $action_options) && is_array($action_options['route_params'])) {
+            $route_params = $action_options['route_params'];
+        }
+
         return new Activity(
             [
                 'name' => $action_name,
@@ -71,12 +76,7 @@ class WorkflowActivityService extends Object
                 'verb' => 'read',
                 'rels' => [ $action_name ],
                 'settings' => new Settings([ 'form_id' => 'randomId-' . rand() ]),
-                'url' => new Url(
-                    [
-                        'type' => Url::TYPE_ROUTE,
-                        'value' => $action_options['route']
-                    ]
-                )
+                'url' => Url::createRoute($action_options['route'], $route_params)
             ]
         );
     }
@@ -102,13 +102,7 @@ class WorkflowActivityService extends Object
                 'verb' => $request_method,
                 'rels' => [ $workflow_event,  sprintf('%s_resource', $workflow_event) ],
                 'settings' => new Settings([ 'form_id' => 'randomId-' . rand() ]),
-                'url' => new Url(
-                    [
-                        'type' => Url::TYPE_ROUTE,
-                        'value' => $activity_route,
-                        'parameters' =>  [ 'event' => $workflow_event ]
-                    ]
-                )
+                'url' => Url::createRoute($activity_route, [ 'event' => $workflow_event ])
             ]
         );
     }
