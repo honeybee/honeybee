@@ -404,8 +404,9 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
 
         if ($this->getHistory()->getLast()->getSeqNumber() < $command->getKnownRevision()) {
             throw new RuntimeError(
-                'Invalid known-revision.' .
-                ' The current head revision may not be smaller than a given known-revision.'
+                'Invalid command revision for aggregate root ' . $this->getIdentifier() .
+                '. The current head revision (seq number ' . $this->getHistory()->getLast()->getSeqNumber() .
+                ') must not be smaller than the command\'s known revision (' . $command->getKnownRevision() . ').'
             );
         }
 
@@ -418,7 +419,11 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
             );
 
             if (!$conflicting_events->isEmpty()) {
-                throw new RuntimeError('Command can not be applied, because conflicting changes have occured.');
+                throw new RuntimeError(
+                    'Command conflicts with known event stream of aggregate root ' . $this->getIdentifier() .
+                    ' – command known revision is ' . $command->getKnownRevision() . ' whileas the last known ' .
+                    'history sequence number is ' . $this->getHistory()->getLast()->getSeqNumber() . '.'
+                );
             }
         }
     }
