@@ -323,4 +323,15 @@ abstract class Renderer implements RendererInterface
         $settings = $this->settings->toArray();
         return ArrayToolkit::mergeScalarSafe($config, $settings);
     }
+
+    protected function preparePayload(array $payload)
+    {
+        $renderer_payload = $payload;
+        foreach ($this->getOption('proxy_payload', []) as $payload_key) {
+            if ($this->hasPayload($payload_key)) {
+                $renderer_payload[$payload_key] = $this->getPayload($payload_key);
+            }
+        }
+        return $renderer_payload;
+    }
 }
