@@ -31,7 +31,9 @@ class ConsoleAuthService implements AuthServiceInterface
      */
     public function authenticate($username, $password, $options = []) // @codingStandardsIgnoreEnd
     {
-        $system_username = get_current_user();
+        $user_env_var = getenv($this->config->get('user_env_var', 'APP_USER'));
+        $system_username = ($user_env_var === false) ? get_current_user() : $user_env_var;
+
         $role_map = $this->config->get('role_map');
 
         if (isset($role_map[$system_username])) {
