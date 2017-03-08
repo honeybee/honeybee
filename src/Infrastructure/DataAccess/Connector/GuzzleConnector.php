@@ -8,7 +8,6 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Psr7\Uri;
 use GuzzleHttp\TransferStats;
-use Honeybee\Common\Error\RuntimeError;
 use Psr\Http\Message\RequestInterface;
 
 class GuzzleConnector extends Connector
@@ -36,17 +35,13 @@ class GuzzleConnector extends Connector
 
         if ($this->config->has('auth')) {
             $auth = (array)$this->config->get('auth');
-            if (!isset($auth['username'])) {
-                throw new RuntimeError('Missing required "username" setting within given auth config.');
+            if (!empty($auth['username']) && !empty($auth['password'])) {
+                $client_options['auth'] = [
+                    $auth['username'],
+                    $auth['password'],
+                    isset($auth['type']) ? $auth['type'] : 'basic'
+                ];
             }
-            if (!isset($auth['password'])) {
-                throw new RuntimeError('Missing required "password" setting within given auth config.');
-            }
-            $client_options['auth'] = [
-                $auth['username'],
-                $auth['password'],
-                isset($auth['type']) ? $auth['type'] : 'basic'
-            ];
         }
 
         if ($this->config->has('default_headers')) {
