@@ -126,7 +126,9 @@ class GuzzleConnector extends Connector
                 ]
             );
         } catch (Exception $e) {
-            error_log('[' . static::CLASS . '] Error on "' . $path . '": ' . $e->getTraceAsString());
+            error_log(
+                '[' . static::CLASS . '] Error on "' . $path . '": ' . $e->getMessage() . "\n" . $e->getTraceAsString()
+            );
             return Status::failing($this, [ 'message' => 'Error on "' . $path . '": ' . $e->getMessage() ]);
         }
     }

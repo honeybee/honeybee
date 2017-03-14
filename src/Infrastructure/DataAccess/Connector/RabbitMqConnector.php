@@ -2,6 +2,7 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Connector;
 
+use Exception;
 use PhpAmqpLib\Connection\AMQPLazyConnection;
 
 class RabbitMqConnector extends Connector
@@ -20,6 +21,11 @@ class RabbitMqConnector extends Connector
             return $this->connection;
         }
 
+        return $this->getFreshConnection();
+    }
+
+    protected function getFreshConnection()
+    {
         $this->needs('user')->needs('password');
 
         // https://github.com/videlalvaro/php-amqplib/blob/master/PhpAmqpLib/Connection/AMQPStreamConnection.php#L8-L39
@@ -126,5 +132,32 @@ class RabbitMqConnector extends Connector
             $this->config->get('admin_user', $this->config->get('user')),
             $this->config->get('admin_password', $this->config->get('password'))
         );
+    }
+
+    /**
+     * Tries to connect to rabbitmq server and get the server properties.
+     *
+     * @return Status of this connector
+     */
+    public function getStatus()
+    {
+        if ($this->config->has('fake_status')) {
+            return new Status($this, $this->config->get('fake_status'));
+        }
+
+        try {
+            $conn = $this->getFreshConnection();
+            $conn->reconnect();
+            $info = $conn->getServerProperties();
+            return Status::working($this, [
+                'message' => 'Could reconnect to rabbitmq server.',
+                'server_properties' => $info
+            ]);
+        } catch (Exception $e) {
+            error_log(
+                '[' . static::CLASS . '] Error on status check: ' . $e->getMessage() . "\n" . $e->getTraceAsString()
+            );
+            return Status::failing($this, [ 'error' => $e->getMessage() ]);
+        }
     }
 }
