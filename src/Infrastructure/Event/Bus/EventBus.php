@@ -47,7 +47,7 @@ class EventBus extends Object implements EventBusInterface
 
         if ($is_active) {
             foreach ($subscription->getEventHandlers() as $event_handler) {
-                if ($subscription->getSettings()->get('log', false) === true) {
+                if ($subscription->getSettings()->get('log', false)) {
                     $this->logger->debug(
                         sprintf(
                             '[EventBus][ExecHandler][%s][%s][%s] "%s" may handle event "%s"',
@@ -89,7 +89,7 @@ class EventBus extends Object implements EventBusInterface
                 }
 
                 if ($is_active) {
-                    if ($subscription->getSettings()->get('log', false) === true) {
+                    if ($subscription->getSettings()->get('log', false)) {
                         $this->logger->debug(
                             sprintf(
                                 '[EventBus][Distribute][%s][%s][%s] Event "%s"',
