@@ -53,44 +53,42 @@
     "require": {
         "php": ">=5.6.0",
         "beberlei/assert": "~2.5",
-        "honeybee/trellis": "0.1.0",
-        "shrink0r/workflux": "0.5.3",
-        "shrink0r/monatic": "0.2.0",
-        "elasticsearch/elasticsearch": "~2.0",
-        "league/flysystem": "~1.0",
-        "michelf/php-markdown": "~1.4",
-        "mtdowling/jmespath.php": "~2.0",
+        "honeybee/trellis": "~0.1.0",
+        "shrink0r/workflux": "~0.5.3",
+        "shrink0r/monatic": "~0.2.1",
+        "elasticsearch/elasticsearch": "^2.0",
+        "league/flysystem": "^1.0",
+        "mtdowling/jmespath.php": "^2.0",
         "psr/log": "~1.0",
-        "ql/uri-template": "~1.0",
+        "ql/uri-template": "^1.0",
         "rdlowrey/auryn": "~1.4",
         "swiftmailer/swiftmailer": "~5.4",
         "symfony/expression-language": "~2.7",
         "symfony/filesystem": "~2.7",
-        "twig/twig": "~1.23",
+        "twig/twig": "^1.30",
         "zendframework/zend-permissions-acl": "~2.5",
         "guzzlehttp/guzzle": "~6.2",
         "roave/security-advisories": "master@dev"
     },
 
     "require-dev": {
-        "phpunit/phpunit": "^5.4",
-        "phpmd/phpmd": "~2.3",
+        "phpunit/phpunit": "^5.5",
+        "phpmd/phpmd": "~2.6",
         "sebastian/phpcpd": "~2.0",
-        "squizlabs/php_codesniffer": "~2.3",
+        "squizlabs/php_codesniffer": "~2.8.1",
         "mockery/mockery": "master@dev",
         "satooshi/php-coveralls": "master@dev",
-        "sami/sami": "~3.2",
+        "sami/sami": "~3.3",
         "php-amqplib/php-amqplib": "master@dev"
     },
 
     "suggest": {
         "ext-fileinfo": "to handle mimetype guessing locally",
         "league/flysystem-aws-s3-v3": "to handle files with amazon aws s3 storage",
-        "league/flysystem-dropbox": "to handle files via dropbox api",
         "league/flysystem-sftp": "to handle files via sftp",
-        "cboden/Ratchet": "0.3.* to handle messages over websocket",
-        "react/zmq": "0.3.* to handle messages async with zeromq",
-        "php-amqplib/php-amqplib": "2.6.* as AMQP implementing message queue in async setups with e.g. rabbitmq"
+        "cboden/Ratchet": "to handle messages over websocket",
+        "react/zmq": "to handle messages async with zeromq",
+        "php-amqplib/php-amqplib": "as AMQP implementing message queue in async setups with rabbitmq"
     },
 
     "scripts": {
