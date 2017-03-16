@@ -180,7 +180,7 @@ class RelationProjectionUpdater extends EventHandler
     protected function buildQuery($identifier, CriteriaList $reference_filter_list)
     {
         $affected_relatives = [];
-        if (!empty($reference_filter_list)) {
+        if (!$reference_filter_list->isEmpty()) {
             // prevent circular self reference loading
             $filter_criteria_list = new CriteriaList;
             $filter_criteria_list->push(
