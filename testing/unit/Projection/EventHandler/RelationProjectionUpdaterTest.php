@@ -75,7 +75,7 @@ class RelationProjectionUpdaterTest extends TestCase
                 Mockery::on(
                     function (\Closure $callback) use ($related_projections) {
                         foreach ($related_projections as $index => $projection) {
-                            $callback($projection, $index);
+                            $callback($projection, $index, count($related_projections));
                         }
                         return true;
                     }

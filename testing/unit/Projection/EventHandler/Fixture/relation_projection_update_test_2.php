@@ -79,7 +79,7 @@ return [
         ],
         'sort_criteria_list' => [],
         'offset' => 0,
-        'limit' => 1000
+        'limit' => 100
     ],
     'projections' => [
         [

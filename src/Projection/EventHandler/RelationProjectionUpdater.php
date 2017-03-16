@@ -57,26 +57,108 @@ class RelationProjectionUpdater extends EventHandler
 
     protected function onProjectionUpdated(ProjectionUpdatedEvent $event)
     {
-        $affected_relatives = $this->loadAffectedRelativesFromProjectionEvent($event);
+        $reference_filter = $this->getReferenceFilter($event);
+        if ($reference_filter->isEmpty()) {
+            // type doesn't seem to be referenced anywhere => nothing to do
+            return;
+        }
 
         // reconstruct complete projection from event data
         $source_projection_type = $this->projection_type_map->getItem($event->getProjectionType());
         $source_projection = $source_projection_type->createEntity($event->getData());
 
-        $updated_relatives = $this->updateAffectedRelatives($affected_relatives, $source_projection);
+        $batch_size = $this->config->get('batch_size', 100);
 
-        $this->storeUpdatedProjections($affected_relatives, $updated_relatives);
+        // create query to get all entities where the given id is being referenced in
+        $query = $this->buildQuery($event->getProjectionIdentifier(), $reference_filter, $batch_size);
 
-        return $updated_relatives;
+        $affected_relatives = [];
+
+        $update_closure = function (
+            ProjectionInterface $projection,
+            $offset,
+            $total_count
+        ) use (
+            &$affected_relatives,
+            $source_projection,
+            $batch_size
+        ) {
+            $affected_relatives[] = $projection;
+            if (count($affected_relatives) % $batch_size === 0) {
+                // update all relatives from current batch with data from incoming projection
+                $this->updateAffectedRelatives(new ProjectionMap($affected_relatives), $source_projection);
+                $affected_relatives = [];
+            }
+        };
+
+        // scroll over all affected entities and update them if necessary
+        $this->getQueryService()->scroll($query, $update_closure);
+
+        // update leftovers from last scroll batch
+        $this->updateAffectedRelatives(new ProjectionMap($affected_relatives), $source_projection);
+    }
+
+    /**
+     * @return CriteriaList
+     */
+    protected function getReferenceFilter(ProjectionEvent $event)
+    {
+        // we don't know what exactly has changed in the source projection so first we filter out
+        // reference attributes not referencing the type of the updated projection
+        $foreign_projection_type_impl = get_class($this->projection_type_map->getItem($event->getProjectionType()));
+        $referenced_attributes_map = $this->getRelativeProjectionType()->getReferenceAttributes()->filter(
+            function ($ref_attribute) use ($foreign_projection_type_impl) {
+                foreach ($ref_attribute->getEmbeddedEntityTypeMap() as $ref_embed) {
+                    $ref_embed_type_impl = ltrim($ref_embed->getReferencedTypeClass(), '\\');
+                    return $ref_embed_type_impl === $foreign_projection_type_impl;
+                }
+            }
+        );
+
+        // build filter criteria to load projections where references may need to be updated
+        $reference_filter_list = new CriteriaList([], CriteriaList::OP_OR);
+        foreach ($referenced_attributes_map as $ref_attribute) {
+            $reference_filter_list->push(
+                new AttributeCriteria(
+                    $this->buildFieldFilterSpec($ref_attribute),
+                    new Equals($event->getProjectionIdentifier())
+                )
+            );
+        }
+
+        return $reference_filter_list;
+    }
+
+    /**
+     * @return CriteriaQuery
+     */
+    protected function buildQuery($identifier, CriteriaList $reference_filter_list, $batch_size = 100)
+    {
+        // prevent circular self reference loading
+        $filter_criteria_list = new CriteriaList;
+        $filter_criteria_list->push(
+            new AttributeCriteria('identifier', new Equals($identifier, true))
+        );
+        $filter_criteria_list->push($reference_filter_list);
+
+        $query = new CriteriaQuery(
+            new CriteriaList,
+            $filter_criteria_list,
+            new CriteriaList,
+            0,
+            $batch_size
+        );
+
+        return $query;
     }
 
     protected function updateAffectedRelatives(
-        ProjectionMap $affected_relatives,
+        ProjectionMap $affected_relatives_map,
         ProjectionInterface $source_projection
     ) {
         $referenced_identifier = $source_projection->getIdentifier();
         $updated_relatives = [];
-        foreach ($affected_relatives as $affected_relative) {
+        foreach ($affected_relatives_map as $affected_relative) {
             // collate the paths and matching entity list attributes from the affected projection
             $updated_state = $affected_relative->toArray();
             $affected_relative_type = $affected_relative->getType();
@@ -120,7 +202,9 @@ class RelationProjectionUpdater extends EventHandler
             $updated_relatives[] = $updated_relative;
         }
 
-        return new ProjectionMap($updated_relatives);
+        $updated_relatives_map = new ProjectionMap($updated_relatives);
+
+        $this->storeUpdatedProjections($affected_relatives_map, $updated_relatives_map);
     }
 
     // @todo investigate possible edge cases where circular dependencies cause endless updates
@@ -146,64 +230,6 @@ class RelationProjectionUpdater extends EventHandler
             );
             $this->event_bus->distribute(ChannelMap::CHANNEL_INFRA, $update_event);
         }
-    }
-
-    protected function loadAffectedRelativesFromProjectionEvent(ProjectionEvent $event)
-    {
-        // we don't know what exactly has changed in the source projection so first we filter out
-        // reference attributes not referencing the type of the updated projection
-        $foreign_projection_type_impl = get_class($this->projection_type_map->getItem($event->getProjectionType()));
-        $referenced_attributes_map = $this->getRelativeProjectionType()->getReferenceAttributes()->filter(
-            function ($ref_attribute) use ($foreign_projection_type_impl) {
-                foreach ($ref_attribute->getEmbeddedEntityTypeMap() as $ref_embed) {
-                    $ref_embed_type_impl = ltrim($ref_embed->getReferencedTypeClass(), '\\');
-                    return $ref_embed_type_impl === $foreign_projection_type_impl;
-                }
-            }
-        );
-
-        // build filter criteria to load projections where references may need to be updated
-        $reference_filter_list = new CriteriaList([], CriteriaList::OP_OR);
-        foreach ($referenced_attributes_map as $ref_attribute) {
-            $reference_filter_list->push(
-                new AttributeCriteria(
-                    $this->buildFieldFilterSpec($ref_attribute),
-                    new Equals($event->getProjectionIdentifier())
-                )
-            );
-        }
-
-        return $this->buildQuery($event->getProjectionIdentifier(), $reference_filter_list);
-    }
-
-    // finalize query and get results from the query service
-    protected function buildQuery($identifier, CriteriaList $reference_filter_list)
-    {
-        $affected_relatives = [];
-        if (!$reference_filter_list->isEmpty()) {
-            // prevent circular self reference loading
-            $filter_criteria_list = new CriteriaList;
-            $filter_criteria_list->push(
-                new AttributeCriteria('identifier', new Equals($identifier, true))
-            );
-            $filter_criteria_list->push($reference_filter_list);
-
-            $this->getQueryService()->scroll(
-                new CriteriaQuery(
-                    new CriteriaList,
-                    $filter_criteria_list,
-                    new CriteriaList,
-                    0,
-                    $this->config->get('batch_size', 1000)
-                ),
-                function (ProjectionInterface $projection) use (&$affected_relatives) {
-                    // @note if there are many affected relatives this could consume memory
-                    $affected_relatives[] = $projection;
-                }
-            );
-        }
-
-        return new ProjectionMap($affected_relatives);
     }
 
     protected function buildFieldFilterSpec(EmbeddedEntityListAttribute $embed_attribute)
