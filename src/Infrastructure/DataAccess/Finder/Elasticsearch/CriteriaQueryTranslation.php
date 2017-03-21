@@ -303,6 +303,10 @@ class CriteriaQueryTranslation implements QueryTranslationInterface
             if (isset($dynamic_mappings[$attribute_path])) {
                 $sort['unmapped_type'] = $dynamic_mappings[$attribute_path];
             }
+            $multi_field_mapped_attributes = (array)$this->config->get('multi_fields', []);
+            if (in_array($attribute_path, $multi_field_mapped_attributes)) {
+                $attribute_path = $attribute_path . '.sort';
+            }
             $sorts[][$attribute_path] = $sort;
         }
 
