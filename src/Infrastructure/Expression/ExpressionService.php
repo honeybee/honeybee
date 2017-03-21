@@ -22,16 +22,14 @@ class ExpressionService implements ExpressionServiceInterface
     protected function registerExtensions(ExpressionLanguage $expression_language)
     {
         // @see http://symfony.com/doc/current/components/expression_language/syntax.html
-        /*
         $this->expression_language->register(
-            'is_even_hour',
-            function($str) {
-                return sprintf('date("H")%2==0');
+            'match_event',
+            function($event, $pattern) {
+                return sprintf('(!!preg_match("%1$s", "%2$s"))', $pattern, $event->getType());
             },
-            function ($arguments) {
-                return date("H")%2==0;
+            function ($args, $event, $pattern) {
+                return !!preg_match("~$pattern~", $event->getType());
             }
         );
-        */
     }
 }
