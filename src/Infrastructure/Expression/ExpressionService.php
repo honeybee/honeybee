@@ -24,7 +24,7 @@ class ExpressionService implements ExpressionServiceInterface
         // @see http://symfony.com/doc/current/components/expression_language/syntax.html
         $this->expression_language->register(
             'match_event',
-            function($event, $pattern) {
+            function ($event, $pattern) {
                 return sprintf('(!!preg_match("%1$s", "%2$s"))', $pattern, $event->getType());
             },
             function ($args, $event, $pattern) {
