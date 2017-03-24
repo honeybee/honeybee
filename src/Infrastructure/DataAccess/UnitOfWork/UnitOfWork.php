@@ -73,7 +73,7 @@ class UnitOfWork implements UnitOfWorkInterface
         $this->event_writer = $event_writer;
         $this->logger = $logger;
 
-        $this->tracked_aggregate_roots = new SplObjectStorage();
+        $this->tracked_aggregate_roots = new SplObjectStorage;
     }
 
     /**
@@ -119,11 +119,11 @@ class UnitOfWork implements UnitOfWorkInterface
      */
     public function commit()
     {
-        $committed_events_map = new AggregateRootEventListMap();
+        $committed_events_map = new AggregateRootEventListMap;
         $comitted_ars = [];
         foreach ($this->tracked_aggregate_roots as $aggregate_root) {
             $event_stream = $this->tracked_aggregate_roots[$aggregate_root];
-            $committed_events_list = new AggregateRootEventList();
+            $committed_events_list = new AggregateRootEventList;
             foreach ($aggregate_root->getUncomittedEvents() as $uncomitted_event) {
                 $event_stream->push($uncomitted_event);
                 $this->event_writer->write($uncomitted_event);
