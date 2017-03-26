@@ -2,10 +2,10 @@
 
 namespace Honeybee\Infrastructure\Fixture;
 
+use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Config\ConfigInterface;
 use Honeybee\Model\Aggregate\AggregateRootType;
 use Honeybee\Model\Aggregate\AggregateRootTypeMap;
-use Honeybee\Common\Error\RuntimeError;
 use Trellis\Sham\DataGenerator;
 
 class FixtureService implements FixtureServiceInterface
@@ -15,6 +15,8 @@ class FixtureService implements FixtureServiceInterface
     protected $fixture_target_map;
 
     protected $aggregate_root_type_map;
+
+    protected $data_generator;
 
     protected static $excluded_attributes = [
         'workflow_state',
@@ -26,11 +28,13 @@ class FixtureService implements FixtureServiceInterface
     public function __construct(
         ConfigInterface $config,
         FixtureTargetMap $fixture_target_map,
-        AggregateRootTypeMap $aggregate_root_type_map
+        AggregateRootTypeMap $aggregate_root_type_map,
+        DataGenerator $data_generator = null
     ) {
         $this->config = $config;
         $this->fixture_target_map = $fixture_target_map;
         $this->aggregate_root_type_map = $aggregate_root_type_map;
+        $this->data_generator = $data_generator ?: new DataGenerator;
     }
 
     public function import($target_name, $fixture_name)
@@ -74,9 +78,6 @@ class FixtureService implements FixtureServiceInterface
     public function generate($type_prefix, $size = 1, $locale = 'de_DE')
     {
         $aggregate_root_type = $this->aggregate_root_type_map->getItem($type_prefix);
-        if (!$aggregate_root_type instanceof AggregateRootType) {
-            throw new RuntimeError(sprintf('No aggregate root found with prefix %s', $type_prefix));
-        }
 
         $documents = [];
         $options = [
@@ -89,7 +90,7 @@ class FixtureService implements FixtureServiceInterface
         ];
 
         for ($cnt = 0; $cnt < $size; $cnt++) {
-            $document = DataGenerator::createDataFor($aggregate_root_type, $options);
+            $document = $this->data_generator->createDataFor($aggregate_root_type, $options);
             $this->excludeAttributes($document);
 
             // Add identifier for convenient related entity referencing purposes

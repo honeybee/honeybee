@@ -54,6 +54,7 @@
                 <directory>testing/unit/Projection/EventHandler/Fixture</directory>
                 <directory>testing/unit/Projection/Fixture</directory>
                 <directory>testing/unit/Ui/Fixture</directory>
+                <directory>testing/unit/Fixture</directory>
             </exclude>
         </whitelist>
     </filter>
