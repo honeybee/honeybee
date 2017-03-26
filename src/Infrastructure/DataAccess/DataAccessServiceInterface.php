@@ -10,19 +10,19 @@ interface DataAccessServiceInterface
 
     public function getStorageWriter($writer_name);
 
-    public function getProjectionWriterByType(ProjectionTypeInterface $projection_type, $projection_name = 'standard');
+    public function getProjectionWriterByType(ProjectionTypeInterface $projection_type);
 
     public function getStorageReaderMap();
 
     public function getStorageReader($reader_name);
 
-    public function getProjectionReaderByType(ProjectionTypeInterface $projection_type, $projection_name = 'standard');
+    public function getProjectionReaderByType(ProjectionTypeInterface $projection_type);
 
     public function getFinderMap();
 
     public function getFinder($finder_name);
 
-    public function getProjectionFinderByType(ProjectionTypeInterface $projection_type, $projection_name = 'standard');
+    public function getProjectionFinderByType(ProjectionTypeInterface $projection_type);
 
     public function getQueryServiceMap();
 
