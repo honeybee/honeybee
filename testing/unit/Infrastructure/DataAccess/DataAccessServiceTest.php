@@ -23,27 +23,17 @@ class DataAccessServiceTest extends TestCase
 {
     public function testGetStorageWriterMap()
     {
-        $data_access_service = new DataAccessService(
-            $torage_writer_map = new StorageWriterMap,
-            new StorageReaderMap,
-            new FinderMap,
-            new QueryServiceMap,
-            new UnitOfWorkMap
-        );
+        $storage_writer_map = new StorageWriterMap;
+        $data_access_service = $this->makeDAService($storage_writer_map);
 
-        $this->assertSame($torage_writer_map, $data_access_service->getStorageWriterMap());
+        $this->assertSame($storage_writer_map, $data_access_service->getStorageWriterMap());
     }
 
     public function testGetStorageWriter()
     {
         $mock_storage_writer = Mockery::mock(StorageWriterInterface::CLASS);
-        $data_access_service = new DataAccessService(
-            new StorageWriterMap(['mock_writer' => $mock_storage_writer]),
-            new StorageReaderMap,
-            new FinderMap,
-            new QueryServiceMap,
-            new UnitOfWorkMap
-        );
+        $storage_writer_map = new StorageWriterMap(['mock_writer' => $mock_storage_writer]);
+        $data_access_service = $this->makeDAService($storage_writer_map);
 
         $this->assertSame($mock_storage_writer, $data_access_service->getStorageWriter('mock_writer'));
     }
@@ -53,14 +43,7 @@ class DataAccessServiceTest extends TestCase
      */
     public function testGetStorageWriterMissing()
     {
-        $data_access_service = new DataAccessService(
-            new StorageWriterMap,
-            new StorageReaderMap,
-            new FinderMap,
-            new QueryServiceMap,
-            new UnitOfWorkMap
-        );
-
+        $data_access_service = $this->makeDAService();
         $data_access_service->getStorageWriter('mock_writer');
     }
 
@@ -73,16 +56,11 @@ class DataAccessServiceTest extends TestCase
             'mock_type::projection.standard',
             'mock_type::projection.other'
         );
-        $data_access_service = new DataAccessService(
-            new StorageWriterMap([
-                'mock_type::projection.standard::view_store::writer' => $mock_standard_projection_writer,
-                'mock_type::projection.other::view_store::writer' => $mock_other_projection_writer
-            ]),
-            new StorageReaderMap,
-            new FinderMap,
-            new QueryServiceMap,
-            new UnitOfWorkMap
-        );
+        $storage_writer_map = new StorageWriterMap([
+            'mock_type::projection.standard::view_store::writer' => $mock_standard_projection_writer,
+            'mock_type::projection.other::view_store::writer' => $mock_other_projection_writer
+        ]);
+        $data_access_service = $this->makeDAService($storage_writer_map);
 
         $this->assertSame(
             $mock_standard_projection_writer,
@@ -97,13 +75,8 @@ class DataAccessServiceTest extends TestCase
 
     public function testGetStorageReaderMap()
     {
-        $data_access_service = new DataAccessService(
-            new StorageWriterMap,
-            $storage_reader_map = new StorageReaderMap,
-            new FinderMap,
-            new QueryServiceMap,
-            new UnitOfWorkMap
-        );
+        $storage_reader_map = new StorageReaderMap;
+        $data_access_service = $this->makeDAService(null, $storage_reader_map);
 
         $this->assertSame($storage_reader_map, $data_access_service->getStorageReaderMap());
     }
@@ -111,15 +84,19 @@ class DataAccessServiceTest extends TestCase
     public function testGetStorageReader()
     {
         $mock_storage_reader = Mockery::mock(StorageReaderInterface::CLASS);
-        $data_access_service = new DataAccessService(
-            new StorageWriterMap,
-            new StorageReaderMap(['mock_reader' => $mock_storage_reader]),
-            new FinderMap,
-            new QueryServiceMap,
-            new UnitOfWorkMap
-        );
+        $storage_reader_map = new StorageReaderMap(['mock_reader' => $mock_storage_reader]);
+        $data_access_service = $this->makeDAService(null, $storage_reader_map);
 
         $this->assertSame($mock_storage_reader, $data_access_service->getStorageReader('mock_reader'));
+    }
+
+    /**
+     * @expectedException Honeybee\Common\Error\RuntimeError
+     */
+    public function testGetStorageReaderMissing()
+    {
+        $data_access_service = $this->makeDAService();
+        $data_access_service->getStorageReader('mock_reader');
     }
 
     public function testGetProjectionReaderByType()
@@ -131,16 +108,11 @@ class DataAccessServiceTest extends TestCase
             'mock_type::projection.standard',
             'mock_type::projection.other'
         );
-        $data_access_service = new DataAccessService(
-            new StorageWriterMap,
-            new StorageReaderMap([
-                'mock_type::projection.standard::view_store::reader' => $mock_standard_projection_reader,
-                'mock_type::projection.other::view_store::reader' => $mock_other_projection_reader
-            ]),
-            new FinderMap,
-            new QueryServiceMap,
-            new UnitOfWorkMap
-        );
+        $storage_reader_map = new StorageReaderMap([
+            'mock_type::projection.standard::view_store::reader' => $mock_standard_projection_reader,
+            'mock_type::projection.other::view_store::reader' => $mock_other_projection_reader
+        ]);
+        $data_access_service = $this->makeDAService(null, $storage_reader_map);
 
         $this->assertSame(
             $mock_standard_projection_reader,
@@ -155,13 +127,8 @@ class DataAccessServiceTest extends TestCase
 
     public function testGetFinderMap()
     {
-        $data_access_service = new DataAccessService(
-            new StorageWriterMap,
-            new StorageReaderMap,
-            $finder_map = new FinderMap,
-            new QueryServiceMap,
-            new UnitOfWorkMap
-        );
+        $finder_map = new FinderMap;
+        $data_access_service = $this->makeDAService(null, null, $finder_map);
 
         $this->assertSame($finder_map, $data_access_service->getFinderMap());
     }
@@ -169,15 +136,19 @@ class DataAccessServiceTest extends TestCase
     public function testGetFinder()
     {
         $mock_finder = Mockery::mock(FinderInterface::CLASS);
-        $data_access_service = new DataAccessService(
-            new StorageWriterMap,
-            new StorageReaderMap,
-            new FinderMap(['mock_finder' => $mock_finder]),
-            new QueryServiceMap,
-            new UnitOfWorkMap
-        );
+        $finder_map = new FinderMap(['mock_finder' => $mock_finder]);
+        $data_access_service = $this->makeDAService(null, null, $finder_map);
 
         $this->assertSame($mock_finder, $data_access_service->getFinder('mock_finder'));
+    }
+
+    /**
+     * @expectedException Honeybee\Common\Error\RuntimeError
+     */
+    public function testGetFinderMissing()
+    {
+        $data_access_service = $this->makeDAService();
+        $data_access_service->getFinder('mock_finder');
     }
 
     public function testGetProjectionFinderByType()
@@ -189,16 +160,11 @@ class DataAccessServiceTest extends TestCase
             'mock_type::projection.standard',
             'mock_type::projection.other'
         );
-        $data_access_service = new DataAccessService(
-            new StorageWriterMap,
-            new StorageReaderMap,
-            new FinderMap([
-                'mock_type::projection.standard::view_store::finder' => $mock_standard_projection_finder,
-                'mock_type::projection.other::view_store::finder' => $mock_other_projection_finder
-            ]),
-            new QueryServiceMap,
-            new UnitOfWorkMap
-        );
+        $finder_map = new FinderMap([
+            'mock_type::projection.standard::view_store::finder' => $mock_standard_projection_finder,
+            'mock_type::projection.other::view_store::finder' => $mock_other_projection_finder
+        ]);
+        $data_access_service = $this->makeDAService(null, null, $finder_map);
 
         $this->assertSame(
             $mock_standard_projection_finder,
@@ -213,13 +179,8 @@ class DataAccessServiceTest extends TestCase
 
     public function testGetQueryServiceMap()
     {
-        $data_access_service = new DataAccessService(
-            new StorageWriterMap,
-            new StorageReaderMap,
-            new FinderMap,
-            $query_service_map = new QueryServiceMap,
-            new UnitOfWorkMap
-        );
+        $query_service_map = new QueryServiceMap;
+        $data_access_service = $this->makeDAService(null, null, null, $query_service_map);
 
         $this->assertSame($query_service_map, $data_access_service->getQueryServiceMap());
     }
@@ -227,15 +188,19 @@ class DataAccessServiceTest extends TestCase
     public function testGetQueryService()
     {
         $mock_query_service = Mockery::mock(QueryServiceInterface::CLASS);
-        $data_access_service = new DataAccessService(
-            new StorageWriterMap,
-            new StorageReaderMap,
-            new FinderMap,
-            new QueryServiceMap(['mock_query_service' => $mock_query_service]),
-            new UnitOfWorkMap
-        );
+        $query_service_map = new QueryServiceMap(['mock_query_service' => $mock_query_service]);
+        $data_access_service = $this->makeDAService(null, null, null, $query_service_map);
 
         $this->assertSame($mock_query_service, $data_access_service->getQueryService('mock_query_service'));
+    }
+
+    /**
+     * @expectedException Honeybee\Common\Error\RuntimeError
+     */
+    public function testGetQueryServiceMissing()
+    {
+        $data_access_service = $this->makeDAService();
+        $data_access_service->getQueryService('mock_query_service');
     }
 
     public function testGetProjectionQueryServiceByType()
@@ -247,16 +212,11 @@ class DataAccessServiceTest extends TestCase
             'mock_type::projection.standard',
             'mock_type::projection.other'
         );
-        $data_access_service = new DataAccessService(
-            new StorageWriterMap,
-            new StorageReaderMap,
-            new FinderMap,
-            new QueryServiceMap([
-                'mock_type::projection.standard::view_store::query_service' => $mock_standard_projection_query_service,
-                'mock_type::projection.other::view_store::query_service' => $mock_other_projection_query_service
-            ]),
-            new UnitOfWorkMap
-        );
+        $query_service_map = new QueryServiceMap([
+            'mock_type::projection.standard::view_store::query_service' => $mock_standard_projection_query_service,
+            'mock_type::projection.other::view_store::query_service' => $mock_other_projection_query_service
+        ]);
+        $data_access_service = $this->makeDAService(null, null, null, $query_service_map);
 
         $this->assertSame(
             $mock_standard_projection_query_service,
@@ -271,29 +231,28 @@ class DataAccessServiceTest extends TestCase
 
     public function testGetUnitOfWorkMap()
     {
-        $data_access_service = new DataAccessService(
-            new StorageWriterMap,
-            new StorageReaderMap,
-            new FinderMap,
-            new QueryServiceMap,
-            $unit_of_work = new UnitOfWorkMap
-        );
+        $unit_of_work_map = new UnitOfWorkMap;
+        $data_access_service = $this->makeDAService(null, null, null, null, $unit_of_work_map);
 
-        $this->assertSame($unit_of_work, $data_access_service->getUnitOfWorkMap());
+        $this->assertSame($unit_of_work_map, $data_access_service->getUnitOfWorkMap());
     }
 
     public function testGetUnitOfWork()
     {
         $mock_unit_of_work = Mockery::mock(UnitOfWorkInterface::CLASS);
-        $data_access_service = new DataAccessService(
-            new StorageWriterMap,
-            new StorageReaderMap,
-            new FinderMap,
-            new QueryServiceMap,
-            new UnitOfWorkMap(['mock_unit_of_work' => $mock_unit_of_work])
-        );
+        $unit_of_work_map = new UnitOfWorkMap(['mock_unit_of_work' => $mock_unit_of_work]);
+        $data_access_service = $this->makeDAService(null, null, null, null, $unit_of_work_map);
 
         $this->assertSame($mock_unit_of_work, $data_access_service->getUnitOfWork('mock_unit_of_work'));
+    }
+
+    /**
+     * @expectedException Honeybee\Common\Error\RuntimeError
+     */
+    public function testGetUnitOfWorkMissing()
+    {
+        $data_access_service = $this->makeDAService();
+        $data_access_service->getUnitOfWork('mock_unit_of_work');
     }
 
     public function testWriteTo()
@@ -308,13 +267,8 @@ class DataAccessServiceTest extends TestCase
                 return true;
             })
         );
-        $data_access_service = new DataAccessService(
-            new StorageWriterMap(['mock_writer' => $mock_storage_writer]),
-            new StorageReaderMap,
-            new FinderMap,
-            new QueryServiceMap,
-            new UnitOfWorkMap
-        );
+        $storage_writer_map = new StorageWriterMap(['mock_writer' => $mock_storage_writer]);
+        $data_access_service = $this->makeDAService($storage_writer_map);
 
         $this->assertNull($data_access_service->writeTo('mock_writer', $payload, $settings));
     }
@@ -331,13 +285,8 @@ class DataAccessServiceTest extends TestCase
                 return true;
             })
         )->andReturn($result);
-        $data_access_service = new DataAccessService(
-            new StorageWriterMap,
-            new StorageReaderMap(['mock_reader' => $mock_storage_reader]),
-            new FinderMap,
-            new QueryServiceMap,
-            new UnitOfWorkMap
-        );
+        $storage_reader_map = new StorageReaderMap(['mock_reader' => $mock_storage_reader]);
+        $data_access_service = $this->makeDAService(null, $storage_reader_map);
 
         $this->assertEquals($result, $data_access_service->readFrom('mock_reader', 'mock_identifier', $settings));
     }
@@ -352,14 +301,20 @@ class DataAccessServiceTest extends TestCase
                 return true;
             })
         );
-        $data_access_service = new DataAccessService(
-            new StorageWriterMap(['mock_writer' => $mock_storage_writer]),
-            new StorageReaderMap,
-            new FinderMap,
-            new QueryServiceMap,
-            new UnitOfWorkMap
-        );
+        $storage_writer_map = new StorageWriterMap(['mock_writer' => $mock_storage_writer]);
+        $data_access_service = $this->makeDAService($storage_writer_map);
 
         $this->assertNull($data_access_service->deleteFrom('mock_writer', 'mock_identifier'));
+    }
+
+    private function makeDAService($writer = null, $reader = null, $finder = null, $query_service = null, $uow = null)
+    {
+        return new DataAccessService(
+            $writer ?: new StorageWriterMap,
+            $reader ?: new StorageReaderMap,
+            $finder ?: new FinderMap,
+            $query_service ?: new QueryServiceMap,
+            $uow ?: new UnitOfWorkMap
+        );
     }
 }
