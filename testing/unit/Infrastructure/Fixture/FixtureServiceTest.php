@@ -41,7 +41,7 @@ class FixtureServiceTest extends TestCase
     {
         $fixture_service = $this->makeFixtureService();
         $fixture_service->getFixtureTarget('mock_fixture_target');
-    }
+    } // @codeCoverageIgnore
 
     public function testGetFixtureList()
     {
@@ -87,7 +87,7 @@ class FixtureServiceTest extends TestCase
         $fixture_service = $this->makeFixtureService($fixture_target_map);
 
         $fixture_service->import('mock_fixture_target', 'mock_version:name');
-    }
+    } // @codeCoverageIgnore
 
     public function testGenerate()
     {
@@ -141,7 +141,7 @@ class FixtureServiceTest extends TestCase
     {
         $fixture_service = $this->makeFixtureService();
         $fixture_service->generate('missing');
-    }
+    } // @codeCoverageIgnore
 
     private function makeFixtureService(
         $fixture_target_map = null,

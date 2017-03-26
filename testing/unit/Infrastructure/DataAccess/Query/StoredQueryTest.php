@@ -21,7 +21,7 @@ class StoredQueryTest extends TestCase
     public function testConstructInvalid()
     {
         $query = new StoredQuery([], [ 'param' => 'value' ], 0, 0);
-    }
+    } // @codeCoverageIgnore
 
     public function testToString()
     {

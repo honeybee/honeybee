@@ -47,7 +47,7 @@ class FinderMapTest extends TestCase
     public function testWithInvalidType()
     {
         $finder_map = new FinderMap([ new \stdClass ]);
-    }
+    } // @codeCoverageIgnore
 
     /**
      * @expectedException Trellis\Common\Error\RuntimeException
@@ -56,7 +56,7 @@ class FinderMapTest extends TestCase
     {
         $mock_finder = Mockery::mock(FinderInterface::CLASS);
         $finder_map = new FinderMap([ 'finder1' => $mock_finder, 'finder2' => $mock_finder ]);
-    }
+    } // @codeCoverageIgnore
 
     /**
      * @expectedException Trellis\Common\Error\RuntimeException
@@ -66,7 +66,7 @@ class FinderMapTest extends TestCase
         $mock_finder = Mockery::mock(FinderInterface::CLASS);
         $finder_map = new FinderMap([ 'finder1' => $mock_finder ]);
         $finder_map->setItem('finder2', $mock_finder);
-    }
+    } // @codeCoverageIgnore
 
     /**
      * @expectedException Trellis\Common\Error\RuntimeException
@@ -77,7 +77,7 @@ class FinderMapTest extends TestCase
         $mock_finder2 = Mockery::mock(FinderInterface::CLASS);
         $finder_map = new FinderMap([ 'finder1' => $mock_finder1 ]);
         $finder_map->setItem('finder1', $mock_finder2);
-    }
+    } // @codeCoverageIgnore
 
     /**
      * @expectedException Trellis\Common\Error\RuntimeException
@@ -86,7 +86,7 @@ class FinderMapTest extends TestCase
     {
         $finder_map = new FinderMap;
         $finder_map->getItem('finder1');
-    }
+    } // @codeCoverageIgnore
 
     public function testRemoveItem()
     {
@@ -130,7 +130,7 @@ class FinderMapTest extends TestCase
         $map_size = $finder_map->getSize();
         unset($finder_map['finder2']);
         $this->assertCount($map_size, $finder_map);
-    }
+    } // @codeCoverageIgnore
 
     public function testAppend()
     {
@@ -173,7 +173,7 @@ class FinderMapTest extends TestCase
         $finder_map2 = new FinderMap([ 'finder2' => $mock_finder1 ]);
 
         $finder_map1->append($finder_map2);
-    }
+    } // @codeCoverageIgnore
 
     /**
      * @expectedException Trellis\Common\Error\RuntimeException
@@ -186,7 +186,7 @@ class FinderMapTest extends TestCase
         $finder_map2 = new FinderMap([ 'finder1' => $mock_finder2 ]);
 
         $finder_map1->append($finder_map2);
-    }
+    } // @codeCoverageIgnore
 
     /**
      * @expectedException Trellis\Common\Error\RuntimeException
@@ -198,7 +198,7 @@ class FinderMapTest extends TestCase
         $non_matching_map = new Map;
 
         $finder_map->append($non_matching_map);
-    }
+    } // @codeCoverageIgnore
 
     public function testFilterAllowAll()
     {

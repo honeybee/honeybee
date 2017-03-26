@@ -26,7 +26,7 @@ class JobQueueTransportTest extends TestCase
     {
         $mock_job_service = Mockery::mock(JobServiceInterface::CLASS);
         $transport = new JobQueueTransport('', $mock_job_service, 'exchange');
-    }
+    } // @codeCoverageIgnore
 
     /**
      * @expectedException Assert\InvalidArgumentException
@@ -35,7 +35,7 @@ class JobQueueTransportTest extends TestCase
     {
         $mock_job_service = Mockery::mock(JobServiceInterface::CLASS);
         $transport = new JobQueueTransport(7, $mock_job_service, 'exchange');
-    }
+    } // @codeCoverageIgnore
 
     /**
      * @expectedException Assert\InvalidArgumentException
@@ -44,7 +44,7 @@ class JobQueueTransportTest extends TestCase
     {
         $mock_job_service = Mockery::mock(JobServiceInterface::CLASS);
         $transport = new JobQueueTransport('jobs', $mock_job_service, []);
-    }
+    } // @codeCoverageIgnore
 
     public function testSend()
     {
@@ -77,7 +77,7 @@ class JobQueueTransportTest extends TestCase
         $mock_job_service = Mockery::mock(JobServiceInterface::CLASS);
         $transport = new JobQueueTransport('jobs', $mock_job_service, 'exchange');
         $transport->send('', $mock_event_interface, 1, new Settings);
-    }
+    } // @codeCoverageIgnore
 
     /**
      * @expectedException Assert\InvalidArgumentException
@@ -88,7 +88,7 @@ class JobQueueTransportTest extends TestCase
         $mock_job_service = Mockery::mock(JobServiceInterface::CLASS);
         $transport = new JobQueueTransport('jobs', $mock_job_service, 'exchange');
         $transport->send(8, $mock_event_interface, 1, new Settings);
-    }
+    } // @codeCoverageIgnore
 
     /**
      * @expectedException Assert\InvalidArgumentException
@@ -99,7 +99,7 @@ class JobQueueTransportTest extends TestCase
         $mock_job_service = Mockery::mock(JobServiceInterface::CLASS);
         $transport = new JobQueueTransport('jobs', $mock_job_service, 'exchange');
         $transport->send('channel', $mock_event_interface, '', new Settings);
-    }
+    } // @codeCoverageIgnore
 
     /**
      * @expectedException Assert\InvalidArgumentException
@@ -110,7 +110,7 @@ class JobQueueTransportTest extends TestCase
         $mock_job_service = Mockery::mock(JobServiceInterface::CLASS);
         $transport = new JobQueueTransport('jobs', $mock_job_service, 'exchange');
         $transport->send('channel', $mock_event_interface, 1, new Settings);
-    }
+    } // @codeCoverageIgnore
 
     /**
      * @expectedException Assert\InvalidArgumentException
@@ -121,5 +121,5 @@ class JobQueueTransportTest extends TestCase
         $mock_job_service = Mockery::mock(JobServiceInterface::CLASS);
         $transport = new JobQueueTransport('jobs', $mock_job_service, 'exchange');
         $transport->send('channel', $mock_event_interface, 1, new Settings([ 'job' => '' ]));
-    }
+    } // @codeCoverageIgnore
 }

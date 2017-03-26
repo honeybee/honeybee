@@ -85,7 +85,7 @@ class FixtureTest extends TestCase
         $mock_fixture_target->shouldReceive('getName')->once()->andReturn('TestFixtureTarget');
 
         $fixture->execute($mock_fixture_target);
-    }
+    } // @codeCoverageIgnore
 
     /**
      * @expectedException Honeybee\Common\Error\RuntimeError
@@ -112,7 +112,7 @@ class FixtureTest extends TestCase
         $mock_fixture_target->shouldReceive('isActivated')->once()->andReturnTrue();
 
         $fixture->execute($mock_fixture_target);
-    }
+    } // @codeCoverageIgnore
 
     public function testExecuteWithCopiedFiles()
     {

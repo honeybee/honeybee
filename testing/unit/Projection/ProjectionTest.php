@@ -4,7 +4,6 @@ namespace Honeybee\Tests\Projection;
 
 use Honeybee\Tests\Fixture\BookSchema\Projection\Author\AuthorType;
 use Honeybee\Tests\TestCase;
-use Mockery;
 
 class ProjectionTest extends TestCase
 {

@@ -242,7 +242,7 @@ class AggregateRootCommandBuilderTest extends TestCase
 
         $builder = new AggregateRootCommandBuilder($author_type, CreateAuthorCommand::CLASS);
         $build_result = $builder->build();
-    }
+    } // @codeCoverageIgnore
 
     /**
      * @dataProvider provideModifyCommands
@@ -288,11 +288,8 @@ class AggregateRootCommandBuilderTest extends TestCase
         $author_type = new AuthorType();
 
         $builder = new AggregateRootCommandBuilder($author_type, ModifyAuthorCommand::CLASS);
-        $build_result = $builder
-            ->fromEntity(Mockery::mock(EntityInterface::CLASS))
-            ->withValues([ 'firstname' => 'Amitav', 'lastname' => 'Gosh' ])
-            ->build();
-    }
+        $build_result = $builder->fromEntity(Mockery::mock(EntityInterface::CLASS));
+    } // @codeCoverageIgnore
 
     /**
      * @expectedException Assert\InvalidArgumentException
@@ -310,5 +307,5 @@ class AggregateRootCommandBuilderTest extends TestCase
                 'email' => 'test@honeybee.com'
             ])
             ->build();
-    }
+    } // @codeCoverageIgnore
 }

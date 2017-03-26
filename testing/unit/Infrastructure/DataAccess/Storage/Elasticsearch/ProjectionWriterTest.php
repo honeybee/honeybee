@@ -111,7 +111,7 @@ class ProjectionWriterTest extends TestCase
         );
 
         $this->assertNull($projection_writer->write(null));
-    }
+    } // @codeCoverageIgnore
 
     /**
      * @expectedException Honeybee\Common\Error\RuntimeError
@@ -128,7 +128,7 @@ class ProjectionWriterTest extends TestCase
         );
 
         $this->assertNull($projection_writer->write([ 'data' ]));
-    }
+    } // @codeCoverageIgnore
 
     public function testDelete()
     {
@@ -373,7 +373,7 @@ class ProjectionWriterTest extends TestCase
         );
 
         $this->assertNull($projection_writer->writeMany(null));
-    }
+    } // @codeCoverageIgnore
 
     /**
      * @expectedException Honeybee\Common\Error\RuntimeError
@@ -390,5 +390,5 @@ class ProjectionWriterTest extends TestCase
         );
 
         $this->assertNull($projection_writer->writeMany([ 'a', 'b' ]));
-    }
+    } // @codeCoverageIgnore
 }

@@ -6,7 +6,6 @@ use Honeybee\Tests\Fixture\GameSchema\Projection\Game\GameType;
 use Honeybee\Tests\Fixture\GameSchema\Projection\Player\PlayerType;
 use Honeybee\Tests\Fixture\GameSchema\Projection\Team\TeamType;
 use Honeybee\Tests\TestCase;
-use Mockery;
 use Trellis\Runtime\Attribute\AttributeMap;
 
 class ProjectionTypeTest extends TestCase

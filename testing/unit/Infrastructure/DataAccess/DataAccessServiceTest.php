@@ -45,7 +45,7 @@ class DataAccessServiceTest extends TestCase
     {
         $data_access_service = $this->makeDAService();
         $data_access_service->getStorageWriter('mock_writer');
-    }
+    } // @codeCoverageIgnore
 
     public function testGetProjectionWriterByType()
     {
@@ -97,7 +97,7 @@ class DataAccessServiceTest extends TestCase
     {
         $data_access_service = $this->makeDAService();
         $data_access_service->getStorageReader('mock_reader');
-    }
+    } // @codeCoverageIgnore
 
     public function testGetProjectionReaderByType()
     {
@@ -149,7 +149,7 @@ class DataAccessServiceTest extends TestCase
     {
         $data_access_service = $this->makeDAService();
         $data_access_service->getFinder('mock_finder');
-    }
+    } // @codeCoverageIgnore
 
     public function testGetProjectionFinderByType()
     {
@@ -201,7 +201,7 @@ class DataAccessServiceTest extends TestCase
     {
         $data_access_service = $this->makeDAService();
         $data_access_service->getQueryService('mock_query_service');
-    }
+    } // @codeCoverageIgnore
 
     public function testGetProjectionQueryServiceByType()
     {
@@ -253,7 +253,7 @@ class DataAccessServiceTest extends TestCase
     {
         $data_access_service = $this->makeDAService();
         $data_access_service->getUnitOfWork('mock_unit_of_work');
-    }
+    } // @codeCoverageIgnore
 
     public function testWriteTo()
     {

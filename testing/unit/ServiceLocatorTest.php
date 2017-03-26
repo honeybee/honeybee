@@ -33,7 +33,7 @@ class ServiceLocatorTest extends TestCase
         );
 
         $service_locator->getService('non-existent');
-    }
+    } // @codeCoverageIgnore
 
     public function testGetUrlGenerator()
     {

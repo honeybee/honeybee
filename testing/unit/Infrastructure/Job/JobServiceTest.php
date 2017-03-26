@@ -46,7 +46,7 @@ class JobServiceTest extends TestCase
         $this->mock_job = Mockery::mock(JobInterface::CLASS);
         $this->mock_event_bus = Mockery::mock(EventBusInterface::CLASS);
         $this->mock_closure = function () {
-        };
+        }; // @codeCoverageIgnore
     }
 
     public function testDispatch()
@@ -99,7 +99,7 @@ class JobServiceTest extends TestCase
 
         $this->mock_job->shouldReceive('getSettings')->andReturn(new Settings([ 'routing_key' => 'route' ]));
         $job_service->dispatch($this->mock_job, []);
-    }
+    } // @codeCoverageIgnore
 
     /**
      * @expectedException Assert\InvalidArgumentException
@@ -117,7 +117,7 @@ class JobServiceTest extends TestCase
 
         $this->mock_job->shouldReceive('getSettings')->andReturn(new Settings([ 'routing_key' => 7 ]));
         $job_service->dispatch($this->mock_job, 'exchange');
-    }
+    } // @codeCoverageIgnore
 
     public function testConsume()
     {
@@ -155,7 +155,7 @@ class JobServiceTest extends TestCase
         );
 
         $this->assertEquals($this->mock_channel, $job_service->consume('', $this->mock_closure));
-    }
+    } // @codeCoverageIgnore
 
     /**
      * @expectedException Assert\InvalidArgumentException
@@ -172,7 +172,7 @@ class JobServiceTest extends TestCase
         );
 
         $this->assertEquals($this->mock_channel, $job_service->consume(9, $this->mock_closure));
-    }
+    } // @codeCoverageIgnore
 
     public function testRetry()
     {
