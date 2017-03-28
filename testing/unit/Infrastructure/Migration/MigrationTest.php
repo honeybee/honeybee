@@ -2,12 +2,12 @@
 
 namespace Honeybee\Tests\Infrastructure\Migration;
 
+use Honeybee\Infrastructure\DataAccess\Connector\ConnectorInterface;
 use Honeybee\Infrastructure\Migration\Migration;
 use Honeybee\Infrastructure\Migration\MigrationInterface;
 use Honeybee\Infrastructure\Migration\MigrationTargetInterface;
 use Honeybee\Tests\TestCase;
 use Mockery;
-use Honeybee\Infrastructure\DataAccess\Connector\ConnectorInterface;
 
 class MigrationTest extends TestCase
 {
