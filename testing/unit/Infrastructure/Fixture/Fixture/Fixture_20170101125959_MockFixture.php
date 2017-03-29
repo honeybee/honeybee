@@ -5,7 +5,8 @@ namespace Honeybee\Tests\Infrastructure\Fixture\Fixture;
 use Honeybee\Infrastructure\Fixture\Fixture;
 use Honeybee\Infrastructure\Fixture\FixtureTargetInterface;
 
-class MockFixture extends Fixture
+// @codingStandardsIgnoreLine
+class Fixture_20170101125959_MockFixture extends Fixture
 {
     protected $fixture;
 

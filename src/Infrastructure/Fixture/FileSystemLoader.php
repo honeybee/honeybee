@@ -7,19 +7,24 @@ use Honeybee\Common\Util\PhpClassParser;
 use Honeybee\Common\Util\StringToolkit;
 use Honeybee\Infrastructure\Config\ConfigInterface;
 use Honeybee\ServiceLocatorInterface;
+use Symfony\Component\Finder\Finder;
 
 class FileSystemLoader implements FixtureLoaderInterface
 {
-    const GLOB_EXPRESSION = '*.php';
-
     protected $config;
 
     protected $service_locator;
 
-    public function __construct(ConfigInterface $config, ServiceLocatorInterface $service_locator)
-    {
+    protected $file_finder;
+
+    public function __construct(
+        ConfigInterface $config,
+        ServiceLocatorInterface $service_locator,
+        Finder $file_finder = null
+    ) {
         $this->config = $config;
         $this->service_locator = $service_locator;
+        $this->file_finder= $file_finder?: new Finder;
     }
 
     /**
@@ -28,47 +33,39 @@ class FileSystemLoader implements FixtureLoaderInterface
     public function loadFixtures()
     {
         $fixture_dir = $this->config->get('directory');
-        if (!is_dir($fixture_dir)) {
-            throw new RuntimeError(sprintf('Given fixture path is not a directory: %s', $fixture_dir));
+        if (!is_dir($fixture_dir) || !is_readable($fixture_dir)) {
+            throw new RuntimeError(sprintf('Given fixture path is not a readable directory: %s', $fixture_dir));
         }
 
-        $fixture_list = new FixtureList;
-        $glob_expression = sprintf(
-            '%1$s%2$s[0-9]*%2$s%3$s',
-            $fixture_dir,
-            DIRECTORY_SEPARATOR,
-            self::GLOB_EXPRESSION
-        );
+        $fixtures = [];
+        $pattern = $this->config->get('pattern', '*.php');
+        $fixture_files = $this->file_finder->create()->files()->name($pattern)->in($fixture_dir);
 
-        foreach (glob($glob_expression) as $fixture_file) {
+        foreach ($fixture_files as $fixture_file) {
             $class_parser = new PhpClassParser;
-            $fixture_class_info = $class_parser->parse($fixture_file);
+            $fixture_class_info = $class_parser->parse((string)$fixture_file);
             $fixture_class = $fixture_class_info->getFullyQualifiedClassName();
+            $fixture_class_name = $fixture_class_info->getClassName();
 
-            if (!class_exists($fixture_class)) {
-                require_once $fixture_class_info->getFilePath();
+            $class_format = $this->config->get('format', '#(?<version>\d{14}).(?<name>.+)$#');
+            if (!preg_match($class_format, $fixture_class_name, $matches)
+                || !isset($matches['name'])
+                || !isset($matches['version'])
+            ) {
+                throw new RuntimeError('Invalid class name format for ' . $fixture_class_name);
             }
 
-            if (!class_exists($fixture_class)) {
-                throw new RuntimeError(
-                    sprintf("Unable to load fixture class %s", $fixture_class)
-                );
-            }
-
-            $class_name_parts = explode('_', $fixture_class_info->getClassName());
-            $fixture = $this->service_locator->createEntity(
+            $fixtures[] = $this->service_locator->createEntity(
                 $fixture_class,
                 [
                     ':state' => [
-                        'name' => StringToolkit::asSnakeCase($class_name_parts[2]),
-                        'version' => $class_name_parts[1]
+                        'name' => StringToolkit::asSnakeCase($matches['name']),
+                        'version' => $matches['version']
                     ]
                 ]
             );
-
-            $fixture_list->addItem($fixture);
         }
 
-        return $fixture_list;
+        return new FixtureList($fixtures);
     }
 }
