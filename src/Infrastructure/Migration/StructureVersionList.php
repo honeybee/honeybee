@@ -9,9 +9,10 @@ class StructureVersionList extends TypedList implements UniqueValueInterface
 {
     private $identifier;
 
-    public function __construct($identifier)
+    public function __construct($identifier, array $items = [])
     {
         $this->identifier = $identifier;
+        parent::__construct($items);
     }
 
     public function getIdentifier()
