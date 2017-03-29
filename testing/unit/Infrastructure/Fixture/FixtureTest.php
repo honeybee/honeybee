@@ -7,7 +7,7 @@ use Honeybee\Infrastructure\Command\CommandInterface;
 use Honeybee\Infrastructure\Filesystem\FilesystemServiceInterface;
 use Honeybee\Infrastructure\Fixture\FixtureTargetInterface;
 use Honeybee\Model\Aggregate\AggregateRootTypeMap;
-use Honeybee\Tests\Infrastructure\Fixture\Fixture\Fixture_20170101125959_MockFixture;
+use Honeybee\Tests\Infrastructure\Fixture\Fixture\MockFixture;
 use Honeybee\Tests\Fixture\BookSchema\Model\Author\AuthorType;
 use Honeybee\Tests\TestCase;
 use Mockery;
@@ -47,7 +47,7 @@ class FixtureTest extends TestCase
         $mock_filesystem_service = Mockery::mock(FilesystemServiceInterface::CLASS);
         $mock_finder = Mockery::mock(Finder::CLASS);
 
-        $fixture = new Fixture_20170101125959_MockFixture(
+        $fixture = new MockFixture(
             $this->aggregate_root_type_map,
             $mock_command_bus,
             $mock_filesystem_service,
@@ -72,7 +72,7 @@ class FixtureTest extends TestCase
         $mock_filesystem_service = Mockery::mock(FilesystemServiceInterface::CLASS);
         $mock_finder = Mockery::mock(Finder::CLASS);
 
-        $fixture = new Fixture_20170101125959_MockFixture(
+        $fixture = new MockFixture(
             $this->aggregate_root_type_map,
             $mock_command_bus,
             $mock_filesystem_service,
@@ -98,7 +98,7 @@ class FixtureTest extends TestCase
         $mock_logger = Mockery::mock(LoggerInterface::CLASS);
         $mock_logger->shouldReceive('error')->once();
 
-        $fixture = new Fixture_20170101125959_MockFixture(
+        $fixture = new MockFixture(
             $this->aggregate_root_type_map,
             $mock_command_bus,
             $mock_filesystem_service,

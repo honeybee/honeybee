@@ -44,14 +44,14 @@ class FileSystemLoaderTest extends TestCase
         $mock_fixture = Mockery::mock(FixtureInterface::CLASS);
         $mock_service_locator = Mockery::mock(ServiceLocatorInterface::CLASS);
         $mock_service_locator->shouldReceive('createEntity')->once()->with(
-            'Honeybee\Tests\Infrastructure\Fixture\Fixture\Fixture_20170101125959_MockFixture',
-            [':state' => ['name' => 'mock_fixture', 'version' => '20170101125959']]
+            'Honeybee\Tests\Infrastructure\Fixture\Fixture\Fixture_20170101125959_DummyFixture',
+            [':state' => ['name' => 'dummy_fixture', 'version' => '20170101125959']]
         )->andReturn($mock_fixture);
         $mock_iterator = Mockery::mock(\Iterator::CLASS);
         $mock_iterator->shouldReceive('rewind')->once();
         $mock_iterator->shouldReceive('valid')->twice()->andReturns(true, false);
         $mock_iterator->shouldReceive('current')->once()->andReturn(
-            new \SplFileInfo(__DIR__.'/Fixture/Fixture_20170101125959_MockFixture.php')
+            new \SplFileInfo(__DIR__.'/Fixture/DummyFixture.php')
         );
         $mock_iterator->shouldReceive('next');
         $mock_finder = $this->makeFinder();

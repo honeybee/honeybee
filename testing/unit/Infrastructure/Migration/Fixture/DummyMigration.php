@@ -6,7 +6,7 @@ use Honeybee\Infrastructure\Migration\Migration;
 use Honeybee\Infrastructure\Migration\MigrationTargetInterface;
 
 // @codingStandardsIgnoreLine
-class Migration_20170101125959_MockMigration extends Migration
+class Migration_20170101125959_DummyMigration extends Migration
 {
     protected function up(MigrationTargetInterface $migration_target)
     {
