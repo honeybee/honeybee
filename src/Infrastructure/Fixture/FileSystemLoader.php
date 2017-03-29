@@ -55,6 +55,10 @@ class FileSystemLoader implements FixtureLoaderInterface
                 throw new RuntimeError('Invalid class name format for ' . $fixture_class_name);
             }
 
+            if (!class_exists($fixture_class)) {
+                require_once $fixture_class_info->getFilePath();
+            }
+
             $fixtures[] = $this->service_locator->createEntity(
                 $fixture_class,
                 [

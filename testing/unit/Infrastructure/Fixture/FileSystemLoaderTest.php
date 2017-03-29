@@ -4,12 +4,12 @@ namespace Honeybee\Tests\Infrastructure\Fixture;
 
 use Honeybee\Infrastructure\Config\ArrayConfig;
 use Honeybee\Infrastructure\Fixture\FileSystemLoader;
+use Honeybee\Infrastructure\Fixture\FixtureInterface;
+use Honeybee\Infrastructure\Fixture\FixtureList;
 use Honeybee\ServiceLocatorInterface;
 use Honeybee\Tests\TestCase;
 use Mockery;
-use Honeybee\Infrastructure\Fixture\FixtureList;
 use Symfony\Component\Finder\Finder;
-use Honeybee\Infrastructure\Fixture\FixtureInterface;
 
 class FileSystemLoaderTest extends TestCase
 {
