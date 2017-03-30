@@ -128,12 +128,12 @@ class JobService implements JobServiceInterface
         $strategy_callback = function (JobInterface $job) use ($service_locator, $strategy_config) {
             $strategy_implementor = $strategy_config['implementor'];
 
-            $retry_strategy = $service_locator->createEntity(
+            $retry_strategy = $service_locator->make(
                 $strategy_config['retry']['implementor'],
                 [ ':job' => $job, ':settings' => $strategy_config['retry']['settings'] ]
             );
 
-            $failure_strategy = $service_locator->createEntity(
+            $failure_strategy = $service_locator->make(
                 $strategy_config['failure']['implementor'],
                 [ ':job' => $job, ':settings' => $strategy_config['failure']['settings'] ]
             );
@@ -141,7 +141,7 @@ class JobService implements JobServiceInterface
             return new $strategy_implementor($retry_strategy, $failure_strategy);
         };
 
-        return $this->service_locator->createEntity(
+        return $this->service_locator->make(
             $job_config['class'],
             [
                 // job class cannot be overridden by state

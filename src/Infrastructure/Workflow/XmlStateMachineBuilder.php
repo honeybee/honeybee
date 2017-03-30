@@ -71,7 +71,7 @@ class XmlStateMachineBuilder extends BaseXmlStateMachineBuilder
 
         $guard = null;
         if ($guard_definition) {
-            $guard = $this->service_locator->createEntity(
+            $guard = $this->service_locator->make(
                 $guard_definition['class'],
                 [
                     ':options' => $guard_definition['options'],

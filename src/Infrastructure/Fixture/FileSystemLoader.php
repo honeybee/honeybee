@@ -56,7 +56,7 @@ class FileSystemLoader implements FixtureLoaderInterface
             }
 
             $class_name_parts = explode('_', $fixture_class_info->getClassName());
-            $fixture = $this->service_locator->createEntity(
+            $fixture = $this->service_locator->make(
                 $fixture_class,
                 [
                     ':state' => [

@@ -539,7 +539,7 @@ class AggregateRootTest extends TestCase
         $guard_stub = $this->createMock(GuardInterface::CLASS);
 
         $service_locator_stub = $this->createMock(ServiceLocatorInterface::CLASS);
-        $service_locator_stub->method('createEntity')->willReturn($guard_stub);
+        $service_locator_stub->method('make')->willReturn($guard_stub);
 
         $workflows_file_path = __DIR__ . '/../../Fixture/BookSchema/Model/workflows.xml';
 

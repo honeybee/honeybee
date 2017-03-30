@@ -5,14 +5,6 @@ namespace Honeybee;
 use Trellis\Common\Collection\TypedMap;
 use Trellis\Common\Options;
 
-/**
- * Holds a map with service keys and the implementor to use for creation of
- * those services.
- *
- * Example:
- *
- * "authentication" => "Honeybee\Infrastructure\Security\Auth\StandardAuthProvider"
- */
 class ServiceDefinitionMap extends TypedMap
 {
     protected $options;
