@@ -3,15 +3,15 @@
 namespace Honeybee\Tests\Infrastructure\Migration;
 
 use Honeybee\Infrastructure\Config\ArrayConfig;
+use Honeybee\Infrastructure\Migration\MigrationInterface;
 use Honeybee\Infrastructure\Migration\MigrationList;
 use Honeybee\Infrastructure\Migration\MigrationService;
 use Honeybee\Infrastructure\Migration\MigrationTargetInterface;
 use Honeybee\Infrastructure\Migration\MigrationTargetMap;
+use Honeybee\Infrastructure\Migration\StructureVersionInterface;
+use Honeybee\Infrastructure\Migration\StructureVersionList;
 use Honeybee\Tests\TestCase;
 use Mockery;
-use Honeybee\Infrastructure\Migration\StructureVersionList;
-use Honeybee\Infrastructure\Migration\StructureVersionInterface;
-use Honeybee\Infrastructure\Migration\MigrationInterface;
 
 class MigrationServiceTest extends TestCase
 {
