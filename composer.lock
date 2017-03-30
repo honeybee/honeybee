@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "2ae872520a5334b8dcc5ac962427ff85",
-    "content-hash": "048489650a3122cab41600fae46f8b53",
+    "hash": "d4615b43b2b8fdf4943522f7b2ba0336",
+    "content-hash": "d2e8a7b5aff0466ff0cffa7caf304e16",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -654,78 +654,6 @@
                 "stream"
             ],
             "time": "2014-10-12 19:18:40"
-        },
-        {
-            "name": "honeybee/honeybee-ui",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/honeybee/honeybee-ui.git",
-                "reference": "bd7ad1e3ebc08d7f22b6ef22ce48a0b77f14719c"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/honeybee/honeybee-ui/zipball/bd7ad1e3ebc08d7f22b6ef22ce48a0b77f14719c",
-                "reference": "bd7ad1e3ebc08d7f22b6ef22ce48a0b77f14719c",
-                "shasum": ""
-            },
-            "require": {
-                "honeybee/honeybee": "*",
-                "honeybee/trellis": "~0.1.0",
-                "php": ">=5.6.0",
-                "roave/security-advisories": "master@dev"
-            },
-            "require-dev": {
-                "mockery/mockery": "master@dev",
-                "phpmd/phpmd": "~2.6",
-                "phpunit/phpunit": "^5.5",
-                "sami/sami": "~3.3",
-                "satooshi/php-coveralls": "master@dev",
-                "sebastian/phpcpd": "~2.0",
-                "squizlabs/php_codesniffer": "~2.8.1"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Honeybee\\Ui\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Hasham Ahmad",
-                    "email": "mr.hash@gmail.com",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Steffen Gransow",
-                    "email": "honeybee@mivesto.de",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Honeybee Contributors",
-                    "homepage": "https://github.com/honeybee/honeybee/graphs/contributors"
-                },
-                {
-                    "name": "Thorsten Schmitt-Rink",
-                    "email": "schmittrink@gmail.com",
-                    "homepage": "https://github.com/shrink0r",
-                    "role": "Developer"
-                }
-            ],
-            "description": "User interface extensions for Honeybee.",
-            "homepage": "https://github.com/honeybee/honeybee-ui",
-            "keywords": [
-                "cqrs",
-                "ddd",
-                "event-sourcing",
-                "hexagonal",
-                "messaging"
-            ],
-            "time": "2017-03-27 18:36:31"
         },
         {
             "name": "honeybee/trellis",
@@ -4539,7 +4467,6 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "honeybee/honeybee-ui": 20,
         "roave/security-advisories": 20,
         "mockery/mockery": 20,
         "satooshi/php-coveralls": 20,
