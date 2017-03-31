@@ -59,7 +59,7 @@ class FileSystemLoader implements MigrationLoaderInterface
                 require_once $migration_class_info->getFilePath();
             }
 
-            $migrations[] = $this->service_locator->createEntity(
+            $migrations[] = $this->service_locator->make(
                 $migration_class,
                 [
                     ':state' => [

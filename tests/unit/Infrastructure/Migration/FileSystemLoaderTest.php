@@ -43,7 +43,7 @@ class FileSystemLoaderTest extends TestCase
     {
         $mock_migration= Mockery::mock(MigrationInterface::CLASS);
         $mock_service_locator = Mockery::mock(ServiceLocatorInterface::CLASS);
-        $mock_service_locator->shouldReceive('createEntity')->once()->with(
+        $mock_service_locator->shouldReceive('make')->once()->with(
             'Honeybee\Tests\Infrastructure\Migration\Fixture\Migration_20170101125959_DummyMigration',
             [':state' => ['name' => 'dummy_migration', 'version' => '20170101125959']]
         )->andReturn($mock_migration);
