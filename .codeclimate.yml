@@ -4,4 +4,4 @@ Python: false
 PHP: true
 
 exclude_paths:
-- testing/**/*
+- tests/**/*

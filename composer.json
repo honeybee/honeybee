@@ -38,7 +38,7 @@
     },
 
     "autoload-dev": {
-        "psr-4": { "Honeybee\\Tests\\": "testing/unit" }
+        "psr-4": { "Honeybee\\Tests\\": "tests/unit" }
     },
 
     "prefer-stable": true,
@@ -96,7 +96,7 @@
             "@validate-json"
         ],
         "test": "phpunit",
-        "code-sniffer": "vendor/bin/phpcs --extensions=php --standard=psr2 src testing/unit",
+        "code-sniffer": "vendor/bin/phpcs --extensions=php --standard=psr2 src tests/unit",
         "code-sniffer-autofix": "vendor/bin/phpcbf --standard=psr2 -d tabWidth=4 src/",
         "validate-json": "composer validate --no-check-all --no-check-lock",
         "validate-deps": "composer validate --with-dependencies --strict"
