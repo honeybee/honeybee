@@ -9,11 +9,13 @@
         {
             "name": "Hasham Ahmad",
             "email": "mr.hash@gmail.com",
+            "homepage": "https://github.com/MrHash",
             "role": "Developer"
         },
         {
             "name": "Steffen Gransow",
             "email": "honeybee@mivesto.de",
+            "homepage": "https://github.com/graste",
             "role": "Developer"
         },
         {
@@ -88,8 +90,8 @@
             "@validate-json"
         ],
         "test": "phpunit",
-        "code-sniffer": "vendor/bin/phpcs --extensions=php --standard=psr2 src tests/unit",
-        "code-sniffer-autofix": "vendor/bin/phpcbf --standard=psr2 -d tabWidth=4 src/",
+        "code-sniffer": "phpcs --extensions=php --standard=psr2 src tests/unit",
+        "code-sniffer-autofix": "phpcbf --standard=psr2 -d tabWidth=4 src",
         "validate-json": "composer validate --no-check-all --no-check-lock",
         "validate-deps": "composer validate --with-dependencies --strict"
     }
