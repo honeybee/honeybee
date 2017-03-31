@@ -10,5 +10,5 @@ use Psr\Container\ContainerInterface;
  */
 interface ServiceLocatorInterface extends ContainerInterface
 {
-    public function make($implementor, array $state = []);
+    public function make(string $implementor, array $state = []);
 }
