@@ -4,7 +4,7 @@
     "description": "Library for implementing CQRS driven, event-sourced and distributed architectures.",
     "keywords": [ "ddd", "cqrs", "hexagonal", "event-sourcing", "messaging" ],
     "homepage": "https://github.com/honeybee/honeybee",
-    "license": "MIT",
+    "license": "MPL-2.0",
     "authors": [
         {
             "name": "Hasham Ahmad",
