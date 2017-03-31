@@ -12,7 +12,7 @@ class QueryServiceMap extends TypedMap implements UniqueKeyInterface, UniqueValu
 {
     public function getByProjectionType(ProjectionTypeInterface $projection_type)
     {
-        $query_service_key = sprintf('%s::query_service', $projection_type->getVariantPrefix());
+        $query_service_key = sprintf('%s::view_store::query_service', $projection_type->getVariantPrefix());
         return $this->getItem($query_service_key);
     }
 
