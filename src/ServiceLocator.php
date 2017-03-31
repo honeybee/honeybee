@@ -42,7 +42,7 @@ final class ServiceLocator implements ServiceLocatorInterface
         }
     }
 
-    public function make(string $implementor, array $state = [])
+    public function make($implementor, array $state = [])
     {
         return $this->di_container->make($implementor, $state);
     }
