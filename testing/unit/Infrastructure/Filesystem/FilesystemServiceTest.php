@@ -5,7 +5,6 @@ namespace Honeybee\Tests\Infrastructure\Filesystem;
 use Honeybee\Tests\TestCase;
 use Honeybee\Tests\Fixture\BookSchema\Model\Author\AuthorType;
 use Honeybee\Infrastructure\Filesystem\FilesystemService;
-use Mockery;
 
 class FilesystemServiceTest extends TestCase
 {

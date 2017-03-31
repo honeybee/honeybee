@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "d2e8a7b5aff0466ff0cffa7caf304e16",
+    "content-hash": "7433475dffa6069ff5f208eea0d54b83",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -2486,7 +2486,7 @@
                 "test double",
                 "testing"
             ],
-            "time": "2017-03-10T12:43:28+00:00"
+            "time": "2017-03-10 12:43:28"
         },
         {
             "name": "myclabs/deep-copy",
@@ -2691,7 +2691,7 @@
             "support": {
                 "source": "https://github.com/FriendsOfHoneybee/php-amqplib/tree/master"
             },
-            "time": "2017-03-10T15:51:44+00:00"
+            "time": "2017-03-10 15:51:44"
         },
         {
             "name": "phpdocumentor/reflection-docblock",
@@ -3427,7 +3427,7 @@
                 "github",
                 "test"
             ],
-            "time": "2017-03-31T10:12:47+00:00"
+            "time": "2017-03-31 10:12:47"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",

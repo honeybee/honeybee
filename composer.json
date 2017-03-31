@@ -54,7 +54,7 @@
     "require": {
         "php": ">=5.6.0",
         "beberlei/assert": "~2.5",
-        "honeybee/trellis": "~0.1.0",
+        "honeybee/trellis": "~0.1.1",
         "shrink0r/workflux": "~0.5.3",
         "shrink0r/monatic": "~0.2.1",
         "elasticsearch/elasticsearch": "^2.0",

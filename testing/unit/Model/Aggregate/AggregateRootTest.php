@@ -85,8 +85,9 @@ class AggregateRootTest extends TestCase
             ]
         );
 
+        // @codeCoverageIgnoreStart
         $aggregate_root->create($create_command);
-    }
+    } // @codeCoverageIgnoreEnd
 
     /**
      * Expects a non-valid aggregate-root when trying to create it with
@@ -158,8 +159,9 @@ class AggregateRootTest extends TestCase
             ]
         );
 
+        // @codeCoverageIgnoreStart
         $aggregate_root->create($modify_command);
-    }
+    } // @codeCoverageEnd
 
     /**
      * Expects an exception when providing an aggregate-root-identifier that does
@@ -177,7 +179,7 @@ class AggregateRootTest extends TestCase
                 'values' => [ 'lastname' => 'Wahlberg' ]
             ]
         );
-    }
+    } // @codeCoverageIgnore
 
     /**
      * Expects an exception when trying to process a command without
@@ -198,7 +200,7 @@ class AggregateRootTest extends TestCase
         );
 
         $aggregate_root->modify($modify_command);
-    }
+    } // @codeCoverageIgnore
 
     /**
      * Expects a valid number of items in the event-history and in the list of
@@ -248,6 +250,7 @@ class AggregateRootTest extends TestCase
      * Expects a second reconstitution from a different event list to
      * generate a different aggregate-root, with no data related to the
      * first aggregate-root.
+     *
      * @expectedException Honeybee\Common\Error\RuntimeError
      */
     public function testReconstituteFromEventListTwice()
@@ -259,7 +262,7 @@ class AggregateRootTest extends TestCase
         $aggregate_root->reconstituteFrom($events_history);
 
         $aggregate_root->reconstituteFrom($alternate_events_history);
-    }
+    } // @codeCoverageIgnore
 
     /**
      * Expects an exception when trying to force a non valid sequence-number
@@ -283,7 +286,7 @@ class AggregateRootTest extends TestCase
         );
 
         $aggregate_root->reconstituteFrom($events_history);
-    }
+    } // @codeCoverageIgnore
 
     /**
      * Expects an exception when trying to force a non valid known-revision
@@ -307,7 +310,7 @@ class AggregateRootTest extends TestCase
         );
 
         $aggregate_root->modify($wrong_seq_number_command);
-    }
+    } // @codeCoverageIgnore
 
     /**
      * Expects an exception when trying to reconstitute an aggregate-root
@@ -334,7 +337,7 @@ class AggregateRootTest extends TestCase
             ]
         );
         $aggregate_root->reconstituteFrom($events_history);
-    }
+    } // @codeCoverageIgnore
 
     /**
      * Expects a succesful workflow state transition, according to the
@@ -382,7 +385,7 @@ class AggregateRootTest extends TestCase
         );
 
         $aggregate_root->proceedWorkflow($workflow_command, $this->getDefaultStateMachine());
-    }
+    } // @codeCoverageIgnore
 
     /**
      * Expects an exception when trying to proceed in the workflow providing
@@ -405,7 +408,7 @@ class AggregateRootTest extends TestCase
         );
 
         $aggregate_root->proceedWorkflow($workflow_command, $this->getDefaultStateMachine());
-    }
+    } // @codeCoverageIgnore
 
     /**
      * Expects an exception when trying to proceed in the workflow state
@@ -429,7 +432,7 @@ class AggregateRootTest extends TestCase
         );
 
         $aggregate_root->proceedWorkflow($workflow_command, $this->getDefaultStateMachine());
-    }
+    } // @codeCoverageIgnore
 
     /**
      * Expects a correctly initialised UUID attribute.

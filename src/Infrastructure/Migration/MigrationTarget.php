@@ -38,9 +38,9 @@ class MigrationTarget implements MigrationTargetInterface
         $this->name = $name;
         $this->is_activated = $is_activated;
         $this->config = $config;
+        $this->migration_loader = $migration_loader;
         $this->data_access_service = $data_access_service;
         $this->connector_service = $connector_service;
-        $this->migration_loader = $migration_loader;
     }
 
     public function getStructureVersionList()
@@ -126,15 +126,21 @@ class MigrationTarget implements MigrationTargetInterface
     protected function popVersion(MigrationInterface $migration)
     {
         $latest_structure_version = $this->getStructureVersionList()->pop();
-        $latest_version = $latest_structure_version->getVersion();
 
-        if ($latest_version !== $migration->getVersion()) {
+        if (!$latest_structure_version) {
+            throw new RuntimeError('No existing migration structure versions found.');
+        }
+
+        $latest_version = $latest_structure_version->getVersion();
+        $migration_version = $migration->getVersion();
+
+        if (!($latest_version !== $migration_version)) {
             throw new RuntimeError(
                 sprintf(
-                    'Version mismatch while trying to bump the structure version.'
+                    'Version mismatch while trying to bump the structure version. '
                     . 'Expected migration version to be: %s, %s given instead.',
                     $latest_version,
-                    $migration->getVersion()
+                    $migration_version
                 )
             );
         }

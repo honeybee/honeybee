@@ -41,7 +41,7 @@ class AggregateRootListTest extends TestCase
     public function testGetItemImplementorWithNotMatching()
     {
         $aggregate_root_list = new AggregateRootList([ new \stdClass ]);
-    }
+    } // @codeCoverageIgnore
 
     public function testToMap()
     {

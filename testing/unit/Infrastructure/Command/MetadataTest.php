@@ -24,7 +24,7 @@ class MetadataTest extends TestCase
         $metadata = new Metadata($data);
         $colliding_metadata = new Metadata($colliding_data);
         $metadata->append($colliding_metadata);
-    }
+    } // @codeCoverageIgnore
 
     /**
      * @expectedException Trellis\Common\Error\RuntimeException
@@ -34,5 +34,5 @@ class MetadataTest extends TestCase
         $data = [ 'test' => 'value' ];
         $metadata = new Metadata($data);
         $metadata->setItem('test', 'immutable');
-    }
+    } // @codeCoverageIgnore
 }

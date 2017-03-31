@@ -9,7 +9,6 @@ use Honeybee\Tests\Fixture\BookSchema\Model\Publication\PublicationType;
 use Honeybee\Tests\Fixture\BookSchema\Model\Author\Author;
 use Honeybee\Tests\Fixture\BookSchema\Model\Author\AuthorType;
 use Honeybee\Tests\Fixture\BookSchema\Model\Publisher\PublisherType;
-use Mockery;
 
 class AggregateRootTypeTest extends TestCase
 {
@@ -41,7 +40,7 @@ class AggregateRootTypeTest extends TestCase
         $aggregate_root_type = new AuthorType();
 
         $aggregate_root = $aggregate_root_type->createEntity([ 'invalid' => 'state' ]);
-    }
+    } // @codeCoverageIgnore
 
     /**
      * @codeCoverageIgnore

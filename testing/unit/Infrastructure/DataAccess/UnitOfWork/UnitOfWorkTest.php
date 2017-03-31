@@ -48,7 +48,7 @@ class UnitOfWorkTest extends TestCase
 
         $unitOfWork->create();
         $unitOfWork->create();
-    }
+    } // @codeCoverageIgnore
 
     public function testCheckout()
     {
@@ -85,7 +85,7 @@ class UnitOfWorkTest extends TestCase
         $unitOfWork = $this->createUoW($mock_art, $mock_event_reader, $mock_event_writer);
 
         $unitOfWork->checkout('missing_identifier');
-    }
+    } // @codeCoverageIgnore
 
     public function testCommitNoneTracked()
     {

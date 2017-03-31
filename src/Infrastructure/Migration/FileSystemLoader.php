@@ -2,24 +2,29 @@
 
 namespace Honeybee\Infrastructure\Migration;
 
-use Auryn\Injector;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Common\Util\PhpClassParser;
 use Honeybee\Common\Util\StringToolkit;
 use Honeybee\Infrastructure\Config\ConfigInterface;
+use Honeybee\ServiceLocatorInterface;
+use Symfony\Component\Finder\Finder;
 
 class FileSystemLoader implements MigrationLoaderInterface
 {
-    const GLOB_EXPRESSION = '*.php';
-
     protected $config;
 
-    protected $injector;
+    protected $service_locator;
 
-    public function __construct(ConfigInterface $config, Injector $injector)
-    {
+    protected $file_finder;
+
+    public function __construct(
+        ConfigInterface $config,
+        ServiceLocatorInterface $service_locator,
+        Finder $file_finder = null
+    ) {
         $this->config = $config;
-        $this->injector = $injector;
+        $this->service_locator = $service_locator;
+        $this->file_finder= $file_finder?: new Finder;
     }
 
     /**
@@ -28,48 +33,43 @@ class FileSystemLoader implements MigrationLoaderInterface
     public function loadMigrations()
     {
         $migration_dir = $this->config->get('directory');
-        if (!is_dir($migration_dir)) {
-            throw new RuntimeError(sprintf('Given migration path is not a directory: %s', $migration_dir));
+        if (!is_dir($migration_dir) || !is_readable($migration_dir)) {
+            throw new RuntimeError(sprintf('Given migration path is not a readable directory: %s', $migration_dir));
         }
 
-        $migration_list = new MigrationList;
-        $glob_expression = sprintf(
-            '%1$s%2$s[0-9]*%2$s%3$s',
-            $migration_dir,
-            DIRECTORY_SEPARATOR,
-            self::GLOB_EXPRESSION
-        );
+        $migrations = [];
+        $pattern = $this->config->get('pattern', '*.php');
+        $migration_files = $this->file_finder->create()->files()->name($pattern)->in($migration_dir);
 
-        foreach (glob($glob_expression) as $migration_file) {
+        foreach ($migration_files as $migration_file) {
             $class_parser = new PhpClassParser;
-            $migration_class_info = $class_parser->parse($migration_file);
+            $migration_class_info = $class_parser->parse((string)$migration_file);
             $migration_class = $migration_class_info->getFullyQualifiedClassName();
+            $migration_class_name = $migration_class_info->getClassName();
+
+            $class_format = $this->config->get('format', '#(?<version>\d{14}).(?<name>.+)$#');
+            if (!preg_match($class_format, $migration_class_name, $matches)
+                || !isset($matches['name'])
+                || !isset($matches['version'])
+            ) {
+                throw new RuntimeError('Invalid class name format for ' . $migration_class_name);
+            }
 
             if (!class_exists($migration_class)) {
                 require_once $migration_class_info->getFilePath();
             }
 
-            if (!class_exists($migration_class)) {
-                throw new RuntimeError(
-                    sprintf("Unable to load migration class %s", $migration_class)
-                );
-            }
-
-            $class_name_parts = explode('_', $migration_class_info->getClassName());
-            $name = $class_name_parts[2] . (isset($class_name_parts[3]) ? $class_name_parts[3] : '');
-            $version = $class_name_parts[1];
-            $migration = $this->injector->make(
+            $migrations[] = $this->service_locator->createEntity(
                 $migration_class,
                 [
                     ':state' => [
-                        'name' => StringToolkit::asSnakeCase($name),
-                        'version' => $version
+                        'name' => StringToolkit::asSnakeCase($matches['name']),
+                        'version' => $matches['version']
                     ]
                 ]
             );
-            $migration_list->addItem($migration);
         }
 
-        return $migration_list;
+        return new MigrationList($migrations);
     }
 }

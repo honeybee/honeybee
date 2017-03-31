@@ -24,7 +24,7 @@ class StatusReportTest extends TestCase
     public function testCreationThrowsOnUnknownStatus()
     {
         new StatusReport('nonexistantstatus', [], []);
-    }
+    } // @codeCoverageIgnore
 
     /**
      * @expectedException Honeybee\Common\Error\RuntimeError
@@ -32,7 +32,7 @@ class StatusReportTest extends TestCase
     public function testCreationThrowsOnNonStringStatus()
     {
         new StatusReport([], [], []);
-    }
+    } // @codeCoverageIgnore
 
     public function testReportToStringSucceeds()
     {

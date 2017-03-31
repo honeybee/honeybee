@@ -37,7 +37,7 @@ class ProjectionMapTest extends TestCase
     public function testGetItemImplementorWithNotMatching()
     {
         $projection_map = new ProjectionMap([ new \stdClass ]);
-    }
+    } // @codeCoverageIgnore
 
     public function testToList()
     {

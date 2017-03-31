@@ -3,7 +3,6 @@
 namespace Honeybee\Tests\Projection\EventHandler;
 
 use Honeybee\Infrastructure\Config\ArrayConfig;
-use Honeybee\Infrastructure\DataAccess\Finder\FinderResult;
 use Honeybee\Infrastructure\DataAccess\Query\QueryInterface;
 use Honeybee\Infrastructure\DataAccess\Query\QueryServiceInterface;
 use Honeybee\Infrastructure\DataAccess\Query\QueryServiceMap;

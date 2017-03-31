@@ -8,7 +8,6 @@ use Honeybee\Infrastructure\Workflow\WorkflowService;
 use Honeybee\Infrastructure\Workflow\WorkflowServiceInterface;
 use Honeybee\Tests\Fixture\BookSchema\Model\Author\Author;
 use Honeybee\Tests\Fixture\BookSchema\Model\Author\AuthorType;
-use Honeybee\Tests\Fixture\BookSchema\Projection\Author\Author as AuthorProjection;
 use Honeybee\Tests\Fixture\BookSchema\Projection\Author\AuthorType as AuthorProjectionType;
 use Honeybee\Tests\TestCase;
 use Psr\Log\LoggerInterface;
@@ -81,7 +80,7 @@ class WorkflowServiceTest extends TestCase
     public function testStateMachineNameResolvingThrowsOnArray($what)
     {
         $this->getDefaultWorkflowService()->resolveStateMachineName($what);
-    }
+    } // @codeCoverageIgnore
 
     /**
      * @codeCoverageIgnore

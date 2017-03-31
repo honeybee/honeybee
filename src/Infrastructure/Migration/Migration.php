@@ -72,9 +72,10 @@ abstract class Migration extends Object implements MigrationInterface
         if (!in_array($direction, [ self::MIGRATE_UP, self::MIGRATE_DOWN ])) {
             throw new RuntimeError(
                 sprintf(
-                    'Invalid migration direction given: %s to migration %s. Only %s and %s are supported',
+                    'Invalid migration direction given: %s to migration %s:%s. Only %s and %s are supported',
                     $direction,
                     $this->getVersion(),
+                    $this->getName(),
                     self::MIGRATE_UP,
                     self::MIGRATE_DOWN
                 )
@@ -84,11 +85,12 @@ abstract class Migration extends Object implements MigrationInterface
 
     protected function guardReversal()
     {
-        if ($this->isReversible()) {
+        if (!$this->isReversible()) {
             throw new RuntimeError(
                 sprintf(
-                    'Migration %s is marked as non-reversable and does not support downward migration.',
-                    $this->getVersion()
+                    'Migration %s:%s is marked as non-reversable and does not support downward migration.',
+                    $this->getVersion(),
+                    $this->getName()
                 )
             );
         }

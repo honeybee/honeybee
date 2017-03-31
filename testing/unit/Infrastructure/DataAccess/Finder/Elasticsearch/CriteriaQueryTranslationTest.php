@@ -29,7 +29,7 @@ class CriteriaQueryTranslationTest extends TestCase
     {
         $query = new StoredQuery('invalid', [], 0, 1);
         (new CriteriaQueryTranslation($this->getQueryTranslationConfig()))->translate($query);
-    }
+    } // @codeCoverageIgnore
 
     /**
      * @codeCoverageIgnore

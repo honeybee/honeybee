@@ -21,9 +21,9 @@ class MigrationService implements MigrationServiceInterface
         $this->migration_target_map = $migration_target_map;
     }
 
-    public function migrate($target_name = null, $target_version = null)
+    public function migrate($target_name, $target_version = null)
     {
-        $executed_migrations = new MigrationList();
+        $executed_migrations = new MigrationList;
         $direction = $this->getDirection($target_name, $target_version);
         if (!$direction) {
             return $executed_migrations;
@@ -56,7 +56,7 @@ class MigrationService implements MigrationServiceInterface
         return $this->migration_target_map->getItem($target_name);
     }
 
-    public function getPendingMigrations($target_name = null, $target_version = null)
+    public function getPendingMigrations($target_name, $target_version = null)
     {
         return $this->getFilteredMigrations($target_name, self::FILTER_PENDING)->filter(
             function (MigrationInterface $migration) use ($target_version) {
@@ -68,7 +68,7 @@ class MigrationService implements MigrationServiceInterface
         );
     }
 
-    public function getExecutedMigrations($target_name = null, $target_version = null)
+    public function getExecutedMigrations($target_name, $target_version = null)
     {
         return $this->getFilteredMigrations($target_name, self::FILTER_EXECUTED)->filter(
             function (MigrationInterface $migration) use ($target_version) {
@@ -80,7 +80,7 @@ class MigrationService implements MigrationServiceInterface
         );
     }
 
-    public function getMigrationList($target_name = null)
+    public function getMigrationList($target_name)
     {
         return $this->getMigrationTarget($target_name)->getMigrationList();
     }
@@ -96,6 +96,7 @@ class MigrationService implements MigrationServiceInterface
             $latest_migration = $this->getMigrationList($target_name)->getLast();
             $target_version = $latest_migration->getVersion();
         } else {
+            // possibly dead code
             $first_migration = $this->getMigrationList($target_name)->getFirst();
             $target_version = $first_migration->getVersion();
         }
@@ -103,7 +104,7 @@ class MigrationService implements MigrationServiceInterface
         return $target_version;
     }
 
-    protected function getDirection($target_name = null, $target_version = null)
+    protected function getDirection($target_name, $target_version = null)
     {
         $migration_target = $this->getMigrationTarget($target_name);
         $latest_structure_version = $migration_target->getLatestStructureVersion();
@@ -147,8 +148,7 @@ class MigrationService implements MigrationServiceInterface
                 if ($filter_type === self::FILTER_EXECUTED) {
                     return in_array($migration->getVersion(), $executed_versions);
                 } else {
-                    return !in_array($migration->getVersion(), $executed_versions)
-                        || empty($executed_versions);
+                    return !in_array($migration->getVersion(), $executed_versions) || empty($executed_versions);
                 }
             }
         );

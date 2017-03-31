@@ -21,7 +21,7 @@ class FixtureTest extends TestCase
 
     public function setUp()
     {
-        $author_aggregate_root_type = new AuthorType();
+        $author_aggregate_root_type = new AuthorType;
         $this->aggregate_root_type_map = new AggregateRootTypeMap(
             [
                 $author_aggregate_root_type->getPrefix() => $author_aggregate_root_type
@@ -85,7 +85,7 @@ class FixtureTest extends TestCase
         $mock_fixture_target->shouldReceive('getName')->once()->andReturn('TestFixtureTarget');
 
         $fixture->execute($mock_fixture_target);
-    }
+    } // @codeCoverageIgnore
 
     /**
      * @expectedException Honeybee\Common\Error\RuntimeError
@@ -112,7 +112,7 @@ class FixtureTest extends TestCase
         $mock_fixture_target->shouldReceive('isActivated')->once()->andReturnTrue();
 
         $fixture->execute($mock_fixture_target);
-    }
+    } // @codeCoverageIgnore
 
     public function testExecuteWithCopiedFiles()
     {

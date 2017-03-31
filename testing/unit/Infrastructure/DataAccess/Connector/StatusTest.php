@@ -22,7 +22,7 @@ class StatusTest extends TestCase
     {
         $connector = new TestConnector('working', new ArrayConfig([]));
         new Status($connector, 'none of WORKING, FAILING or UNKNOWN');
-    }
+    } // @codeCoverageIgnore
 
     /**
      * @expectedException Honeybee\Common\Error\RuntimeError
@@ -31,7 +31,7 @@ class StatusTest extends TestCase
     {
         $connector = new TestConnector('working', new ArrayConfig([]));
         new Status($connector, []);
-    }
+    } // @codeCoverageIgnore
 
     public function testCreatingUnknownStatusSucceeds()
     {

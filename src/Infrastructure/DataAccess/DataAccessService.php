@@ -50,9 +50,9 @@ class DataAccessService implements DataAccessServiceInterface
         return $this->storage_writer_map->getItem($writer_name);
     }
 
-    public function getProjectionWriterByType(ProjectionTypeInterface $projection_type, $projection_name = 'standard')
+    public function getProjectionWriterByType(ProjectionTypeInterface $projection_type)
     {
-        return $this->getDbalComponentByProjection($projection_type, $projection_name, 'writer');
+        return $this->getDbalComponentByProjection($projection_type, 'writer');
     }
 
     public function getStorageReaderMap()
@@ -68,9 +68,9 @@ class DataAccessService implements DataAccessServiceInterface
         return $this->storage_reader_map->getItem($reader_name);
     }
 
-    public function getProjectionReaderByType(ProjectionTypeInterface $projection_type, $projection_name = 'standard')
+    public function getProjectionReaderByType(ProjectionTypeInterface $projection_type)
     {
-        return $this->getDbalComponentByProjection($projection_type, $projection_name, 'reader');
+        return $this->getDbalComponentByProjection($projection_type, 'reader');
     }
 
     public function getFinderMap()
@@ -86,9 +86,9 @@ class DataAccessService implements DataAccessServiceInterface
         return $this->finder_map->getItem($finder_name);
     }
 
-    public function getProjectionFinderByType(ProjectionTypeInterface $projection_type, $projection_name = 'standard')
+    public function getProjectionFinderByType(ProjectionTypeInterface $projection_type)
     {
-        return $this->getDbalComponentByProjection($projection_type, $projection_name, 'finder');
+        return $this->getDbalComponentByProjection($projection_type, 'finder');
     }
 
     public function getQueryServiceMap()
@@ -106,9 +106,7 @@ class DataAccessService implements DataAccessServiceInterface
 
     public function getProjectionQueryServiceByType(ProjectionTypeInterface $projection_type)
     {
-        $query_service_key = $projection_type->getVariantPrefix() . '::query_service';
-
-        return $this->getQueryService($query_service_key);
+        return $this->getDbalComponentByProjection($projection_type, 'query_service');
     }
 
     public function getUnitOfWorkMap()
@@ -142,17 +140,9 @@ class DataAccessService implements DataAccessServiceInterface
         $storage_writer->delete($identifier, new Settings($settings));
     }
 
-    protected function getDbalComponentByProjection(
-        ProjectionTypeInterface $projection_type,
-        $projection_name,
-        $component
-    ) {
-        $component_key = sprintf(
-            '%s::projection.%s::view_store::%s',
-            $projection_type->getPrefix(),
-            $projection_name,
-            $component
-        );
+    protected function getDbalComponentByProjection(ProjectionTypeInterface $projection_type, $component)
+    {
+        $component_key = sprintf('%s::view_store::%s', $projection_type->getVariantPrefix(), $component);
 
         switch ($component) {
             case 'finder':
@@ -164,11 +154,15 @@ class DataAccessService implements DataAccessServiceInterface
             case 'writer':
                 return $this->getStorageWriter($component_key);
                 break;
+            case 'query_service':
+                return $this->getQueryService($component_key);
+                break;
         }
 
         throw new RuntimeError(
             sprintf(
-                'Invalid dbal component given: %s. Supported components are: "finder", "reader" and "writer".',
+                'Invalid DBAL component: %s. Supported components are: ' .
+                '"finder", "reader", "writer" and "query_service".',
                 $component
             )
         );
