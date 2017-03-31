@@ -25,7 +25,7 @@ class ServiceLocatorTest extends TestCase
      */
     public function testGetServiceNotFound()
     {
-        $service_locator = new ServiceLocator(new Injector,new ServiceDefinitionMap);
+        $service_locator = new ServiceLocator(new Injector, new ServiceDefinitionMap);
         $service_locator->get('non-existent');
     }
 
@@ -44,7 +44,10 @@ class ServiceLocatorTest extends TestCase
     public function testGetTaskService()
     {
         $service_locator = $this->mockServiceLocator('honeybee.model.task_service');
-        $this->assertInstanceOf(ServiceDefinitionInterface::CLASS, $service_locator->get('honeybee.model.task_service'));
+        $this->assertInstanceOf(
+            ServiceDefinitionInterface::CLASS,
+            $service_locator->get('honeybee.model.task_service')
+        );
     }
 
     public function testGetExpressionService()
@@ -104,7 +107,7 @@ class ServiceLocatorTest extends TestCase
     public function testMake()
     {
         $injector = new Injector;
-        $service_locator = new ServiceLocator($injector,new ServiceDefinitionMap);
+        $service_locator = new ServiceLocator($injector, new ServiceDefinitionMap);
         $impl = 'Honeybee\Tests\Fixture\BookSchema\Projection\Author\AuthorType';
         $this->assertInstanceOf($impl, $service_locator->make($impl));
     }

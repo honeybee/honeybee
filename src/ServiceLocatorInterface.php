@@ -2,7 +2,6 @@
 
 namespace Honeybee;
 
-use Honeybee\EntityInterface;
 use Psr\Container\ContainerInterface;
 
 /**
