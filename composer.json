@@ -42,7 +42,6 @@
     },
 
     "prefer-stable": true,
-    "minimum-stability": "dev",
 
     "repositories": [
         {
@@ -62,12 +61,9 @@
         "mtdowling/jmespath.php": "^2.0",
         "psr/log": "~1.0",
         "psr/container": "~1.0",
-        "ql/uri-template": "^1.0",
         "rdlowrey/auryn": "~1.4",
-        "swiftmailer/swiftmailer": "~5.4",
         "symfony/expression-language": "~2.7",
         "symfony/filesystem": "~2.7",
-        "twig/twig": "^1.30",
         "zendframework/zend-permissions-acl": "~2.5",
         "guzzlehttp/guzzle": "~6.2",
         "roave/security-advisories": "master@dev"
