@@ -112,7 +112,7 @@ class AggregateRootCommandBuilderTest extends TestCase
                 'email' => [
                     [
                         'path' => 'email',
-                        'incidents' => [ 'invalid_format' => [ 'reason' => 'ERR_NODOMAIN' ] ]
+                        'incidents' => [ 'invalid_format' => [ 'reason' => 'No Domain part' ] ]
                     ]
                 ]
             ],

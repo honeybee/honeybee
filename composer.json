@@ -46,7 +46,7 @@
         "beberlei/assert": "^2.7",
         "elasticsearch/elasticsearch": "^2.0",
         "guzzlehttp/guzzle": "^6.2",
-        "honeybee/trellis": "^0.1.2",
+        "honeybee/trellis": "^0.1.3",
         "league/flysystem": "^1.0",
         "mtdowling/jmespath.php": "^2.4",
         "psr/container": "^1.0",
