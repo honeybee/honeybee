@@ -4,7 +4,6 @@ namespace Honeybee\Infrastructure\Fixture;
 
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Config\ConfigInterface;
-use Honeybee\Model\Aggregate\AggregateRootType;
 use Honeybee\Model\Aggregate\AggregateRootTypeMap;
 use Trellis\Sham\DataGenerator;
 

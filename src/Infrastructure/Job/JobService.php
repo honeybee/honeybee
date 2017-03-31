@@ -4,7 +4,6 @@ namespace Honeybee\Infrastructure\Job;
 
 use Assert\Assertion;
 use Closure;
-use Exception;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Config\ConfigInterface;
 use Honeybee\Infrastructure\DataAccess\Connector\RabbitMqConnector;

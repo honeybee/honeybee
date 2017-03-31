@@ -5,7 +5,6 @@ namespace Honeybee\Projection;
 use Honeybee\EntityInterface;
 use Trellis\Common\ObjectInterface;
 use Honeybee\EntityType as BaseEntityType;
-use Trellis\Runtime\ReferencedEntityTypeInterface;
 use Trellis\Runtime\Attribute\AttributeInterface;
 use Trellis\Runtime\Attribute\EmbeddedEntityList\EmbeddedEntityListAttribute;
 use Trellis\Runtime\Attribute\EntityReferenceList\EntityReferenceListAttribute;

@@ -9,7 +9,6 @@ use Honeybee\Infrastructure\Fixture\FixtureList;
 use Honeybee\Infrastructure\Fixture\FixtureTargetInterface;
 use Honeybee\Infrastructure\Fixture\FixtureTargetMap;
 use Honeybee\Model\Aggregate\AggregateRootType;
-use Honeybee\Model\Aggregate\AggregateRootTypeInterface;
 use Honeybee\Model\Aggregate\AggregateRootTypeMap;
 use Honeybee\Tests\TestCase;
 use Mockery;

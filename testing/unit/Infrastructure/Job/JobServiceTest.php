@@ -2,7 +2,6 @@
 
 namespace Honeybee\Tests\Infrastructure\Job;
 
-use Closure;
 use Honeybee\Tests\TestCase;
 use Honeybee\Infrastructure\DataAccess\Connector\RabbitMqConnector;
 use Honeybee\Infrastructure\Config\ArrayConfig;

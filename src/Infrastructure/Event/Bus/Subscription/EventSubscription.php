@@ -5,7 +5,6 @@ namespace Honeybee\Infrastructure\Event\Bus\Subscription;
 use Trellis\Common\Object;
 use Honeybee\Infrastructure\Event\Bus\Transport\EventTransportInterface;
 use Honeybee\Infrastructure\Event\EventHandlerList;
-use Honeybee\Infrastructure\Event\Bus\Strategy\EventStrategy;
 use Honeybee\Infrastructure\Config\SettingsInterface;
 
 class EventSubscription extends Object implements EventSubscriptionInterface

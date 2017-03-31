@@ -3,14 +3,11 @@
 namespace Honeybee\Tests;
 
 use Auryn\Injector;
-use Honeybee\Model\Aggregate\AggregateRootTypeMap;
-use Honeybee\Projection\ProjectionTypeMap;
 use Honeybee\ServiceDefinitionInterface;
 use Honeybee\ServiceDefinitionMap;
 use Honeybee\ServiceLocator;
 use Honeybee\Tests\TestCase;
 use Mockery;
-use Trellis\Common\Options;
 
 class ServiceLocatorTest extends TestCase
 {
