@@ -60,7 +60,7 @@ class RelationProjectionUpdaterTest extends TestCase
         // prepare mock query responses
         $mock_query_service = Mockery::mock(QueryServiceInterface::CLASS);
         $mock_query_service_map = Mockery::mock(QueryServiceMap::CLASS);
-        $service_name = $projection_type_variant_prefix . '::query_service';
+        $service_name = $projection_type_variant_prefix . '::view_store::query_service';
         $mock_query_service_map->shouldReceive('getItem')->once()->with($service_name)->andReturn($mock_query_service);
         $mock_query_service->shouldReceive('scroll')
             ->once()

@@ -255,7 +255,7 @@ class RelationProjectionUpdater extends EventHandler
     protected function getQueryService()
     {
         $query_service_default = sprintf(
-            '%s::query_service',
+            '%s::view_store::query_service',
             $this->getRelativeProjectionType()->getVariantPrefix()
         );
 

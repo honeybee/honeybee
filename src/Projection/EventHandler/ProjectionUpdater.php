@@ -398,7 +398,7 @@ class ProjectionUpdater extends EventHandler
 
     protected function getQueryService(ProjectionTypeInterface $projection_type)
     {
-        $query_service_default = $projection_type->getVariantPrefix() . '::query_service';
+        $query_service_default = $projection_type->getVariantPrefix() . '::view_store::query_service';
         $query_service_key = $this->config->get('query_service', $query_service_default);
         return $this->query_service_map->getItem($query_service_key);
     }
