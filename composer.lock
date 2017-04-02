@@ -661,36 +661,36 @@
         },
         {
             "name": "honeybee/trellis",
-            "version": "0.1.3",
+            "version": "0.1.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/honeybee/trellis.git",
-                "reference": "9df09739f30aea4182c762fa935408a3ed275eca"
+                "reference": "76759e805be70bcde814901030a4173061b5e5c0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/honeybee/trellis/zipball/9df09739f30aea4182c762fa935408a3ed275eca",
-                "reference": "9df09739f30aea4182c762fa935408a3ed275eca",
+                "url": "https://api.github.com/repos/honeybee/trellis/zipball/76759e805be70bcde814901030a4173061b5e5c0",
+                "reference": "76759e805be70bcde814901030a4173061b5e5c0",
                 "shasum": ""
             },
             "require": {
                 "beberlei/assert": "^2.7",
                 "egulias/email-validator": "^2.1",
-                "fzaninotto/faker": "~1.6",
-                "mtdowling/jmespath.php": "~2.4",
+                "fzaninotto/faker": "^1.6",
+                "mtdowling/jmespath.php": "^2.4",
                 "php": ">=5.6.0",
                 "ramsey/uuid": "^3.6",
                 "roave/security-advisories": "master@dev",
-                "symfony/console": "~3.2",
-                "symfony/filesystem": "~3.2",
-                "twig/twig": "~1.3"
+                "symfony/console": "^3.2",
+                "symfony/filesystem": "^3.2",
+                "twig/twig": "^1.3"
             },
             "require-dev": {
                 "mockery/mockery": "^0.9",
                 "phpmd/phpmd": "^2.6",
                 "phpunit/phpunit": "^5.7",
                 "satooshi/php-coveralls": "master@dev",
-                "squizlabs/php_codesniffer": "~2.8"
+                "squizlabs/php_codesniffer": "^2.8"
             },
             "bin": [
                 "bin/trellis"
@@ -703,20 +703,35 @@
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
-                "MIT"
+                "MPL-2.0"
             ],
             "authors": [
                 {
-                    "name": "Thorsten Schmitt-Rink"
+                    "name": "Honeybee Contributors",
+                    "homepage": "https://github.com/honeybee/honeybee/graphs/contributors"
                 },
                 {
-                    "name": "Steffen Gransow"
+                    "name": "Thorsten Schmitt-Rink",
+                    "email": "schmittrink@gmail.com",
+                    "homepage": "https://github.com/shrink0r",
+                    "role": "Developer"
                 },
                 {
-                    "name": "Igor Pellegrini"
+                    "name": "Hasham Ahmad",
+                    "email": "mr.hash@gmail.com",
+                    "homepage": "https://github.com/MrHash",
+                    "role": "Developer"
                 },
                 {
-                    "name": "Hasham Ahmad"
+                    "name": "Steffen Gransow",
+                    "email": "honeybee@mivesto.de",
+                    "homepage": "https://github.com/graste",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Igor Pellegrini",
+                    "homepage": "https://github.com/Pictor13",
+                    "role": "Developer"
                 }
             ],
             "description": "Library for generating entities, that enforce data validity according to a specific schema.",
@@ -726,7 +741,7 @@
                 "entity",
                 "validation"
             ],
-            "time": "2017-03-31T23:23:48+00:00"
+            "time": "2017-04-02T17:50:50+00:00"
         },
         {
             "name": "league/flysystem",
@@ -2773,16 +2788,16 @@
         },
         {
             "name": "phpunit/php-code-coverage",
-            "version": "4.0.7",
+            "version": "4.0.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "09e2277d14ea467e5a984010f501343ef29ffc69"
+                "reference": "ef7b2f56815df854e66ceaee8ebe9393ae36a40d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/09e2277d14ea467e5a984010f501343ef29ffc69",
-                "reference": "09e2277d14ea467e5a984010f501343ef29ffc69",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/ef7b2f56815df854e66ceaee8ebe9393ae36a40d",
+                "reference": "ef7b2f56815df854e66ceaee8ebe9393ae36a40d",
                 "shasum": ""
             },
             "require": {
@@ -2832,7 +2847,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2017-03-01T09:12:17+00:00"
+            "time": "2017-04-02T07:44:40+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -3022,16 +3037,16 @@
         },
         {
             "name": "phpunit/phpunit",
-            "version": "5.7.17",
+            "version": "5.7.18",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "68752b665d3875f9a38a357e3ecb35c79f8673bf"
+                "reference": "c6884c0d4b8a7277de7ae3c9e597aff138c6365f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/68752b665d3875f9a38a357e3ecb35c79f8673bf",
-                "reference": "68752b665d3875f9a38a357e3ecb35c79f8673bf",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/c6884c0d4b8a7277de7ae3c9e597aff138c6365f",
+                "reference": "c6884c0d4b8a7277de7ae3c9e597aff138c6365f",
                 "shasum": ""
             },
             "require": {
@@ -3100,7 +3115,7 @@
                 "testing",
                 "xunit"
             ],
-            "time": "2017-03-19T16:52:12+00:00"
+            "time": "2017-04-02T15:44:48+00:00"
         },
         {
             "name": "phpunit/phpunit-mock-objects",
