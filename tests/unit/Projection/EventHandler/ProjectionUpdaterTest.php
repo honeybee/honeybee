@@ -8,7 +8,6 @@ use Honeybee\Infrastructure\DataAccess\Finder\FinderInterface;
 use Honeybee\Infrastructure\DataAccess\Finder\FinderResultInterface;
 use Honeybee\Infrastructure\DataAccess\Query\QueryInterface;
 use Honeybee\Infrastructure\DataAccess\Query\QueryServiceInterface;
-use Honeybee\Infrastructure\DataAccess\Query\QueryServiceMap;
 use Honeybee\Infrastructure\DataAccess\Storage\Elasticsearch\Projection\ProjectionReader;
 use Honeybee\Infrastructure\DataAccess\Storage\Elasticsearch\Projection\ProjectionWriter;
 use Honeybee\Infrastructure\Event\Bus\EventBusInterface;
@@ -83,14 +82,11 @@ class ProjectionUpdaterTest extends TestCase
         $mock_data_access_service->shouldReceive('getStorageWriter')->once()->andReturn($mock_storage_writer);
         $mock_data_access_service->shouldReceive('getFinder')->times(count($projections))->andReturn($mock_finder);
 
-        $mock_query_service_map = Mockery::mock(QueryServiceMap::CLASS);
-
         // prepare and execute tests
         $projection_updater = new ProjectionUpdater(
             new ArrayConfig([]),
             new NullLogger,
             $mock_data_access_service,
-            $mock_query_service_map,
             $this->projection_type_map,
             $this->aggregate_root_type_map,
             $mock_event_bus
@@ -138,14 +134,11 @@ class ProjectionUpdaterTest extends TestCase
             ->with($subject->getType()->getVariantPrefix() . '::view_store::reader')
             ->andReturn($mock_storage_reader);
 
-        $mock_query_service_map = Mockery::mock(QueryServiceMap::CLASS);
-
         // prepare and execute tests
         $projection_updater = new ProjectionUpdater(
             new ArrayConfig([]),
             new NullLogger,
             $mock_data_access_service,
-            $mock_query_service_map,
             $this->projection_type_map,
             $this->aggregate_root_type_map,
             $mock_event_bus
@@ -172,13 +165,7 @@ class ProjectionUpdaterTest extends TestCase
         }
 
         // query execution expectations for moved nodes
-        $mock_query_service_map = Mockery::mock(QueryServiceMap::CLASS);
         $mock_query_service = Mockery::mock(QueryServiceInterface::CLASS);
-        $mock_query_service_map->shouldReceive('getItem')
-            ->once()
-            ->with('honeybee_tests.game_schema.team::projection.standard::view_store::query_service')
-            ->andReturn($mock_query_service);
-
         $mock_query_service->shouldReceive('scroll')
             ->once()
             ->with(
@@ -223,6 +210,10 @@ class ProjectionUpdaterTest extends TestCase
             ->once()
             ->with($subject->getType()->getVariantPrefix() . '::view_store::reader')
             ->andReturn($mock_storage_reader);
+        $mock_data_access_service->shouldReceive('getQueryService')
+            ->once()
+            ->with($subject->getType()->getVariantPrefix() . '::view_store::query_service')
+            ->andReturn($mock_query_service);
 
         // expectation for loading parent when necessary
         if (!empty($parent)) {
@@ -242,7 +233,6 @@ class ProjectionUpdaterTest extends TestCase
             new ArrayConfig([]),
             new NullLogger,
             $mock_data_access_service,
-            $mock_query_service_map,
             $this->projection_type_map,
             $this->aggregate_root_type_map,
             $mock_event_bus

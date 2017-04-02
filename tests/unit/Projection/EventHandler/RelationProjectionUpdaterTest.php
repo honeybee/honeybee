@@ -28,11 +28,11 @@ class RelationProjectionUpdaterTest extends TestCase
 
     public function setUp()
     {
-        $game_type = new GameType();
-        $player_type = new PlayerType();
-        $team_type = new TeamType();
-        $topic_type = new TopicType();
-        $topic_option_type = new TopicOptionType();
+        $game_type = new GameType;
+        $player_type = new PlayerType;
+        $team_type = new TeamType;
+        $topic_type = new TopicType;
+        $topic_option_type = new TopicOptionType;
         $this->projection_type_map = new ProjectionTypeMap(
             [
                 $game_type->getVariantPrefix() => $game_type,

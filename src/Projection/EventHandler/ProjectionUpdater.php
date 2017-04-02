@@ -10,7 +10,6 @@ use Honeybee\Infrastructure\DataAccess\Query\AttributeCriteria;
 use Honeybee\Infrastructure\DataAccess\Query\Comparison\Equals;
 use Honeybee\Infrastructure\DataAccess\Query\CriteriaList;
 use Honeybee\Infrastructure\DataAccess\Query\CriteriaQuery;
-use Honeybee\Infrastructure\DataAccess\Query\QueryServiceMap;
 use Honeybee\Infrastructure\Event\Bus\Channel\ChannelMap;
 use Honeybee\Infrastructure\Event\Bus\EventBusInterface;
 use Honeybee\Infrastructure\Event\EventHandler;
@@ -43,8 +42,6 @@ class ProjectionUpdater extends EventHandler
 {
     protected $data_access_service;
 
-    protected $query_service_map;
-
     protected $projection_type_map;
 
     protected $aggregate_root_type_map;
@@ -55,7 +52,6 @@ class ProjectionUpdater extends EventHandler
         ConfigInterface $config,
         LoggerInterface $logger,
         DataAccessServiceInterface $data_access_service,
-        QueryServiceMap $query_service_map,
         ProjectionTypeMap $projection_type_map,
         AggregateRootTypeMap $aggregate_root_type_map,
         EventBusInterface $event_bus
@@ -63,7 +59,6 @@ class ProjectionUpdater extends EventHandler
         parent::__construct($config, $logger);
 
         $this->data_access_service = $data_access_service;
-        $this->query_service_map = $query_service_map;
         $this->projection_type_map = $projection_type_map;
         $this->aggregate_root_type_map = $aggregate_root_type_map;
         $this->event_bus = $event_bus;
@@ -74,7 +69,8 @@ class ProjectionUpdater extends EventHandler
         $affected_projections = $this->invokeEventHandler($event, 'on');
 
         // store updates and distribute projection update events
-        $this->getStorageWriter($event)->writeMany($affected_projections);
+        $projection_type = $this->getProjectionType($event);
+        $this->getStorageWriter($projection_type)->writeMany($affected_projections);
 
         foreach ($affected_projections as $affected_projection) {
             $projection_event_state = [
@@ -113,7 +109,7 @@ class ProjectionUpdater extends EventHandler
         if ($projection_type->isHierarchical()) {
             $parent_projection = null;
             if (isset($projection_data['parent_node_id'])) {
-                $parent_projection = $this->loadProjection($event, $projection_data['parent_node_id']);
+                $parent_projection = $this->loadProjection($projection_type, $projection_data['parent_node_id']);
             }
             $projection_data['materialized_path'] = $this->calculateMaterializedPath($parent_projection);
         }
@@ -126,7 +122,8 @@ class ProjectionUpdater extends EventHandler
 
     protected function onAggregateRootModified(AggregateRootModifiedEvent $event)
     {
-        $updated_data = $this->loadProjection($event)->toArray();
+        $projection_type = $this->getProjectionType($event);
+        $updated_data = $this->loadProjection($projection_type, $event->getAggregateRootIdentifier())->toArray();
 
         foreach ($event->getData() as $attribute_name => $new_value) {
             $updated_data[$attribute_name] = $new_value;
@@ -135,8 +132,7 @@ class ProjectionUpdater extends EventHandler
         $updated_data['modified_at'] = $event->getDateTime();
         $updated_data['metadata'] = array_merge($updated_data['metadata'], $event->getMetaData());
 
-        $projection = $this->getProjectionType($event)->createEntity($updated_data);
-
+        $projection = $projection_type->createEntity($updated_data);
         $this->handleEmbeddedEntityEvents($projection, $event->getEmbeddedEntityEvents());
 
         return new ProjectionMap([ $projection ]);
@@ -144,7 +140,8 @@ class ProjectionUpdater extends EventHandler
 
     protected function onWorkflowProceeded(WorkflowProceededEvent $event)
     {
-        $projection = $this->loadProjection($event);
+        $projection_type = $this->getProjectionType($event);
+        $projection = $this->loadProjection($projection_type, $event->getAggregateRootIdentifier());
 
         $updated_data = $projection->toArray();
         $updated_data['revision'] = $event->getSeqNumber();
@@ -156,7 +153,7 @@ class ProjectionUpdater extends EventHandler
             $updated_data['workflow_parameters'] = $workflow_parameters;
         }
 
-        $projection = $projection->getType()->createEntity($updated_data);
+        $projection = $projection_type->createEntity($updated_data);
 
         return new ProjectionMap([ $projection ]);
     }
@@ -164,10 +161,11 @@ class ProjectionUpdater extends EventHandler
     protected function onAggregateRootNodeMoved(AggregateRootNodeMovedEvent $event)
     {
         $projection_type = $this->getProjectionType($event);
-        $projection = $this->loadProjection($event);
+        $projection = $this->loadProjection($projection_type, $event->getAggregateRootIdentifier());
+
         $parent_projection = null;
         if ($parent_identifier = $event->getParentNodeId()) {
-            $parent_projection = $this->loadProjection($event, $parent_identifier);
+            $parent_projection = $this->loadProjection($projection_type, $parent_identifier);
         }
 
         $updated_data = $projection->toArray();
@@ -267,7 +265,7 @@ class ProjectionUpdater extends EventHandler
     protected function onEmbeddedEntityAdded(EntityInterface $projection, EmbeddedEntityAddedEvent $event)
     {
         $embedded_projection_attr = $projection->getType()->getAttribute($event->getParentAttributeName());
-        $embedded_projection_type = $this->getEmbeddedEntityTypeFor($projection, $event);
+        $embedded_projection_type = $this->getEmbeddedEntityType($projection, $event);
         $embedded_projection = $embedded_projection_type->createEntity($event->getData(), $projection);
         $projection_list = $projection->getValue($embedded_projection_attr->getName());
         if ($embedded_projection_type instanceof ReferencedEntityTypeInterface) {
@@ -282,7 +280,7 @@ class ProjectionUpdater extends EventHandler
     protected function onEmbeddedEntityModified(EntityInterface $projection, EmbeddedEntityModifiedEvent $event)
     {
         $embedded_projection_attr = $projection->getType()->getAttribute($event->getParentAttributeName());
-        $embedded_projection_type = $this->getEmbeddedEntityTypeFor($projection, $event);
+        $embedded_projection_type = $this->getEmbeddedEntityType($projection, $event);
 
         $embedded_projections = $projection->getValue($embedded_projection_attr->getName());
         $projection_to_modify = null;
@@ -369,9 +367,9 @@ class ProjectionUpdater extends EventHandler
         return $projection_type->createEntity($mirrored_values, $projection->getParent());
     }
 
-    protected function loadProjection(AggregateRootEventInterface $event, $identifier = null)
+    protected function loadProjection(ProjectionTypeInterface $projection_type, $identifier)
     {
-        return $this->getStorageReader($event)->read($identifier ?: $event->getAggregateRootIdentifier());
+        return $this->getStorageReader($projection_type)->read($identifier);
     }
 
     protected function loadReferencedProjection(EntityTypeInterface $referenced_type, $identifier)
@@ -383,7 +381,7 @@ class ProjectionUpdater extends EventHandler
         return $search_result->getFirstResult();
     }
 
-    protected function getEmbeddedEntityTypeFor(EntityInterface $projection, EmbeddedEntityEventInterface $event)
+    protected function getEmbeddedEntityType(EntityInterface $projection, EmbeddedEntityEventInterface $event)
     {
         $embed_attribute = $projection->getType()->getAttribute($event->getParentAttributeName());
         return $embed_attribute->getEmbeddedTypeByPrefix($event->getEmbeddedEntityType());
@@ -398,34 +396,27 @@ class ProjectionUpdater extends EventHandler
 
     protected function getQueryService(ProjectionTypeInterface $projection_type)
     {
-        $query_service_default = $projection_type->getVariantPrefix() . '::view_store::query_service';
-        $query_service_key = $this->config->get('query_service', $query_service_default);
-        return $this->query_service_map->getItem($query_service_key);
+        return $this->getDataAccessComponent($projection_type, 'query_service');
     }
 
-    protected function getStorageWriter(AggregateRootEventInterface $event)
+    protected function getStorageWriter(ProjectionTypeInterface $projection_type)
     {
-        $projection_type = $this->getProjectionType($event);
-        return $this->getDataAccessComponent($this->getProjectionType($event), 'writer');
+        return $this->getDataAccessComponent($projection_type, 'writer');
     }
 
-    protected function getStorageReader(AggregateRootEventInterface $event)
+    protected function getStorageReader(ProjectionTypeInterface $projection_type)
     {
-        return $this->getDataAccessComponent($this->getProjectionType($event), 'reader');
+        return $this->getDataAccessComponent($projection_type, 'reader');
     }
 
-    protected function getFinder(EntityTypeInterface $entity_type)
+    protected function getFinder(ProjectionTypeInterface $projection_type)
     {
-        return $this->getDataAccessComponent($entity_type, 'finder');
+        return $this->getDataAccessComponent($projection_type, 'finder');
     }
 
-    protected function getDataAccessComponent(ProjectionTypeInterface $projection_type, $component = 'reader')
+    protected function getDataAccessComponent(ProjectionTypeInterface $projection_type, $component)
     {
-        $default_component_name = sprintf(
-            '%s::view_store::%s',
-            $projection_type->getVariantPrefix(),
-            $component
-        );
+        $default_component_name = sprintf('%s::view_store::%s', $projection_type->getVariantPrefix(), $component);
         $custom_component_option = $projection_type->getPrefix() . '.' . $component;
 
         switch ($component) {
@@ -441,6 +432,11 @@ class ProjectionUpdater extends EventHandler
                 break;
             case 'writer':
                 return $this->data_access_service->getStorageWriter(
+                    $this->config->get($custom_component_option, $default_component_name)
+                );
+                break;
+            case 'query_service':
+                return $this->data_access_service->getQueryService(
                     $this->config->get($custom_component_option, $default_component_name)
                 );
                 break;
