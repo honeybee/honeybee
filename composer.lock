@@ -2308,7 +2308,7 @@
             "support": {
                 "source": "https://github.com/FriendsOfHoneybee/php-amqplib/tree/master"
             },
-            "time": "2017-03-10 15:51:44"
+            "time": "2017-03-10T15:51:44+00:00"
         },
         {
             "name": "phpdocumentor/reflection-common",
