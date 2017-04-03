@@ -39,7 +39,7 @@ class FileSystemLoader implements MigrationLoaderInterface
 
         $migrations = [];
         $pattern = $this->config->get('pattern', '*.php');
-        $migration_files = $this->file_finder->create()->files()->name($pattern)->in($migration_dir);
+        $migration_files = $this->file_finder->create()->files()->name($pattern)->in($migration_dir)->sortByName();
 
         foreach ($migration_files as $migration_file) {
             $class_parser = new PhpClassParser;
