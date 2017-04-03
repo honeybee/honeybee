@@ -3,7 +3,7 @@
 namespace Honeybee\Tests\Infrastructure\DataAccess\Connector\Flysystem;
 
 use Honeybee\Infrastructure\Config\ConfigInterface;
-use Honeybee\Infrastructure\DataAccess\Connector\ConnectorInterfaceTest;
+use Honeybee\Tests\Infrastructure\DataAccess\Connector\ConnectorInterfaceTest;
 
 class AwsS3ConnectorTest extends ConnectorInterfaceTest
 {

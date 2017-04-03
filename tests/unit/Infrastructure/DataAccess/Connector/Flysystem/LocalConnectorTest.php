@@ -4,8 +4,8 @@ namespace Honeybee\Tests\Infrastructure\DataAccess\Connector\Flysystem;
 
 use Honeybee\Infrastructure\Config\ArrayConfig;
 use Honeybee\Infrastructure\Config\ConfigInterface;
-use Honeybee\Infrastructure\DataAccess\Connector\ConnectorInterfaceTest;
 use Honeybee\Infrastructure\DataAccess\Connector\Flysystem\LocalConnector;
+use Honeybee\Tests\Infrastructure\DataAccess\Connector\ConnectorInterfaceTest;
 
 class LocalConnectorTest extends ConnectorInterfaceTest
 {
