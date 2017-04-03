@@ -9,8 +9,8 @@ use Honeybee\Infrastructure\DataAccess\Finder\FinderResultInterface;
 use Honeybee\Infrastructure\DataAccess\Query\QueryInterface;
 use Honeybee\Infrastructure\DataAccess\Query\QueryServiceInterface;
 use Honeybee\Infrastructure\DataAccess\Query\QueryServiceMap;
-use Honeybee\Infrastructure\DataAccess\Storage\Elasticsearch\Projection\ProjectionReader;
-use Honeybee\Infrastructure\DataAccess\Storage\Elasticsearch\Projection\ProjectionWriter;
+use Honeybee\Infrastructure\DataAccess\Storage\StorageReaderInterface;
+use Honeybee\Infrastructure\DataAccess\Storage\StorageWriterInterface;
 use Honeybee\Infrastructure\Event\Bus\EventBusInterface;
 use Honeybee\Model\Aggregate\AggregateRootTypeMap;
 use Honeybee\Model\Event\EmbeddedEntityEventList;
@@ -73,7 +73,7 @@ class ProjectionUpdaterTest extends TestCase
             $mock_finder_result
         );
 
-        $mock_storage_writer = Mockery::mock(ProjectionWriter::CLASS);
+        $mock_storage_writer = Mockery::mock(StorageWriterInterface::CLASS);
         $this->addExpectationsToStorageWriter($mock_storage_writer, $expectations);
 
         $mock_event_bus = Mockery::mock(EventBusInterface::CLASS);
@@ -119,7 +119,7 @@ class ProjectionUpdaterTest extends TestCase
             $mock_finder_result
         );
 
-        $mock_storage_writer = Mockery::mock(ProjectionWriter::CLASS);
+        $mock_storage_writer = Mockery::mock(StorageWriterInterface::CLASS);
         $this->addExpectationsToStorageWriter($mock_storage_writer, $expectations);
 
         $mock_event_bus = Mockery::mock(EventBusInterface::CLASS);
@@ -131,7 +131,7 @@ class ProjectionUpdaterTest extends TestCase
 
         // expectations for loading subject
         $subject = $this->createProjection($subject);
-        $mock_storage_reader = Mockery::mock(ProjectionReader::CLASS);
+        $mock_storage_reader = Mockery::mock(StorageReaderInterface::CLASS);
         $mock_storage_reader->shouldReceive('read')->once()->with($subject->getIdentifier())->andReturn($subject);
         $mock_data_access_service->shouldReceive('getStorageReader')
             ->once()
@@ -206,7 +206,7 @@ class ProjectionUpdaterTest extends TestCase
             $mock_finder_result
         );
 
-        $mock_storage_writer = Mockery::mock(ProjectionWriter::CLASS);
+        $mock_storage_writer = Mockery::mock(StorageWriterInterface::CLASS);
         $this->addExpectationsToStorageWriter($mock_storage_writer, $expectations);
 
         $mock_event_bus = Mockery::mock(EventBusInterface::CLASS);
@@ -217,7 +217,7 @@ class ProjectionUpdaterTest extends TestCase
 
         // expectations for loading subject
         $subject = $this->createProjection($subject);
-        $mock_storage_reader = Mockery::mock(ProjectionReader::CLASS);
+        $mock_storage_reader = Mockery::mock(StorageReaderInterface::CLASS);
         $mock_storage_reader->shouldReceive('read')->once()->with($subject->getIdentifier())->andReturn($subject);
         $mock_data_access_service->shouldReceive('getStorageReader')
             ->once()
@@ -283,7 +283,7 @@ class ProjectionUpdaterTest extends TestCase
         return $mock_finder;
     }
 
-    protected function addExpectationsToStorageWriter(ProjectionWriter $mock_storage_writer, array $expectations)
+    protected function addExpectationsToStorageWriter(StorageWriterInterface $mock_storage_writer, array $expectations)
     {
         $mock_storage_writer->shouldReceive('writeMany')
             ->once()

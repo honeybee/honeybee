@@ -46,9 +46,6 @@
             <directory suffix=".php">src</directory>
             <directory suffix=".php">tests/unit</directory>
             <exclude>
-                <directory>tests/unit/Infrastructure/DataAccess/Finder/Elasticsearch/Fixture</directory>
-                <directory>tests/unit/Infrastructure/DataAccess/Finder/Elasticsearch/Projection/Fixture</directory>
-                <directory>tests/unit/Infrastructure/DataAccess/Storage/Elasticsearch/Fixture</directory>
                 <directory>tests/unit/Infrastructure/Fixture/Fixture</directory>
                 <directory>tests/unit/Model/Command/Fixture</directory>
                 <directory>tests/unit/Projection/EventHandler/Fixture</directory>

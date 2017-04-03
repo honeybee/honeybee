@@ -6,7 +6,7 @@ use Honeybee\Infrastructure\Config\ArrayConfig;
 use Honeybee\Infrastructure\DataAccess\Query\QueryInterface;
 use Honeybee\Infrastructure\DataAccess\Query\QueryServiceInterface;
 use Honeybee\Infrastructure\DataAccess\Query\QueryServiceMap;
-use Honeybee\Infrastructure\DataAccess\Storage\Elasticsearch\Projection\ProjectionWriter;
+use Honeybee\Infrastructure\DataAccess\Storage\StorageWriterInterface;
 use Honeybee\Infrastructure\DataAccess\Storage\StorageWriterMap;
 use Honeybee\Infrastructure\Event\Bus\EventBus;
 use Honeybee\Projection\EventHandler\RelationProjectionUpdater;
@@ -84,7 +84,7 @@ class RelationProjectionUpdaterTest extends TestCase
 
         // prepare storage writer and event bus expectations
         $mock_event_bus = Mockery::mock(EventBus::CLASS);
-        $mock_storage_writer = Mockery::mock(ProjectionWriter::CLASS);
+        $mock_storage_writer = Mockery::mock(StorageWriterInterface::CLASS);
         $mock_storage_writer_map = Mockery::mock(StorageWriterMap::CLASS);
         $mock_storage_writer_map->shouldReceive('getItem')
             ->once()

@@ -2,12 +2,12 @@
 
 namespace Honeybee\Tests\DataAccess\Query;
 
-use Honeybee\Tests\TestCase;
 use Honeybee\Infrastructure\DataAccess\Query\CustomCriteria;
+use Honeybee\Tests\TestCase;
 
 class CustomCriteriaTest extends TestCase
 {
-    public function testCustomElasticsearchQueryPart()
+    public function testCustomQueryPart()
     {
         $custom = [ 'term' => 'asdf' ];
         $criteria = new CustomCriteria($custom);
