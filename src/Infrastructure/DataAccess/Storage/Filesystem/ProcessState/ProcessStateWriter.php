@@ -6,7 +6,7 @@ use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Config\SettingsInterface;
 use Honeybee\Infrastructure\DataAccess\Storage\Storage;
 use Honeybee\Infrastructure\DataAccess\Storage\StorageWriterInterface;
-use Honeybee\Infrastructure\ProcessManager\ProcessStateInterface;
+use Honeygavi\ProcessManager\ProcessStateInterface;
 
 class ProcessStateWriter extends Storage implements StorageWriterInterface
 {
