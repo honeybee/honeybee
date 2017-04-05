@@ -100,6 +100,7 @@ class FileSystemLoaderTest extends TestCase
         $mock_finder->shouldReceive('files')->once()->withNoArgs()->andReturnSelf();
         $mock_finder->shouldReceive('name')->once()->with($name)->andReturnSelf();
         $mock_finder->shouldReceive('in')->once()->with($in)->andReturnSelf();
+        $mock_finder->shouldReceive('sortByName')->once()->andReturnSelf();
         return $mock_finder;
     }
 }

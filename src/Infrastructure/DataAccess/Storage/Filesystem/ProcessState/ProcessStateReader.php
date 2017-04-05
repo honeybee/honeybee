@@ -8,7 +8,7 @@ use Honeybee\Infrastructure\Config\SettingsInterface;
 use Honeybee\Infrastructure\DataAccess\Storage\Storage;
 use Honeybee\Infrastructure\DataAccess\Storage\StorageReaderInterface;
 use Honeybee\Infrastructure\DataAccess\Storage\StorageReaderIterator;
-use Honeybee\Infrastructure\ProcessManager\ProcessStateInterface;
+use Honeygavi\ProcessManager\ProcessStateInterface;
 
 class ProcessStateReader extends Storage implements StorageReaderInterface
 {

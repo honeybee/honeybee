@@ -64,7 +64,6 @@ class Worker implements WorkerInterface
         try {
             $job->run();
         } catch (Exception $error) {
-            throw $error;
             if ($job->getStrategy()->canRetry()) {
                 $this->job_service->retry($job, $delivery_info['exchange'] . '.waiting');
             } else {
