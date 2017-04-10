@@ -2,7 +2,7 @@
     "name": "honeybee/honeybee",
     "type": "library",
     "description": "Library for implementing CQRS driven, event-sourced and distributed architectures.",
-    "keywords": [ "ddd", "cqrs", "hexagonal", "event-sourcing", "messaging" ],
+    "keywords": ["ddd", "cqrs", "hexagonal", "event-sourcing", "messaging"],
     "homepage": "https://github.com/honeybee/honeybee",
     "license": "MPL-2.0",
     "authors": [
