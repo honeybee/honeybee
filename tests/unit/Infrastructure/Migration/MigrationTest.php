@@ -42,7 +42,7 @@ class MigrationTest extends TestCase
     {
         $mock_migration = Mockery::namedMock('InvalidMock', Migration::CLASS)->makePartial();
         $mock_migration->getTimestamp();
-    }
+    } //@codeCoverageIgnore
 
     public function testGetTimestamp()
     {

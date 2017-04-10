@@ -41,7 +41,7 @@ class MigrationServiceTest extends TestCase
     {
         $migration_service = new MigrationService(new ArrayConfig([]), new MigrationTargetMap);
         $migration_service->getMigrationTarget('mock_migration_target');
-    } // @codeCoverageIgnore
+    } //@codeCoverageIgnore
 
     public function testGetMigrationList()
     {
@@ -168,7 +168,7 @@ class MigrationServiceTest extends TestCase
         $migration_service = new MigrationService(new ArrayConfig([]), new MigrationTargetMap);
 
         $this->assertEquals(new MigrationList, $migration_service->migrate('mock_migration_target'));
-    }
+    } //@codeCoverageIgnore
 
     public function testMigrateNone()
     {

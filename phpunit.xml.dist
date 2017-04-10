@@ -47,6 +47,7 @@
             <directory suffix=".php">tests/unit</directory>
             <exclude>
                 <directory>tests/unit/Infrastructure/Fixture/Fixture</directory>
+                <directory>tests/unit/Infrastructure/Migration/Fixture</directory>
                 <directory>tests/unit/Model/Command/Fixture</directory>
                 <directory>tests/unit/Projection/EventHandler/Fixture</directory>
                 <directory>tests/unit/Projection/Fixture</directory>

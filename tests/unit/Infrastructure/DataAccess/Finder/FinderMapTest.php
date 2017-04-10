@@ -129,7 +129,6 @@ class FinderMapTest extends TestCase
 
         $map_size = $finder_map->getSize();
         unset($finder_map['finder2']);
-        $this->assertCount($map_size, $finder_map);
     } // @codeCoverageIgnore
 
     public function testAppend()
