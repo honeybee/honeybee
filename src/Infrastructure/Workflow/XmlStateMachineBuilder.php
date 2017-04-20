@@ -9,6 +9,8 @@ use Workflux\Builder\XmlStateMachineBuilder as BaseXmlStateMachineBuilder;
 use Workflux\Error\VerificationError;
 use Workflux\Guard\GuardInterface;
 use Workflux\Parser\Xml\StateMachineDefinitionParser;
+use Workflux\State\State;
+use Workflux\State\StateInterface;
 use Workflux\Transition\Transition;
 
 /**
@@ -54,6 +56,40 @@ class XmlStateMachineBuilder extends BaseXmlStateMachineBuilder
         $parser = new StateMachineDefinitionParser();
 
         return $parser->parse($defs);
+    }
+
+    /**
+     * Creates a concrete StateInterface instance based on the given state definition.
+     *
+     * @param array $state_definition
+     *
+     * @return StateInterface
+     */
+    protected function createState(array $state_definition)
+    {
+        $state_implementor = isset($state_definition['class']) ? $state_definition['class'] : State::CLASS;
+        $this->loadStateImplementor($state_implementor);
+
+        $state = $this->service_locator->make(
+            $state_implementor,
+            [
+                ':name' => $state_definition['name'],
+                ':type' => $state_definition['type'],
+                ':options' => $state_definition['options'],
+            ]
+        );
+
+        if (!$state instanceof StateInterface) {
+            throw new RuntimeError(
+                sprintf(
+                    'Configured custom implementor for state %s does not implement "%s".',
+                    $state_definition['name'],
+                    StateInterface::CLASS
+                )
+            );
+        }
+
+        return $state;
     }
 
     /**
