@@ -82,7 +82,8 @@ class XmlStateMachineBuilder extends BaseXmlStateMachineBuilder
         if (!$state instanceof StateInterface) {
             throw new RuntimeError(
                 sprintf(
-                    'Configured custom implementor for state %s does not implement "%s".',
+                    'Configured implementor "%s" for state "%s" must implement: %s',
+                    $state_implementor,
                     $state_definition['name'],
                     StateInterface::CLASS
                 )

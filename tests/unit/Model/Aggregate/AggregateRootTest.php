@@ -539,10 +539,22 @@ class AggregateRootTest extends TestCase
 
     protected function getDefaultStateMachine()
     {
-        $guard_stub = $this->createMock(GuardInterface::CLASS);
-
         $service_locator_stub = $this->createMock(ServiceLocatorInterface::CLASS);
-        $service_locator_stub->method('make')->willReturn($guard_stub);
+        $service_locator_stub->method('make')->will(
+            $this->returnCallback(function ($impl, $more) {
+                switch ($impl) {
+                    case 'Workflux\State\VariableState':
+                    case 'Workflux\State\State':
+                        return new $impl($more[':name'], $more[':type'], $more[':options']);
+                        break;
+                    case 'Workflux\Guard\VariableGuard':
+                        return $this->createMock(GuardInterface::CLASS);
+                        break;
+                    default:
+                        return null;
+                }
+            })
+        );
 
         $workflows_file_path = __DIR__ . '/../../Fixture/BookSchema/Model/workflows.xml';
 
