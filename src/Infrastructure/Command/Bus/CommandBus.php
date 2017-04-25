@@ -52,7 +52,7 @@ class CommandBus extends Object implements CommandBusInterface
 
         $enriched_command = $this->command_enricher->enrich($command);
 
-        return $transport->send($enriched_command);
+        return $transport->send($enriched_command, $subscription->getSettings());
     }
 
     public function subscribe(CommandSubscriptionInterface $subscription)
