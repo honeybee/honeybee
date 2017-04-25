@@ -5,6 +5,7 @@ namespace Honeybee\Infrastructure\Command\Bus\Subscription;
 use Closure;
 use Honeybee\Infrastructure\Command\Bus\Transport\CommandTransportInterface;
 use Honeybee\Infrastructure\Command\CommandHandlerInterface;
+use Honeybee\Infrastructure\Config\SettingsInterface;
 
 class LazyCommandSubscription extends CommandSubscription
 {
@@ -13,11 +14,13 @@ class LazyCommandSubscription extends CommandSubscription
     public function __construct(
         $command_type,
         Closure $command_handler_callback,
-        CommandTransportInterface $command_transport
+        CommandTransportInterface $command_transport,
+        SettingsInterface $settings
     ) {
         $this->command_type = $command_type;
         $this->command_transport = $command_transport;
         $this->command_handler_callback = $command_handler_callback;
+        $this->settings = $settings;
     }
 
     public function getCommandHandler()
