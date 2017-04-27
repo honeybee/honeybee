@@ -3,6 +3,7 @@
 namespace Honeybee\Infrastructure\Job\Bundle;
 
 use Closure;
+use DateTimeImmutable;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Command\Bus\CommandBusInterface;
 use Honeybee\Infrastructure\Command\CommandInterface;
@@ -13,6 +14,8 @@ use Honeybee\Infrastructure\Job\Strategy\JobStrategy;
 
 class ExecuteCommandJob extends Job
 {
+    const DATE_ISO8601_WITH_MICROS = 'Y-m-d\TH:i:s.uP';
+
     protected $command;
 
     /**
@@ -43,6 +46,9 @@ class ExecuteCommandJob extends Job
         Closure $strategy_callback,
         SettingsInterface $settings = null
     ) {
+        $this->iso_date = DateTimeImmutable::createFromFormat('U.u', sprintf('%.6F', microtime(true)))
+            ->format(self::DATE_ISO8601_WITH_MICROS);
+
         parent::__construct($state);
 
         $this->command_bus = $command_bus;
