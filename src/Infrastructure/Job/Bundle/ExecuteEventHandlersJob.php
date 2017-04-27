@@ -83,6 +83,11 @@ class ExecuteEventHandlersJob extends Job
         return $this->settings;
     }
 
+    public function getIsoDate()
+    {
+        return $this->event->getIsoDate();
+    }
+
     protected function createStrategy()
     {
         $create_function = $this->strategy_callback;

@@ -3,6 +3,7 @@
 namespace Honeybee\Infrastructure\Job\Bundle;
 
 use Closure;
+use DateTimeImmutable;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Command\Bus\CommandBusInterface;
 use Honeybee\Infrastructure\Command\CommandInterface;
@@ -13,6 +14,8 @@ use Honeybee\Infrastructure\Job\Strategy\JobStrategy;
 
 class ExecuteCommandJob extends Job
 {
+    const DATE_ISO8601_WITH_MICROS = 'Y-m-d\TH:i:s.uP';
+
     protected $command;
 
     /**
@@ -35,12 +38,17 @@ class ExecuteCommandJob extends Job
      */
     protected $settings;
 
+    protected $iso_date;
+
     public function __construct(
         array $state,
         CommandBusInterface $command_bus,
         Closure $strategy_callback,
         SettingsInterface $settings = null
     ) {
+        $this->iso_date = DateTimeImmutable::createFromFormat('U.u', sprintf('%.6F', microtime(true)))
+            ->format(self::DATE_ISO8601_WITH_MICROS);
+
         parent::__construct($state);
 
         $this->command_bus = $command_bus;
@@ -55,6 +63,9 @@ class ExecuteCommandJob extends Job
 
     public function getStrategy()
     {
+        if (!$this->strategy) {
+            $this->strategy = $this->createStrategy();
+        }
         return $this->strategy;
     }
 
@@ -66,6 +77,11 @@ class ExecuteCommandJob extends Job
     public function getSettings()
     {
         return $this->settings;
+    }
+
+    public function getIsoDate()
+    {
+        return $this->iso_date;
     }
 
     protected function createStrategy()
@@ -95,7 +111,6 @@ class ExecuteCommandJob extends Job
             if (!class_exists($command_implementor)) {
                 throw new RuntimeError('Unable to resolve command implementor: ' . $command_implementor);
             }
-
             $this->command = new $command_implementor($command_state);
         } elseif ($command_state instanceof CommandInterface) {
             $this->command = $command_state;

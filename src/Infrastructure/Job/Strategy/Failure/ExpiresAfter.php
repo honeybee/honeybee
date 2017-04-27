@@ -31,7 +31,7 @@ class ExpiresAfter implements FailureStrategyInterface
     public function hasFailed()
     {
         $now_date = new DateTimeImmutable;
-        $event_date = new DateTimeImmutable($this->job->getEvent()->getIsoDate());
+        $event_date = new DateTimeImmutable($this->job->getIsoDate());
         $expiry_date = $event_date->add(DateInterval::createFromDateString($this->interval));
         return $now_date > $expiry_date;
     }
