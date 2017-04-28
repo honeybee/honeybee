@@ -21,7 +21,8 @@ class DomainEventReader extends CouchDbStorage implements StorageReaderInterface
             $response = $this->request($path, self::METHOD_GET);
             $result_data = json_decode($response->getBody(), true);
         } catch (RequestException $error) {
-            if ($error->getResponse()->getStatusCode() === 404) {
+            $error_response = $error->getResponse();
+            if ($error_response !== null && $error_response->getStatusCode() === 404) {
                 return null;
             } else {
                 throw $error;
