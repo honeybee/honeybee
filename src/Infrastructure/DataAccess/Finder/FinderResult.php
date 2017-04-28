@@ -25,6 +25,11 @@ class FinderResult implements FinderResultInterface
         $this->cursor = $cursor;
     }
 
+    public static function empty()
+    {
+        return new static;
+    }
+
     public function getResults()
     {
         return $this->results;
