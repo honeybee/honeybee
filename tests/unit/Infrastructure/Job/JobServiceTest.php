@@ -215,10 +215,13 @@ class JobServiceTest extends TestCase
     public function testFail()
     {
         $expected = new FailedJobEvent([
-            'failed_job_state' => [ 'job' => 'state' ],
+            'failed_job_state' => [ 'metadata' => [ 'job_name' => 'foobar_job' ] ],
+            'failed_job_type' => 'foobar_job',
             'metadata' => [ 'message' => 'fail' ]
         ]);
-        $this->mock_job->shouldReceive('toArray')->once()->andReturn([ 'job' => 'state' ]);
+        $this->mock_job->shouldReceive('toArray')->twice()->andReturn(
+            [ 'metadata' => [ 'job_name' => 'foobar_job' ] ]
+        );
         $this->mock_event_bus
             ->shouldReceive('distribute')
             ->once()

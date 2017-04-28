@@ -5,6 +5,7 @@ namespace Honeybee\Infrastructure\Job;
 use Assert\Assertion;
 use Closure;
 use Honeybee\Common\Error\RuntimeError;
+use Honeybee\Common\Util\StringToolkit;
 use Honeybee\Infrastructure\Config\ConfigInterface;
 use Honeybee\Infrastructure\DataAccess\Connector\RabbitMqConnector;
 use Honeybee\Infrastructure\Event\Bus\Channel\ChannelMap;
@@ -100,8 +101,10 @@ class JobService implements JobServiceInterface
 
     public function fail(JobInterface $job, array $metadata = [])
     {
+        $job_state = $job->toArray();
         $event = new FailedJobEvent([
             'failed_job_state' => $job->toArray(),
+            'failed_job_type' => $job_state['metadata']['job_name'],
             'metadata' => $metadata
         ]);
 

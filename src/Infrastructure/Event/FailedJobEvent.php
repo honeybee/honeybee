@@ -9,6 +9,8 @@ class FailedJobEvent extends Event
 {
     protected $failed_job_state;
 
+    protected $failed_job_type;
+
     public function __construct(array $state = [])
     {
         $state['uuid'] = Uuid::uuid4()->toString();
@@ -23,7 +25,7 @@ class FailedJobEvent extends Event
 
     public function getType()
     {
-        return $this->failed_job_state['event']['@type'] . '.failed';
+        return $this->failed_job_type.'.failed';
     }
 
     protected function guardRequiredState()
