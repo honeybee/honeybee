@@ -25,7 +25,7 @@ class FinderResult implements FinderResultInterface
         $this->cursor = $cursor;
     }
 
-    public static function empty()
+    public static function makeEmpty()
     {
         return new static;
     }

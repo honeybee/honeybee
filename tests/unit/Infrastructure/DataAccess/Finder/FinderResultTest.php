@@ -24,7 +24,7 @@ class FinderResultTest extends TestCase
 
     public function testEmptyStaticConstructorWorks()
     {
-        $r = FinderResult::empty();
+        $r = FinderResult::makeEmpty();
 
         $this->assertInstanceOf(FinderResultInterface::CLASS, $r);
         $this->assertEquals(0, $r->getTotalCount());
