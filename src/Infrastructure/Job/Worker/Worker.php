@@ -5,8 +5,9 @@ namespace Honeybee\Infrastructure\Job\Worker;
 use Assert\Assertion;
 use Exception;
 use Honeybee\Common\Util\JsonToolkit;
-use Honeybee\Infrastructure\Job\JobServiceInterface;
 use Honeybee\Infrastructure\Config\ConfigInterface;
+use Honeybee\Infrastructure\Job\JobServiceInterface;
+use Psr\Log\LoggerInterface;
 
 class Worker implements WorkerInterface
 {
@@ -16,12 +17,15 @@ class Worker implements WorkerInterface
 
     protected $config;
 
-    public function __construct(JobServiceInterface $job_service, ConfigInterface $config)
+    protected $logger;
+
+    public function __construct(LoggerInterface $logger, JobServiceInterface $job_service, ConfigInterface $config)
     {
         //@note probably better if we could specify a channel and load the transport instead of
         //specifying service configuration on the command line
         $this->config = $config;
         $this->job_service = $job_service;
+        $this->logger = $logger;
     }
 
     public function run()
@@ -64,6 +68,7 @@ class Worker implements WorkerInterface
         try {
             $job->run();
         } catch (Exception $error) {
+            $this->logger->error($error->getMessage().PHP_EOL.$error->getTraceAsString());
             if ($job->getStrategy()->canRetry()) {
                 $this->job_service->retry($job, $delivery_info['exchange'] . '.waiting');
             } else {
