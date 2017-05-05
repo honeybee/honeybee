@@ -50,9 +50,13 @@ class CriteriaQueryTranslation implements QueryTranslationInterface
     protected function buildBody(QueryInterface $query)
     {
         $filter_criteria_list = $query->getFilterCriteriaList();
+        $default_filters = new CriteriaList;
         foreach ($this->config->get('query_filters', []) as $attribute_path => $attribute_value) {
-            $criteria = new AttributeCriteria($attribute_path, new Equals($attribute_value));
-            $filter_criteria_list->push($criteria);
+            $default_filters->push(new AttributeCriteria($attribute_path, new Equals($attribute_value)));
+        }
+        if (!$default_filters->isEmpty()) {
+            $default_filters->push($filter_criteria_list);
+            $filter_criteria_list = $default_filters;
         }
 
         $es_filter = $this->translateFilters($filter_criteria_list);
