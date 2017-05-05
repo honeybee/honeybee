@@ -30,4 +30,9 @@ abstract class AggregateRootCommand extends AggregateRootTypeCommand implements 
             '/[\w\.\-_]{1,128}\-\w{8}\-\w{4}\-\w{4}\-\w{4}\-\w{12}\-\w{2}_\w{2}\-\d+/'
         );
     }
+
+    public function __toString()
+    {
+        return static::CLASS.' for '.$this->aggregate_root_identifier.' with known_revision '.$this->known_revision;
+    }
 }
