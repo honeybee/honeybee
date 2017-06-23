@@ -328,11 +328,11 @@ class CriteriaQueryTranslation implements QueryTranslationInterface
         $search_query_settings = array_merge(
             [
                 'query' => $phrase,
-                'type' => 'phrase_prefix',
-                // to get more search results you might want to configure e.g.:
-                // 'prefix_length' => 4,
-                // 'fuzziness' => 'auto',
-                // 'max_expansions' => 1000
+                'type' => 'boolean',
+                'operator' => 'and',
+                // @codingStandardsIgnoreStart
+                // @see https://www.elastic.co/guide/en/elasticsearch/reference/2.4/query-dsl-match-query.html#query-dsl-match-query-fuzziness
+                // @codingStandardsIgnoreEnd
             ],
             (array)$this->config->get('search_query_settings', [])
         );
