@@ -147,7 +147,7 @@ return [
         'expected_es_query' => [
             'body' => [
                 'query' => [
-                    'match' => [ '_all' => [ 'query' => 'foobar', 'type' => 'phrase_prefix' ] ]
+                    'match' => [ '_all' => [ 'query' => 'foobar', 'type' => 'boolean', 'operator' => 'and' ] ]
                 ],
                 'sort' => [ [ 'created_at' => [ 'order' => 'asc', 'unmapped_type' => 'date' ] ] ]
             ],
