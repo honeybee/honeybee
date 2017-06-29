@@ -2,9 +2,9 @@
 
 namespace Honeybee\Common\Error\AggregateRoot;
 
-use Honeybee\Common\Error\Error;
+use Honeybee\Common\Error\RuntimeError;
 
-class AggregateRootError extends Error
+class AggregateRootError extends RuntimeError
 {
 
 }
