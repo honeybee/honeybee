@@ -2,14 +2,21 @@
 
 namespace Honeybee\Model\Aggregate;
 
-use Trellis\Runtime\Attribute\AttributeInterface;
-use Trellis\Runtime\Attribute\EmbeddedEntityList\EmbeddedEntityListAttribute;
-use Trellis\Runtime\Attribute\Uuid\UuidAttribute;
-use Honeybee\Common\Error\RuntimeError;
+use Honeybee\Common\Error\AggregateRoot\AggregateRootError;
+use Honeybee\Common\Error\AggregateRoot\CommandRevisionError;
+use Honeybee\Common\Error\AggregateRoot\HistoryConflictError;
+use Honeybee\Common\Error\AggregateRoot\HistoryEmptyError;
+use Honeybee\Common\Error\AggregateRoot\InvalidSequenceNumberError;
+use Honeybee\Common\Error\AggregateRoot\InvalidStateError;
+use Honeybee\Common\Error\AggregateRoot\MissingIdentifierError;
+use Honeybee\Common\Error\AggregateRoot\ReconstitutionError;
+use Honeybee\Common\Error\AggregateRoot\UnsupportedEventTypeError;
+use Honeybee\Common\Error\AggregateRoot\WorkflowStateMismatchError;
+use Honeybee\Common\Error\AggregateRoot\WrongIdentifierError;
+use Honeybee\Infrastructure\Command\CommandInterface;
 use Honeybee\Model\Aggregate\AggregateRootTypeInterface;
 use Honeybee\Model\Command\AggregateRootCommandInterface;
 use Honeybee\Model\Command\AggregateRootTypeCommandInterface;
-use Honeybee\Infrastructure\Command\CommandInterface;
 use Honeybee\Model\Event\AggregateRootEventInterface;
 use Honeybee\Model\Event\AggregateRootEventList;
 use Honeybee\Model\Event\EmbeddedEntityEventList;
@@ -24,6 +31,9 @@ use Honeybee\Model\Task\MoveAggregateRootNode\AggregateRootNodeMovedEvent;
 use Honeybee\Model\Task\MoveAggregateRootNode\MoveAggregateRootNodeCommand;
 use Honeybee\Model\Task\ProceedWorkflow\ProceedWorkflowCommand;
 use Honeybee\Model\Task\ProceedWorkflow\WorkflowProceededEvent;
+use Trellis\Runtime\Attribute\AttributeInterface;
+use Trellis\Runtime\Attribute\EmbeddedEntityList\EmbeddedEntityListAttribute;
+use Trellis\Runtime\Attribute\Uuid\UuidAttribute;
 use Workflux\StateMachine\StateMachineInterface;
 
 /**
@@ -112,7 +122,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
     public function getParentNodeId()
     {
         if (!$this->getType()->isActingAsTree()) {
-            throw new RuntimeError('Cant return parent_node_id for a non-hierarchically managed type.');
+            throw new AggregateRootError('Cant return parent_node_id for a non-hierarchically managed type.');
         }
 
         return $this->getValue('parent_node_id');
@@ -174,7 +184,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
     public function reconstituteFrom(AggregateRootEventList $history)
     {
         if (!$this->history->isEmpty()) {
-            throw new RuntimeError('Trying to reconstitute a history on a already initialized aggregate-root.');
+            throw new ReconstitutionError('Trying to reconstitute history on an already initialized aggregate-root.');
         }
 
         $first = true;
@@ -182,9 +192,9 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
             if ($first) {
                 $first = false;
                 if (!$past_event instanceof AggregateRootCreatedEvent) {
-                    throw new RuntimeError(
+                    throw new ReconstitutionError(
                         sprintf(
-                            'The first event given within a history to reconstitue from must be by the type of "%s".' .
+                            'The first event given within a history to reconstitute from must be by the type of "%s".' .
                             ' Instead "%s" was given for AR %s.',
                             AggregateRootCreatedEvent::CLASS,
                             get_class($past_event),
@@ -216,7 +226,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
         );
 
         if (!$created_event instanceof AggregateRootCreatedEvent) {
-            throw new RuntimeError(
+            throw new UnsupportedEventTypeError(
                 sprintf(
                     'Corrupt event type detected. Events that reflect entity creation must descend from %s.',
                     AggregateRootCreatedEvent::CLASS
@@ -242,7 +252,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
         );
 
         if (!$modified_event instanceof AggregateRootModifiedEvent) {
-            throw new RuntimeError(
+            throw new UnsupportedEventTypeError(
                 sprintf(
                     'Corrupt event type detected. Events that reflect entity modification must descend from %s.',
                     AggregateRootModifiedEvent::CLASS
@@ -264,7 +274,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
         $this->guardCommandPreConditions($workflow_command);
 
         if ($workflow_command->getCurrentStateName() !== $this->getWorkflowState()) {
-            throw new RuntimeError(
+            throw new WorkflowStateMismatchError(
                 sprintf(
                     'The AR\'s(%s) current state %s does not match the given command state %s.',
                     $this,
@@ -292,7 +302,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
         $proceeded_event = $this->processCommand($workflow_command, [ 'data' => $workflow_data ]);
 
         if (!$proceeded_event instanceof WorkflowProceededEvent) {
-            throw new RuntimeError(
+            throw new UnsupportedEventTypeError(
                 sprintf(
                     'Corrupt event type detected. Events that reflect workflow transitions must descend from %s.',
                     WorkflowProceededEvent::CLASS
@@ -318,7 +328,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
         );
 
         if (!$node_moved_event instanceof AggregateRootNodeMovedEvent) {
-            throw new RuntimeError(
+            throw new UnsupportedEventTypeError(
                 sprintf(
                     'Corrupt event type detected. Events that reflect nodes being moved must descend from %s.',
                     AggregateRootNodeMovedEvent::CLASS
@@ -393,7 +403,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
     protected function guardCommandPreConditions(AggregateRootCommandInterface $command)
     {
         if ($this->getHistory()->isEmpty()) {
-            throw new RuntimeError(
+            throw new HistoryEmptyError(
                 sprintf(
                     'Invalid event history.' .
                     ' No event has been previously applied. At least a %s should be applied.',
@@ -403,7 +413,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
         }
 
         if ($this->getHistory()->getLast()->getSeqNumber() < $command->getKnownRevision()) {
-            throw new RuntimeError(
+            throw new CommandRevisionError(
                 'Invalid command revision for aggregate root ' . $this->getIdentifier() .
                 '. The current head revision (seq number ' . $this->getHistory()->getLast()->getSeqNumber() .
                 ') must not be smaller than the command\'s known revision (' . $command->getKnownRevision() . ').'
@@ -419,7 +429,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
             );
 
             if (!$conflicting_events->isEmpty()) {
-                throw new RuntimeError(
+                throw new HistoryConflictError(
                     'Command conflicts with known event stream of aggregate root ' . $this->getIdentifier() .
                     ' – command known revision is ' . $command->getKnownRevision() . ' whileas the last known ' .
                     'history sequence number is ' . $this->getHistory()->getLast()->getSeqNumber() . '.'
@@ -433,7 +443,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
         if (!$event instanceof AggregateRootCreatedEvent
             && $this->getIdentifier() !== $event->getAggregateRootIdentifier()
         ) {
-            throw new RuntimeError(
+            throw new WrongIdentifierError(
                 sprintf(
                     'The AR\'s current identifier (%s) does not match the given event\'s AR identifier (%s).',
                     $this->getIdentifier(),
@@ -443,7 +453,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
         }
 
         if (!$event instanceof AggregateRootCreatedEvent && !$event instanceof AggregateRootModifiedEvent) {
-            throw new RuntimeError(
+            throw new UnsupportedEventTypeError(
                 sprintf(
                     'Unsupported domain event-type "%s" given. Supported event-types are: %s.',
                     get_class($event),
@@ -455,7 +465,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
         $last_event = $this->getHistory()->getLast();
 
         if ($last_event && $event->getSeqNumber() !== $this->getRevision() + 1) {
-            throw new RuntimeError(
+            throw new InvalidSequenceNumberError(
                 sprintf(
                     'Invalid sequence-number. ' .
                     'The given event sequence-number(%d) must be incremental relative to the known-revision(%s).',
@@ -487,7 +497,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
         if ($command instanceof AggregateRootCommandInterface) {
             $default_event_state['aggregate_root_identifier'] = $command->getAggregateRootIdentifier();
         } elseif (!isset($custom_event_state['aggregate_root_identifier'])) {
-            throw new RuntimeError(
+            throw new MissingIdentifierError(
                 'Missing required "aggregate_root_identifier" attribute for building domain-event.'
             );
         }
@@ -573,7 +583,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
                     }
                 }
             }
-            throw new RuntimeError(
+            throw new InvalidStateError(
                 sprintf(
                     "Aggregate-root is in an invalid state after applying %s.\nErrors:%s",
                     get_class($event),
@@ -605,8 +615,8 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
             $this->setValue('revision', $source_event->getSeqNumber());
             $this->markClean();
         } else {
-            $notice = 'Applied event %s for %s did not trigger any state changes, so it is being dropped ...';
-            error_log(sprintf($notice, $event, $this));
+            //$notice = 'Applied event %s for %s did not trigger any state changes, so it is being dropped ...';
+            //error_log(sprintf($notice, $event, $this));
         }
 
         return $source_event;
