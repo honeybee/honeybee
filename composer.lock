@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "54045f8ad22e44fd594a7a497de2b326",
+    "content-hash": "eb2af578da867915e5228ecda479d778",
     "packages": [
         {
             "name": "beberlei/assert",
@@ -666,16 +666,16 @@
         },
         {
             "name": "honeybee/trellis",
-            "version": "0.1.5",
+            "version": "0.1.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/honeybee/trellis.git",
-                "reference": "151b666805f7d5c1bed6d3bfe841a320d3f38f72"
+                "reference": "f4e898c521b0b1a71c612f7d7f81721a9509c88d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/honeybee/trellis/zipball/151b666805f7d5c1bed6d3bfe841a320d3f38f72",
-                "reference": "151b666805f7d5c1bed6d3bfe841a320d3f38f72",
+                "url": "https://api.github.com/repos/honeybee/trellis/zipball/f4e898c521b0b1a71c612f7d7f81721a9509c88d",
+                "reference": "f4e898c521b0b1a71c612f7d7f81721a9509c88d",
                 "shasum": ""
             },
             "require": {
@@ -746,7 +746,7 @@
                 "entity",
                 "validation"
             ],
-            "time": "2017-07-27T08:25:45+00:00"
+            "time": "2017-07-27T12:17:35+00:00"
         },
         {
             "name": "league/flysystem",
