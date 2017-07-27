@@ -41,12 +41,18 @@
             "url": "git@github.com:FriendsOfHoneybee/php-amqplib.git"
         }
     ],
+    "config": {
+        "preferred-install": {
+            "honeybee/*": "source",
+            "*": "dist"
+        }
+    },
     "require": {
         "php": ">=5.6.0",
         "beberlei/assert": "^2.7",
         "elasticsearch/elasticsearch": "^2.0",
         "guzzlehttp/guzzle": "^6.2",
-        "honeybee/trellis": "^0.1.3",
+        "honeybee/trellis": "^0.1.5",
         "league/flysystem": "^1.0",
         "mtdowling/jmespath.php": "^2.4",
         "psr/container": "^1.0",
@@ -89,6 +95,7 @@
             "@validate-json"
         ],
         "test": "phpunit",
+        "tests": "phpunit --no-coverage",
         "code-sniffer": "phpcs --extensions=php --standard=psr2 src tests/unit",
         "code-sniffer-autofix": "phpcbf --standard=psr2 -d tabWidth=4 src",
         "validate-json": "composer validate --no-check-all --no-check-lock",

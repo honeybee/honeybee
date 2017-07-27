@@ -71,6 +71,11 @@ class AggregateRootTest extends TestCase
      */
     public function testCreateWithNonCreateCommand()
     {
+        if (version_compare(PHP_VERSION, '7.0', '<')) {
+            $this->markTestSkipped('PHP7+ only test');
+            return;
+        }
+
         $aggregate_root = $this->constructAggregateRoot();
         $this->assertTrue($aggregate_root->isValid());
 
