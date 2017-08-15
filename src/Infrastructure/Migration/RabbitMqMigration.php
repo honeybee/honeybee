@@ -27,6 +27,28 @@ abstract class RabbitMqMigration extends Migration
         $channel->queue_bind($queue_name, $exchange_name, $routing_key);
     }
 
+    protected function renameQueue(
+        MigrationTarget $migration_target,
+        $exchange_name,
+        array $old_queue,
+        array $new_queue
+    ) {
+        Assertion::string($exchange_name);
+        Assertion::count($old_queue, 2);
+        Assertion::count($new_queue, 2);
+        list($prev_name, $prev_routing) = $old_queue;
+        list($new_name, $new_routing) = $new_queue;
+        Assertion::allString([ $prev_name, $prev_routing, $new_name, $new_routing ]);
+
+        $channel = $this->getConnection($migration_target)->channel();
+        // unbind and delete the previous queue
+        $channel->queue_unbind($prev_name, $exchange_name, $prev_routing);
+        $channel->queue_delete($prev_name);
+        // declare and bind new queue
+        $channel->queue_declare($new_name, false, true, false, false);
+        $channel->queue_bind($new_name, $exchange_name, $new_routing);
+    }
+
     protected function createVersionList(MigrationTarget $migration_target, $exchange_name)
     {
         Assertion::string($exchange_name);
