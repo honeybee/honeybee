@@ -432,7 +432,10 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
                 throw new HistoryConflictError(
                     'Command conflicts with known event stream of aggregate root ' . $this->getIdentifier() .
                     ' – command known revision is ' . $command->getKnownRevision() . ' whileas the last known ' .
-                    'history sequence number is ' . $this->getHistory()->getLast()->getSeqNumber() . '.'
+                    'history sequence number is ' . $this->getHistory()->getLast()->getSeqNumber() . '.',
+                    $this->getAggregateRootType()->getPrefix(),
+                    $this->getIdentifier(),
+                    $this->getRevision()
                 );
             }
         }
@@ -635,3 +638,4 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
         $this->applyEvent($this->processCommand($command, [ 'data' => $changing_attributes ]));
     }
 }
+
