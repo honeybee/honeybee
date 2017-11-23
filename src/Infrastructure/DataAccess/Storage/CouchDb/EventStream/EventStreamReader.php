@@ -31,7 +31,7 @@ class EventStreamReader extends CouchDbStorage implements StorageReaderInterface
                 'include_docs' => 'true',
                 'reduce' => 'false',
                 'descending' => 'true',
-                'limit' => 1000 // @todo use snapshot size config setting as soon as available
+                'limit' => 5000 // @todo use snapshot size config setting as soon as available
             ];
             if (!$this->config->has('design_doc')) {
                 throw new RuntimeError(
