@@ -344,6 +344,10 @@ class ProjectionUpdater extends EventHandler
             $projection_type->getReferencedTypeClass()
         );
         $referenced_identifier = $projection->getReferencedIdentifier();
+        if (empty($referenced_identifier)) {
+            $this->logger->error('[Zombie Alarm] RefId EMPTY: '.json_encode($projection->getRoot()->toArray()));
+            return $projection;
+        }
 
         if ($referenced_identifier === $projection->getRoot()->getIdentifier()) {
             $referenced_projection = $projection->getRoot(); // self reference, no need to load
