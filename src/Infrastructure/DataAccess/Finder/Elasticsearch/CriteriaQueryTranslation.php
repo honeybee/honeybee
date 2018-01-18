@@ -161,7 +161,7 @@ class CriteriaQueryTranslation implements QueryTranslationInterface
         $attribute_path = $criteria->getAttributePath();
 
         if (is_array($attribute_value)) {
-            $filter = [ 'terms' => [ $attribute_path => $attribute_value ] ];
+            $filter = $this->buildTermsFilter($criteria);
             if ($criteria->getComparison()->isInverted()) {
                 return [ 'not' => $filter ];
             }
@@ -288,6 +288,21 @@ class CriteriaQueryTranslation implements QueryTranslationInterface
             $attr_filter = [ 'term' => [ $attribute_path => $terms[0]] ];
         }
         */
+        return $attr_filter;
+    }
+
+    protected function buildTermsFilter(CriteriaInterface $criteria)
+    {
+        $attribute_value = $criteria->getComparison()->getComparand();
+        $attribute_path = $criteria->getAttributePath();
+
+        $multi_field_mapped_attributes = (array)$this->config->get('multi_fields', []);
+        if (in_array($attribute_path, $multi_field_mapped_attributes)) {
+            $attribute_path = $attribute_path . '.filter';
+        }
+
+        $attr_filter = [ 'terms' => [ $attribute_path => $attribute_value ] ];
+
         return $attr_filter;
     }
 

@@ -53,6 +53,37 @@ return [
         ]
     ],
     //
+    // "match_all" query, that is filtered by a single attribute criteria with multiple possible values.
+    //
+    [
+        'query' => new CriteriaQuery(
+            new CriteriaList,
+            new CriteriaList([ new AttributeCriteria('username', new Equals([ 'honeybee-tester', 'honeybee-system_account-user-123' ])) ]),
+            new CriteriaList([ new SortCriteria('created_at') ]),
+            0,
+            100
+        ),
+        'expected_es_query' => [
+            'body' => [
+                'query' => [
+                    'bool' => [
+                        'must' => [
+                            'match_all' => []
+                        ],
+                        'filter' => [
+                            'and' => [
+                                [ 'terms' => [ 'username.filter' => [ 'honeybee-tester', 'honeybee-system_account-user-123' ] ] ]
+                            ]
+                        ]
+                    ]
+                ],
+                'sort' => [ [ 'created_at' => [ 'order' => 'asc', 'unmapped_type' => 'date' ] ] ]
+            ],
+            'size' => 100,
+            'from' => 0
+        ]
+    ],
+    //
     // "match_all" query, that is filtered by several attribute criterias using "and" to chain them.
     //
     [
