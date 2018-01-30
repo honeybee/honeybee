@@ -638,4 +638,3 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
         $this->applyEvent($this->processCommand($command, [ 'data' => $changing_attributes ]));
     }
 }
-

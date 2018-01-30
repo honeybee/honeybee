@@ -35,4 +35,3 @@ class HistoryConflictError extends AggregateRootError
         return $this->revision;
     }
 }
-

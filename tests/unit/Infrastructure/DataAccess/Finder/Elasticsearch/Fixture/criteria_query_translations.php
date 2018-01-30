@@ -58,7 +58,9 @@ return [
     [
         'query' => new CriteriaQuery(
             new CriteriaList,
-            new CriteriaList([ new AttributeCriteria('username', new Equals([ 'honeybee-tester', 'honeybee-system_account-user-123' ])) ]),
+            new CriteriaList([
+                new AttributeCriteria('username', new Equals(['honeybee-tester', 'honeybee-system_account-user-123' ]))
+            ]),
             new CriteriaList([ new SortCriteria('created_at') ]),
             0,
             100
@@ -72,7 +74,11 @@ return [
                         ],
                         'filter' => [
                             'and' => [
-                                [ 'terms' => [ 'username.filter' => [ 'honeybee-tester', 'honeybee-system_account-user-123' ] ] ]
+                                [
+                                    'terms' => [
+                                        'username.filter' => [ 'honeybee-tester', 'honeybee-system_account-user-123' ]
+                                    ]
+                                ]
                             ]
                         ]
                     ]
