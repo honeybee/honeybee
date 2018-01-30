@@ -3,9 +3,9 @@
 namespace Honeybee\Model\Task;
 
 use Honeybee\Model\Task\TaskConflictMap;
-use Trellis\Common\Object;
+use Trellis\Common\BaseObject;
 
-class TaskService extends Object implements TaskServiceInterface
+class TaskService extends BaseObject implements TaskServiceInterface
 {
     protected $task_conflict_map;
 

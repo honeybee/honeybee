@@ -3,8 +3,8 @@
 namespace Honeybee\Projection;
 
 use Honeybee\EntityInterface;
-use Trellis\Common\ObjectInterface;
 use Honeybee\EntityType as BaseEntityType;
+use Trellis\Common\BaseObjectInterface;
 use Trellis\Runtime\Attribute\AttributeInterface;
 use Trellis\Runtime\Attribute\EmbeddedEntityList\EmbeddedEntityListAttribute;
 use Trellis\Runtime\Attribute\EntityReferenceList\EntityReferenceListAttribute;
@@ -28,7 +28,7 @@ abstract class EntityType extends BaseEntityType
             foreach ($this->getAttributes() as $attribute) {
                 $attribute_name = $attribute->getName();
                 $attribute_value = $reference_entity->getValue($attribute_name);
-                $mirrored_values[$attribute_name] = $attribute_value instanceof ObjectInterface
+                $mirrored_values[$attribute_name] = $attribute_value instanceof BaseObjectInterface
                     ? $attribute_value->toArray()
                     : $attribute_value;
             }
@@ -86,7 +86,7 @@ abstract class EntityType extends BaseEntityType
                     }
                 }
             } else {
-                $mirrored_values[$mirrored_attr_name] = $source_attribute_value instanceof ObjectInterface
+                $mirrored_values[$mirrored_attr_name] = $source_attribute_value instanceof BaseObjectInterface
                     ? $source_attribute_value->toArray()
                     : $source_attribute_value;
             }

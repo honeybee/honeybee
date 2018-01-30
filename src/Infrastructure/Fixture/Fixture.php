@@ -12,9 +12,9 @@ use Honeybee\Model\Command\AggregateRootCommandBuilder;
 use Psr\Log\LoggerInterface;
 use Shrink0r\Monatic\Success;
 use Symfony\Component\Finder\Finder;
-use Trellis\Common\Object;
+use Trellis\Common\BaseObject;
 
-abstract class Fixture extends Object implements FixtureInterface
+abstract class Fixture extends BaseObject implements FixtureInterface
 {
     protected $name;
 

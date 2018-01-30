@@ -2,9 +2,9 @@
 
 namespace Honeybee\Model\Command\Bulk;
 
-use Trellis\Common\Object;
+use Trellis\Common\BaseObject;
 
-class BulkStreamError extends Object
+class BulkStreamError extends BaseObject
 {
     const INVALID_METADATA = 'invalid_metadata';
 

@@ -3,9 +3,9 @@
 namespace Honeybee\Infrastructure\Migration;
 
 use Honeybee\Common\Error\RuntimeError;
-use Trellis\Common\Object;
+use Trellis\Common\BaseObject;
 
-abstract class Migration extends Object implements MigrationInterface
+abstract class Migration extends BaseObject implements MigrationInterface
 {
     protected $name;
 

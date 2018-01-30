@@ -5,9 +5,9 @@ namespace Honeybee\Infrastructure\Command;
 use Assert\Assertion;
 use Honeybee\Common\Util\StringToolkit;
 use Ramsey\Uuid\Uuid;
-use Trellis\Common\Object;
+use Trellis\Common\BaseObject;
 
-abstract class Command extends Object implements CommandInterface
+abstract class Command extends BaseObject implements CommandInterface
 {
     protected $uuid;
 

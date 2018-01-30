@@ -3,9 +3,9 @@
 namespace Honeybee\Infrastructure\DataAccess\Storage;
 
 use Honeybee\Infrastructure\Config\Settings;
-use Trellis\Common\Object;
+use Trellis\Common\BaseObject;
 
-class StorageReaderIterator extends Object implements StorageReaderIteratorInterface
+class StorageReaderIterator extends BaseObject implements StorageReaderIteratorInterface
 {
     protected $storage_reader;
 

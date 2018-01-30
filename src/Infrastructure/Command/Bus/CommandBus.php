@@ -8,9 +8,9 @@ use Honeybee\Infrastructure\Command\Bus\Subscription\CommandSubscriptionMap;
 use Honeybee\Infrastructure\Command\CommandEnricherInterface;
 use Honeybee\Infrastructure\Command\CommandInterface;
 use Psr\Log\LoggerInterface;
-use Trellis\Common\Object;
+use Trellis\Common\BaseObject;
 
-class CommandBus extends Object implements CommandBusInterface
+class CommandBus extends BaseObject implements CommandBusInterface
 {
     protected $subscriptions;
 

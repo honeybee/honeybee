@@ -2,12 +2,12 @@
 
 namespace Honeybee\Infrastructure\Event\Bus\Subscription;
 
-use Trellis\Common\Object;
+use Honeybee\Infrastructure\Config\SettingsInterface;
 use Honeybee\Infrastructure\Event\Bus\Transport\EventTransportInterface;
 use Honeybee\Infrastructure\Event\EventHandlerList;
-use Honeybee\Infrastructure\Config\SettingsInterface;
+use Trellis\Common\BaseObject;
 
-class EventSubscription extends Object implements EventSubscriptionInterface
+class EventSubscription extends BaseObject implements EventSubscriptionInterface
 {
     protected $event_filters;
 

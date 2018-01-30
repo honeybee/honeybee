@@ -2,9 +2,9 @@
 
 namespace Honeybee\Model\Command\Bulk;
 
-use Trellis\Common\Object;
+use Trellis\Common\BaseObject;
 
-class BulkMetadata extends Object implements BulkMetadataInterface
+class BulkMetadata extends BaseObject implements BulkMetadataInterface
 {
     protected $type;
 

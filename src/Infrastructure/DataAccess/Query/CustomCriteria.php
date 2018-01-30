@@ -2,7 +2,7 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Query;
 
-use Trellis\Common\Object;
+use Trellis\Common\BaseObject;
 
 /**
  * Criteria that represents a custom query part. The query translation for
@@ -10,7 +10,7 @@ use Trellis\Common\Object;
  * situations where the query DSL is not sufficient but going to a full
  * CustomQuery is not wanted either.
  */
-class CustomCriteria extends Object implements CriteriaInterface
+class CustomCriteria extends BaseObject implements CriteriaInterface
 {
     protected $query_part;
 

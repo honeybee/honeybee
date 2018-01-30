@@ -2,9 +2,9 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Query;
 
-use Trellis\Common\Object;
+use Trellis\Common\BaseObject;
 
-class SortCriteria extends Object implements CriteriaInterface
+class SortCriteria extends BaseObject implements CriteriaInterface
 {
     const SORT_ASC = 'asc';
 

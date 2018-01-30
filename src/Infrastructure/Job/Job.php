@@ -3,9 +3,9 @@
 namespace Honeybee\Infrastructure\Job;
 
 use Ramsey\Uuid\Uuid;
-use Trellis\Common\Object;
+use Trellis\Common\BaseObject;
 
-abstract class Job extends Object implements JobInterface
+abstract class Job extends BaseObject implements JobInterface
 {
     protected $uuid;
 

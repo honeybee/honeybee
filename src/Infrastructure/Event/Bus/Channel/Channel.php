@@ -2,11 +2,11 @@
 
 namespace Honeybee\Infrastructure\Event\Bus\Channel;
 
-use Trellis\Common\Object;
 use Honeybee\Infrastructure\Event\Bus\Subscription\EventSubscriptionInterface;
 use Honeybee\Infrastructure\Event\Bus\Subscription\EventSubscriptionList;
+use Trellis\Common\BaseObject;
 
-class Channel extends Object implements ChannelInterface
+class Channel extends BaseObject implements ChannelInterface
 {
     protected $name;
 

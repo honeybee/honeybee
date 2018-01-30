@@ -4,9 +4,9 @@ namespace Honeybee\Infrastructure\Event;
 
 use Assert\Assertion;
 use DateTimeImmutable;
-use Trellis\Common\Object;
+use Trellis\Common\BaseObject;
 
-abstract class Event extends Object implements EventInterface
+abstract class Event extends BaseObject implements EventInterface
 {
     const DATE_ISO8601_WITH_MICROS = 'Y-m-d\TH:i:s.uP';
 

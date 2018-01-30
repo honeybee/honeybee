@@ -6,9 +6,9 @@ use Honeybee\Infrastructure\Command\Bus\Transport\CommandTransportInterface;
 use Honeybee\Infrastructure\Command\CommandHandlerInterface;
 use Honeybee\Infrastructure\Config\Settings;
 use Honeybee\Infrastructure\Config\SettingsInterface;
-use Trellis\Common\Object;
+use Trellis\Common\BaseObject;
 
-class CommandSubscription extends Object implements CommandSubscriptionInterface
+class CommandSubscription extends BaseObject implements CommandSubscriptionInterface
 {
     protected $command_type;
 

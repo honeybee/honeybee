@@ -2,11 +2,11 @@
 
 namespace Honeybee\Model\Event;
 
-use Trellis\Common\Object;
 use Honeybee\Model\Event\AggregateRootEventInterface;
 use Honeybee\Model\Event\AggregateRootEventList;
+use Trellis\Common\BaseObject;
 
-class EventStream extends Object implements EventStreamInterface
+class EventStream extends BaseObject implements EventStreamInterface
 {
     protected $identifier;
 

@@ -3,9 +3,9 @@
 namespace Honeybee\Infrastructure\Event\Bus\Transport;
 
 use Assert\Assertion;
-use Trellis\Common\Object;
+use Trellis\Common\BaseObject;
 
-abstract class EventTransport extends Object implements EventTransportInterface
+abstract class EventTransport extends BaseObject implements EventTransportInterface
 {
     protected $name;
 

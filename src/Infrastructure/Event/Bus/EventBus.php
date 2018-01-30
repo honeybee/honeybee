@@ -2,15 +2,15 @@
 
 namespace Honeybee\Infrastructure\Event\Bus;
 
-use Trellis\Common\Object;
 use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Event\Bus\Channel\ChannelMap;
 use Honeybee\Infrastructure\Event\Bus\Subscription\EventSubscriptionInterface;
 use Honeybee\Infrastructure\Event\Bus\Subscription\EventSubscriptionList;
 use Honeybee\Infrastructure\Event\EventInterface;
 use Psr\Log\LoggerInterface;
+use Trellis\Common\BaseObject;
 
-class EventBus extends Object implements EventBusInterface
+class EventBus extends BaseObject implements EventBusInterface
 {
     protected $channel_map;
 

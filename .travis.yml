@@ -1,34 +1,43 @@
 language: php
 
-sudo: required
-dist: trusty
-group: edge
-
-php:
-  - '5.6'
-  - '7.0'
-  - '7.1'
-  - nightly
-
-env:
-  matrix:
-    - PREFER_WHAT="update --prefer-source --prefer-lowest --prefer-stable"
-    - PREFER_WHAT="update --prefer-source --prefer-stable"
-    - PREFER_WHAT="install"
-
 matrix:
-#  fast_finish: true
+  #fast_finish: true
+  include:
+    - php: 5.6
+      env: COMPOSER_FLAGS="update --prefer-lowest --prefer-stable --prefer-source"
+    - php: 7.0
+      env: COMPOSER_FLAGS="update --prefer-stable --prefer-source"
+    - php: 7.1
+      env: COMPOSER_FLAGS="install"
+    - php: 7.1
+      env: COMPOSER_FLAGS="update --prefer-stable --prefer-source"
+    - php: 7.2
+      env: COMPOSER_FLAGS="install"
+    - php: 7.2
+      env: COMPOSER_FLAGS="update --prefer-stable --prefer-source"
+    - php: nightly
   allow_failures:
     - php: nightly
 
+before_install:
+  - travis_retry wget "https://github.com/php-coveralls/php-coveralls/releases/download/v2.0.0/php-coveralls.phar" --output-document="${HOME}/bin/php-coveralls" && chmod u+x "${HOME}/bin/php-coveralls"
+
 before_script:
-  - composer self-update
-  - composer $PREFER_WHAT
+  - travis_retry composer ${COMPOSER_FLAGS:-install} --no-interaction
 
 script:
   - composer build
 
-after_script: php vendor/bin/coveralls -v
+after_script:
+  - ${HOME}/bin/php-coveralls -v
+
+cache:
+  directories:
+    - vendor
+    - $HOME/.composer/cache
+
+git:
+  depth: 10
 
 notifications:
   irc:

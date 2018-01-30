@@ -2,9 +2,9 @@
 
 namespace Honeybee\Common\Util;
 
-use Trellis\Common\Object;
+use Trellis\Common\BaseObject;
 
-class ClassFileInfo extends Object
+class ClassFileInfo extends BaseObject
 {
     protected $class_file_path;
 

@@ -2,9 +2,9 @@
 
 namespace Honeybee\Infrastructure\Command\Bus\Transport;
 
-use Trellis\Common\Object;
+use Trellis\Common\BaseObject;
 
-abstract class CommandTransport extends Object implements CommandTransportInterface
+abstract class CommandTransport extends BaseObject implements CommandTransportInterface
 {
     protected $name;
 

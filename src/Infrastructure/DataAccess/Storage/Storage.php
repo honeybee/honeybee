@@ -2,14 +2,14 @@
 
 namespace Honeybee\Infrastructure\DataAccess\Storage;
 
-use Honeybee\Infrastructure\DataAccess\Connector\ConnectorInterface;
-use Honeybee\Infrastructure\DataAccess\Connector\ConnectableInterface;
 use Honeybee\Infrastructure\Config\ConfigInterface;
 use Honeybee\Infrastructure\Config\ConfigurableInterface;
-use Trellis\Common\Object;
+use Honeybee\Infrastructure\DataAccess\Connector\ConnectableInterface;
+use Honeybee\Infrastructure\DataAccess\Connector\ConnectorInterface;
 use Psr\Log\LoggerInterface;
+use Trellis\Common\BaseObject;
 
-abstract class Storage extends Object implements ConnectableInterface, ConfigurableInterface
+abstract class Storage extends BaseObject implements ConnectableInterface, ConfigurableInterface
 {
     const DOMAIN_FIELD_ID = 'identifier';
 

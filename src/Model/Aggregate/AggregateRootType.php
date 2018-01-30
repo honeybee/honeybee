@@ -48,12 +48,13 @@ abstract class AggregateRootType extends EntityType implements AggregateRootType
      *
      * @param array $data Optional data for initial hydration (is dropped by this class).
      * @param EntityInterface $parent_entity (also dropped)
+     * @param boolean $apply_default_values
      *
      * @return EntityInterface
      *
      * @throws InvalidTypeException
      */
-    public function createEntity(array $data = [], EntityInterface $parent_entity = null)
+    public function createEntity(array $data = [], EntityInterface $parent_entity = null, $apply_default_values = false)
     {
         if (!empty($data)) {
             throw new RuntimeError(

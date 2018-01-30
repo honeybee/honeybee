@@ -3,10 +3,10 @@
 namespace Honeybee\Model\Event;
 
 use Assert\Assertion;
-use Trellis\Common\Object;
 use Honeybee\Common\Error\RuntimeError;
+use Trellis\Common\BaseObject;
 
-abstract class EmbeddedEntityEvent extends Object implements
+abstract class EmbeddedEntityEvent extends BaseObject implements
     EmbeddedEntityEventInterface,
     HasEmbeddedEntityEventsInterface
 {

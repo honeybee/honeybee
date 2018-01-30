@@ -2,9 +2,9 @@
 
 namespace Honeybee\Infrastructure\Migration;
 
-use Trellis\Common\Object;
+use Trellis\Common\BaseObject;
 
-class StructureVersion extends Object implements StructureVersionInterface
+class StructureVersion extends BaseObject implements StructureVersionInterface
 {
     protected $target_name;
 

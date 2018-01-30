@@ -3,9 +3,9 @@
 namespace Honeybee\Model\Task;
 
 use Honeybee\Projection\ProjectionInterface;
-use Trellis\Common\Object;
+use Trellis\Common\BaseObject;
 
-class TaskConflict extends Object implements TaskConflictInterface
+class TaskConflict extends BaseObject implements TaskConflictInterface
 {
     /**
      * @var AggregateRootEventList $conflicting_events

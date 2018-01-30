@@ -3,9 +3,9 @@
 namespace Honeybee\Infrastructure\DataAccess\Query;
 
 use Assert\Assertion;
-use Trellis\Common\Object;
+use Trellis\Common\BaseObject;
 
-class CriteriaQuery extends Object implements CriteriaQueryInterface
+class CriteriaQuery extends BaseObject implements CriteriaQueryInterface
 {
     protected $search_criteria_list;
 
