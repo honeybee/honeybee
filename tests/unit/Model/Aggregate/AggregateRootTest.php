@@ -2,7 +2,11 @@
 
 namespace Honeybee\Tests\Model\Aggregate;
 
+use Honeybee\Common\Error\AggregateRoot\CommandRevisionError;
+use Honeybee\Common\Error\AggregateRoot\HistoryConflictError;
+use Honeybee\Common\Error\AggregateRoot\HistoryEmptyError;
 use Honeybee\Infrastructure\Workflow\XmlStateMachineBuilder;
+use Honeybee\Model\Event\AggregateRootEventInterface;
 use Honeybee\Model\Event\AggregateRootEventList;
 use Honeybee\ServiceLocatorInterface;
 use Honeybee\Tests\Fixture\BookSchema\Model\Author\AuthorType;
@@ -213,8 +217,6 @@ class AggregateRootTest extends TestCase
     /**
      * Expects an exception when trying to process a command without
      * having a CreatedEvent in the history.
-     *
-     * @expectedException Honeybee\Common\Error\AggregateRoot\HistoryEmptyError
      */
     public function testModifyWithoutCreatedEvent()
     {
@@ -228,7 +230,48 @@ class AggregateRootTest extends TestCase
             ]
         );
 
-        $aggregate_root->modify($modify_command);
+        try {
+            $aggregate_root->modify($modify_command);
+            $this->fail('Exception expected: '.HistoryEmptyError::class);
+        } catch (HistoryEmptyError $e) {
+            $this->assertSame(self::AGGREGATE_ROOT_TYPE, $e->getType());
+            $this->assertSame(self::AGGREGATE_ROOT_IDENTIFIER, $e->getIdentifier());
+            $this->assertSame(1, $e->getRevision());
+        }
+    } // @codeCoverageIgnore
+
+    /**
+     * Expects an exception when trying to process a command that
+     * conflicts with the domainevent history fo the AR.
+     */
+    public function testModifyConflictsWithHistoryOfEvents()
+    {
+        $aggregate_root = $this->constructAggregateRoot();
+        $aggregate_root->reconstituteFrom($this->getHistoryFixture());
+
+        $modify_command = new class(
+            [
+                'aggregate_root_type' => self::AGGREGATE_ROOT_TYPE,
+                'aggregate_root_identifier' => self::AGGREGATE_ROOT_IDENTIFIER,
+                'known_revision' => 3,
+                'values' => [ 'lastname' => 'Wahlberg' ]
+            ]
+        ) extends ModifyAuthorCommand {
+            public function conflictsWith(AggregateRootEventInterface $event, array &$conflicting_changes = [])
+            {
+                $conflicting_changes['someattribute'] = 'somevalue';
+                return true;
+            }
+        };
+
+        try {
+            $aggregate_root->modify($modify_command);
+            $this->fail('Exception expected: '.HistoryConflictError::class);
+        } catch (HistoryConflictError $e) {
+            $this->assertSame(self::AGGREGATE_ROOT_TYPE, $e->getType());
+            $this->assertSame(self::AGGREGATE_ROOT_IDENTIFIER, $e->getIdentifier());
+            $this->assertSame(4, $e->getRevision());
+        }
     } // @codeCoverageIgnore
 
     /**
@@ -320,8 +363,6 @@ class AggregateRootTest extends TestCase
     /**
      * Expects an exception when trying to force a non valid known-revision
      * into a command.
-     *
-     * @expectedException Honeybee\Common\Error\AggregateRoot\CommandRevisionError
      */
     public function testReconstituteFromInvalidCommandKnownRevision()
     {
@@ -338,7 +379,14 @@ class AggregateRootTest extends TestCase
             ]
         );
 
-        $aggregate_root->modify($wrong_seq_number_command);
+        try {
+            $aggregate_root->modify($wrong_seq_number_command);
+            $this->fail('Exception expected: '.CommandRevisionError::class);
+        } catch (CommandRevisionError $e) {
+            $this->assertSame(self::AGGREGATE_ROOT_TYPE, $e->getType());
+            $this->assertSame(self::AGGREGATE_ROOT_IDENTIFIER, $e->getIdentifier());
+            $this->assertSame(4, $e->getRevision());
+        }
     } // @codeCoverageIgnore
 
     /**

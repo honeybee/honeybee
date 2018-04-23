@@ -408,7 +408,10 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
                     'Invalid event history.' .
                     ' No event has been previously applied. At least a %s should be applied.',
                     AggregateRootCreatedEvent::CLASS
-                )
+                ),
+                $this->getType()->getPrefix(),
+                $command->getAggregateRootIdentifier(),
+                $command->getKnownRevision()
             );
         }
 
@@ -416,7 +419,10 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
             throw new CommandRevisionError(
                 'Invalid command revision for aggregate root ' . $this->getIdentifier() .
                 '. The current head revision (seq number ' . $this->getHistory()->getLast()->getSeqNumber() .
-                ') must not be smaller than the command\'s known revision (' . $command->getKnownRevision() . ').'
+                ') must not be smaller than the command\'s known revision (' . $command->getKnownRevision() . ').',
+                $this->getType()->getPrefix(),
+                $this->getIdentifier(),
+                $this->getRevision()
             );
         }
 
