@@ -246,6 +246,10 @@ class AggregateRootTest extends TestCase
      */
     public function testModifyConflictsWithHistoryOfEvents()
     {
+        if (version_compare(PHP_VERSION, '7.0', '<')) {
+            $this->markTestSkipped('PHP7+ only test');
+            return;
+        }
         $aggregate_root = $this->constructAggregateRoot();
         $aggregate_root->reconstituteFrom($this->getHistoryFixture());
 
