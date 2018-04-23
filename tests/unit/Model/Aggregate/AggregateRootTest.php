@@ -6,13 +6,13 @@ use Honeybee\Common\Error\AggregateRoot\CommandRevisionError;
 use Honeybee\Common\Error\AggregateRoot\HistoryConflictError;
 use Honeybee\Common\Error\AggregateRoot\HistoryEmptyError;
 use Honeybee\Infrastructure\Workflow\XmlStateMachineBuilder;
-use Honeybee\Model\Event\AggregateRootEventInterface;
 use Honeybee\Model\Event\AggregateRootEventList;
 use Honeybee\ServiceLocatorInterface;
 use Honeybee\Tests\Fixture\BookSchema\Model\Author\AuthorType;
 use Honeybee\Tests\Fixture\BookSchema\Model\Task\CreateAuthor\AuthorCreatedEvent;
 use Honeybee\Tests\Fixture\BookSchema\Model\Task\CreateAuthor\CreateAuthorCommand;
 use Honeybee\Tests\Fixture\BookSchema\Model\Task\ModifyAuthor\AuthorModifiedEvent;
+use Honeybee\Tests\Fixture\BookSchema\Model\Task\ModifyAuthor\ConflictingModifyAuthorCommand;
 use Honeybee\Tests\Fixture\BookSchema\Model\Task\ModifyAuthor\ModifyAuthorCommand;
 use Honeybee\Tests\Fixture\BookSchema\Model\Task\ProceedAuthorWorkflow\AuthorWorkflowProceededEvent;
 use Honeybee\Tests\Fixture\BookSchema\Model\Task\ProceedAuthorWorkflow\ProceedAuthorWorkflowCommand;
@@ -246,27 +246,17 @@ class AggregateRootTest extends TestCase
      */
     public function testModifyConflictsWithHistoryOfEvents()
     {
-        if (version_compare(PHP_VERSION, '7.0', '<')) {
-            $this->markTestSkipped('PHP7+ only test');
-            return;
-        }
         $aggregate_root = $this->constructAggregateRoot();
         $aggregate_root->reconstituteFrom($this->getHistoryFixture());
 
-        $modify_command = new class(
+        $modify_command = new ConflictingModifyAuthorCommand(
             [
                 'aggregate_root_type' => self::AGGREGATE_ROOT_TYPE,
                 'aggregate_root_identifier' => self::AGGREGATE_ROOT_IDENTIFIER,
                 'known_revision' => 3,
                 'values' => [ 'lastname' => 'Wahlberg' ]
             ]
-        ) extends ModifyAuthorCommand {
-            public function conflictsWith(AggregateRootEventInterface $event, array &$conflicting_changes = [])
-            {
-                $conflicting_changes['someattribute'] = 'somevalue';
-                return true;
-            }
-        };
+        );
 
         try {
             $aggregate_root->modify($modify_command);
