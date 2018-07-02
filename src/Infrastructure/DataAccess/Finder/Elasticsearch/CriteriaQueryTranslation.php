@@ -256,9 +256,16 @@ class CriteriaQueryTranslation implements QueryTranslationInterface
 
     protected function buildMissingFilter(CriteriaInterface $criteria)
     {
+        $attribute_path = $criteria->getAttributePath();
+
+        $multi_field_mapped_attributes = (array)$this->config->get('multi_fields', []);
+        if (in_array($attribute_path, $multi_field_mapped_attributes)) {
+            $attribute_path = $attribute_path . '.filter';
+        }
+
         return [
             'missing' => [
-                'field' => $criteria->getAttributePath(),
+                'field' => $attribute_path,
                 'existence' => true,
                 'null_value' => true
             ]
