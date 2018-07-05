@@ -212,6 +212,13 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
         foreach ($this->entity_type->getAttributes() as $attribute_name => $attribute) {
             if (isset($values[$attribute_name])) {
                 if ($attribute instanceof EmbeddedEntityListAttribute) {
+                    $result = $this->validateEmbeddedEntityListAttribute(
+                        $attribute,
+                        $values[$attribute_name]
+                    );
+                    if (!$result instanceof Success) {
+                        $errors[] = $result->get();
+                    }
                     /*
                      * prepare and build embedded commands on the fly and then add them to the global
                      * scope list which is validated later
@@ -258,6 +265,35 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
     /**
      * @return Result
      */
+    protected function validateEmbeddedEntityListAttribute(
+        AttributeInterface $embedded_list_attribute,
+        array $values
+    ) {
+        $errors = [];
+        $attribute_name = $embedded_list_attribute->getName();
+        // validate embedded-entity-list attribute
+        $result = $embedded_list_attribute->getValidator()->validate($values);
+
+        if ($embedded_list_attribute->getOption('mandatory', false) === true && empty($values)) {
+            $errors[$attribute_name]['@incidents'][] = [
+                'path' => $embedded_list_attribute->getPath(),
+                'incidents' => [ 'mandatory' => [ 'values' => $values ] ]
+            ];
+        }
+        if ($result !== true && $result->getSeverity() > IncidentInterface::NOTICE) {
+            foreach ($result->getViolatedRules() as $rule) {
+                foreach ($rule->getIncidents() as $name => $incident) {
+                    $incident_params = $incident->getParameters();
+                    $errors[$attribute_name]['@incidents'][] = [
+                        'path' => $embedded_list_attribute->getPath(),
+                        'incidents' => [ $name => $incident_params ]
+                    ];
+                }
+            }
+        }
+        return empty($errors) ? Success::unit($result) : Error::unit($errors);
+    }
+
     protected function sanitizeAttributeValue(AttributeInterface $attribute, $value)
     {
         $errors = [];

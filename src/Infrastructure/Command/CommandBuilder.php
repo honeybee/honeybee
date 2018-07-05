@@ -65,6 +65,7 @@ class CommandBuilder implements CommandBuilderInterface
         $errors = [];
         $sanitized_state = [];
 
+        // bind builder to command implementation
         foreach ($this->getCommandProperties($command_class) as $property_name) {
             if (array_key_exists($property_name, $command_state)) {
                 $property_value = $command_state[$property_name];
