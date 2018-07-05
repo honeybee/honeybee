@@ -280,7 +280,7 @@ class EmbeddedEntityCommandBuilder extends CommandBuilder
                 'incidents' => [ 'mandatory' => [ 'values' => $values ] ]
             ];
         }
-        if ($result !== true && $result->getSeverity() > IncidentInterface::NOTICE) {
+        if ($result->getSeverity() > IncidentInterface::NOTICE) {
             foreach ($result->getViolatedRules() as $rule) {
                 foreach ($rule->getIncidents() as $name => $incident) {
                     $incident_params = $incident->getParameters();
