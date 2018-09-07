@@ -50,8 +50,15 @@ class FileToolkit
         return $fallback_extension;
     }
 
+    /**
+     * Returns the mime type guessed by given extension name (w/o dot). When the internal list
+     * doesn't know about the extension the $fallback_mime_type is returned.
+     */
     public static function guessMimeTypeByExtension($extension, $fallback_mime_type = '')
     {
+        if ($extension === 'jpeg') {
+            return 'image/jpeg';
+        }
         $mime_type = array_search($extension, static::$mimetype_default_extensions);
 
         return $mime_type ?: $fallback_mime_type;
