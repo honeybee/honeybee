@@ -4,14 +4,14 @@ namespace Honeybee\Infrastructure\DataAccess\Connector;
 
 use Honeybee\Infrastructure\Config\ArrayConfig;
 use Honeybee\Infrastructure\Config\ConfigInterface;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * This abstract class may be used to write tests for your own connectors.
  *
  * @see Honeybee\Tests\Infrastructure\DataAccess\Connector\Flysystem\LocalConnectorTest
  */
-abstract class ConnectorInterfaceTest extends PHPUnit_Framework_TestCase
+abstract class ConnectorInterfaceTest extends TestCase
 {
     abstract protected function getConnector($name, ConfigInterface $config);
 
