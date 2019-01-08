@@ -3,6 +3,7 @@
 namespace Honeybee\Infrastructure\Command\Bus\Subscription;
 
 use Closure;
+use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Infrastructure\Command\Bus\Transport\CommandTransportInterface;
 use Honeybee\Infrastructure\Command\CommandHandlerInterface;
 use Honeybee\Infrastructure\Config\SettingsInterface;
@@ -47,7 +48,7 @@ class LazyCommandSubscription extends CommandSubscription
             throw new RuntimeError(
                 sprintf(
                     "Invalid command handler type given: %s, expected instance of %s",
-                    get_class($handler),
+                    get_class($command_handler),
                     CommandHandlerInterface::CLASS
                 )
             );

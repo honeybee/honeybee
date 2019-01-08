@@ -3,6 +3,7 @@
 namespace Honeybee\Infrastructure\Command;
 
 use Assert\Assertion;
+use Honeybee\Common\Error\RuntimeError;
 use Honeybee\Common\Util\StringToolkit;
 use Ramsey\Uuid\Uuid;
 use Trellis\Common\BaseObject;

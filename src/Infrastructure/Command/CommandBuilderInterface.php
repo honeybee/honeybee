@@ -2,6 +2,8 @@
 
 namespace Honeybee\Infrastructure\Command;
 
+use Shrink0r\Monatic\Result;
+
 interface CommandBuilderInterface
 {
     /**

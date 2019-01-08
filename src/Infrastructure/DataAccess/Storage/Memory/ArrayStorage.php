@@ -5,6 +5,7 @@ namespace Honeybee\Infrastructure\DataAccess\Storage\Memory;
 use Honeybee\Common\Error\ConfigError;
 use Honeybee\Infrastructure\Config\ConfigInterface;
 use Honeybee\Infrastructure\DataAccess\Connector\ConnectorInterface;
+use Honeybee\Infrastructure\DataAccess\Connector\Memory\ArrayConnector;
 use Honeybee\Infrastructure\DataAccess\Storage\Storage;
 use Psr\Log\LoggerInterface;
 

@@ -2,6 +2,7 @@
 
 namespace Honeybee\Infrastructure\Command;
 
+use Honeybee\Infrastructure\Event\EventList;
 use Psr\Log\LoggerInterface;
 use Trellis\Common\BaseObject;
 

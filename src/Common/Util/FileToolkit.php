@@ -2,7 +2,7 @@
 
 namespace Honeybee\Common\Util;
 
-use Finfo;
+use finfo;
 
 /**
  * Useful methods for handling files or meta info about them.
@@ -12,7 +12,7 @@ class FileToolkit
     /**
      * Returns a file extension guessed for the given local file.
      *
-     * @param string $file_path_path to file
+     * @param string $file_path path to file
      * @param string $fallback_extension extension to return on failed guess
      *
      * @return string default file extension for given mime type or fallback extension provided
@@ -20,7 +20,7 @@ class FileToolkit
     public static function guessExtensionForLocalFile($file_path, $fallback_extension = '')
     {
         // FILEINFO_MIME would return the mime encoding as well
-        $finfo = new Finfo(FILEINFO_MIME_TYPE);
+        $finfo = new finfo(FILEINFO_MIME_TYPE);
         $mime_type = $finfo->file($file_path);
 
         return static::guessExtensionByMimeType($mime_type, $fallback_extension);

@@ -3,6 +3,7 @@
 namespace Honeybee\Infrastructure\DataAccess\Connector;
 
 use Elasticsearch\ClientBuilder;
+use Exception;
 
 class ElasticsearchConnector extends Connector
 {
@@ -11,7 +12,7 @@ class ElasticsearchConnector extends Connector
     const DEFAULT_HOST = 'localhost';
 
     /**
-     * @return Elasticsearch\Client
+     * @return \Elasticsearch\Client
      */
     protected function connect()
     {

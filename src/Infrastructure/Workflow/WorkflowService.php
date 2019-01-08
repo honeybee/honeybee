@@ -35,7 +35,7 @@ class WorkflowService implements WorkflowServiceInterface
      * Builds and returns the state machine for the given name. As a name an object the resolveStateMachineName()
      * method supports can be given.
      *
-     * @param mixed $name_name of state machine to build and return.
+     * @param mixed $name name of state machine to build and return.
      *
      * @return StateMachineInterface state machine built/found
      */

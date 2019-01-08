@@ -2,14 +2,17 @@
 
 namespace Honeybee\Model\Command;
 
+use Honeybee\Common\Error\RuntimeError;
 use Honeybee\EntityInterface;
 use Honeybee\EntityTypeInterface;
 use Honeybee\Infrastructure\Command\CommandBuilder;
 use Honeybee\Infrastructure\Command\CommandBuilderList;
+use Honeybee\Model\Aggregate\AggregateRootInterface;
 use Honeybee\Model\Task\CreateAggregateRoot\CreateAggregateRootCommand;
 use Honeybee\Model\Task\ModifyAggregateRoot\AddEmbeddedEntity\AddEmbeddedEntityCommand;
 use Honeybee\Model\Task\ModifyAggregateRoot\ModifyEmbeddedEntity\ModifyEmbeddedEntityCommand;
 use Honeybee\Model\Task\ModifyAggregateRoot\RemoveEmbeddedEntity\RemoveEmbeddedEntityCommand;
+use Honeybee\Projection\ProjectionInterface;
 use Shrink0r\Monatic\Error;
 use Shrink0r\Monatic\None;
 use Shrink0r\Monatic\Result;

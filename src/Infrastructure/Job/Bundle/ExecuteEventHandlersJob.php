@@ -124,7 +124,7 @@ class ExecuteEventHandlersJob extends Job
         } else {
             throw new RuntimeError(
                 sprintf(
-                    'Invalid event data-type given. Only array and EventInterface are supported.',
+                    'Invalid event data-type given. Only array and %s are supported.',
                     EventInterface::CLASS
                 )
             );

@@ -1,0 +1,6 @@
+parameters:
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        - '#.* does not call parent constructor from Trellis\\Common\\BaseObject\.#'
+        - "#Casting to int something that's already int.#"
+        - "#Casting to string something that's already string.#"

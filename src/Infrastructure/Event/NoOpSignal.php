@@ -3,6 +3,7 @@
 namespace Honeybee\Infrastructure\Event;
 
 use Assert\Assertion;
+use Honeybee\Common\Error\RuntimeError;
 
 class NoOpSignal extends Event
 {

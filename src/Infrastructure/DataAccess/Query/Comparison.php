@@ -26,6 +26,7 @@ class Comparison extends BaseObject implements ComparisonInterface
 
     public function __construct($comparator, $comparand, $inverted = false)
     {
+        parent::__construct([]);
         $this->comparator = $comparator;
         $this->comparand = $comparand;
         $this->inverted = $inverted;

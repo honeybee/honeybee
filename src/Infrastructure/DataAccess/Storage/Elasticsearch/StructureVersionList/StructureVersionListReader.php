@@ -47,6 +47,7 @@ class StructureVersionListReader extends ElasticsearchStorage implements Storage
         if ($result_hits['total'] === $this->offset + 1) {
             $this->offset = 0;
         } else {
+            // @fixme what limit?
             $this->offset += $limit;
         }
 

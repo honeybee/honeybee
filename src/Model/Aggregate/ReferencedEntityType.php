@@ -2,12 +2,13 @@
 
 namespace Honeybee\Model\Aggregate;
 
-use Trellis\Runtime\ReferencedEntityTypeInterface;
+use Trellis\Common\Error\RuntimeException;
 use Trellis\Common\OptionsInterface;
-use Trellis\Runtime\EntityTypeInterface;
 use Trellis\Runtime\Attribute\AttributeInterface;
-use Trellis\Runtime\Attribute\Text\TextAttribute;
 use Trellis\Runtime\Attribute\AttributeMap;
+use Trellis\Runtime\Attribute\Text\TextAttribute;
+use Trellis\Runtime\EntityTypeInterface;
+use Trellis\Runtime\ReferencedEntityTypeInterface;
 
 // @todo we might want to inherit from Honeybee\Entity here, instead of EmbeddedEntityType
 abstract class ReferencedEntityType extends EmbeddedEntityType implements ReferencedEntityTypeInterface

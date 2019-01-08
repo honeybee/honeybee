@@ -19,7 +19,7 @@ interface UserInterface
      * for certain operations on the given resource or in general.
      *
      * @param mixed $resource
-     * @param mixed $operation
+     * @param mixed $privilege
      *
      * @return boolean true if permitted, false if not allowed
      */

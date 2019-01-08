@@ -51,7 +51,7 @@ abstract class QueryService implements QueryServiceInterface
 
     public function __call($method, array $args)
     {
-        $callable = [ $this->finder, $method ];
+        $callable = [ $this->getFinder(), $method ];
         if (is_callable($callable)) {
             return call_user_func_array($callable, $args);
         }

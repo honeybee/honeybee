@@ -213,7 +213,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
     /**
      * Start a new life-cycle for the current aggregate-root.
      *
-     * @param CreateAggreagteRootCommand $create_command
+     * @param CreateAggregateRootCommand $create_command
      * @param StateMachineInterface $state_machine
      */
     public function create(CreateAggregateRootCommand $create_command, StateMachineInterface $state_machine)
@@ -316,7 +316,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
     /**
      * Transition to the next workflow state (hence next state of the statemachine based on the command paylaod).
      *
-     * @param ProceedWorkflowCommand $workflow_command
+     * @param ProceedWorkflowCommand $move_node_command
      */
     public function moveNode(MoveAggregateRootNodeCommand $move_node_command)
     {
@@ -583,6 +583,7 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
     {
         $this->guardEventPreConditions($event);
         if (!$this->setValues($event->getData())) {
+            $errors = [];
             foreach ($this->getValidationResults() as $validation_result) {
                 foreach ($validation_result->getViolatedRules() as $violated_rule) {
                     foreach ($violated_rule->getIncidents() as $incident) {

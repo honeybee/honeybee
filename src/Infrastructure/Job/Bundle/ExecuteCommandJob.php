@@ -117,7 +117,7 @@ class ExecuteCommandJob extends Job
         } else {
             throw new RuntimeError(
                 sprintf(
-                    'Invalid command data-type given. Only array and CommandInterface are supported.',
+                    'Invalid command data-type given. Only array and %s are supported.',
                     CommandInterface::CLASS
                 )
             );

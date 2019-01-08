@@ -185,6 +185,7 @@ class CriteriaQueryTranslation implements QueryTranslationInterface
     {
         $attribute_path = $criteria->getAttributePath();
 
+        $comparisons = [];
         foreach ($criteria->getItems() as $comparison) {
             $comparand = $comparison->getComparand();
             // format date range queries

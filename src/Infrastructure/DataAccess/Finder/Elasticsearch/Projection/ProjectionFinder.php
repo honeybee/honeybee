@@ -11,6 +11,8 @@ use Psr\Log\LoggerInterface;
 
 class ProjectionFinder extends ElasticsearchFinder
 {
+    protected $projection_type_map;
+
     public function __construct(
         ConnectorInterface $connector,
         ConfigInterface $config,

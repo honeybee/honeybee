@@ -68,6 +68,7 @@ abstract class EmbeddedEntity extends Entity
 
         $this->setValues($event->getData());
         if (!$this->isValid()) {
+            $errors = [];
             foreach ($this->getValidationResults() as $validation_result) {
                 foreach ($validation_result->getViolatedRules() as $violated_rule) {
                     foreach ($violated_rule->getIncidents() as $incident) {

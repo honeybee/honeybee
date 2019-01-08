@@ -11,6 +11,7 @@ class ServiceDefinitionMap extends TypedMap
 
     public function __construct(Options $options = null)
     {
+        parent::__construct([]);
         $this->options = $options;
     }
 

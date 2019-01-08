@@ -26,7 +26,7 @@ interface AggregateRootInterface
     /**
      * Start a new life-cycle for the current aggregate-root.
      *
-     * @param CreateAggreagteRootCommand $create_command
+     * @param CreateAggregateRootCommand $create_command
      * @param StateMachineInterface $state_machine
      */
     public function create(CreateAggregateRootCommand $create_command, StateMachineInterface $state_machine);

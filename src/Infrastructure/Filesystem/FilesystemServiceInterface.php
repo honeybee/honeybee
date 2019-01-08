@@ -250,7 +250,7 @@ interface FilesystemServiceInterface
      *
      * @see Honeybee\Common\Util\FileToolkit::guessExtension
      *
-     * @param string $file_path_path to file
+     * @param string $file_path path to file
      * @param string $fallback_extension extension to return on failed guess
      *
      * @return string default file extension for given mime type or fallback extension provided
@@ -280,7 +280,7 @@ interface FilesystemServiceInterface
     /**
      * @param string $scheme prefix of the filesystem to return
      *
-     * @return League\Flysystem\FilesystemInterface
+     * @return \League\Flysystem\FilesystemInterface
      */
     public function getFilesystem($scheme);
 }

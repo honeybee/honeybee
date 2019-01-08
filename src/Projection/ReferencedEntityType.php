@@ -2,12 +2,13 @@
 
 namespace Honeybee\Projection;
 
+use Trellis\Common\Error\RuntimeException;
 use Trellis\Common\OptionsInterface;
+use Trellis\Runtime\Attribute\AttributeInterface;
+use Trellis\Runtime\Attribute\AttributeMap;
+use Trellis\Runtime\Attribute\Text\TextAttribute;
 use Trellis\Runtime\EntityTypeInterface;
 use Trellis\Runtime\ReferencedEntityTypeInterface;
-use Trellis\Runtime\Attribute\AttributeMap;
-use Trellis\Runtime\Attribute\AttributeInterface;
-use Trellis\Runtime\Attribute\Text\TextAttribute;
 
 abstract class ReferencedEntityType extends EmbeddedEntityType implements ReferencedEntityTypeInterface
 {

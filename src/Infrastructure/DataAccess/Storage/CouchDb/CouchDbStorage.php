@@ -22,7 +22,7 @@ abstract class CouchDbStorage extends Storage
         $allowed_methods = [ self::METHOD_GET, self::METHOD_POST, self::METHOD_PUT, self::METHOD_DELETE ];
         if (!in_array($method, $allowed_methods)) {
             throw new RuntimeError(
-                sprintf("Invalid method %s given. Expecting one of: ", $method, implode(', ', $allowed_methods))
+                sprintf("Invalid method %s given. Expecting one of: %s", $method, implode(', ', $allowed_methods))
             );
         }
 
