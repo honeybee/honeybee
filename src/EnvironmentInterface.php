@@ -5,12 +5,12 @@ namespace Honeybee;
 interface EnvironmentInterface
 {
     /**
-     * @return Honeybee\UserInterface
+     * @return \Honeybee\UserInterface
      */
     public function getUser();
 
     /**
-     * @return Honeybee\Infrastructure\Config\SettingsInterface
+     * @return \Honeybee\Infrastructure\Config\SettingsInterface
      */
     public function getSettings();
 }
