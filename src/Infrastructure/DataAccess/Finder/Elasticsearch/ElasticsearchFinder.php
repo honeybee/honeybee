@@ -157,6 +157,10 @@ abstract class ElasticsearchFinder extends Finder
         // Elasticsearch returns results on scroll start
         $raw_result = $this->connector->getConnection()->search($query);
 
+        if (!isset($raw_result['_scroll_id'])) {
+            $this->logger->error('Elasticsearch scrolling search request did not return a _scroll_id.');
+        }
+
         return new FinderResult(
             $this->mapResultData($raw_result),
             $raw_result['hits']['total'],
@@ -177,6 +181,10 @@ abstract class ElasticsearchFinder extends Finder
         }
 
         $raw_result = $this->connector->getConnection()->scroll($query);
+
+        if (!isset($raw_result['_scroll_id'])) {
+            $this->logger->error('Elasticsearch scrolling search request did not return a _scroll_id.');
+        }
 
         return new FinderResult(
             $this->mapResultData($raw_result),
