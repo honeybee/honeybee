@@ -5,6 +5,7 @@ namespace Honeybee\Tests\Projection;
 use Honeybee\Projection\ProjectionInterface;
 use Honeybee\Projection\ProjectionList;
 use Honeybee\Projection\ProjectionMap;
+use Honeybee\Tests\Fixture\BookSchema\Projection\Book\BookType;
 use Honeybee\Tests\TestCase;
 use Mockery;
 use Trellis\Runtime\Entity\EntityMap;
@@ -29,6 +30,53 @@ class ProjectionMapTest extends TestCase
         $this->assertCount(1, $projection_map);
         $this->assertEquals([ 'projection1' ], $projection_map->getKeys());
         $this->assertEquals([ $projection ], $projection_map->getValues());
+    }
+
+    public function testHasKeySucceeds()
+    {
+        $type = new BookType;
+        $map = new ProjectionMap;
+
+        $test_entity = $type->createEntity([ 'uuid' => '2d10d19a-7aca-4d87-aa34-1ea9a5604138' ]);
+        $map->setItem($test_entity->getIdentifier(), $test_entity);
+
+        $this->assertTrue($map->hasKey($test_entity->getIdentifier()));
+    }
+
+    public function testHasItemSucceeds()
+    {
+        $type = new BookType;
+        $map = new ProjectionMap;
+
+        $test_entity = $type->createEntity([ 'uuid' => '2d10d19a-7aca-4d87-aa34-1ea9a5604138' ]);
+        $map->setItem($test_entity->getIdentifier(), $test_entity);
+
+        $this->assertTrue($map->hasItem($test_entity));
+    }
+
+    public function testHasKeySucceedsWhenConstructedWithItems()
+    {
+        $type = new BookType;
+        $test_entity = $type->createEntity([ 'uuid' => '2d10d19a-7aca-4d87-aa34-1ea9a5604138' ]);
+        $map = new ProjectionMap([$test_entity]);
+        $this->assertTrue($map->hasKey($test_entity->getIdentifier()));
+    }
+
+    public function testHasItemSucceedsWhenConstructedWithItems()
+    {
+        $type = new BookType;
+        $test_entity = $type->createEntity([ 'uuid' => '2d10d19a-7aca-4d87-aa34-1ea9a5604138' ]);
+        $map = new ProjectionMap([$test_entity]);
+        $this->assertTrue($map->hasItem($test_entity));
+    }
+
+    public function testHasItemSucceedsWhenConstructedWithItemsAndComparedWithDifferentInstanceOfSameEntity()
+    {
+        $type = new BookType;
+        $entity = $type->createEntity([ 'uuid' => '2d10d19a-7aca-4d87-aa34-1ea9a5604138' ]);
+        $other_entity = $type->createEntity([ 'uuid' => '2d10d19a-7aca-4d87-aa34-1ea9a5604138' ]);
+        $map = new ProjectionMap([$entity]);
+        $this->assertTrue($map->hasItem($other_entity));
     }
 
     /**
