@@ -27,6 +27,8 @@ class CriteriaQueryTranslation implements QueryTranslationInterface
 {
     const QUERY_FOR_EMPTY = '__empty';
 
+    const QUERY_FOR_NOT_EMPTY = '__notempty';
+
     protected $config;
 
     public function __construct(ConfigInterface $config)
@@ -174,6 +176,8 @@ class CriteriaQueryTranslation implements QueryTranslationInterface
         }
         if ($attribute_value === self::QUERY_FOR_EMPTY) {
             $attr_filter = $this->buildMissingFilter($criteria);
+        } elseif ($attribute_value === self::QUERY_FOR_NOT_EMPTY) {
+            $attr_filter = $this->buildNotEmptyFilter($criteria);
         } else {
             $attr_filter = $this->buildTermFilter($criteria);
         }
@@ -269,6 +273,37 @@ class CriteriaQueryTranslation implements QueryTranslationInterface
                 'field' => $attribute_path,
                 'existence' => true,
                 'null_value' => true
+            ]
+        ];
+    }
+
+    protected function buildNotEmptyFilter(CriteriaInterface $criteria)
+    {
+        $attribute_path = $criteria->getAttributePath();
+
+        $multi_field_mapped_attributes = (array)$this->config->get('multi_fields', []);
+        if (in_array($attribute_path, $multi_field_mapped_attributes)) {
+            $attribute_path = $attribute_path . '.filter';
+        }
+
+        return [
+            "bool"=> [
+                "must"=> [
+                    [
+                        "wildcard"=> [
+                            "redirect_target"=> "?*"
+                        ]
+                    ]
+                ],
+                "must_not"=> [
+                    [
+                        "missing"=> [
+                            "field"=> "redirect_target",
+                            "existence"=> true,
+                            "null_value"=> true
+                        ]
+                    ]
+                ]
             ]
         ];
     }
