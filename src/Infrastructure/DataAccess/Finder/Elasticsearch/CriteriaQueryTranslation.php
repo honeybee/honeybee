@@ -287,20 +287,20 @@ class CriteriaQueryTranslation implements QueryTranslationInterface
         }
 
         return [
-            "bool"=> [
-                "must"=> [
+            'bool'=> [
+                'must'=> [
                     [
-                        "wildcard"=> [
-                            "redirect_target"=> "?*"
+                        'wildcard'=> [
+                            $attribute_path => '?*'
                         ]
                     ]
                 ],
-                "must_not"=> [
+                'must_not'=> [
                     [
-                        "missing"=> [
-                            "field"=> "redirect_target",
-                            "existence"=> true,
-                            "null_value"=> true
+                        'missing'=> [
+                            'field'=> $attribute_path,
+                            'existence'=> true,
+                            'null_value'=> true
                         ]
                     ]
                 ]

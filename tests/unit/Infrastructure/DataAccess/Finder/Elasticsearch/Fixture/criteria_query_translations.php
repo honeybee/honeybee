@@ -573,7 +573,7 @@ return [
         ]
     ],
     //
-    // "suggest" query, that is filtered
+    // "suggest" query, that is filtered by german language
     //
     [
         'query' => new CriteriaQuery(
@@ -620,6 +620,93 @@ return [
                 'sort' => [ ]
             ],
             'size' => 50,
+            'from' => 0
+        ]
+    ],
+    //
+    // "match_all" query, that is filtered by an empty attribute.
+    //
+    [
+        'query' => new CriteriaQuery(
+            new CriteriaList,
+            new CriteriaList([ new AttributeCriteria('biography', new Equals('__empty')) ]),
+            new CriteriaList([ new SortCriteria('created_at') ]),
+            0,
+            100
+        ),
+        'expected_es_query' => [
+            'body' => [
+                'query' => [
+                    'bool' => [
+                        'must' => [
+                            'match_all' => []
+                        ],
+                        'filter' => [
+                            'and' => [
+                                [
+                                    'missing' => [
+                                        'field' => 'biography.filter',
+                                        'existence' => true,
+                                        'null_value' => true
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+                'sort' => [ [ 'created_at' => [ 'order' => 'asc', 'unmapped_type' => 'date' ] ] ]
+            ],
+            'size' => 100,
+            'from' => 0
+        ]
+    ],
+    //
+    // "match_all" query, that is filtered by a not empty attribute.
+    //
+    [
+        'query' => new CriteriaQuery(
+            new CriteriaList,
+            new CriteriaList([ new AttributeCriteria('biography', new Equals('__notempty')) ]),
+            new CriteriaList([ new SortCriteria('created_at') ]),
+            0,
+            100
+        ),
+        'expected_es_query' => [
+            'body' => [
+                'query' => [
+                    'bool' => [
+                        'must' => [
+                            'match_all' => []
+                        ],
+                        'filter' => [
+                            'and' => [
+                                [
+                                    'bool'=> [
+                                        'must'=> [
+                                            [
+                                                'wildcard'=> [
+                                                    'biography.filter' => '?*'
+                                                ]
+                                            ]
+                                        ],
+                                        'must_not'=> [
+                                            [
+                                                'missing'=> [
+                                                    'field'=> 'biography.filter',
+                                                    'existence'=> true,
+                                                    'null_value'=> true
+                                                ]
+                                            ]
+                                        ]
+                                    ]
+                                ]
+                            ]
+                        ]
+                    ]
+                ],
+                'sort' => [ [ 'created_at' => [ 'order' => 'asc', 'unmapped_type' => 'date' ] ] ]
+            ],
+            'size' => 100,
             'from' => 0
         ]
     ],

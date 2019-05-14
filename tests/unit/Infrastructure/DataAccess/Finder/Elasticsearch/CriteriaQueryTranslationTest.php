@@ -42,7 +42,7 @@ class CriteriaQueryTranslationTest extends TestCase
     protected function getQueryTranslationConfig()
     {
         return new ArrayConfig([
-            'multi_fields' => [ 'username' ]
+            'multi_fields' => [ 'username', 'biography' ]
         ]);
     }
 }
