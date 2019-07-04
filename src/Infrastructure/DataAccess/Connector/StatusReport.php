@@ -48,6 +48,9 @@ class StatusReport implements JsonSerializable
 
         $connections = [];
         foreach ($connector_map as $name => $connector) {
+            if (!$connector->getConfig()->get('report_in_status', true)) {
+                continue;
+            }
             try {
                 $connections[$name] = $connector->getStatus();
             } catch (Exception $e) {
@@ -73,7 +76,7 @@ class StatusReport implements JsonSerializable
             }
         }
 
-        $overall = $connector_map->count();
+        $overall = count($connections);
 
         $status = Status::UNKNOWN;
         if ($failing > 0) {
