@@ -81,7 +81,7 @@ class CriteriaQueryTranslation implements QueryTranslationInterface
     protected function translateQueries(CriteriaList $criteria_list)
     {
         if ($criteria_list->isEmpty()) {
-            return [ 'match_all' => [] ];
+            return [ 'match_all' => new \stdClass() ];
         } else {
             // @todo atm we only support global search on the _all field
             // more complex search query building will follow up
@@ -150,7 +150,23 @@ class CriteriaQueryTranslation implements QueryTranslationInterface
         }
 
         if (count($elasticsearch_filters)) {
-            return [ $filter_criteria_list->getOperator() => $elasticsearch_filters ];
+            // TODO
+            //return [ $filter_criteria_list->getOperator() => $elasticsearch_filters ];
+            if ($filter_criteria_list->getOperator() === CriteriaList::OP_OR) {
+                return [
+                    'bool' => [
+                        'should' => $elasticsearch_filters,
+                    ],
+                ];
+            } elseif ($filter_criteria_list->getOperator() === CriteriaList::OP_AND) {
+                return [
+                    'bool' => [
+                        'must' => $elasticsearch_filters,
+                    ],
+                ];
+            } else {
+                throw new RuntimeError('Invalid CriteriaList operator constant given. Expected either "and" or "or".');
+            }
         } else {
             return [];
         }
@@ -165,7 +181,14 @@ class CriteriaQueryTranslation implements QueryTranslationInterface
         if (is_array($attribute_value)) {
             $filter = $this->buildTermsFilter($criteria);
             if ($criteria->getComparison()->isInverted()) {
-                return [ 'not' => $filter ];
+                return [
+                    // 'not' => $filter
+                    'bool' => [
+                        'must_not' => [
+                            $filter,
+                        ]
+                    ],
+                ];
             }
             return $filter;
         }
@@ -351,7 +374,14 @@ class CriteriaQueryTranslation implements QueryTranslationInterface
 
     protected function negateFilter(array $filter)
     {
-        return [ 'not' => $filter ];
+        return [
+            // 'not' => $filter
+            'bool' => [
+                'must_not' => [
+                    $filter,
+                ]
+            ],
+        ];
     }
 
     protected function buildSort(QueryInterface $query)
@@ -379,10 +409,10 @@ class CriteriaQueryTranslation implements QueryTranslationInterface
     {
         $phrase = $search_criteria->getPhrase();
         $field = trim($search_criteria->getAttributePath());
-        if (empty($field)) {
+/*        if (empty($field)) {
             $field = '_all';
         }
-
+ */
         $search_query_settings = array_merge(
             [
                 'query' => $phrase,
@@ -397,7 +427,7 @@ class CriteriaQueryTranslation implements QueryTranslationInterface
 
         $search_query = [
             'match' => [
-                $field => $search_query_settings
+                '*'/*$field*/ => $search_query_settings
             ]
         ];
 
