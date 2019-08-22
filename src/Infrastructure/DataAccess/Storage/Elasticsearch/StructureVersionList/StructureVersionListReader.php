@@ -26,10 +26,13 @@ class StructureVersionListReader extends ElasticsearchStorage implements Storage
         $default_limit = $this->config->get('limit', self::READ_ALL_LIMIT);
         $query_params = [
             'index' => $this->getIndex(),
-            'type' => $this->getType(),
             'size' => $settings->get('limit', $default_limit),
             'body' => [ 'query' => [ 'match_all' => [] ] ]
         ];
+        $index_per_type = $this->connector->getConfig()->get('index_per_type', false);
+        if (!$index_per_type) {
+            $query_params['type'] = $this->getType();
+        }
 
         if (!$settings->get('first', true)) {
             if (!$this->offset) {
@@ -57,13 +60,15 @@ class StructureVersionListReader extends ElasticsearchStorage implements Storage
     public function read($identifier, SettingsInterface $settings = null)
     {
         try {
-            $result = $this->connector->getConnection()->get(
-                [
-                    'index' => $this->getIndex(),
-                    'type' => $this->getType(),
-                    'id' => $identifier
-                ]
-            );
+            $params = [
+                'index' => $this->getIndex(),
+                'id' => $identifier
+            ];
+            $index_per_type = $this->connector->getConfig()->get('index_per_type', false);
+            if (!$index_per_type) {
+                $params['type'] = $this->getType();
+            }
+            $result = $this->connector->getConnection()->get($params);
         } catch (Missing404Exception $error) {
             return null;
         }

@@ -15,6 +15,10 @@ abstract class ElasticsearchMigration extends Migration
 
     abstract protected function getIndexSettingsPath(MigrationTargetInterface $migration_target);
 
+    /**
+     * Must return an associative array for elasticsearch type mappings. Array key is the name of the
+     * elasticsearch type mapping and value is the mapping itself.
+     */
     abstract protected function getTypeMappingPaths(MigrationTargetInterface $migration_target);
 
     protected function createIndexIfNotExists(MigrationTarget $migration_target, $register_type_mapping = false)
@@ -51,15 +55,24 @@ abstract class ElasticsearchMigration extends Migration
         $index_name = $this->getIndexName($migration_target);
         $reindex_required = false;
 
+        $index_per_type = $migration_target->getTargetConnector()->getConfig()->get('index_per_type', false);
         foreach ($this->getTypeMappings($migration_target) as $type_name => $mapping) {
             try {
-                $index_api->putMapping(
-                    [
-                        'index' => $index_name,
-                        'type' => $type_name,
-                        'body' => [ $type_name => $mapping ]
-                    ]
-                );
+                $payload = [
+                    'index' => $index_name,
+                ];
+                if ($index_per_type) {
+                    $payload['body'] = $mapping;
+                } else {
+                    // elasticsearch 1-6
+                    $payload['type'] = $type_name;
+                    $payload['body'] = [ $type_name => $mapping ];
+                }
+                $index_api->putMapping($payload);
+                if ($index_per_type) {
+                    // only one type is relevant in elasticsearch 7+
+                    break;
+                }
             } catch (BadRequest400Exception $error) {
                 if (!$reindex_if_required) {
                     throw $error;
@@ -87,53 +100,78 @@ abstract class ElasticsearchMigration extends Migration
             ));
         }
 
-        // Allow index settings override
-        $index_settings = $this->getIndexSettings($migration_target);
-        $index_settings = isset($index_settings['body'])
-            ? $index_settings['body']
-            : current($index_api->getSettings([ 'index' => $index_name ]));
-
-        // Load existing mappings from previous index
-        $index_mappings = current($index_api->getMapping([ 'index' => $index_name ]));
         $current_index = key($aliases);
         $new_index = sprintf('%s_%s', $index_name, $this->getTimestamp());
 
-        // Merge mappings from new index settings if provided
-        if (isset($index_settings['mappings'])) {
-            foreach ($index_settings['mappings'] as $type_name => $mapping) {
+        // Allow index settings override
+        $index_settings = $this->getIndexSettings($migration_target);
+        $index_settings = $index_settings['body'] ?: current($index_api->getSettings([ 'index' => $index_name ]));
+
+        // Load existing mappings from previous index
+        $index_mappings = current($index_api->getMapping([ 'index' => $index_name ]));
+
+        $index_per_type = $migration_target->getTargetConnector()->getConfig()->get('index_per_type', false);
+        if ($index_per_type) {
+            // elasticsearch 7+ (one type per index)
+
+            // Merge mappings from new index settings if provided
+            if (isset($index_settings['mappings']['properties'])) {
+                $index_mappings['mappings']['properties'] = array_replace(
+                    $index_mappings['mappings']['properties'],
+                    $index_settings['mappings']['properties']
+                );
+                unset($index_settings['mappings']);
+            }
+
+            // Replace existing mappings with new ones
+            $new_mappings = $this->getTypeMappings($migration_target);
+            if (empty($new_mappings)) {
+                throw new RuntimeError('No new type mappings provided for reindexing?');
+            }
+            if (count($new_mappings) !== 1) {
+                throw new RuntimeError('Only one type mapping per index allowed in elasticsearch 7+.');
+            }
+            $new_mapping = reset($new_mappings);
+            $index_mappings['mappings']['properties'] = array_replace(
+                $index_mappings['mappings']['properties'],
+                $new_mapping['properties']
+            );
+        } else {
+            // behaviour for elasticsearch 1-6 w/ multiple types per index
+
+            // Merge mappings from new index settings if provided
+            if (isset($index_settings['mappings'])) {
+                foreach ($index_settings['mappings'] as $type_name => $mapping) {
+                    $index_mappings['mappings'] = array_replace(
+                        $index_mappings['mappings'],
+                        [ $type_name => $mapping ]
+                    );
+                }
+                unset($index_settings['mappings']);
+            }
+
+            // Replace existing mappings with new ones
+            foreach ($this->getTypeMappings($migration_target) as $type_name => $mapping) {
                 $index_mappings['mappings'] = array_replace(
                     $index_mappings['mappings'],
                     [ $type_name => $mapping ]
                 );
             }
-            unset($index_settings['mappings']);
-        }
-
-        // Replace existing mappings with new ones
-        foreach ($this->getTypeMappings($migration_target) as $type_name => $mapping) {
-            $index_mappings['mappings'] = array_replace(
-                $index_mappings['mappings'],
-                [ $type_name => $mapping ]
-            );
         }
 
         // Create the new index
-        $index_api->create(
-            [
-                'index' => $new_index,
-                'body' => array_merge($index_settings, $index_mappings)
-            ]
-        );
+        $index_api->create([
+            'index' => $new_index,
+            'body' => array_merge($index_settings, $index_mappings)
+        ]);
 
         // Copy documents from current index to new index
-        $response = $client->search(
-            [
-                'search_type' => 'scan',
-                'scroll' => self::SCROLL_TIMEOUT,
-                'size' => self::SCROLL_SIZE,
-                'index'=> $current_index
-            ]
-        );
+        $response = $client->search([
+            'search_type' => 'scan',
+            'scroll' => self::SCROLL_TIMEOUT,
+            'size' => self::SCROLL_SIZE,
+            'index'=> $current_index
+        ]);
         $scroll_id = $response['_scroll_id'];
         $total_docs = $response['hits']['total'];
 
@@ -141,11 +179,15 @@ abstract class ElasticsearchMigration extends Migration
             $response = $client->scroll([ 'scroll_id' => $scroll_id, 'scroll' => self::SCROLL_TIMEOUT ]);
             if (count($response['hits']['hits']) > 0) {
                 foreach ($response['hits']['hits'] as $document) {
-                    $bulk[]['index'] = [
+                    $meta = [
                         '_index' => $new_index,
                         '_type' => $document['_type'],
                         '_id' => $document['_id']
                     ];
+                    if ($index_per_type) {
+                        unset($meta['_type']);
+                    }
+                    $bulk[]['index'] = $meta;
                     $bulk[] = $document['_source'];
                 }
                 $client->bulk([ 'body' => $bulk ]);
@@ -159,7 +201,7 @@ abstract class ElasticsearchMigration extends Migration
         // Check reindexed document count is correct
         $index_api->flush();
         $new_count = $client->count([ 'index' => $new_index ])['count'];
-        if ($total_docs != $new_count) {
+        if ($total_docs !== $new_count) {
             throw new RuntimeError(sprintf(
                 'Aborting migration because document count of %s after reindexing does not match expected count of %s',
                 $new_count,
@@ -250,11 +292,39 @@ abstract class ElasticsearchMigration extends Migration
         return $aliases;
     }
 
+    /**
+     * Returns configured 'index' name. When 'index_per_type' is set as setting on connector for
+     * elasticsearch7+ support the index name will have the mapping 'type' appended: "index-type".
+     */
     protected function getIndexName(MigrationTargetInterface $migration_target)
     {
-        return $migration_target->getConfig()->get('index');
+        $index_name = $migration_target->getConfig()->get('index');
+        $mappings = $this->getTypeMappings($migration_target);
+        if (empty($mappings)) {
+            return $index_name;
+        }
+
+        // new setting 'index_per_type' (on connector/client) for elasticsearch7+ support
+        $index_per_type = $migration_target->getTargetConnector()->getConfig()->get('index_per_type', false);
+        if (!$index_per_type) {
+            return $index_name; // elasticsearch 1-6 behaviour w/ potentially multiple types per index
+        }
+
+        if (count($mappings) !== 1) {
+            throw new RuntimeError('Please use only one type mapping for an elasticsearch 7+ index.');
+        }
+        reset($mappings);
+        $type_name = key($mappings);
+        return $index_name.'-'.$type_name;
     }
 
+    /**
+     * Returns configured type name => mapping entries. When 'index_per_type' is set as setting on
+     * connector for elasticsearch7+ support the index name will have the specified type mapping name
+     * appended: "index-type". Please don't use "_doc" as a type mapping name. "_doc" will be used as
+     * the endpoint for document types in elasticsearch 7+ URLs. The type name returned in this
+     * method is more of a convention for different types used within the application.
+     */
     protected function getTypeMappings(MigrationTarget $migration_target)
     {
         $mappings = [];

@@ -25,7 +25,7 @@ class ElasticsearchConnector extends Connector
         // maybe use building from configuration hash?
         // $client = ClientBuilder::fromConfig($params);
 
-        return (new ClientBuilder())
+        return ClientBuilder::create()
             ->setHosts([ $connection_dsn ])
             ->build();
     }

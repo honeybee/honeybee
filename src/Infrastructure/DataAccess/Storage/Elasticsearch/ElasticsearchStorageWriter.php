@@ -13,10 +13,14 @@ abstract class ElasticsearchStorageWriter extends ElasticsearchStorage implement
     {
         $data = [
             'index' => $this->getIndex(),
-            'type' => $this->getType(),
             'id' => $identifier,
             'body' => $data
         ];
+
+        $index_per_type = $this->connector->getConfig()->get('index_per_type', false);
+        if (!$index_per_type) {
+            $data['type'] = $this->getType();
+        }
 
         $this->connector->getConnection()->index(array_merge($data, $this->getParameters('index')));
     }
@@ -27,15 +31,21 @@ abstract class ElasticsearchStorageWriter extends ElasticsearchStorage implement
         $index = $this->getIndex();
         $type = $this->getType();
 
+        $index_per_type = $this->connector->getConfig()->get('index_per_type', false);
+
         $data = [];
         foreach ($documents as $identifier => $document) {
-            $data['body'][] = [
+            $meta = [
                 'index' => [
                     '_index' => $index,
-                    '_type' => $type,
                     '_id' => $identifier
                 ]
             ];
+            if (!$index_per_type) {
+                $meta['_type'] = $type;
+            }
+
+            $data['body'][] = $meta;
             $data['body'][] = $document;
         }
 
@@ -52,9 +62,12 @@ abstract class ElasticsearchStorageWriter extends ElasticsearchStorage implement
         try {
             $data = [
                 'index' => $this->getIndex(),
-                'type' => $this->getType(),
                 'id' => $identifier
             ];
+            $index_per_type = $this->connector->getConfig()->get('index_per_type', false);
+            if (!$index_per_type) {
+                $data['type'] = $this->getType();
+            }
 
             /*
              * @todo atm deleting a document when the index does not exists triggers the index to be created.

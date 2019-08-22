@@ -32,13 +32,15 @@ abstract class ElasticsearchFinder extends Finder
             );
         }
 
-        // @todo multiple type search is not supported unless _all
-
         $data = [
             'index' => $index,
-            'type' => $this->getType(),
             'id' => $identifier
         ];
+
+        $index_per_type = $this->connector->getConfig()->get('index_per_type', false);
+        if (!$index_per_type) {
+            $data['type'] = $this->getType();
+        }
 
         $query = array_merge($data, $this->getParameters('get'));
 
@@ -81,8 +83,11 @@ abstract class ElasticsearchFinder extends Finder
                 'size' => 100000
             ]
         ];
-        if ($type = $this->getType()) {
-            $data['type'] = $type;
+        $index_per_type = $this->connector->getConfig()->get('index_per_type', false);
+        if (!$index_per_type) {
+            if ($type = $this->getType()) {
+                $data['type'] = $type;
+            }
         }
 
         $query = array_merge($data, $this->getParameters('mget'));
@@ -103,12 +108,15 @@ abstract class ElasticsearchFinder extends Finder
         Assertion::isArray($query);
 
         $query['index'] = $this->getIndex();
-        $type = $this->getType();
-        if ($type && $type !== '_all') {
-            $query['type'] = $type;
+        $index_per_type = $this->connector->getConfig()->get('index_per_type', false);
+        if (!$index_per_type) {
+            $type = $this->getType();
+            if ($type && $type !== '_all') {
+                $query['type'] = $type;
+            }
         }
 
-        if ($this->config->get('log_search_query', false) === true) {
+        if (1 || $this->config->get('log_search_query', false) === true) {
             $this->logger->debug('['.__METHOD__.'] search query = ' . json_encode($query, JSON_PRETTY_PRINT));
         }
 
@@ -126,7 +134,10 @@ abstract class ElasticsearchFinder extends Finder
         Assertion::isArray($query);
 
         $query['index'] = $this->getIndex();
-        $query['type'] = $this->getType();
+        $index_per_type = $this->connector->getConfig()->get('index_per_type', false);
+        if (!$index_per_type) {
+            $query['type'] = $this->getType();
+        }
 
         if ($this->config->get('log_search_query', false) === true) {
             $this->logger->debug('['.__METHOD__.'] stored query = ' . json_encode($query, JSON_PRETTY_PRINT));
@@ -146,9 +157,13 @@ abstract class ElasticsearchFinder extends Finder
         Assertion::isArray($query);
 
         $query['index'] = $this->getIndex();
-        $query['type'] = $this->getType();
         $query['scroll'] = $this->config->get('scroll_timeout', '1m');
         $query['sort'] = [ '_doc' ];
+
+        $index_per_type = $this->connector->getConfig()->get('index_per_type', false);
+        if (!$index_per_type) {
+            $query['type'] = $this->getType();
+        }
 
         if ($this->config->get('log_scroll_query', false) === true) {
             $this->logger->debug('['.__METHOD__.'] scroll start = ' . json_encode($query, JSON_PRETTY_PRINT));
@@ -213,7 +228,14 @@ abstract class ElasticsearchFinder extends Finder
             $fallback_index = array_values($fallback_index);
         }
 
-        return $this->config->get('index', $fallback_index);
+        $index_name = $this->config->get('index', $fallback_index);
+
+        $index_per_type = $this->connector->getConfig()->get('index_per_type', false);
+        if (!$index_per_type) {
+            return $index_name; // elasticsearch 1-6 behaviour w/ potentially multiple types per index
+        }
+
+        return $index_name.'-'.$this->getType();
     }
 
     protected function getType()

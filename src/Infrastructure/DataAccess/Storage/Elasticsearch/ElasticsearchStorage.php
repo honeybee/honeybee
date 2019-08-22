@@ -14,6 +14,9 @@ abstract class ElasticsearchStorage extends Storage
         return $this->config->get('index', $fallback_index);
     }
 
+    /**
+     * elasticsearch 7+ has a single type per index.
+     */
     protected function getType()
     {
         $fallback_type = $this->connector->getConfig()->get('type');
