@@ -595,8 +595,9 @@ abstract class AggregateRoot extends Entity implements AggregateRootInterface
             }
             throw new InvalidStateError(
                 sprintf(
-                    "Aggregate-root is in an invalid state after applying %s.\nErrors:%s",
+                    "Aggregate-root is in an invalid state after applying %s (%s).\nErrors:%s",
                     get_class($event),
+                    (string)$event,
                     implode(PHP_EOL, $errors)
                 )
             );
