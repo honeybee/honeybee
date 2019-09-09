@@ -8,6 +8,7 @@
 /build
 .environment
 composer.phar
+composer.lock
 
 # general os and editors related stuff
 .DS_Store
