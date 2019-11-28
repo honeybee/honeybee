@@ -6,8 +6,6 @@ matrix:
     - php: 7.0
       env: COMPOSER_FLAGS="update --prefer-stable --prefer-source"
     - php: 7.1
-      env: COMPOSER_FLAGS="install"
-    - php: 7.1
       env: COMPOSER_FLAGS="update --prefer-stable --prefer-source"
     - php: 7.2
       env: COMPOSER_FLAGS="install"
@@ -15,8 +13,11 @@ matrix:
       env: COMPOSER_FLAGS="update --prefer-stable --prefer-source"
     - php: 7.3
       env: COMPOSER_FLAGS="update --prefer-stable --prefer-source"
+    - php: 7.4
+      env: COMPOSER_FLAGS="update --prefer-stable --prefer-source"
     - php: nightly
   allow_failures:
+    - php: 7.4
     - php: nightly
 
 before_install:
