@@ -4,7 +4,7 @@ namespace Honeybee;
 
 use Trellis\Runtime\Entity\Entity as BaseEntity;
 use Trellis\Runtime\ValueHolder\ValueChangedEvent;
-use Zend\Permissions\Acl\Resource\ResourceInterface;
+use Laminas\Permissions\Acl\Resource\ResourceInterface;
 use Honeybee\Common\ScopeKeyInterface;
 
 abstract class Entity extends BaseEntity implements ResourceInterface, ScopeKeyInterface, EntityInterface

@@ -43,24 +43,24 @@
     },
     "require": {
         "php": "^7.0",
-        "beberlei/assert": "^2.7 || ^3.0",
+        "beberlei/assert": "^3.0",
         "elasticsearch/elasticsearch": "^2.0 || ^5.0 || ^6.0 || ^7.0",
         "guzzlehttp/guzzle": "^6.2",
-        "honeybee/trellis": "^0.2.3",
+        "honeybee/trellis": "^0.2.5",
         "league/flysystem": "^1.0",
         "mtdowling/jmespath.php": "^2.4",
         "psr/container": "^1.0",
         "psr/log": "^1.0",
         "rdlowrey/auryn": "^1.4",
         "shrink0r/monatic": "^0.2.1",
-        "shrink0r/workflux": "^0.5.5",
-        "symfony/expression-language": "^3.2 || ^4.0",
-        "symfony/finder": "^3.2 || ^4.0",
-        "symfony/filesystem": "^3.2 || ^4.0",
-        "zendframework/zend-permissions-acl": "^2.6"
+        "shrink0r/workflux": "^0.6.0",
+        "symfony/expression-language": "^3.2 || ^4.0 || ^5.0",
+        "symfony/finder": "^3.2 || ^4.0 || ^5.0",
+        "symfony/filesystem": "^3.2 || ^4.0 || ^5.0",
+        "laminas/laminas-permissions-acl": "^2.7"
     },
     "require-dev": {
-        "roave/security-advisories": "master@dev",
+        "roave/security-advisories": "dev-master",
         "phpunit/phpunit": "^6.5 || ^7.0",
         "mockery/mockery": "^1.0",
         "php-amqplib/php-amqplib": "^2.7.0",
@@ -69,10 +69,14 @@
         "caseyamcl/guzzle_retry_middleware": "^2.2"
     },
     "autoload": {
-        "psr-4": { "Honeybee\\" : "src" }
+        "psr-4": {
+            "Honeybee\\" : "src"
+        }
     },
     "autoload-dev": {
-        "psr-4": { "Honeybee\\Tests\\": "tests/unit" }
+        "psr-4": {
+            "Honeybee\\Tests\\": "tests/unit"
+        }
     },
     "suggest": {
         "cboden/Ratchet": "to handle messages over websocket",
