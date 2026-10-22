@@ -18,7 +18,7 @@ class ProjectionTypeMap extends EntityTypeMap implements MandatoryKeyInterface
     {
         return $this->filter(
             function (ProjectionType $type) use ($prefix) {
-                return strpos($type->getPrefix(), $prefix) === 0;
+                return strpos($type->getPrefix(), (string) $prefix) === 0;
             }
         );
     }

@@ -89,7 +89,7 @@ class FileToolkit
         $name = iconv('utf-8', 'us-ascii//TRANSLIT', $name);
         $name = mb_strtolower($name);
         // remove unwanted characters
-        $name = preg_replace('~[^-\w]+~', '', $name);
+        $name = preg_replace('~[^\-\w]+~', '', $name);
         if (empty($name)) {
             return 'n-a';
         }
